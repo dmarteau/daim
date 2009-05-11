@@ -1,0 +1,239 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+%{C++
+
+/**
+* @brief Structure holding properties values \see GetProperties
+*/
+struct cciRgnProperties
+{
+ dm_int    label;
+ dm_uint   flags;
+ dm_uint   area;   /*!< Area covered by of the object, computed using \a CCIV_ImageMap_Area           */
+ dm_real   dir;    /*!< Direction of the minimum bounding box, computed using \a CCIV_ImageMap_Dir    */
+ dm_real   l1;     /*!< Minor axis of the minimum bounding box, computed using \a CCIV_ImageMap_Rect  */
+ dm_real   l2;     /*!< Major axis of the minimum bounding box, computed using \a CCIV_ImageMap_Rect  */
+ dm_int    cx;     /*!< X coordinate of the centroid, computed using \a CCIV_ImageMap_Loc             */
+ dm_int    cy;     /*!< Y coordinate of the centroid, computed using \a CCIV_ImageMap_Loc             */
+ dm_point* points; /*!< Enclosing polygon, computed using \a CCIV_ImageMap_Shape                      */
+ dm_uint   count;  /*!< Number of points in the enclosing polygon                                     */
+ dm_int    euler;  /*!< Euler number, computed using \a CCIV_ImageMap_Euler                           */
+ dm_uint   holes;  /*!< Number of holes in the object                                                 */
+ dm_uint   depth;
+ dm_int    parent;
+};
+
+%}
+
+[ptr]   native cciRgnPropertiesPtr(cciRgnProperties);
+[ref]   native cciRgnPropertiesRef(cciRgnProperties);
+
+interface cciIRegionContainer;
+interface cciImageContainer;
+
+/**
+ *  @brief Compute various topological elements from a region description
+ *
+ *  The Measures interface will compute topological attributs
+ *  from a partition in connexe components of a given region.
+ *  The partition is organized so has to take advantage of the hierarchical structure
+ *  of objects and holes in the computation of the objects properties.
+ *  Each connexe components is designated by a label used as an object réference
+ *  in ImageMap methods.
+ *
+ *  Note that the label 0 always correspond to background.
+ */
+[scriptable, uuid(81c081c9-1404-498b-bdcd-988b608e466a)]
+interface cciIMeasurements : cciIXPCOMSupports
+{
+  /**
+   * @brief build a region partition map
+   *
+   * Build a partition from the mask obtained from the \a rgn object
+   *
+   * @param params  parameter object ( see dmIParameters )
+   * @param connect the connectivity ( 4 or 8 )
+   * @param flags   flags cn be a combination of the following values:
+   * - \c CCIV_ImageMap_NoClip   The region will not be clipped with
+   *      the input image rectangle (if any). Instead the bounding rectangle
+   *      will be set to the bounding rectangle of the input region.
+   * - \c CCIV_ImageMap_OffsetRoi Used in conjunction with \c CCIV_ImageMap_NoClip,
+   *      the input region will be offset so as to have the bounding rectangle top left
+   *      corner at the origin (0,0).
+   *
+   */
+  void build( in cciImage image, in cciRegion rgn, in dm_uint32 connect, in dm_uint32 flags );
+
+  /**
+   *  @brief Create the mask corresponding to the object designated by \a label
+   *
+   *  The mask will be stored in the \a params object (using dmIparameteres::SetMask).
+   *
+   *  - If \a label==-1 the mask will correspond to the background region (i.e
+   *                    the region adjacent to borders).
+   *  - If \a label== 0 the mask will correspond to the reunion of all objects.
+   *  - If \a label== x the mask will correspond to object designated by \a label.
+   */
+  void createRegion( in cciRegion mask, in dm_int32 label, in boolean include_holes );
+
+  /**
+   *  @brief Remove object corresponding to \a label
+   *
+   *  Warning that \a label is likely to be affected to the parent object
+   */
+  void clear( in dm_int32 label );
+
+  /**
+   *  @brief Return a list of labels of objects that intersects the region \a rgn.
+   *
+   *  Warning that \a labels is a temporary object and should not be
+   *  stored for later use.
+   */
+  [noscript,notxpcom] dm_uint32 getLabels( in cciRegion rgn, [array] out dm_int32 labels );
+
+  /**
+   *  @brief Return the label of the object located at (x,y)
+   */
+  dm_int32 getLabelFromPoint( in dm_int32 x , in dm_int32 y );
+
+  /**
+   * @brief Clear all labels in \a labels
+   */
+  void removeLabels( [array,size_is(count)] in dm_int32 labels, in dm_uint32 count );
+
+  /**
+   * @brief Create the mask corresponding to all the objects in \a labels
+   */
+  void selectLabels( in cciRegion mask,  [array,size_is(count)] in dm_int32 labels, in dm_uint32 count );
+
+  /**
+   * @brief Set the spatial calibration
+   */
+  void setCalibration( in dm_real unitsPerPixel, in dm_real aSpectRatio );
+
+  /**
+   * @brief Return a list of labels correponding to connnexe objects
+   *         included in the object designated by \a label.
+   *
+   *  Warning that \a labels is a temporary object and should not be
+   *  stored for later use.
+   */
+  [noscript,notxpcom] dm_uint32 getChildRegionLabels( in dm_int32 label, [array] out dm_int32  labels );
+
+  /**
+   * @brief Return a inversed index tables for all objects labels.
+   *
+   *  This table will enable to fetch values from labels in arrays
+   *  returned by the compute() method. Given a label value, the array return
+   *  the index for the value of a given property.
+   *
+   *  @return the number of elements in \a table
+   *
+   *  Warning that \a table is a temporary object and should not be
+   *  stored for later use.
+   */
+  [noscript,notxpcom] dm_uint32 getIndexTable( [array] out dm_int32 table );
+
+  /**
+   * @brief Fill holes in objects
+   */
+  void fillHoles();
+
+  /**
+   * @brief Remove objects adjacent to borders
+   */
+  void cleanBorders();
+
+  /**
+   *  @brief Return properties for the object designated by \a label
+   *
+   *  @param label the object label
+   *  @param flags A combinaison of CCIV_ImageMap_Values which deifine the property
+   *         returned by the GetProperties() method.
+   *         See the Properties structure for information on the returned
+   *         properties and the associated flags.
+   *  @param props A reference to a Properties structure.
+   */
+  [noscript] void getProperties( in dm_int32 label, in dm_uint32 flags, in cciRgnPropertiesRef props );
+
+  /**
+   * @brief Perform a reconstruction using the mask given in \a mask
+   *
+   *  The Reconstruction is done by constructing a new mask
+   *  from objects that intersect the mask given in \a params.
+   *
+   *  This method is an equivalent of calling getLabels() followed by the
+   *  selectLabels() method.
+   */
+  void reconstruct( in cciRegion mask );
+
+  /**
+   * @brief Remove all objects outside or adjacent to the border of the given roi
+   */
+  void cleanRegionBorders( in cciRegion mask );
+
+  /**
+   *  @brief Compute object properties
+   *
+   *  @param store  an instance of a dmIStorageMap object. Storage will
+   *                be obtained with dmIStorageMap::GetCol().
+   *  @param params array of tagitem structure defining the desired
+   *                properties. The \a tg_Tag member can contain following values:
+   *    - CCIA_RgnDesc_Labels   return labels
+   *    - CCIA_RgnDesc_Border   return full border length
+   *    - CCIA_RgnDesc_Boundary return external border length
+   *    - CCIA_RgnDesc_Area     return size
+   *    - CCIA_RgnDesc_Dir      return direction
+   *    - CCIA_RgnDesc_Euler    return euler number
+   *    - CCIA_RgnDesc_CX       return X-Centroid
+   *    - CCIA_RgnDesc_CY       return Y-Centroid
+   *    - CCIA_RgnDesc_L1       return min axis length
+   *    - CCIA_RgnDesc_L2       return max axis length
+   *    - CCIA_RgnDesc_Moment   return central moment of order (aguments: xn,yn)
+   *
+   *  if \a params is supplied then the following properties can be computed:
+   *    - CCIA_ImgDesc_TotalDensity     return total density value of order n  (arguments: n)
+   *    - CCIA_ImgDesc_MeanDensity      return mean density value
+   *    - CCIA_ImgDesc_MinDensity       return min luminance value
+   *    - CCIA_ImgDesc_MaxDensity       return max luminance value
+   *    - CCIA_ImgDesc_MeanDensity      return mean luminance value
+   *
+   */
+   //void getRegionProperties( dm_cci(PropertyList) props, dm_param key, dm_cci(StorageMap) store,
+   //                         in cciImage refImage );
+};
+
+

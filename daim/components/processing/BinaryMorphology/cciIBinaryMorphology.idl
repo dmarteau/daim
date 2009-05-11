@@ -1,0 +1,165 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+#include "cciIImageList.idl"
+
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+interface cciIKernelFamilyContainer;
+
+[scriptable, uuid(c0f01c46-e0f0-45e5-9b58-d2832f83989b)]
+interface cciIBinaryMorphology : cciIXPCOMSupports
+{
+  [noscript,notxpcom] dmRegionRef nativeRoi();
+
+  /**
+   *  @brief Set the ROI for all operations
+   *
+   *  Usually the roi will be set as container region
+   *  for operation (it can be set to the rectangular of the original image)
+   */
+  attribute cciRegion roi;
+
+  /**
+   * @brief Apply a morphogical transformation.
+   *
+   * @param rgn the source region
+   * @param roi the region of interest (usually the the image rect)
+   * @param kernel the morphological kernel family to use.
+   * @param action type of morphological operation ( see daim_operations )
+   * @param iter number of iteration, 0 is synonmous for idempotence
+   * @param operation arithmetic operation to perform
+   * @param conditional use a conditional mask
+   *
+   * @note that applying a dilation-like operation will require a condtional mask.
+   * (otherwise idempotence would not be reached). If no conditionnal mask is
+   * specified the given roi will be used.
+   *
+   */
+  void applyKernel( in cciRegion rgn,
+                    in cciKernelFamily family,
+                    in dm_int32  action,
+                    in dm_int32  iter,
+                    in dm_int32  operation,
+                    in cciRegion conditional);
+
+  /**
+   * @brief Separate objects in a binary mask.
+   *
+   * @param rgn the region that define objects to be separated
+   * @param roi the region of interest (usually the the image rect), the
+   * roi will not be used if there is a conditional region defined.
+   * @param kernel the morphological kernel family to use.
+   * @param seeds  Use a seeds mask,
+   *
+   */
+  void doSeparation( in cciRegion rgn,
+                     in cciKernelFamily family,
+                     in cciRegion seeds);
+
+  /**
+   * @brief Compute the distance function for a binary mask.
+   *
+   * @param rgn the input mask
+   * @param roi the region of interest (usually the the image rect)
+   * @param kernel the morphological kernel family to use.
+   * @param index  Index of image buffer where the resulting
+   *               16 bit grayscale image will be stored.
+   */
+  void distanceFunc( in cciRegion rgn,
+		                 in cciKernelFamily family,
+		                 in cciIImageList buffers,
+		                 in dm_uint32 index );
+
+  /**
+   * @brief Compute kernel-based ultimate erosion of binary mask.
+   *
+   * @param rgn the input mask
+   * @param kernel the kernel family string id.
+   * @param roi region of interest
+   */
+  void ultimateErosion( in cciRegion rgn, in cciKernelFamily family );
+
+  /**
+   * @brief Compute kernel-based ultimate dilation.
+   *
+   * @param rgn the input mask
+   * @param kernel the morphological kernel family to use.
+   * @param conditional Use a conditional mask from mask buffer
+   *
+   * @note that applying a dilation-like operation will require a condtional mask.
+   * (otherwise idempotence would not be reached).
+   *
+   */
+  void ultimateDilation( in cciRegion rgn, in cciKernelFamily family, in cciRegion cond );
+
+  /**
+   *  @brief Create a binary mask representing local max of image.
+   */
+  void localMax( in cciImage image, in cciIFilterContext filterCtxt, in cciRegion result );
+
+  /**
+   *  @brief Create a binary mask by reconstruction.
+   *
+   * The reconstruction algorithm require seeds regions
+   *
+   * @param mask the mask for the region reconstruction
+   * @param connect connectivity used in the reconstruction algorithm.
+   * @param seeds the seed regions (required)
+   *
+   */
+  void reconstruct( in cciRegion mask, in short connect, in cciRegion seeds );
+
+  /**
+   * @brief Simple watershed implementation
+   */
+  void watershed( in cciImage image, in cciRegion seeds, in cciRegion result );
+};
+
+
+%{C++
+
+#define CCI_BINARYMORPHOLOGY_CID \
+{ /* DC5CD038-D9E3-4D5E-AF29-FB4F07962073 */       \
+  0xDC5CD038,                                      \
+  0xD9E3,                                          \
+  0x4D5E,                                          \
+  {0xAF, 0x29, 0xFB, 0x4F, 0x07, 0x96, 0x20, 0x73} \
+}
+
+#define CCI_BINARYMORPHOLOGY_CONTRACTID "@daim.org/processing/binary-morphology;1"
+#define CCI_BINARYMORPHOLOGY_CLASSNAME  "Binary morphology operations"
+
+%}

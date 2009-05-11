@@ -1,0 +1,93 @@
+
+
+Build Requirements :
+====================
+
+ * MacOSX 10.4+
+ * Linux
+ * Windows 2000SP4/XP/Vista with Cygwin or MSYS environment
+
+
+Notes for all platforms:
+========================
+
+The build process use standard 'make' makefiles.
+The build process can be easily driven using the setup script located at
+
+http://3liz.org/svn/daim/trunk/daim2/build-tools/scripts/daim-setup.sh
+
+Checkout the file and follow command line instructions
+
+
+Compiling DAIM on Linux:
+===========================
+
+You will need GCC v4.0 or higher.
+
+Python 2.5 or higher.
+
+Compiling DAIM on mac OSX:
+===========================
+
+Use gcc provided with the latest version of xcode.
+
+Python 2.5 or higher.
+
+
+Compiling DAIM on Windows:
+===========================
+
+You will need:
+
+Visual 8 or higher (DAIM WILL NOT compile on previous version of visual C++)
+
+Gnu make (available for windows with the Cygwin distribution http://www.cygwin.com or MSYS/MinGW configuration)
+
+A sh compatible shell (available for windows with the Cygwin distribution http://www.cygwin.com)
+
+A Python v2.5+ distribution for compiling idl files to c++ header files, 
+
+NOTE: The mozilla build system (based on MSYS) provide all the necessary requirements for building DAIM (including svn).
+It can be downloaded at:
+
+http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/ 
+
+(Use version 1.3 minimum; as previous versions has not been tested)
+
+While the stl provided with Visual should be ok I recommand using STLPort v5+ (VC8 compatible) .
+STLPort is available at http://www.stlport.com
+
+Note: The daim library do not use STL strings nor io streams, it means that you should 
+not have any link dependencies with the stlport runtime, use only headers. 
+
+Note: this is not the case with dependant libs as GDAL that use C++ stream, but GDAL is compiled
+independantly from the rest of the DAIM code base. 
+ 
+ 
+Building width minimal gdal drivers
+====================================
+
+The default I/O drivers use a static build of GDAL as back-end image loader.
+
+Building width a pre-installed gdal distribution
+======================================
+
+By default, daim use a custom build of gdal
+If you want use a preinstalled gdal distribution
+
+In daim2/src/config/setup.mk add/change the following line:
+
+GDAL_INTERNAL=0
+
+Set DM_GDAL_DLL=0  f you plan to link statically (the default) to the GDAL code. 
+
+Set GDAL_LIB and GDAL_INCLUDE environement variables to the correct paths.
+
+Gdal driver will be dynamically linked with the pre-installed gdal distribution
+
+
+
+
+
+
+

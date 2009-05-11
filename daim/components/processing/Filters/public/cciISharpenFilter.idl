@@ -1,0 +1,71 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "cciIImageFilter.idl"
+
+interface cciIFilterContext;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Sharpen image filter
+ */
+[scriptable, uuid(27289983-0724-400e-ac8e-803b95bfac9c)]
+interface cciISharpenFilter : cciIImageFilter
+{
+  attribute unsigned long radius;
+
+  attribute double strength;
+
+  [noscript] void doSharpen( in dmImagePtr image, in dmRegionPtr rgn,
+                             in unsigned long radius,
+                             in double strength,
+                             in cciIFilterContext filterCtxt );
+};
+
+
+
+%{C++
+
+#define CCI_SHARPENFILTER_CID \
+{ /* DA58FF49-E837-4C09-AF27-9AEF25366B1B */       \
+  0xDA58FF49,                                      \
+  0xE837,                                          \
+  0x4C09,                                          \
+  {0xAF, 0x27, 0x9A, 0xEF, 0x25, 0x36, 0x6B, 0x1B} \
+}
+
+#define CCI_SHARPENFILTER_CONTRACTID "@daim.org/filters/sharpen;1"
+#define CCI_SHARPENFILTER_CLASSNAME  "Sharpen filter"
+
+%}

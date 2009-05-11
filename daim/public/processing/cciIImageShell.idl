@@ -1,0 +1,276 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciISurface;
+interface cciIImageList;
+interface cciIImageFilter;
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Image shell utility interface
+ *
+ * The image shell provide facility methods for loading/saving images
+ * and applying filters
+ */
+[scriptable, uuid(FE8496B8-D7F8-4C19-983C-FE9B0CB21183)]
+interface cciIImageShell : cciIXPCOMSupports
+{
+  [noscript] void lock(  in dmImageDataRef imData, in dmRectPtr rect );
+  [noscript] void unLock();
+
+  [noscript] void lockAlpha(  in dmImageDataRef imData, in dmRectPtr rect );
+  [noscript] void unLockAlpha();
+
+  /*
+   * Image structure
+   */
+
+  /**
+   * @return the width of the image
+   */
+  readonly attribute unsigned long width;
+
+  /**
+   * @return the height of the image
+   */
+  readonly attribute unsigned long height;
+
+  /**
+   * @return the pixel format of the image
+   */
+  readonly attribute EPixelFormat pixelFormat;
+
+  /**
+   * @return true if an alpha channel is available
+   */
+  readonly attribute boolean hasAlpha;
+
+  /*
+   * Initialisation
+   */
+
+  /**
+   * create
+   *
+   * Create a new (empty) image
+   */
+  void create( in unsigned long width, in unsigned long height, in EPixelFormat format, in dm_bool createAlpha );
+
+  /**
+   * loadBuffer
+   *
+   * Load an image from an image list buffer
+   * @param index the index of the buffer in the imagelist
+   * @param share if true, the image content is not copied and is shared with the buffer.
+   *
+   * When the content is shared, all changes that occur is also made to the buffer content.
+   */
+  void loadBuffer( in cciIImageList imagelist, in unsigned long index, in boolean share );
+
+  /**
+   * @brief Load an image directly from a external surface
+   *
+   * @param rgn      the rgn that define the coordinates of the region that is to be retrieved.
+   * @param getAlpha if true, the alpha channel is also retrieved.
+   *
+   * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
+   */
+  void loadSurfaceBits( in cciISurface surface, in cciRegion rgn, in boolean getAlpha );
+
+  /**
+   * @brief Save an image directly to an external surface
+   *
+   * @param rgn      the rgn that define the coordinates of the region that is to be retrieved.
+   * @param getAlpha if true, the alpha channel is also saved.
+   *
+   * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
+   */
+  void writeSurfaceBits( in cciISurface surface, in cciRegion rgn, in boolean getAlpha );
+
+  /**
+   * loadImage
+   *
+   * Load an image from \a path
+   * @param path     the path of the image on the disk
+   * @param getAlpha if true, the alpha channel is also retrieved.
+   */
+  void loadImage( in string path, in boolean getAlpha );
+
+  /**
+   * saveImage
+   *
+   * Load an image from \a path
+   * @param path the path of the image on the disk
+   * @param type the mime type of the image on disk or the name of the driver to use.
+   */
+  void saveImage( in string path, in string type, in string options );
+
+  /**
+   * clear
+   *
+   * Clear all internal buffer
+   */
+  void clear();
+
+  /**
+   * Access to the current opened surface
+   */
+  readonly attribute cciISurface currentSurface;
+
+  /**
+   * If true, preserve the meta data (like EXIF metadata)
+   * from the last opened image or surface.
+   *
+   * Metadata are preserved on copy/clone operations and when saving
+   * content with saveImage()
+   *
+   * If false, no metadata are preserved.
+   *
+   * Default value is true.
+   */
+  attribute boolean preserveMetaData;
+
+  /*
+   * Copy operations
+   */
+
+  /**
+   * clone
+   *
+   * Duplicate the current shell object
+   */
+  cciIImageShell clone();
+
+  /**
+   * createCopy
+   *
+   * Create a copy of a specified region of the current image
+   *
+   * @param rgn    the region of the image to be copied (can be null)
+   * @param format the format of the new image (can be dmPixelFormatUndefined)
+   */
+  cciIImageShell createCopy( in cciRegion rgn, in EPixelFormat format );
+
+  /**
+   * resample
+   *
+   * Resample image according to the the size of the \a dest image
+   *
+   * @param dest   the destinatio image to copy the resampled data to
+   * @param rgn    the region of the image to be resampled (can be null)
+   * @param mode   the resampling mode (1 : nearest neighbour, 2 : bilinear)
+   */
+  void resample( in cciImage dest, in cciRegion rgn, in unsigned long mode,
+                 in dm_bool getAlpha );
+
+  /*
+   * Compositing
+   */
+
+  /**
+   * getCopy
+   *
+   * Copy a region \a roi of the given \a srcImage a location \a dstX \a dstY of
+   * the current image.
+   *
+   * @param srcImage the image source
+   * @param roi      the region of the image to be copied (can be null)
+   * @param format   the format of the new image (can be dmPixelFormatUndefined)
+   * @param mode     the arithmetic/logical operation to be performed between source and destination
+   */
+  void getCopy( in cciImage srcImage, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY,
+                in dm_uint32 mode);
+
+  /**
+   * blend
+   *
+   * Perform a blend copy a region \a roi of the given \a srcImage a location \a dstX \a dstY of
+   * the current image.
+   *
+   * @param srcImage the image source
+   * @param percent  the blend factor, must be a number between 0 and 1
+   * @param roi      the region of the image to be copied (can be null)
+   * @param format   the format of the new image (can be dmPixelFormatUndefined)
+   */
+  void blend( in cciImage srcImage, in dm_real percent, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY );
+
+  /*
+   * Buffer storage
+   */
+
+  /**
+   * copyToBuffer
+   *
+   * Duplicate the content of the image to the buffer \a index of \a imagelist
+   *
+   * @see moveToBuffer
+   *
+   */
+  void copyToBuffer( in cciIImageList imagelist, in unsigned long index, in cciRegion rgn,
+                     in EPixelFormat format);
+
+  /**
+   * moveToBuffer
+   *
+   * Move the content of the image to the buffer \a index of \a imagelist
+   * Unlike copyToBuffer, image data are not duplicated and are shared between the image shell
+   * and the image list object.
+   *
+   * @see copyToBuffer
+   */
+  void moveToBuffer( in cciIImageList imagelist, in unsigned long index );
+
+  /**
+   * Apply generic Filter operation to current image
+   */
+  void applyFilter( in cciIImageFilter filter, in cciRegion rgn );
+
+  /*
+   * Filter context
+   */
+
+  readonly attribute cciIFilterContext filterContext;
+
+  void saveFilterContext( in cciIFilterContext filterCtxt, in cciRegion rgn );
+
+  void restoreFilterContext( in cciIFilterContext filterCtxt );
+
+};
+
+

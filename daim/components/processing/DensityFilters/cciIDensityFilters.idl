@@ -1,0 +1,120 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciIHistograms;
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Manipulate image density values.
+ */
+
+[scriptable, uuid(eb775771-89bd-4d23-b5ba-0d7ec9d4d838)]
+interface cciIDensityFilters : cciIXPCOMSupports
+{
+  /**
+   * @brief Apply an histogram extension to the pixel values
+   *
+   *  The extension is performed from the range set by the SetRange()
+   *  method to the range specified by the \a min and the \a max parameters.
+   */
+  void extend( in cciImage image, in cciRegion roi, in dm_real rmin, in dm_real rmax,
+               in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Apply an 8 bits histogram transformation to the pixels
+   *  values of the image parameter.
+   */
+  void transform( in cciImage image, in cciRegion roi,
+                  [array,size_is(count)] in unsigned long data, in unsigned long count,
+                  in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Apply an equalization to the pixels values of the image
+   *  parameter.
+   */
+  void equalize( in cciImage image, in cciRegion roi,
+                 in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Apply gamma correction to image
+   */
+  void gammaCorrection( in cciImage image, in cciRegion roi, in dm_real  gamma,
+                        in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Apply brightness-contrast correction to image
+   *
+   *  @param image            an image to apply correction on
+   *  @param brightness       the brightness parameter, between 0 et 1
+   *  @param contrast         the contrast parameter, between 0 et 1
+   *  @param useContextBuffer if true, use the context buffer as input data
+   */
+  void brightnessContrast( in cciImage image, in cciRegion roi, in dm_real brightness, in dm_real contrast,
+                           in boolean useContextBuffer, in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Scale pixels values between minval and maxval
+   */
+  void scale( in cciImage image, in cciRegion roi, in dm_real minval, in dm_real maxval,
+              in cciIFilterContext filterCtxt );
+
+  /**
+   *  @brief Apply an histogram specification using a stored histogram
+   *  @param index the histogram index
+   */
+  void specify(in cciImage image, in cciRegion roi, in cciIHistograms histograms,  in dm_uint32 index,
+               in cciIFilterContext filterCtxt );
+
+};
+
+
+%{C++
+
+#define CCI_DENSITYFILTERS_CID \
+{ /* 4DAC4666-E0BC-4926-9D24-275F893B5B1E */       \
+  0x4DAC4666,                                      \
+  0xE0BC,                                          \
+  0x4926,                                          \
+  {0x9D, 0x24, 0x27, 0x5F, 0x89, 0x3B, 0x5B, 0x1E} \
+}
+
+#define CCI_DENSITYFILTERS_CONTRACTID "@daim.org/processing/density-filters;1"
+#define CCI_DENSITYFILTERS_CLASSNAME  "Histogram filters and corrections"
+
+%}

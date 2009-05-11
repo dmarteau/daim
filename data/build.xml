@@ -1,0 +1,31 @@
+<project name="kernel_builder" default="All" basedir="..">
+
+  <!-- Note that we are expecting to be located in a subfolder of the source tree -->
+  <property name="wspdir" value="${basedir}/.."/>
+
+  <!-- get kernel builder -->
+  <import file="${basedir}/build/ant/build-kernel.xml"/>
+
+  <!-- kernel dir -->
+  <property name="kerneldir" location="${basedir}/data/"/>
+  		
+  <target name="All"  description="Generate kernel C++ header">
+  	<antcall target="generateHeader">
+      <param name="inputFile"    value="${kerneldir}/Morpho4c.xml"/>
+      <param name="outputFile"   value="${kerneldir}/Morpho4c.h"/>
+  	</antcall>
+  	<antcall target="generateHeader">
+      <param name="inputFile"    value="${kerneldir}/Morpho8c.xml"/>
+      <param name="outputFile"   value="${kerneldir}/Morpho8c.h"/>
+  	</antcall>
+  	<antcall target="generateHeader">
+      <param name="inputFile"    value="${kerneldir}/Edges.xml"/>
+      <param name="outputFile"   value="${kerneldir}/Edges.h"/>
+  	</antcall>
+  	<antcall target="generateHeader">
+      <param name="inputFile"    value="${kerneldir}/LowPass.xml"/>
+      <param name="outputFile"   value="${kerneldir}/LowPass.h"/>
+  	</antcall>
+  </target> 
+	
+</project>

@@ -1,0 +1,99 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Create binary mask from thresholding methods
+ */
+
+[scriptable, uuid(d6cd818c-93f2-4a81-9527-bea9da498de2)]
+interface cciIThreshold : cciIXPCOMSupports
+{
+ /**
+  * @brief Create a binary mask corresponding to the pixels values
+  * between \a rmin and \a rmax.
+  */
+  void threshold( in cciImage image, in cciRegion roi, in cciRegion dstRgn,
+                  in dm_real rmin, in dm_real rmax, in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Create a binary mask corresponding to the pixels values corresponding
+   *  to the given RGB value neighborhood.
+   *
+   *  The neighborhood is given by the 'ellipsoid' determined by the three
+   *  parameters \a rradius \a gradius \a bradius.
+   *  Distance are computed using absolute norm.
+   *  \Note This function applies only to RGB images
+   */
+  void RGBThreshold( in cciImage image, in cciRegion roi, in cciRegion dstRgn,
+                     in dm_uint16 red, in dm_uint16 green, in dm_uint16 blue,
+                     in dm_real rradius, in dm_real gradius, in dm_real bradius );
+
+  /**
+   *  @brief Create a binary mask corresponding to hysteresis
+   *  thresholding operation
+   *
+   *  The mask is computed from an hysteresis threshold using \a rmin as the lower
+   *  threshold and \a rmax as the upper threshold.
+   */
+  void hysteresisThreshold(in cciImage image, in cciRegion roi, in cciRegion dstRgn,
+                           in dm_real rmin, in dm_real rmax, in dm_uint32 connect,
+                           in cciIFilterContext filterCtxt );
+
+};
+
+
+
+%{C++
+
+#define CCI_THRESHOLD_CID \
+{ /* 2BC86CFD-0AAB-4EA9-8EE4-BD70A8D3FAA6 */       \
+  0x2BC86CFD,                                      \
+  0x0AAB,                                          \
+  0x4EA9,                                          \
+  {0x8E, 0xE4, 0xBD, 0x70, 0xA8, 0xD3, 0xFA, 0xA6} \
+}
+
+#define CCI_THRESHOLD_CONTRACTID "@daim.org/processing/threshold;1"
+#define CCI_THRESHOLD_CLASSNAME  "Thresholding utilities"
+
+%}
+
+

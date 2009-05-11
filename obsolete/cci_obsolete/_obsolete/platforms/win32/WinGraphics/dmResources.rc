@@ -1,0 +1,32 @@
+#include "dmResources.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_ZOOMOUT             CURSOR  DISCARDABLE     "res\\zoom_out.cur"
+IDC_ZOOMIN              CURSOR  DISCARDABLE     "res\\zoom_in.cur"
+IDC_SELECTANCHOR        CURSOR  DISCARDABLE     "res\\select.cur"
+IDC_GRABBING            CURSOR  DISCARDABLE     "res\\grabbing.cur"
+IDC_GRAB                CURSOR  DISCARDABLE     "res\\grab.cur"
+IDC_COPY                CURSOR  DISCARDABLE     "res\\copy.cur"
+IDC_CELL                CURSOR  DISCARDABLE     "res\\cell.cur"
+IDC_ARROWWESTPLUS       CURSOR  DISCARDABLE     "res\\arrow_west_plus.cur"
+IDC_ARROWWEST           CURSOR  DISCARDABLE     "res\\arrow_west.cur"
+IDC_ARROWSOUTHPLUS      CURSOR  DISCARDABLE     "res\\arrow_south_plus.cur"
+IDC_ARROWSOUTH          CURSOR  DISCARDABLE     "res\\arrow_south.cur"
+IDC_ARROWNORTHPLUS      CURSOR  DISCARDABLE     "res\\arrow_north_plus.cur"
+IDC_ARROWNORTH          CURSOR  DISCARDABLE     "res\\arrow_north.cur"
+IDC_ARROWEASTPLUS       CURSOR  DISCARDABLE     "res\\arrow_east_plus.cur"
+IDC_ARROWEAST           CURSOR  DISCARDABLE     "res\\arrow_east.cur"
+IDC_ALIAS               CURSOR  DISCARDABLE     "res\\aliasb.cur"
+IDC_DMCUT               CURSOR  DISCARDABLE     "res\\dmcut.cur"
+IDC_DMMASKS             CURSOR  DISCARDABLE     "res\\dmmasks.cur"
+IDC_DMCROSS             CURSOR  DISCARDABLE     "res\\dmcross.cur"
+IDC_DMROI               CURSOR  DISCARDABLE     "res\\dmroi.cur"
+IDC_DMROIPLUS           CURSOR  DISCARDABLE     "res\\dmroiplus.cur"
+IDC_DMROIMINUS          CURSOR  DISCARDABLE     "res\\dmroiminus.cur"
+IDC_DMCOLORPICKER       CURSOR  DISCARDABLE     "res\\dmcolorpicker.cur"
+
+/////////////////////////////////////////////////////////////////////////////

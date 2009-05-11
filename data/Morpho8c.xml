@@ -1,0 +1,188 @@
+<?xml version="1.0"?> 
+<Morpho8c title="Morphologie math�matique (8)" usage="morphomath">
+<family name="L(8)" title="Homotopic Squeleton" x="1" y="1" width="3" height="3">
+  <kernel name="L1">
+    -1,-1,-1,
+     0, 1, 0,
+     1, 1, 1
+  </kernel>
+  <kernel name="L2">
+     0,-1,-1,
+     1, 1,-1,
+     0, 1, 0
+  </kernel>
+  <kernel name="L3">  1, 0,-1, 1, 1,-1, 1, 0,-1 </kernel>
+  <kernel name="L4">  0, 1, 0, 1, 1,-1, 0,-1,-1 </kernel>
+  <kernel name="L5">  1, 1, 1, 0, 1, 0,-1,-1,-1 </kernel>
+  <kernel name="L6">  0, 1, 0,-1, 1, 1,-1,-1, 0 </kernel>
+  <kernel name="L7"> -1, 0, 1,-1, 1 ,1,-1, 0, 1 </kernel>
+  <kernel name="L8"> -1,-1, 0,-1, 1, 1, 0, 1, 0 </kernel>
+</family>
+<family name="D(8)" title="Homotopique Marker" x="1" y="1" width="3" height="3">
+  <kernel name="D1">
+    -1, 0, 0,
+    -1, 1, 1,
+    -1, 0, 0 
+  </kernel>
+  <kernel name="D2"> 
+    -1,-1, 0,
+    -1, 1, 0,
+     0, 0, 1
+  </kernel>
+  <kernel name="D3">
+    -1,-1,-1, 
+     0, 1, 0, 
+     0, 1, 0 
+  </kernel>
+  <kernel name="D4"> 
+     0,-1,-1, 
+     0, 1,-1, 
+     1, 0, 0
+  </kernel>
+  <kernel name="D5">
+     0, 0,-1, 
+     1, 1,-1, 
+     0, 0,-1 
+  </kernel>
+  <kernel name="D6"> 
+     1, 0, 0, 
+     0, 1,-1,
+     0,-1,-1 
+  </kernel>
+  <kernel name="D7"> 
+     0, 1, 0, 
+     0, 1, 0,
+    -1,-1,-1 
+  </kernel>
+  <kernel name="D8"> 
+     0, 0, 1, 
+    -1, 1, 0,
+    -1,-1, 0 
+  </kernel>
+</family>
+<family name="C(8)" title="Convex hull" x="1" y="1" width="3" height="3">
+  <kernel name="C1"> 
+     0, 1, 0, 
+     1,-1, 0, 
+     0, 1, 0 
+  </kernel>
+  <kernel name="C2"> 
+     0, 1, 0,
+     1,-1, 0,
+     1, 0, 0 
+  </kernel>
+  <kernel name="C3"> 
+     0, 1, 0, 
+     1,-1, 1, 
+     0, 0, 0 
+  </kernel>
+  <kernel name="C4"> 
+     1, 1, 0, 
+     0,-1, 1, 
+     0, 0, 0 
+   </kernel>
+  <kernel name="C5"> 
+     0, 1, 0, 
+     0,-1, 1, 
+     0, 1, 0 
+  </kernel>
+  <kernel name="C6"> 
+     0, 0, 1, 
+     0,-1, 1, 
+     0, 1, 0 
+  </kernel>
+  <kernel name="C7"> 
+     0, 0, 0, 
+     1,-1, 1, 
+     0, 1, 0 
+  </kernel>
+  <kernel name="C8"> 
+     0, 0, 0, 
+     1,-1, 0, 
+     0, 1, 1 
+  </kernel>
+</family>
+<family name="E(8)" title="Extremal Points" x="1" y="1" width="3" height="3">
+  <kernel name="E1">
+     0, 1, 0,
+    -1, 1,-1,
+    -1,-1,-1 
+  </kernel>
+  <kernel name="E2"> 
+    -1, 0, 1,
+    -1, 1, 0,
+    -1,-1,-1 
+  </kernel>
+  <kernel name="E3"> 
+    -1,-1, 0,
+    -1, 1, 1,
+    -1,-1, 0 
+  </kernel>
+  <kernel name="E4"> 
+    -1,-1,-1,
+    -1, 1, 0,
+    -1, 0, 1
+   </kernel>
+  <kernel name="E5">
+    -1,-1,-1,
+    -1, 1,-1,
+     0, 1, 0 
+   </kernel>
+  <kernel name="E6">
+    -1,-1,-1,
+     0, 1,-1, 
+     1, 0,-1 
+   </kernel>
+  <kernel name="E7">
+     0,-1,-1,
+     1, 1,-1,
+     0,-1,-1
+  </kernel>
+  <kernel name="E8">
+     1, 0,-1,
+     0, 1,-1,
+    -1,-1,-1
+  </kernel>
+</family>
+<family name="E(4)" title="Isolated/Extremal Points"  x="1" y="1" width="3" height="3">
+  <kernel name="E1"> 
+    0, 0, 0,
+   -1, 1,-1,
+   -1,-1,-1 
+  </kernel>
+  <kernel name="E2">
+   -1,-1, 0,
+   -1, 1, 0,
+   -1,-1, 0 
+   </kernel>
+  <kernel name="E3">  
+   -1,-1,-1,
+   -1, 1,-1,
+    0, 0, 0 
+  </kernel>
+  <kernel name="E4"> 
+    0,-1,-1,
+    0, 1,-1,
+    0,-1,-1 
+  </kernel>
+</family>
+<family name="I(8)" title="Isolated points" x="1" y="1" width="3" height="3">
+  <kernel> 
+    -1,-1,-1,
+    -1, 1,-1,
+    -1,-1,-1 
+  </kernel>
+</family>
+<family name="H(8)" title="Ball 3x3" x="1" y="1" width="3" height="3">
+  <kernel name="H"> 1,1,1,1,1,1,1,1,1 </kernel>
+</family>
+<family name="B(8)" title="Ball 5x5" x="2" y="2" width="5" height="5">
+  <kernel>  
+     0,1,1,1,0, 
+     1,1,1,1,1,
+     1,1,1,1,1,
+     1,1,1,1,1,
+     0,1,1,1,0,
+  </kernel>
+</family>
+</Morpho8c>

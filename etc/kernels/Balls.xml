@@ -1,0 +1,38 @@
+<!-- Definition des noyaux pour la morphologie mathématique -->
+<Balls title="Boules morphologiques" usage="convolution|morphomath">
+<family name="B(5x5)" title="Boule R=2" x="2" y="2" width="5" height="5">
+  <kernel name="B5">  
+     0,1,1,1,0, 
+     1,1,1,1,1
+     1,1,1,1,1
+     1,1,1,1,1
+     0,1,1,1,0 
+  </kernel>
+</family>
+<family name="B(7x7)" title="Boule R=3" x="3" y="3" width="7" height="7">
+  <kernel name="B7">  
+     0,0,1,1,1,0,0, 
+     0,1,1,1,1,1,0,
+     1,1,1,1,1,1,1,
+     1,1,1,1,1,1,1, 
+     1,1,1,1,1,1,1, 
+     0,1,1,1,1,1,0, 
+     0,0,1,1,1,0,0, 
+  </kernel>
+</family>
+<family name="B(11x11)" title="Boule R=4" x="5" y="5" width="11" height="11">
+  <kernel name="B11">  
+     0,0,0,1,1,1,1,1,0,0,0, 
+     0,0,1,1,1,1,1,1,1,0,0, 
+     0,1,1,1,1,1,1,1,1,1,0, 
+     1,1,1,1,1,1,1,1,1,1,1,
+     1,1,1,1,1,1,1,1,1,1,1,
+     1,1,1,1,1,1,1,1,1,1,1, 
+     1,1,1,1,1,1,1,1,1,1,1, 
+     1,1,1,1,1,1,1,1,1,1,1, 
+     0,1,1,1,1,1,1,1,1,1,0, 
+     0,0,1,1,1,1,1,1,1,0,0, 
+     0,0,0,1,1,1,1,1,0,0,0, 
+  </kernel>
+</family>
+</Balls>

@@ -1,0 +1,71 @@
+#ifndef dmMatrixNLFit_h
+#define dmMatrixNLFit_h
+
+/* ::: BEGIN LICENSE BLOCK:::
+ *
+ * Copyright (c) 2004-2005 David Marteau
+ *
+ * This file is part of the DAIM Image Processing Library (DAIM library)
+ *
+ * The DAIM library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License (LGPL)
+ * as published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * The DAIM library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the DAIM library; see the file LICENSE.  If
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place -
+ * Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  ::: END LICENSE BLOCK::: 
+ */
+
+//--------------------------------------------------------
+// File   : dmMatrixNLFit.h
+// Date   : 03/2006
+// Author : David Marteau
+//--------------------------------------------------------
+#include "dmMatrix.h"
+#include "dmRowCol.h"
+
+BEGIN_MATRIX()
+//------------------------------------------------------------------------
+// Non Linear Fit using Levenberg-Marquard method
+//------------------------------------------------------------------------
+dm_matrix_t dmMatrixNLFit( dmMatrixRowCol& P, 
+                           const dmMatrixRowCol& Y, 
+                           const dmMatrixRowCol& Sig, 
+                           dmRectMatrix& Covar,
+                           dmRectMatrix& Curv,
+                           dm_matrix_t (*funcs)(int,dmMatrixRowCol&,dmMatrixRowCol&,void*), 
+                           void* _UserData,
+                           int*  _Frozen   = NULL,
+                           int   _MaxIters = 100 );
+                           
+//------------------------------------------------------------------------------
+// Fit with a sum of nGauss gaussians of the form
+// Bk * exp[ - (( x-Ek )/Gk)² ] 
+// nGauss is the number of summed Gaussians
+// The Parameters must be 3 times the number of gaussians
+// and the returned parameters are stored int the following sequences:
+// Bk, Ek , Gk
+//------------------------------------------------------------------------------
+dm_matrix_t dmMatrixNLGaussFit( int nGauss,
+                           dmMatrixRowCol& P, 
+                           const dmMatrixRowCol& X, 
+                           const dmMatrixRowCol& Y, 
+                           const dmMatrixRowCol& S, 
+                           dmRectMatrix& Covar,
+                           dmRectMatrix& Curv,
+                           int*  _frozen   = NULL,
+                           int   _MaxIters = 100 );
+                           
+//------------------------------------------------------------------------
+END_MATRIX()
+
+#endif // dmMatrixNLFit_h

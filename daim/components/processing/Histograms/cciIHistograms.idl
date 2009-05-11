@@ -1,0 +1,85 @@
+
+#include "ccidaim.idl"
+
+interface cciIColorSpace;
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Manipulate density histograms.
+ */
+[scriptable, uuid(4034c0f8-b28b-4cea-9a24-dcb7cd1fc64e)]
+interface cciIHistograms : cciIXPCOMSupports
+{
+  /** Flags Constants */
+  const unsigned long AUTORANGE = 1;
+
+  attribute unsigned long scanFlags;
+
+  /**
+   * @brief Set the number of channels (i.e histograms)
+   **/
+  attribute unsigned long numChannels;
+
+  /**
+   *  @brief Scan the image parameter and build the corresponding
+   *  histogram.
+   *
+   *  The histogram is build from 8 bits quantized pixel values of the
+   *  original image. For scalar valued pixel image, the resulting histogram
+   *  will be associated to the \a index channel.
+   *
+   *  If flags is set to \a AUTORANGE, the range
+   *  is computed from the min and the max of the image pixel values.
+   */
+  void scan( in cciImage image,  in cciRegion roi, in unsigned long index,
+             in cciIFilterContext filterContext, in cciIColorSpace colorspace,
+             in dm_uint32 channel );
+
+  /**
+   * @brief Get the 256 histogram values for the channel specified
+   *  by the \a index parameter.
+   */
+  void getHistogram( in unsigned long index, [array,size_is(count)] inout unsigned long data,
+                     in unsigned long count );
+
+  /**
+   * @brief Compute the density bins distributed over 256 values
+   * according to the range returned by the filter context
+   */
+  void getDensityBins( in cciIFilterContext filterContext, [array,size_is(count)] inout dm_real data,
+                       in unsigned long count );
+
+  /**
+   *  @brief Compute optimal threshold for a bimodal histogram distribution
+   *
+   *  @param index      index of a precomputed histogram
+   *  @param background an initial guess for the background value
+   *  @param value      return value
+   */
+  dm_real getBimodalThreshold( in unsigned long index, in dm_real background,
+                               in cciIFilterContext filterContext );
+
+  [noscript,notxpcom] dmHistogramPtr getNativeHistogram(in unsigned long index);
+
+};
+
+
+
+%{C++
+
+#define CCI_HISTOGRAMS_CID \
+{ /* 5779CE4F-30EB-487B-8206-B5393F599F4A */       \
+  0x5779CE4F,                                      \
+  0x30EB,                                          \
+  0x487B,                                          \
+  {0x82, 0x06, 0xB5, 0x39, 0x3F, 0x59, 0x9F, 0x4A} \
+}
+
+#define CCI_HISTOGRAMS_CONTRACTID "@daim.org/processing/histograms;1"
+#define CCI_HISTOGRAMS_CLASSNAME  "Histograms manipulations"
+
+%}

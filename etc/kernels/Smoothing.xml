@@ -1,0 +1,41 @@
+<!-- Definition des noyaux de convolutions relatifs au moyennage -->
+<Smooth title="Filtres moyenneurs" usage="convolution">
+<family name="Gauss(8)-Isotrope" x="1" y="1" width="3" height="3">
+  <kernel>  
+    1, 1, 1,
+    1, 2, 1,
+    1, 1, 1
+  </kernel>
+</family>
+<family name="Gauss(8)" x="1" y="1" width="3" height="3">
+  <kernel>  
+    1, 2, 1, 
+    2, 4, 2, 
+    1, 2, 1
+ </kernel>
+</family>
+<family name="Gauss(4)" x="1" y="1" width="3" height="3">
+  <kernel>  
+    0, 1, 0, 
+    1, 2, 1, 
+    0, 1, 0 
+  </kernel>
+</family>
+<family name="Gauss5x5" x="2" y="2" width="5" height="5">
+  <kernel>
+    1,  4,  6,  4,  1,
+    4, 16, 24, 16,  4,
+    6, 24, 36, 24,  6,
+    4, 16, 24, 16,  4,
+    1,  4,  6,  4,  1
+  </kernel>
+</family>
+<!-- version separable -->
+<family name="Gauss5x5-S" x="2" y="2" width="5" height="5">
+  <kernel x="0" y="2" width="1" height="5"> 1,  4,  6,  4,  1 </kernel>
+  <kernel x="2" y="0" width="5" height="1"> 1,  4,  6,  4,  1 </kernel>   
+</family>
+<family name="Zoom2x2" x="0" y="0" width="2" height="2">
+  <kernel> 1, 1, 1, 1 </kernel>   
+</family>
+</Smooth>

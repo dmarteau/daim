@@ -1,0 +1,137 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciIImageList;
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Interface for image arithmetic
+ */
+[scriptable, uuid(67b2c84c-88d4-4867-ae62-7677d596dec6)]
+interface cciIImageMath : cciIXPCOMSupports
+{
+  /**
+   * @brief Perform a arithmetical operation
+   *
+   * The operation is performed between the lhs image associated
+   * @param lhsimage  image as lhs operand (the content will be replaced by the result of the operation).
+   * @param rhsimage  image as rhs operand (unchanged).
+   * @param roi       the region of interest
+   * @param operation the operation  to be performed
+   * @param context   a filter context object (mandatory)
+   * @param x         The x destination of the region to be copied.
+   * @param y         The y destination of the region to be copied.
+   *
+   * If needed, the rhs image will be converted into the type of the lhs image.
+   */
+  void doImageMath( in cciImage lhsImage, in cciImage rhsImage, in cciRegion roi,
+                    in dm_int32 x, in dm_int32 y, in dm_int32 operation,
+                    in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Accumulate pixels values from imagelist
+   *
+   * This method will accumulate the pixels of all valid images
+   * in the imagelist. The result will be stored in \a dstImage.
+   * If \a dstImage is set to null, a new image will be created
+   * in the internal context buffer.
+   */
+  void accumulate( in cciIImageList imagelist, in cciImage dstImage, in cciRegion roi,
+                   in dm_bool normalize, in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Apply arithmetical operation between two imagelists.
+   *
+   * This method will apply the given \a operation between
+   * images at index \a i for all buffers in the \a lhsimages list
+   * parameter and the buffer held by the \a params object.
+   * Images in the \a imagelist passed in argument will be considered
+   * as the left hand side of the operation. If there is no valid
+   * image in both imagelist for a given index, the first valid image
+   * found will be copied into the lhs buffer. If no valid image
+   * exists in both buffer then the corresponding buffer will be cleared.
+   */
+  void doImageListMath( in cciIImageList lhsimages,
+                        in cciIImageList rhsimages,
+                        in cciRegion roi,
+                        in dm_int32 operation,
+                        in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Add/mutliply by constants
+   */
+  void addMul( in cciImage image, in cciRegion roi, in dm_real addval, in dm_real mulval,
+               in cciIFilterContext filterCtxt );
+
+  /**
+   * @brief Blend images
+   *
+   * The operation copy the region specified by the \a roi
+   * from \a srcImage to the (\a x,\a y) location in \a dstImage
+   *
+   * @param srcImage
+   * @param dstImage
+   * @param percent   the value of the blending , must be a value beetween 0 and 1
+   * @param index     the index of the image buffer
+   * @param x         The x destination of the region to be copied.
+   * @param y         The y destination of the region to be copied.
+   */
+  void blend( in cciImage srcImage, in cciImage dstImage, in dm_real percent,  in cciRegion roi,
+              in dm_int32 x, in dm_int32 y,
+              in cciIFilterContext filterCtxt );
+
+};
+
+
+
+%{C++
+
+#define CCI_IMAGEMATH_CID \
+{ /* D917C636-2585-4A0E-8DBF-742BA3BBAB3C */       \
+  0xD917C636,                                      \
+  0x2585,                                          \
+  0x4A0E,                                          \
+  {0x8D, 0xBF, 0x74, 0x2B, 0xA3, 0xBB, 0xAB, 0x3C} \
+}
+
+#define CCI_IMAGEMATH_CONTRACTID "@daim.org/processing/imagemath;1"
+#define CCI_IMAGEMATH_CLASSNAME  "Image arithmetic"
+
+%}
+

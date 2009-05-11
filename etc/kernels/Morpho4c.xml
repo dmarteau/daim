@@ -1,0 +1,83 @@
+<!-- Definition des noyaux pour la morphologie mathématique -->
+<Morpho4c title="Morphologie mathématique (4)" usage="morphomath">
+<family name="L(4)" title="Squelette homotopique" x="1" y="1" width="3" height="3">
+  <kernel name="L1"> 
+    -1,-1,-1, 
+     0, 1, 0, 
+     1, 1, 1 
+  </kernel>
+  <kernel name="L2"> 
+     0,-1, 0, 
+     1, 1,-1,
+     1, 1, 0 
+  </kernel>
+  <kernel name="L3"> 
+     1, 0,-1, 
+     1, 1,-1,
+     1, 0,-1 
+  </kernel>
+  <kernel name="L4">  
+     1, 1, 0,
+     1, 1,-1, 
+     0,-1, 0 
+  </kernel>
+  <kernel name="L5">
+     1, 1, 1,
+     0, 1, 0,
+    -1,-1,-1 
+  </kernel>
+  <kernel name="L6">
+     0, 1, 1,
+    -1, 1, 1,
+     0,-1, 0 
+  </kernel>
+  <kernel name="L7"> 
+    -1, 0, 1,
+    -1, 1 ,1,
+    -1, 0, 1
+  </kernel>
+  <kernel name="L8">
+     0,-1, 0,
+    -1, 1, 1,
+     0, 1, 1 
+  </kernel>
+</family>
+
+<family name="I(4)" title="Points isolés"  x="1" y="1" width="3" height="3">
+  <kernel name="I">  
+    0,-1, 0,
+   -1, 1,-1,
+    0,-1, 0 
+  </kernel>
+</family>
+
+<family name="E(4)" title="Points extrêmes"  x="1" y="1" width="3" height="3">
+  <kernel name="E1"> 
+    0, 1, 0,
+   -1, 1,-1,
+    0,-1, 0 
+  </kernel>
+  <kernel name="E2">
+    0,-1, 0,
+   -1, 1, 1,
+    0,-1, 0 
+   </kernel>
+  <kernel name="E3">  
+    0,-1, 0,
+   -1, 1,-1,
+    0, 1, 0 
+  </kernel>
+  <kernel name="E4"> 
+    0,-1,-1,
+    1, 1,-1,
+    0,-1,-1 
+  </kernel>
+</family>
+<family name="H(4)" title="Boule 3x3"  x="1" y="1" width="3" height="3">
+  <kernel name="H"> 
+    0,1,0,
+    1,1,1,
+    0,1,0 
+  </kernel>
+</family>
+</Morpho4c>

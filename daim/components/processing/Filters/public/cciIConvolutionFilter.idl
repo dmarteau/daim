@@ -1,0 +1,94 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com);
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "cciIImageFilter.idl"
+
+interface cciIFilterContext;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+interface cciIKernelFamilyContainer;
+
+/**
+ * @ingroup daim_interfaces
+ *
+ * @brief Generic convolution filter
+ */
+
+[scriptable, uuid(63cced4f-c8fa-4427-a75d-b71b3fbf7b15)]
+interface cciIConvolutionFilter : cciIImageFilter
+{
+  /**
+   * @brief The kernel family to be used as convolution(s) kernel(s)
+   */
+   attribute cciKernelFamily kernels;
+
+   /**
+    * @brief The number of operation to perform
+    */
+   attribute unsigned long iterations;
+
+   /**
+    * @brief Arithmetic operation to perform between the original
+    * image and the result of the filter (see \ref daim_operations for details)
+    */
+   attribute unsigned long operation;
+
+   [noscript] void doConvolution( in dmImagePtr image, in dmRegionPtr rgn,
+                                  in dmKernelFamilyRef family,
+                                  in unsigned long iter,
+                                  in unsigned long oper,
+                                  in cciIFilterContext filterCtxt );
+
+   /**
+    * @brief  Load a kernel family from a predefined set of kernels
+    *
+    * @see cciIKernelService
+    */
+   void loadKernel( in string name );
+};
+
+
+%{C++
+
+#define CCI_CONVOLUTIONFILTER_CID \
+{ /* 4945B556-7C63-472F-BCE9-B32A637E68F8 */       \
+  0x4945B556,                                      \
+  0x7C63,                                          \
+  0x472F,                                          \
+  {0xBC, 0xE9, 0xB3, 0x2A, 0x63, 0x7E, 0x68, 0xF8} \
+}
+
+#define CCI_CONVOLUTIONFILTER_CONTRACTID "@daim.org/filters/convolution;1"
+#define CCI_CONVOLUTIONFILTER_CLASSNAME  "Convolution filter"
+
+%}

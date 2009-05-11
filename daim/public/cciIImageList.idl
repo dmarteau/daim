@@ -1,0 +1,149 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+/**
+ *  @ingroup daim_interfaces
+ *
+ *  @brief Maintain a array of images.
+ *
+ *  This interface expose methods for a container for storing/retrieving
+ *  indexed images. Indexation enable the ordering of the images as
+ *  a sequence.
+ */
+[scriptable, uuid(124a3fdd-647b-4b43-a6e5-aef807c43e69)]
+interface cciIImageList : cciIXPCOMSupports
+{
+  /**
+   * Store a \e copy of the image at buffer index \a index.
+   */
+  [noscript] void storeBuffer( in dm_uint32 index, in dmImagePtr  image,
+                               in dmRectPtr rect,
+                               in EPixelFormat format );
+
+  [noscript,notxpcom] dmImagePtr getNativeBuffer( in dm_uint32 index );
+
+  /**
+   * Check if buffer \a index contains a valid image.
+   */
+  boolean isEmpty( in dm_uint32 index );
+
+  /**
+   * Delete the image located at buffer \a index.
+   */
+  void releaseBuffer( in dm_uint32 index );
+
+  /**
+   * Set the size of the array.
+   */
+  attribute dm_uint32 size;
+
+  /**
+   * Create a new image in buffer \a index
+   */
+  void createBuffer( in dm_uint32 index, in EPixelFormat format,
+                     in dm_uint32 width, in dm_uint32 height );
+
+  /**
+   * Release all the images
+   */
+  void clear();
+
+  /**
+   * Move the buffer from location \a from to location \a to.
+   */
+  void moveBuffer ( in dm_uint32 from , in dm_uint32 to );
+
+  /**
+   * Swap images between buffer \a first and buffer \a second.
+   */
+  void swapBuffers( in dm_uint32 first, in dm_uint32 second );
+
+  /**
+   * Copy images at \a src to buffer \a dst.
+   */
+  void cloneBuffer( in dm_uint32 src  , in dm_uint32 dst );
+
+  /**
+   * Change the format of the buffer \a index
+   *
+   * If \a index is equal to -1,  all images in the list
+   * are converted to the given format.
+   */
+  void setBufferFormat( in dm_uint32  index, in EPixelFormat format );
+
+  /**
+   * Retrieve the format of the image stored at \a index
+   */
+  dm_uint32 getBufferFormat( in dm_uint32  index  );
+
+  /**
+   * Move \a count images from index \a from to \a destination
+   *         starting at index \a to
+   */
+  void spliceBuffers( in dm_uint32     to,
+                      in dm_uint32     from,
+                      in cciIImageList source,
+                      in dm_uint32     count );
+
+  /**
+   * Copy \a count images from index \a from to \a destination
+   *         starting at index \a to
+   */
+  void copyBuffers( in dm_uint32      to,
+	                  in dm_uint32      from,
+	                  in cciIImageList  source,
+	                  in dm_uint32      count );
+
+  /**
+   * Reserve a number of buffer slots in the list
+   */
+  void setCapacity( in dm_uint32 capacity );
+
+  /**
+   * Get image pixels data from buffer \a index
+   * @param data  A dmImageData object that holds pixels buffer infos.
+   * @param index Buffer index
+   * @note The returned data may be temporary.
+   */
+  [noscript] void getBufferData( in dm_uint32 index, in dmImageDataRef data );
+
+  /**
+   * Copy pixels data at buffer \a index
+   * @param data  a dmImageData object that holds pixels buffer infos.
+   * @param index Buffer index
+   */
+  [noscript] void setBufferData( in dm_uint32 index, in dmImageDataRef data );
+
+};

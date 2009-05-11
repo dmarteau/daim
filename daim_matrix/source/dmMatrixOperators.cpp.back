@@ -1,0 +1,295 @@
+//---------------------------------------------------------------------------
+// Version 1.00
+//---------------------------------------------------------------------------
+#include "dmMatrixBase.h"
+#include "dmMatrixFunc.h"
+
+#include <vector>
+//---------------------------------------------------------------------------
+// dmReturnMatrix constructor
+//---------------------------------------------------------------------------
+// Return operator 
+//---------------------------------------------------------------------------
+dmReturnMatrix::dmReturnMatrix(const dmMatrix& _Matrix)
+{
+   dmMatrixBase* Matrix = const_cast<dmMatrix&>(_Matrix).Evaluate();
+   if(Matrix->IsEval()) Returned = Matrix;
+   else {
+	   Returned = Matrix->Duplicate();
+	   ((dmMatrixBase*)Returned)->SetStatus(dmMatrixBase::Temporary); // IsEval()
+   }
+}
+//---------------------------------------------------------------------------
+// Operation evaluators
+//---------------------------------------------------------------------------
+int dmMultipliedMatrix::Search(const dmMatrixBase* M) const
+{ return Lhs->Search(M) + Rhs->Search(M); }
+//----------------------------------------------------------------------------
+dmMatrixBase* dmMultipliedMatrix::Evaluate(dmMatrixType _Type)
+{
+   if(!_Type) _Type = Type();
+   else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+   dmMatrixBase* MLhs = const_cast<dmMatrix*>(Lhs)->Evaluate();
+   dmMatrixBase* MRhs = const_cast<dmMatrix*>(Rhs)->Evaluate();
+
+   if(MLhs->NCols() != MRhs->NRows())
+	  MatrixError(_TXT("Bad Matrix Dimensions In '*' Operation."));
+
+   int nr=MLhs->NRows(), nc = MRhs->NCols();
+   dmMatrixBase* Result = _Type.New(nr,nc);
+   Result->SetStatus(dmMatrixBase::Temporary);
+
+   dmMatrixRow ResRow(Result);
+   dmMatrixRow LhsRow(MLhs);
+   for(;--nr>=0;)
+   {
+	   dmMatrixCol RhsCol(MLhs);
+	   register O_FLOAT* el= ResRow();
+	   for(int n = ResRow.Length();--n>=0;)
+		 { *(el++) = LhsRow * RhsCol; RhsCol.Next(); }
+	   LhsRow.Next(); ResRow.Next();
+   }
+
+   if(MLhs->IsEval()) delete MLhs;
+   if(MRhs->IsEval()) delete MRhs;
+   delete this;
+   return Result;
+}
+//------------------------------------------------------------------------------
+dmMatrixBase* dmAddedMatrix::Evaluate(dmMatrixType _Type)
+{
+   if(!_Type) _Type = Type();
+   else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+   dmMatrixBase* MLhs = const_cast<dmMatrix*>(Lhs)->Evaluate();
+   dmMatrixBase* MRhs = const_cast<dmMatrix*>(Rhs)->Evaluate();
+
+   int nr = MLhs->NRows(), nc = MLhs->NCols();
+   if( nc != MRhs->NCols() || nr !=MRhs->NRows())
+	 MatrixError(_TXT("Bad Matrix Dimensions In '+' Operation."));
+
+   // Try to reuse data blocs
+   bool UseRhs = ((MRhs->Reuse()||MRhs->IsEval())&&(MRhs->Type()>=_Type));
+   bool UseLhs = ((MLhs->Reuse()||MLhs->IsEval())&&(MLhs->Type()>=_Type));
+   if(UseLhs && UseRhs && MRhs->Reuse()) UseLhs = false;
+
+   dmMatrixBase* Result;
+   register O_FLOAT *pR = ((O_FLOAT*)*MRhs)-1;
+   register O_FLOAT *pL = ((O_FLOAT*)*MLhs)-1;
+   if(UseLhs) {
+	   Result = MLhs;
+	   for(int i=Result->NStore();--i>=0;) *++pL += *++pR;
+   } else if(UseRhs) {
+	   Result = MRhs;
+	   for(int i=Result->NStore();--i>=0;) *++pR += *++pL;
+   } else {
+	   Result = _Type.New(nr,nc);
+	   Result->SetStatus(dmMatrixBase::Temporary); // IsEval()
+	   register O_FLOAT* pRes = ((O_FLOAT*)*Result)-1;
+     for(int i=Result->NStore();--i>=0;) *++pRes = *++pL + *++pR;
+   }
+   if(MRhs != Result && MRhs->IsEval()) delete MRhs;
+   if(MLhs != Result && MLhs->IsEval()) delete MLhs;
+   delete this;
+   return Result;
+}
+//---------------------------------------------------------------------------
+dmMatrixBase* dmSubstractedMatrix::Evaluate(dmMatrixType _Type)
+{
+   if(!_Type) _Type = Type();
+   else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+   dmMatrixBase* MLhs = const_cast<dmMatrix*>(Lhs)->Evaluate();
+   dmMatrixBase* MRhs = const_cast<dmMatrix*>(Rhs)->Evaluate();
+
+   int nr = MLhs->NRows(), nc = MRhs->NCols();
+   if( nc != MRhs->NCols() && nr !=MRhs->NRows())
+	 MatrixError(_TXT("Bad Matrix Dimensions In '-' Operation."));
+
+   // Try to reuse data blocs
+   bool UseRhs = ((MRhs->Reuse()||MRhs->IsEval())&&(MRhs->Type()>=_Type));
+   bool UseLhs = ((MLhs->Reuse()||MLhs->IsEval())&&(MLhs->Type()>=_Type));
+   if(UseLhs && UseRhs && MRhs->Reuse()) UseLhs = false;
+
+   dmMatrixBase* Result;
+   register O_FLOAT *pR = ((O_FLOAT*)*MRhs)-1;
+   register O_FLOAT *pL = ((O_FLOAT*)*MLhs)-1;
+   if(UseLhs) {
+	   Result = MLhs;
+	   for(int i=Result->NStore();--i>=0;) *++pL -= *++pR;
+   } else if(UseRhs) {
+	   Result = MRhs;
+	   for(int i=Result->NStore();--i>=0;) *++pR = *++pL - *pR;
+   } else {
+	   Result = _Type.New(nr,nc);
+	   Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
+	   register O_FLOAT* pRes = ((O_FLOAT*)*Result)-1;
+	   for(int i=Result->NStore();--i>=0;) *++pRes = *++pL - *++pR;
+   }
+   if(MRhs != Result && MRhs->IsEval()) delete MRhs;
+   if(MLhs != Result && MLhs->IsEval()) delete MLhs;
+   delete this;
+   return Result;
+}
+//---------------------------------------------------------------------------
+dmMatrixBase* dmDividedMatrix::Evaluate(dmMatrixType _Type)
+{
+   if(!_Type) _Type = Type();
+   else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+   dmMatrixBase* MLhs = const_cast<dmMatrix*>(Lhs)->Evaluate();
+   dmMatrixBase* MRhs = const_cast<dmMatrix*>(Rhs)->Evaluate();
+
+   if(MRhs->NCols() != MLhs->NRows())
+	  MatrixError(_TXT("Bad Matrix Dimensions In '/' Operation."));
+
+   dmMatrixBase* LU;
+   dmMatrixBase* Result;
+
+   // Try to reuse data blocs for rhs
+   if( MRhs->Reuse()||MRhs->IsEval()) LU = MRhs;
+   else LU = MRhs->Duplicate();
+
+   // Try to reuse data blocs for lhs
+   if(MLhs->Reuse()||MLhs->IsEval()) Result = MLhs;
+   else Result = MLhs->Duplicate();
+
+   // Perform LU decomposition on rhs
+   std::vector<int> _P(MRhs->NRows());
+   int sigperm;   
+     
+   dmMatrix_LUDecomposition(*LU,_P.begin(),&sigperm);
+
+   // Solve the system for each columns of Lhs
+   dmMatrixCol RCol(Result);
+   for(int i=Result->NCols();--i>=0;) {
+     dmMatrix_LUSolve(*LU,RCol,_P.begin());
+     RCol.Next();
+   }  
+
+   if(MRhs->IsEval()) delete MRhs;
+   if(MLhs->IsEval() && MLhs!=Result) delete MLhs;
+   delete this;
+   return Result;
+}
+//---------------------------------------------------------------------------
+// Operations with scalar
+//---------------------------------------------------------------------------
+int dmShiftedMatrix::Search(const dmMatrixBase* M) const { return Op->Search(M); }
+//--------------------------------------------------------------------------
+dmMatrixBase* dmShiftedMatrix::Evaluate(dmMatrixType _Type)
+{
+   if(!_Type) _Type = Type();
+   else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+   dmMatrixBase* MLhs = const_cast<dmMatrix*>(Op)->Evaluate();
+   int nr = MLhs->NRows(), nc = MLhs->NCols();
+
+   dmMatrixBase* Result;
+   register O_FLOAT* pL = ((O_FLOAT*)*MLhs) -1;
+   register O_FLOAT  v = Value;
+   if((MLhs->Reuse()||MLhs->IsEval())){
+	   Result = MLhs;
+	   for(int i=Result->NStore();--i>=0;) *++pL += v;
+   } else {
+	   Result = _Type.New(nr,nc);
+	   Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
+	   register O_FLOAT* pRes = ((O_FLOAT*)*Result)-1;
+	   for(int i=Result->NStore();--i>=0;) *++pRes = *++pL + v;
+   }
+   if(MLhs != Result && MLhs->IsEval() ) delete MLhs;
+   delete this;
+   return Result;
+}
+//---------------------------------------------------------------------------
+dmMatrixBase* dmScaledMatrix::Evaluate(dmMatrixType _Type)
+{
+  if(!_Type) _Type = Type();
+   else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+   dmMatrixBase* MLhs = const_cast<dmMatrix*>(Op)->Evaluate();
+   int nr = MLhs->NRows(), nc = MLhs->NCols();
+
+   dmMatrixBase* Result;
+   register O_FLOAT* pL = ((O_FLOAT*)*MLhs)-1;
+   register O_FLOAT  v  = Value;
+   if((MLhs->Reuse()||MLhs->IsEval())) {
+	   Result = MLhs;
+	   for(int i=Result->NStore();--i>=0;) *++pL *= v;
+   } else {
+  	 Result = _Type.New(nr,nc); 
+	   Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
+	   register O_FLOAT* pRes = ((O_FLOAT*)*Result)-1;
+	   for(int i=Result->NStore();--i>=0;) *++pRes = *++pL * v;
+   }
+   if(MLhs != Result && MLhs->IsEval() ) delete MLhs;
+   delete this;
+   return Result;
+}
+//---------------------------------------------------------------------------
+// Transposed Matrix
+//---------------------------------------------------------------------------
+int dmTransposedMatrix::Search(const dmMatrixBase* M) const { return Op->Search(M); }
+//---------------------------------------------------------------------------
+dmMatrixBase* dmTransposedMatrix::Evaluate(dmMatrixType _Type)
+{
+  if(!_Type) _Type = Type();
+  else if(!(_Type >= Type())) MatrixError(_TXT("Cannot store in specified matrix"));
+
+  dmMatrixBase* Matrix = const_cast<dmMatrix*>(Op)->Evaluate();
+
+  dmMatrixBase* Result;
+  if(Matrix->Type()!=dmMatrixType::Sym) {
+    int nc = Matrix->NRows(), nr = Matrix->NCols(); // Invert Rows/Columns
+    Result = _Type.New(nr,nc);
+    Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
+    dmMatrixRow DstRow(Result);
+    dmMatrixCol SrcCol(Matrix);
+    for(;--nr>=0;) { DstRow.Copy(SrcCol); DstRow.Next(); SrcCol.Next(); }
+  } else Result = Matrix; 
+
+  if( (Result!=Matrix) &&  Matrix->IsEval() ) delete Matrix;
+  delete this;
+  return Result;  
+}
+//---------------------------------------------------------------------------
+// Inverted Matrix
+//---------------------------------------------------------------------------
+int dmInvertedMatrix::Search(const dmMatrixBase* M) const { return Op->Search(M); }
+//---------------------------------------------------------------------------
+dmMatrixBase* dmInvertedMatrix::Evaluate(dmMatrixType _Type)
+{
+  if(!_Type) _Type = Type();
+  else if(!(_Type >= Type())) 
+    MatrixError(_TXT("Cannot store in specified matrix"));
+
+  dmMatrixBase* Matrix = const_cast<dmMatrix*>(Op)->Evaluate();
+
+  dmMatrixBase *Result,*LU;
+  if((Matrix->Reuse()||Matrix->IsEval())) 
+     Result = Matrix;
+  else
+     Result = _Type.New(Matrix->NRows(),Matrix->NCols());
+
+  LU = Result->Duplicate();
+
+  int nr = LU->NRows();
+
+  std::vector<int> _P(nr);
+  int sigperm;   
+     
+  dmMatrix_Identity(*Result);
+  dmMatrix_LUDecomposition(*LU,_P.begin(),&sigperm);
+
+  dmMatrixCol _MCol(Result);
+  for(int i=nr;--i>=0;) {
+     dmMatrix_LUSolve(*LU,_MCol,_P.begin());
+     _MCol.Next();
+  }
+  
+  if( (Result!=Matrix) &&  Matrix->IsEval() ) delete Matrix;
+  delete this;
+  return Result;  
+}
+//---------------------------------------------------------------------------

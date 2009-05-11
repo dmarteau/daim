@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Daim configuration file -->
+
+<daim>
+  <medias>
+
+    <!-- defines mimes types and associated encoder/decoder modules -->
+
+    <media-types:list>
+      <rdf:seq>
+
+        <rdf:li media-types:type="image/png"  
+                media-types:description="Portable Network Graphics - PNG"       
+                media-types:files="png"
+                media-types:decoder="loaders/pngldr.cci"
+                media-types:encoder="loaders/pngldr.cci"/>
+
+        <rdf:li media-types:type="image/tiff" 
+                media-types:description="Tagged Image File Format - TIFF"
+                media-types:files="tif|tiff"
+                media-types:decoder="loaders/tiffldr.cci"
+                media-types:encoder="loaders/tiffldr.cci"/>
+
+        <rdf:li media-types:type="image/jpeg" 
+                media-types:description="Join Photographics Expert Group - JPEG" 
+                media-types:files="jpg|jpe|jpeg"
+                media-types:decoder="loaders/jpegldr.cci"
+                media-types:encoder="loaders/jpegldr.cci"/>
+
+        <rdf:li media-types:type="image/gif"  
+                media-types:description="Graphic Interchange Format - GIF"
+                media-types:files="gif"
+                media-types:decoder="loaders/gifldr.cci"
+                media-types:encoder="loaders/gifldr.cci"/>
+
+        <rdf:li media-types:type="image/bmp"  
+                media-types:description="Windows Bitmap - BMP"
+                media-types:files="bmp"
+                media-types:decoder="loaders/bmpldr.cci"
+                media-types:encoder="loaders/bmpldr.cci"/>
+
+        <!-- Not handled for now -->
+
+        <rdf:li media-types:type="image/targa" 
+                media-types:description="Image Targa - TGA"
+                media-types:files="tga"/>
+
+        <rdf:li media-types:type="image/ief"   
+                media-types:description="Image Exchange Format - IEF" 
+                media-types:files="ief"/>
+
+        <!-- Raw Formats handled by the custom loader -->
+
+        <rdf:li media-types:type="image/x-kappa-raw" 
+                media-types:description="Kappa Raw Image Format" 
+                media-types:files="raw" 
+                media-types:decoder="loaders/cstmldr.cci"/>
+
+        <rdf:li media-types:type="image/x-pmi"
+                media-types:description="PMI Format"
+                media-types:files="pmi" 
+                media-types:decoder="loaders/cstmldr.cci"/>
+
+        <!-- Are these types Handled by default loader ? -->
+
+        <rdf:li media-types:type="image/x-emf" 
+                media-types:description="Enhanced Metafile" 
+                media-types:files="emf"/>
+
+        <rdf:li media-types:type="image/x-wmf" 
+                media-types:description="Windows Metafile"  
+                media-types:files="wmf"/>
+
+      </rdf:seq>
+    </media-types:list>
+
+  </medias>
+</daim>

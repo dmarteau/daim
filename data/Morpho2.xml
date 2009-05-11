@@ -1,0 +1,86 @@
+<?xml version="1.0"?> 
+<Morpho2 title="Morphologie math�matique - contours">
+<family name="ED(8)" title="Local edges Detection/Filling" x="1" y="1" width="3" height="3">
+  <kernel name="ED1"> -1, 1,-1,-1,-1,-1,-1, 1,-1 </kernel>
+  <kernel name="ED2"> -1,-1,-1, 1,-1, 1,-1,-1,-1 </kernel>
+  <kernel name="ED3">  1,-1,-1,-1,-1,-1,-1, 1,-1 </kernel>
+  <kernel name="ED4"> -1,-1, 1, 1,-1,-1,-1,-1,-1 </kernel>
+  <kernel name="ED5"> -1, 1,-1,-1,-1,-1,-1,-1, 1 </kernel>
+  <kernel name="ED6"> -1,-1,-1,-1,-1, 1, 1,-1,-1 </kernel>
+  <kernel name="ED7">  1,-1,-1,-1,-1,-1,-1,-1, 1 </kernel>
+  <kernel name="ED8"> -1,-1, 1,-1,-1,-1, 1,-1,-1 </kernel>
+</family>
+<family name="EP(8)" title="Local edges end-points" width="3" height="3">
+  <kernel name="EP1" x="0" y="0"> -1,-1,-1,-1, 1,-1,-1,-1, 1 </kernel>
+  <kernel name="EP2" x="1" y="0"> -1,-1,-1,-1, 1,-1, 0, 1, 0 </kernel>
+  <kernel name="EP3" x="2" y="0"> -1,-1,-1,-1, 1,-1, 1,-1,-1 </kernel>
+  <kernel name="EP4" x="0" y="1"> -1,-1, 0,-1, 1, 1,-1,-1, 0 </kernel>
+  <kernel name="EP5" x="2" y="1">  0,-1,-1, 1, 1,-1, 0,-1,-1 </kernel>
+  <kernel name="EP6" x="0" y="2"> -1,-1, 1,-1, 1,-1,-1,-1,-1 </kernel>
+  <kernel name="EP7" x="1" y="2">  0, 1, 0,-1, 1,-1,-1,-1,-1 </kernel>
+  <kernel name="EP8" x="2" y="2">  1,-1,-1,-1, 1,-1,-1,-1,-1 </kernel>
+</family>
+<family name="ET(8)" title="Local edges Thinning" x="1" y="1" width="3" height="3">
+  <kernel name="ET1">  1, 0,-1, 1, 1,-1, 0,-1,-1 </kernel>
+  <kernel name="ET2">  0, 1, 1,-1, 1, 0,-1,-1,-1 </kernel>
+  <kernel name="ET3">  0, 1, 0, 1, 1, 0, 0, 0,-1 </kernel>
+  <kernel name="ET4">  0, 1, 0, 0, 1,-1,-1, 0,-1 </kernel>
+  <kernel name="ET5"> -1,-1,-1, 0, 1,-1, 1, 1, 0 </kernel>
+  <kernel name="ET6"> -1,-1, 0,-1, 1, 1,-1, 0, 1 </kernel>
+  <kernel name="ET7">  0, 0,-1, 1, 1, 0, 0, 1, 0 </kernel>
+  <kernel name="ET8"> -1, 0, 0, 0, 1, 1, 0, 1, 0 </kernel>
+</family>
+<family name="R(8)" title="Erosion lin�aire" x="1" y="1" width="3" height="3">
+  <kernel name="R1">  0, 0, 0, 0, 1,-1, 0, 0, 0 </kernel>
+  <kernel name="R2">  0, 0, 0, 0, 1, 0, 0, 0,-1 </kernel>
+  <kernel name="R3">  0, 0, 0, 0, 1, 0, 0,-1, 0 </kernel>
+  <kernel name="R3">  0, 0, 0, 0, 1, 0, 0,-1, 0 </kernel>
+  <kernel name="R4">  0, 0, 0, 0, 1, 0,-1, 0, 0 </kernel>
+  <kernel name="R5">  0, 0, 0,-1, 1, 0, 0, 0, 0 </kernel>
+  <kernel name="R6"> -1, 0, 0, 0, 1, 0, 0, 0, 0 </kernel>
+  <kernel name="R7">  0,-1, 0, 0, 1, 0, 0, 0, 0 </kernel>
+  <kernel name="R8">  0, 0,-1, 0, 1, 0, 0, 0, 0 </kernel>
+</family>
+<family name="M(8)" title="Squelette (points isol�s)" x="1" y="1" width="3" height="3">
+  <kernel name="M1">  
+       0,-1, 0,
+       0, 1, 0,
+       1, 1, 1
+  </kernel>
+  <kernel name="M2">  
+       0, 0,-1, 
+       1, 1, 0, 
+       0, 1, 0
+  </kernel>
+  <kernel name="M3">
+       1, 0, 0, 
+       1, 1,-1, 
+       1, 0, 0 
+  </kernel>
+  <kernel name="M4"> 
+       0, 1, 0, 
+       1, 1, 0, 
+       0, 0,-1
+  </kernel>
+  <kernel name="M5"> 
+       1, 1, 1,
+       0, 1, 0, 
+       0,-1, 0 
+  </kernel>
+  <kernel name="M6">  
+      0, 1, 0,
+      0, 1, 1,
+     -1, 0, 0 
+  </kernel>
+  <kernel name="M7">  
+      0, 0, 1,
+     -1, 1 ,1, 
+      0, 0, 1 
+  </kernel>
+  <kernel name="M8"> 
+     -1, 0, 0,
+      0, 1, 1, 
+      0, 1, 0 
+  </kernel>
+</family>
+</Morpho2>
