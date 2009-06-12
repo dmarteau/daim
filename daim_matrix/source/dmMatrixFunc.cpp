@@ -383,7 +383,7 @@ dmMatrixBase* dmMatrix_Invert( const dmMatrix& Op, dmMatrixType _Type)
 
   delete LU;
  
-  if( (Result!=Matrix) &&  Matrix->IsEval() ) 
+  if( (Result!=Matrix) && Matrix->IsEval() ) 
     delete Matrix;
 
   return Result;  
@@ -404,10 +404,10 @@ dmMatrixBase* dmMatrix_Normalize( dmMatrix& Op, dm_matrix_t& aMinValue, dm_matri
   for(;_Start!=_End;++_Start) 
   {
     u = *_Start;
-    if(u <= _Max ) _Max = u; else
+    if(u <= _Min ) _Min = u; else
     if(u >= _Max ) _Max = u; 
   }
- 
+
   // If factor is > 0 then really normalize values 
 
   if(aMinValue < aMaxValue ) 
@@ -418,7 +418,7 @@ dmMatrixBase* dmMatrix_Normalize( dmMatrix& Op, dm_matrix_t& aMinValue, dm_matri
     } 
     else 
     {
-      dm_matrix_t d,delta = _Max - _Min;
+      dm_matrix_t d,delta;
       
       d     = _Max - _Min;
       delta = aMaxValue - aMinValue;
