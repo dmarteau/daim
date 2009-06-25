@@ -47,7 +47,6 @@ interface cciIColorUtils : cciIXPCOMSupports
   void fill( in cciImage image, in cciRegion roi,
              in dm_real  value, in dm_real alpha );
 
-
   /**
    * @brief Set the image pixels values to the given rgb value
    */

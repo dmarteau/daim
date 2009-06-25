@@ -318,7 +318,7 @@ CCI_IMETHODIMP cciImageShell::LoadSurfaceBits(cciISurface *surface, cciRegion rg
 
   // Try to get a possible color table
   if(mImage->PixelFormat()==dmPixelFormat8bppIndexed)
-     mCurrentSurface->GetColorTable(getter_AddRefs(mColorTable));
+     surface->GetColorTable(getter_AddRefs(mColorTable));
 
   surface->UnlockBits(_Data);
 

@@ -429,13 +429,62 @@ static void FillAlphaChannel( dm_byte* pData, int w, int h, int nLineSpace )
 {
   // Fill Alpha channel with 0xff
   for(int j=0;j<h;++j) {
-    dm_byte* pixbuf = pData;
-    for(int i=0;i<w;++i,pixbuf+=4) {
-      *((dm_uint32*)pixbuf) = 0xff000000;
+    dm_uint32* pixbuf = reinterpret_cast<dm_uint32*>(pData);
+    for(int i=0;i<w;++i,pixbuf++) {
+      *pixbuf = 0xff000000;
     }
     pData += nLineSpace;
   }
 }
+
+
+static void MapColorTable( GDALColorTableH hColorTable, EPixelFormat format, dmImageData& imData )
+{
+  dm_uint32 entryCount = GDALGetColorEntryCount(hColorTable);
+  GDALColorEntry colors[256],*entry;
+
+  if(entryCount > 256) {
+     dmLOG_WARN("Truncating colortable to 256 (%d original entries)",entryCount);
+     entryCount = 256;
+  }
+
+  for(dm_uint32 i=0;i<entryCount;++i)
+     GDALGetColorEntryAsRGB(hColorTable,i,&colors[i]);  
+
+  dm_byte* pixbuf = static_cast<dm_byte*>(imData.Scan0);
+  
+  int width  = imData.Width;
+  int height = imData.Height;
+  int stride = imData.Stride;
+  
+  if(format == dmPixelFormat32bppARGB)
+  {
+    for(int y=0;y<height;++y) {
+      for(int x=0;x<width;++x) {
+        dm_uint32&  pixel = ((dm_uint32*)(pixbuf))[x];        
+        entry = &colors[(pixel & 0x00ff0000) >> 16];
+        pixel = DM_ARGB(entry->c4,entry->c1,entry->c2,entry->c3);
+      }
+      pixbuf += stride;    
+    }
+  }
+  else
+  {
+    // Assume RGB
+    for(int y=0;y<height;++y) {
+      for(int x=0;x<width;++x) {
+        dmRGBColor&  pixel = ((dmRGBColor*)(pixbuf))[x];        
+        entry = &colors[pixel.red];
+        pixel.red   = entry->c1;
+        pixel.green = entry->c2;
+        pixel.blue  = entry->c3;
+      }
+      pixbuf += stride;    
+    }    
+  }
+}
+
+
 
 static bool IsLittleEndian()
 {
@@ -463,56 +512,96 @@ cci_result gdalSurface::ReadData(EPixelFormat format, dmImageData& imData, dm_bo
   int nBandCount;
   int panBanMap[4] = { 1,2,3,4 };
 
+  GDALColorTableH hColorTable = dm_null;
+  
   if( wantAlpha )
   {
     // Ensure that we have a scalar format
     if(!dmIsPixelFormatScalar(format))
-       return CCI_ERROR_INVALID_ARG;
+    {
+      return CCI_ERROR_INVALID_ARG;      
+    }
 
     nBandCount   = 1;
     nBandSpace   = imData.Stride * imData.Height;
     panBanMap[0] = mAlphaBand;
   }
   else
+  // We are putting data into rgb format 
   if(format == dmPixelFormat24bppRGB || format == dmPixelFormat32bppARGB)
   {
-    // Ensure that we are in compatible format
     if(dmIsPixelFormatScalar(mFormat))
-       return CCI_ERROR_INVALID_ARG;
-
-    nBandCount = 3;
-    nBandSpace = 1;
-
-    // Just read all bands here
-    if(format == dmPixelFormat32bppARGB)
     {
-      bool le = IsLittleEndian();
-      // Check for endianness
+      nBandCount = 3;
+      nBandSpace = 1;
 
-      if(mAlphaBand)
+      // Assign all channels to same band
+      panBanMap[0] = panBanMap[1] = panBanMap[2] = 1;
+      
+      GDALRasterBandH hBand = GDALGetRasterBand(mDS,1);
+      if(GDALGetRasterColorInterpretation(hBand)==GCI_PaletteIndex)
+         hColorTable = GDALGetRasterColorTable(hBand);
+
+      // Just read all bands here
+      if(format == dmPixelFormat32bppARGB)
       {
-        nBandCount   = 4;
-        if(le) {
-          panBanMap[0] = 3;
-          panBanMap[1] = 2;
-          panBanMap[2] = 1;
-          panBanMap[3] = mAlphaBand;
-        } else {
-          panBanMap[0] = mAlphaBand;
-          panBanMap[1] = 1;
-          panBanMap[2] = 2;
-          panBanMap[3] = 3;
+        bool le = IsLittleEndian();
+        // Check for endianness
+
+        if(mAlphaBand)
+        {
+          nBandCount = 4;
+          if(le) {
+            panBanMap[3] = mAlphaBand;
+          } else {
+            panBanMap[0] = mAlphaBand;
+            panBanMap[1] = panBanMap[2] = panBanMap[3] = 1;
+          }
         }
-      }
-      else
+        else
+        {
+          FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);
+          if(!le)
+             pScan0 += 1; // Advance scan pointer to skip alpha channel
+        }
+      } 
+    }
+    else
+    {
+      nBandCount = 3;
+      nBandSpace = 1;
+
+      // Just read all bands here
+      if(format == dmPixelFormat32bppARGB)
       {
-        FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);
-        if(le) {
-          panBanMap[0] = 3;
-          panBanMap[1] = 2;
-          panBanMap[2] = 1;
-        } else
-          pScan0 += 1; // Advance scan pointer to skip alpha channel
+        bool le = IsLittleEndian();
+        // Check for endianness
+
+        if(mAlphaBand)
+        {
+          nBandCount   = 4;
+          if(le) {
+            panBanMap[0] = 3;
+            panBanMap[1] = 2;
+            panBanMap[2] = 1;
+            panBanMap[3] = mAlphaBand;
+          } else {
+            panBanMap[0] = mAlphaBand;
+            panBanMap[1] = 1;
+            panBanMap[2] = 2;
+            panBanMap[3] = 3;
+          }
+        }
+        else
+        {
+          FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);
+          if(le) {
+            panBanMap[0] = 3;
+            panBanMap[1] = 2;
+            panBanMap[2] = 1;
+          } else
+            pScan0 += 1; // Advance scan pointer to skip alpha channel
+        }
       }
     }
   }
@@ -546,9 +635,12 @@ cci_result gdalSurface::ReadData(EPixelFormat format, dmImageData& imData, dm_bo
                                    dataType, nBandCount, panBanMap,
                                    nPixelSpace, nLineSpace, nBandSpace);
 
+  // Do we need to map any color map ?
+  if(hColorTable) 
+    MapColorTable(hColorTable,format,imData);
+  
   return (err != CE_None) ? CCI_ERROR_FAILURE : CCI_OK;
 }
-
 
 /* [noscript] void lockBitsRect (in dmRectRef rect, in EPixelFormat format, in dmImageDataRef imData, in unsigned long lockModes); */
 CCI_IMETHODIMP gdalSurface::LockBitsRect(dm_rect & rect, EPixelFormat format, dmImageData & imData,
@@ -806,7 +898,7 @@ CCI_IMETHODIMP gdalSurface::GetColorTable( cciIColorTable * *_retval CCI_OUTPARA
 }
 
 /* [noscript] void setColorTable( in cciIColorTable colorTable); */
-CCI_IMETHODIMP gdalSurface::SetColorTable( cciIColorTable *colorTable)
+CCI_IMETHODIMP gdalSurface::SetColorTable( cciIColorTable *colorTable )
 {
   CCI_ENSURE_ARG_POINTER(colorTable);
 

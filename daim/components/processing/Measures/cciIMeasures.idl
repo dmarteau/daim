@@ -222,9 +222,9 @@ interface cciIMeasurements : cciIXPCOMSupports
    *    - CCIA_RgnDesc_CY       return Y-Centroid
    *    - CCIA_RgnDesc_L1       return min axis length
    *    - CCIA_RgnDesc_L2       return max axis length
-   *    - CCIA_RgnDesc_Moment   return central moment of order (aguments: xn,yn)
+   *    - CCIA_RgnDesc_Moment   return central moment of order (arguments: xn,yn)
    *
-   *  if \a params is supplied then the following properties can be computed:
+   *  if \a refImage is supplied then the following properties can be computed:
    *    - CCIA_ImgDesc_TotalDensity     return total density value of order n  (arguments: n)
    *    - CCIA_ImgDesc_MeanDensity      return mean density value
    *    - CCIA_ImgDesc_MinDensity       return min luminance value
@@ -236,4 +236,20 @@ interface cciIMeasurements : cciIXPCOMSupports
    //                         in cciImage refImage );
 };
 
+
+
+%{C++
+
+#define CCI_MEASURES_CID \
+{ /* d3346ad1-c559-457f-8d1e-70904bdd3ca6 */       \
+  0xd3346ad1,                                      \
+  0xc559,                                          \
+  0x457f,                                          \
+  {0x8d, 0x1e, 0x70, 0x90, 0x4b, 0xdd, 0x3c, 0xa6} \
+}
+
+#define CCI_MEASURES_CONTRACTID "@daim.org/processing/measures;1"
+#define CCI_MEASURES_CLASSNAME  "Image measurements"
+
+%}
 

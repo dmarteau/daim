@@ -22,15 +22,17 @@
  *
  *  ::: END LICENSE BLOCK::: */
 
+
+#include <cciMeasures.h>
 #include <math.h>
+
 //---------------------------------------------------------------------
 // Compute Pixels Area 
 //--------------------------------------------------------------
-class MapCount
+struct MapCount
 {
   cciMeasurements& _This;
 
-public:
   MapCount( cciMeasurements& _Instance ) 
   :_This(_Instance)
   {}
@@ -45,7 +47,7 @@ void cciMeasurements::M_UpdateCount()
 {
   if((mUpdate & IMAGEMAP_UPDATE_COUNT)==0) 
   {
-    M_UpdatePartRoi(_This);
+    M_UpdatePartRoi();
 
     info_list_type::iterator it   = mNodeList.Begin();
     info_list_type::iterator last = mNodeList.End();
@@ -60,22 +62,22 @@ void cciMeasurements::M_UpdateCount()
 //---------------------------------------------------------------------
 // Compute centroids
 //--------------------------------------------------------------
-class MapCentroids
+struct MapCentroids
 { 
   cciMeasurements& _This;
-public:
+
   MapCentroids( cciMeasurements& _Instance ) 
   :_This(_Instance)
   {}
   
   void operator()( daim::map_type::const_line_type _in , long x1, long x2 )
   {
-    daim::map_type::const_line_type start = mMap.begin();
+    daim::map_type::const_line_type start = _This.Map().begin();
     XNODE pNode;
  
     for(long x=x1;x<=x2;++x) 
     {
-      pNode = &_PARTITION_NODE(_This,(*_in)[x]);
+      pNode = &_This._PARTITION_NODE((*_in)[x]);
       pNode->ri_Centroid_x += x;
       pNode->ri_Centroid_y += _in-start;
       
@@ -93,8 +95,8 @@ void cciMeasurements::M_UpdateCentroids()
 {
   if((mUpdate & IMAGEMAP_UPDATE_CENTROID)==0) 
   {
-    M_UpdateRoi(_This);
-    M_UpdateCount(_This);
+    M_UpdateRoi();
+    M_UpdateCount();
 
     info_list_type::iterator it   = mNodeList.Begin();
     info_list_type::iterator last = mNodeList.End();
@@ -106,7 +108,7 @@ void cciMeasurements::M_UpdateCentroids()
       (*it).ri_pos = dm_false;
     }
 
-    daim::apply(mRoi,mMap,MapCentroids(_This));
+    daim::apply(mRoi,mMap,MapCentroids(*this));
     
     dm_real count;
     for(it = mNodeList.Begin();it != last; ++it)  
@@ -128,9 +130,9 @@ class ImageMap_BndrySearch
 {
   public:
    int lbl;
-   daim::basic_partition& part;
+   const daim::basic_partition& part;
 
-   ImageMap_BndrySearch( daim::basic_partition& _part ) 
+   ImageMap_BndrySearch( const daim::basic_partition& _part ) 
    :lbl(0)
    ,part(_part) {}
 
@@ -142,23 +144,23 @@ class ImageMap_BndrySearch
 //--------------------------------------------------------------
 class MapBoundary
 { 
-  cciMeasurements& _This;
-  ImageMap_BndrySearch       _bndsrch;
-  dmRegion&                  _r;
+  cciMeasurements&     _This;
+  ImageMap_BndrySearch _bndsrch;
+  dmRegion&            _r;
 
 public:
   MapBoundary( cciMeasurements& _Instance, dmRegion& _region ) 
   :_This(_Instance)
-  ,_bndsrch(_Instance->NodePartition)
+  ,_bndsrch(_Instance.NodePartition())
   ,_r(_region)
   {}
   
   void operator()( daim::map_type::const_line_type _in , long x1, long x2 )
   {
-    daim::map_type::const_line_type start = _This.mMap.begin();
-    XNODE pNode;
+    daim::map_type::const_line_type start = _This.Map().begin();
+    const daim::basic_partition& part     = _This.NodePartition(); 
 
-    daim::basic_partition& part = _This.mNodePartition; 
+    XNODE pNode;
 
     for(int lbl,x=x1; x<=x2;++x) 
     {
@@ -169,7 +171,7 @@ public:
          _bndsrch.lbl = lbl;
          daim::extract_boundary(_bndsrch,
                       dmPoint(x,_in-start),_r,
-                      _This.mMap, 
+                      _This.Map(), 
                       pNode->ri_Boundary
                     );
 
@@ -182,7 +184,7 @@ public:
 //--------------------------------------------------------------
 // Update Euler-Poincare number
 //--------------------------------------------------------------
-void cciMeasurements::M_UpdateEuler1( CCI_INSTANCE_PTR(ImageMap) _This, XNODE root  ) 
+static void M_UpdateEuler1( XNODE root  ) 
 {
   dmList::iterator it   = root->ri_ChildList.Begin();
   dmList::iterator last = root->ri_ChildList.End();
@@ -193,7 +195,7 @@ void cciMeasurements::M_UpdateEuler1( CCI_INSTANCE_PTR(ImageMap) _This, XNODE ro
   {
     child = static_cast<_RegionLink*>(*it)->rl_Self;
 
-    M_UpdateEuler1( _This, child );
+    M_UpdateEuler1( child );
     root->ri_Euler += child->ri_Euler;
   }
 }
@@ -205,7 +207,7 @@ void cciMeasurements::M_UpdateEuler()
     XNODE root = &mNodeTable[0];
     dmDEBUG_ASSERT( root->ri_Part == 0 );
 
-    M_UpdateEuler1(_This,root);
+    M_UpdateEuler1(root);
     mUpdate |= IMAGEMAP_UPDATE_EULER;
   }
 }
@@ -230,13 +232,11 @@ void cciMeasurements::M_UpdateBoundary( )
 //--------------------------------------------------------------------
 // Compute Area
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeArea(  CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results )
+bool cciMeasurements::M_ComputeArea(  dm_real* _Results )
 {
-  M_UpdateCount(_This);
+  M_UpdateCount();
 
-  dm_real _fac = _This->uppxls * _This->uppxls * _This->aspect_ratio;
-
-  index_table_type& _itable = mIndexTable;
+  dm_real _fac = uppxls * uppxls * aspect_ratio;
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -247,7 +247,7 @@ bool cciMeasurements::M_ComputeArea(  CCI_INSTANCE_PTR(ImageMap) _This, dm_real*
   {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) 
-     _Results[_itable[pNode->ri_Part]] = _fac * pNode->ri_Count;
+     _Results[mIndexTable[pNode->ri_Part]] = _fac * pNode->ri_Count;
   }
 
   return true;
@@ -256,15 +256,13 @@ bool cciMeasurements::M_ComputeArea(  CCI_INSTANCE_PTR(ImageMap) _This, dm_real*
 // Compute the length of the boundary of the object, i.e the length
 // of the polygon enclosing the object 
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeBoundary( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results )
+bool cciMeasurements::M_ComputeBoundary( dm_real* _Results )
 {
-  M_UpdateBoundary(_This);
+  M_UpdateBoundary();
 
   dm_real dx,dy,length;
-  dm_real _xcal = _This->uppxls;
-  dm_real _ycal = _This->aspect_ratio * _xcal;
-
-  index_table_type& _itable = _This->IndexTable;
+  dm_real _xcal = uppxls;
+  dm_real _ycal = aspect_ratio * _xcal;
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -299,15 +297,15 @@ bool cciMeasurements::M_ComputeBoundary( CCI_INSTANCE_PTR(ImageMap) _This, dm_re
       pNode->ri_Border = length;
 
       if(_Results && pNode->ri_Status==RI_REGION) 
-         _Results[_itable[pNode->ri_Part]] = length; 
+         _Results[mIndexTable[pNode->ri_Part]] = length; 
     }
   }  
   return true;
 }
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeBorder( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results )
+bool cciMeasurements::M_ComputeBorder( dm_real* _Results )
 {
-  M_ComputeBoundary(_This,NULL);
+  M_ComputeBoundary(NULL);
 
   dm_real length;
 
@@ -342,17 +340,16 @@ bool cciMeasurements::M_ComputeBorder( CCI_INSTANCE_PTR(ImageMap) _This, dm_real
 //--------------------------------------------------------------
 // Momentum of order (p,q)
 //--------------------------------------------------------------
-class MapMomentum
+struct MapMomentum
 {
-  cciMeasurements&   _This;
-  index_table_type&  _itable;
+  cciMeasurements&         _This;
+  const index_table_type&  _itable;
   dm_real* _Results;
   int      p,q;
 
-public:
   MapMomentum( cciMeasurements& _Instance, dm_real* _Res,int _p, int _q)
-  :_This(_Instance)
-  ,_itable(_Instance->IndexTable)
+  :_This(_Instance) 
+  ,_itable(_Instance.IndexTable())
   ,_Results(_Res)
   ,p(_p)
   ,q(_q)
@@ -360,14 +357,14 @@ public:
  
   void operator()( daim::map_type::const_line_type _in , long x1, long x2 )
   {
-    daim::map_type::const_line_type start = mMap.begin();
+    daim::map_type::const_line_type start = _This.Map().begin();
     XNODE pNode;
 
     dm_real dx,dy;
 
     for(long x=x1; x<=x2;++x) 
     { 
-      pNode = &_PARTITION_NODE(_This,(*_in)[x]);
+      pNode = &_This._PARTITION_NODE((*_in)[x]);
 
       if(pNode->ri_Status==RI_REGION) 
       {
@@ -387,15 +384,14 @@ public:
   }
 };
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeMomentum(  CCI_INSTANCE_PTR(ImageMap) _This,  
-                                dm_real* _Results, int p,int q)
+bool cciMeasurements::M_ComputeMomentum(  dm_real* _Results, int p,int q )
 {
   if(p<0 || q<0) return false;
   
-  dm_real _xcal = _This->uppxls;
-  dm_real _ycal = _This->aspect_ratio * _xcal;
+  dm_real _xcal = uppxls;
+  dm_real _ycal = aspect_ratio * _xcal;
 
-  M_UpdateCentroids(_This);
+  M_UpdateCentroids();
 
   // Momentum of order 1 => this is centroids
   if((p+q)==1) 
@@ -430,12 +426,8 @@ bool cciMeasurements::M_ComputeMomentum(  CCI_INSTANCE_PTR(ImageMap) _This,
   return false;
 }
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeLabels( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results )
+bool cciMeasurements::M_ComputeLabels( dm_real* _Results )
 {
-  index_table_type& _itable = mIndexTable;
-
-  daim::basic_partition&  _part   = mPartition;
-
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
@@ -443,7 +435,7 @@ bool cciMeasurements::M_ComputeLabels( CCI_INSTANCE_PTR(ImageMap) _This, dm_real
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) 
-     _Results[_itable[pNode->ri_Part]] = _part[pNode->ri_Part];
+     _Results[mIndexTable[pNode->ri_Part]] = mPartition[pNode->ri_Part];
   }  
   return true;  
 }
@@ -454,7 +446,7 @@ void cciMeasurements::M_UpdateDir()
 {
   if( (mUpdate & IMAGEMAP_UPDATE_DIR)==0 )
   {
-    M_BuildIndexTable(_This);
+    M_BuildIndexTable();
  
     size_t nPart = mNumPartitions+1;
 
@@ -465,17 +457,14 @@ void cciMeasurements::M_UpdateDir()
     //-----------------------
     // Compute momentums
     //-----------------------
-    M_ComputeMomentum(_This,m11.Begin(),1,1);    
-    M_ComputeMomentum(_This,m02.Begin(),0,2);    
-    M_ComputeMomentum(_This,m20.Begin(),2,0);    
+    M_ComputeMomentum(m11.Begin(),1,1);    
+    M_ComputeMomentum(m02.Begin(),0,2);    
+    M_ComputeMomentum(m20.Begin(),2,0);    
 
     //-----------------------
     // Compute direction
     //-----------------------
-    index_table_type& _itable = mIndexTable;
     
-  //daim::basic_partition&  _part   = mPartition;
-
     info_list_type::iterator it   = mNodeList.Begin();
     info_list_type::iterator last = mNodeList.End();
     XNODE pNode;
@@ -486,7 +475,7 @@ void cciMeasurements::M_UpdateDir()
       pNode = &(*it);
       if(pNode->ri_Status==RI_REGION) 
       {
-        nindex = _itable[pNode->ri_Part];
+        nindex = mIndexTable[pNode->ri_Part];
         pNode->ri_Theta = 0.5 * atan2(2.0*m11[nindex],m20[nindex]-m02[nindex]);
       }
     }  
@@ -497,7 +486,7 @@ void cciMeasurements::M_UpdateDir()
 //--------------------------------------------------------------
 // Compute object circonscript rectangle
 //--------------------------------------------------------------
-void cciMeasurements::M_ComputeRectProps1( 
+static void M_ComputeRectProps1( 
    dm_real _xcal,dm_real _ycal,
    const dmPoly& p, 
    dm_real theta, 
@@ -528,11 +517,11 @@ void cciMeasurements::M_UpdateRectProps()
 {
   if( (mUpdate & IMAGEMAP_UPDATE_RECTPROPS)==0 ) 
   {
-    M_UpdateBoundary(_This);
-    M_UpdateDir(_This);
+    M_UpdateBoundary();
+    M_UpdateDir();
 
-    double _xcal = _This->uppxls;
-    double _ycal = _This->aspect_ratio * _xcal;
+    double _xcal = uppxls;
+    double _ycal = aspect_ratio * _xcal;
 
     info_list_type::iterator it   = mNodeList.Begin();
     info_list_type::iterator last = mNodeList.End();
@@ -555,9 +544,9 @@ void cciMeasurements::M_UpdateRectProps()
   }
 }
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeDir( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results )
+bool cciMeasurements::M_ComputeDir( dm_real* _Results )
 {
-  M_UpdateDir(_This);
+  M_UpdateDir();
 
   index_table_type& _itable = mIndexTable;
 
@@ -573,10 +562,9 @@ bool cciMeasurements::M_ComputeDir( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _
   return true;
 }
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeRectProps( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results, int l )
+bool cciMeasurements::M_ComputeRectProps( dm_real* _Results, int l )
 {
-  M_UpdateRectProps(_This);
-  index_table_type& _itable = mIndexTable;
+  M_UpdateRectProps();
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -585,17 +573,16 @@ bool cciMeasurements::M_ComputeRectProps( CCI_INSTANCE_PTR(ImageMap) _This, dm_r
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) {
-      if(l>1) _Results[_itable[pNode->ri_Part]] = pNode->ri_L1; 
-      else    _Results[_itable[pNode->ri_Part]] = pNode->ri_L2; 
+      if(l>1) _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_L1; 
+      else    _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_L2; 
     }
   } 
   return true;
 }
 //--------------------------------------------------------------
-bool cciMeasurements::M_ComputeEuler( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results  ) 
+bool cciMeasurements::M_ComputeEuler( dm_real* _Results  ) 
 {
-  M_UpdateEuler(_This);
-  index_table_type& _itable = mIndexTable;
+  M_UpdateEuler();
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -604,16 +591,14 @@ bool cciMeasurements::M_ComputeEuler( CCI_INSTANCE_PTR(ImageMap) _This, dm_real*
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[_itable[pNode->ri_Part]] = pNode->ri_Euler; 
+      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Euler; 
   } 
   return true;
 
 }
 //--------------------------------------------------------------
-bool cciMeasurements::M_ComputeDepth( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results  ) 
+bool cciMeasurements::M_ComputeDepth( dm_real* _Results  ) 
 {
-  index_table_type& _itable = mIndexTable;
-
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
@@ -621,16 +606,14 @@ bool cciMeasurements::M_ComputeDepth( CCI_INSTANCE_PTR(ImageMap) _This, dm_real*
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[_itable[pNode->ri_Part]] = pNode->ri_Depth; 
+      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Depth; 
   } 
   return true;
 
 }
 //--------------------------------------------------------------
-bool cciMeasurements::M_ComputeHoles( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results  ) 
+bool cciMeasurements::M_ComputeHoles( dm_real* _Results  ) 
 {
-  index_table_type& _itable = mIndexTable;
-
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
@@ -638,16 +621,14 @@ bool cciMeasurements::M_ComputeHoles( CCI_INSTANCE_PTR(ImageMap) _This, dm_real*
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[_itable[pNode->ri_Part]] = pNode->ri_Childs; 
+      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Childs; 
   } 
   return true;
 
 }
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputeParentLabels( CCI_INSTANCE_PTR(ImageMap) _This, dm_real* _Results  ) 
+bool cciMeasurements::M_ComputeParentLabels( dm_real* _Results  ) 
 {
-  index_table_type& _itable = mIndexTable;
-
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
@@ -655,21 +636,18 @@ bool cciMeasurements::M_ComputeParentLabels( CCI_INSTANCE_PTR(ImageMap) _This, d
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[_itable[pNode->ri_Part]] = pNode->ri_Father; 
+      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Father; 
   } 
   return true;
 
 }
 //---------------------------------------------------------------------
-bool cciMeasurements::M_ComputePosition(  CCI_INSTANCE_PTR(ImageMap) _This,  
-                                dm_real* _Results, int p )
+bool cciMeasurements::M_ComputePosition( dm_real* _Results, int p )
 {
-  dm_real _xcal = _This->uppxls;
-  dm_real _ycal = _This->aspect_ratio * _xcal;
+  dm_real _xcal = uppxls;
+  dm_real _ycal = aspect_ratio * _xcal;
 
-  M_UpdateCentroids(_This);
-
-  index_table_type& _itable = mIndexTable;
+  M_UpdateCentroids();
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -678,8 +656,8 @@ bool cciMeasurements::M_ComputePosition(  CCI_INSTANCE_PTR(ImageMap) _This,
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) {
-      if(p==1) _Results[_itable[pNode->ri_Part]] = _xcal * pNode->ri_Position_x;
-      else     _Results[_itable[pNode->ri_Part]] = _ycal * pNode->ri_Position_y;
+      if(p==1) _Results[mIndexTable[pNode->ri_Part]] = _xcal * pNode->ri_Position_x;
+      else     _Results[mIndexTable[pNode->ri_Part]] = _ycal * pNode->ri_Position_y;
     }
   }
   return true;

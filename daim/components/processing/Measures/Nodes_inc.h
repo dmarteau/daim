@@ -1,14 +1,14 @@
 
 //To be included in cciMeasures.h
 
-void N_InsertNodes();
-bool N_CreateNodes();
-int  N_UpdatePartition(); 
-void N_UpdateRoi();
-void N_UpdatePartRoi();
-int  N_BuildIndexTable(); 
-void N_CollectChildLabels( XNODE node, bool include_holes );
-void N_MergeChilds( XNODE node );
-bool N_MergeNode( XNODE node );
-bool N_ClearNode( XNODE node );
-bool N_RemoveLabels();
+void M_InsertNodes();
+bool M_CreateNodes();
+int  M_UpdatePartition(); 
+void M_UpdateRoi();
+void M_UpdatePartRoi();
+int  M_BuildIndexTable(); 
+void M_CollectChildLabels( XNODE node, bool include_holes );
+void M_MergeChilds( XNODE node );
+bool M_MergeNode( XNODE node );
+bool M_ClearNode( XNODE node );
+bool M_RemoveLabels();

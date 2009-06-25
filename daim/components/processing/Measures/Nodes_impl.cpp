@@ -65,7 +65,7 @@ public:
   }  
 };
 //------------------------------------------------------------
-void cciMeasurements::N_InsertNodes()
+void cciMeasurements::M_InsertNodes()
 {
    dmRect r = mMap.rect();
    r.Resize(0,0,0,-1);
@@ -86,9 +86,9 @@ void cciMeasurements::N_InsertNodes()
    }
 }
 //------------------------------------------------------------
-bool cciMeasurements::N_CreateNodes()
+bool cciMeasurements::M_CreateNodes()
 {
-   N_InsertNodes();
+   M_InsertNodes();
    
    dmOList<_RegionInfo>& thisNodeList = mNodeList;
 
@@ -140,7 +140,7 @@ bool cciMeasurements::N_CreateNodes()
 //--------------------------------------------------------------
 // Update partition for objects
 //--------------------------------------------------------------
-int cciMeasurements::N_UpdatePartition() 
+int cciMeasurements::M_UpdatePartition() 
 {
   if( (mUpdate & IMAGEMAP_UPDATE_PARTITION)==0 )
   {
@@ -174,12 +174,12 @@ int cciMeasurements::N_UpdatePartition()
 //--------------------------------------------------------------
 // Update ROI for objects
 //--------------------------------------------------------------
-void cciMeasurements::N_UpdateRoi()
+void cciMeasurements::M_UpdateRoi()
 {
   if( (mUpdate & IMAGEMAP_UPDATE_PARTITION)==0 ||
       (mUpdate & IMAGEMAP_UPDATE_ROI      )==0 ) 
   {
-    N_UpdatePartition(_This);
+    M_UpdatePartition();
 
     // If region for objects+holes is valid, use it as conditional region
     if((mUpdate & IMAGEMAP_UPDATE_PARTROI) !=0) 
@@ -200,7 +200,7 @@ void cciMeasurements::N_UpdateRoi()
 //--------------------------------------------------------------
 // Update ROI for objects+holes
 //--------------------------------------------------------------
-void cciMeasurements::N_UpdatePartRoi()
+void cciMeasurements::M_UpdatePartRoi()
 {
   if( (mUpdate & IMAGEMAP_UPDATE_PARTROI)==0) 
   {
@@ -217,13 +217,13 @@ void cciMeasurements::N_UpdatePartRoi()
 // Update index table used for storing results
 // results are indexed according to this table
 //--------------------------------------------------------------
-int cciMeasurements::N_BuildIndexTable() 
+int cciMeasurements::M_BuildIndexTable() 
 {
   if( (mUpdate & IMAGEMAP_UPDATE_ROI)        == 0 ||
       (mUpdate & IMAGEMAP_UPDATE_INDEXTABLE) == 0 )
  
   {
-    N_UpdatePartition(_This);
+    M_UpdatePartition();
 
     mNumPartitions = mPartition.get_index_table(mIndexTable) - 1;
     mUpdate       |= IMAGEMAP_UPDATE_INDEXTABLE;
@@ -233,7 +233,7 @@ int cciMeasurements::N_BuildIndexTable()
 //--------------------------------------------------------------------------
 // Recursively collect child labels
 //--------------------------------------------------------------------------
-void cciMeasurements::N_CollectChildLabels( XNODE node, 
+void cciMeasurements::M_CollectChildLabels( XNODE node, 
                                             bool include_holes )
 {
   dmDEBUG_ASSERT( node != NULL );
@@ -250,14 +250,14 @@ void cciMeasurements::N_CollectChildLabels( XNODE node,
      mLabels.push_back(child->ri_Part);
 
     if(child->ri_Childs)
-      N_CollectChildLabels(child,include_holes);
+      M_CollectChildLabels(child,include_holes);
   }
 }
 //--------------------------------------------------------------------------
 // Recusively merge child nodes of a given node,
 // Don't forget to update the partition !!
 //--------------------------------------------------------------------------
-void cciMeasurements::N_MergeChilds(  XNODE node )
+void cciMeasurements::M_MergeChilds(  XNODE node )
 {
   dmDEBUG_ASSERT( node != NULL );
 
@@ -266,7 +266,7 @@ void cciMeasurements::N_MergeChilds(  XNODE node )
     XNODE child = static_cast<_RegionLink*>(node->ri_ChildList.Pop_Front())->rl_Self;
 
     if(child->ri_Childs)
-       N_MergeChilds(child);
+       M_MergeChilds(child);
    
     node->ri_Count  += child->ri_Count;
     node->ri_Childs -= 1;
@@ -284,7 +284,7 @@ void cciMeasurements::N_MergeChilds(  XNODE node )
 //--------------------------------------------------------------------------
 // Merge a node with his father
 //--------------------------------------------------------------------------
-bool cciMeasurements::N_MergeNode( XNODE node )
+bool cciMeasurements::M_MergeNode( XNODE node )
 {
   dmDEBUG_ASSERT( node != NULL );
 
@@ -315,17 +315,17 @@ bool cciMeasurements::N_MergeNode( XNODE node )
 // 1. Merge all its childs to this node
 // 2. Merge this node to his father
 //--------------------------------------------------------------------------
-bool cciMeasurements::N_ClearNode( XNODE node )
+bool cciMeasurements::M_ClearNode( XNODE node )
 {
   dmDEBUG_ASSERT( node != NULL );
 
   if(node->ri_Childs) 
-     N_MergeChilds(node);
+     M_MergeChilds(node);
 
-  return N_MergeNode(node);
+  return M_MergeNode(node);
 }
 //--------------------------------------------------------------
-bool cciMeasurements::N_RemoveLabels()
+bool cciMeasurements::M_RemoveLabels()
 {
   daim::labels_array_type::iterator it   = mLabels.begin();
   daim::labels_array_type::iterator last = mLabels.end(); 
@@ -335,7 +335,7 @@ bool cciMeasurements::N_RemoveLabels()
   for(;it!=last;++it) 
   {
     node = &_PARTITION_NODE(*it);
-    N_ClearNode(node);
+    M_ClearNode(node);
   }
 
   mNodePartition.update();

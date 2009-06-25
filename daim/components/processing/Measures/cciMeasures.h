@@ -169,9 +169,6 @@ class cciMeasurements : public cciIMeasurements
 {
 
 friend class MapAdjacency;
-friend class MapCount;
-friend class MapCentroids;
-friend class MapMomentum;
 
 public:
   CCI_DECL_ISUPPORTS
@@ -184,7 +181,7 @@ private:
 
 protected:
   daim::cont_image<dm_int> mMap;
-  dmRegion                 mRoi;          // Roi representing all connexe regions elements
+  dmRegion                 mRoi;           // Roi representing all connexe regions elements
   info_table_type          mNodeTable;     // Indexed table of nodes
   index_table_type         mNodeIndexTable;
   daim::basic_partition    mNodePartition;
@@ -196,7 +193,7 @@ protected:
   daim::basic_partition    mPartition;
   daim::labels_array_type  mLabels;
   dmPoint                  mOffset;
-  dm_param                 mUpdate;
+  dm_uint                  mUpdate;
   dm_int                   mNumPartitions;
   dm_int                   mDepth;
 
@@ -213,14 +210,19 @@ protected:
   
 #include "Nodes_inc.h"
 
-protected:
+public:
+  
+  const daim::map_type&        Map()           const { return mMap;           }
+  const index_table_type&      IndexTable()    const { return mIndexTable;    }
+  const daim::basic_partition& NodePartition() const { return mNodePartition; }
+  
   int          _INDEX( int part ) { return mNodeIndexTable[part];    }
   int          _PARTITION_INDEX( int part ) { return mNodeIndexTable[mNodePartition[part]]; }
 
   _RegionInfo& _NODE ( int part ) { return mNodeTable[_INDEX(part)]; }
   _RegionInfo& _PARTITION_NODE ( int part ) { return mNodeTable[_PARTITION_INDEX(part)]; }
 
-  dm_uint CopyLabelArray( dmIStorageMap& _IStorage, const char_t*  _Column );
+  //dm_uint CopyLabelArray( dmIStorageMap& _IStorage, const char_t*  _Column );
 
 protected:
 

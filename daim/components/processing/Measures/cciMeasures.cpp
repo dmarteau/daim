@@ -138,3 +138,23 @@ CCI_IMETHODIMP cciMeasurements::CleanRegionBorders(cciRegion mask)
 
 ///////////////////////////////////////////////////////////////////
 
+
+//=====================================
+// Module
+//=====================================
+
+#include "cciIGenericFactory.h"
+
+CCI_GENERIC_FACTORY_CONSTRUCTOR(cciMeasurements)
+
+static const cciModuleComponentInfo components[] = {
+    {  CCI_MEASURES_CLASSNAME,
+       CCI_MEASURES_CID,
+       CCI_MEASURES_CONTRACTID,
+       cciMeasurementsConstructor
+    },
+};
+
+CCI_IMPL_GETMODULE(MeasuresModule, components)
+
+
