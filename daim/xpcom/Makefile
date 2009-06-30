@@ -6,11 +6,8 @@ DEPTH= ../..
 
 include $(DEPTH)/config/config.mk
 
-MODULE_NAME  = mozilla
+MODULE_NAME  = xpcom
 
 DIRS = public
-
-export::
-	@mkdir -p $(DIST_REPOSITORY)/mozilla
 
 include $(DEPTH)/config/rules.mk

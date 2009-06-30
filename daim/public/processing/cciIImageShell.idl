@@ -127,19 +127,19 @@ interface cciIImageShell : cciIXPCOMSupports
    * loadImage
    *
    * Load an image from \a path
-   * @param path     the path of the image on the disk
+   * @param path     the path of the image on the disk  (in native charset)
    * @param getAlpha if true, the alpha channel is also retrieved.
    */
-  void loadImage( in string path, in boolean getAlpha );
+  [noscript] void loadImage( in string path, in boolean getAlpha );
 
   /**
    * saveImage
    *
    * Load an image from \a path
-   * @param path the path of the image on the disk
+   * @param path the path of the image on the disk  (in native charset)
    * @param type the mime type of the image on disk or the name of the driver to use.
    */
-  void saveImage( in string path, in string type, in string options );
+  [noscript] void saveImage( in string path, in string type, in string options );
 
   /**
    * clear

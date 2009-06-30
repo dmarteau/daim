@@ -39,14 +39,19 @@ interface cciISurfaceDriver;
 [scriptable, uuid(41ec36c3-486c-4149-bf89-1630fc23556b)]
 interface cciIDriverProxy : cciIXPCOMSupports
 {
-  cciISurface openSurface( in string location, in unsigned long ioFlags );
+  /* 
+   * Methods are noscripts because they require native char set for
+   * the location
+   */
+  
+  [noscript] cciISurface openSurface( in string location, in unsigned long ioFlags );
 
-  cciISurface createSurface( in string location, in string type,
-                             in dm_uint32 width,
-                             in dm_uint32 height,
-                             in EPixelFormat format,
-                             in dm_bool hasAlpha,
-                             in string options);
+  [noscript] cciISurface createSurface( in string location, in string type,
+                                        in dm_uint32 width,
+                                        in dm_uint32 height,
+                                        in EPixelFormat format,
+                                        in dm_bool hasAlpha,
+                                        in string options);
 
   cciISurfaceDriver getDriver( in string type, in dm_bool createCaps );
 

@@ -43,12 +43,17 @@ interface cciISurfaceDriver : cciIXPCOMSupports
 {
   attribute cciIInterfaceRequestor callbacks;
 
-  cciISurface createSurface( in string location,
-                             in dm_uint32 width,
-                             in dm_uint32 height,
-                             in EPixelFormat format,
-                             in dm_bool hasAlpha,
-                             in string options);
+  /* 
+   * Methods are noscripts because they require native char set for
+   * the location
+   */
+  
+  [noscript] cciISurface createSurface( in string location,
+                                        in dm_uint32 width,
+                                        in dm_uint32 height,
+                                        in EPixelFormat format,
+                                        in dm_bool hasAlpha,
+                                        in string options);
 
   boolean isCompatibleDriver( in string type );
 

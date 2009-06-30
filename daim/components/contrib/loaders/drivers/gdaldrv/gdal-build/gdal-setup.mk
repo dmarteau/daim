@@ -20,14 +20,15 @@ PATCH_FILES= \
      windows/nmake_patch.txt \
      windows/makefile_patch.txt
 
-
 ifndef DM_GDAL_DLL
 	_GDAL_APPLY_PATCH = cd $(GDAL_SRC_DIR);$(foreach p,$(PATCH_FILES),patch < "$(SRCDIR)/$(p)";) echo 
 endif
 
 endif
 
+ifndef GDAL_SVN
 GDAL_SVN=https://svn.osgeo.org/gdal/branches/1.5/gdal
+endif
 
 all:
 	@echo Retrieving GDAL library from $(GDAL_SVN)

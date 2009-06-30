@@ -382,8 +382,6 @@ CCI_IMETHODIMP cciImageShell::LoadImage(const char * path, dm_bool getAlpha )
 {
   CCI_ENSURE_ARG_POINTER(path);
 
-  ClearOpenedResources();
-
   cci_result rv;
 
   cci_Ptr<cciILoaderService> ldrSrvc = do_GetService("@daim.org/contrib/loader-service;1",&rv);
