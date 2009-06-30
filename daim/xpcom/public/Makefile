@@ -21,6 +21,7 @@ XPCOM_EXPORTS=$(DEPTH)/cci/xpcom/cciIXPCOMSupports.idl \
 
 libs::
 	@mkdir -p $(XPCOM_DIST)
+	@rm -f $(XPCOM_DIST)/*.idl $(XPCOM_DIST)/*.h $(XPCOM_DIST)/filelist
 	cp $(DIST_REPOSITORY)/idl/daim/*.idl $(XPCOM_DIST)/
 	cp ccidaim.idl $(XPCOM_DIST)/
 	for f in $(XPCOM_EXPORTS); do \
@@ -29,8 +30,6 @@ libs::
 	cd $(XPCOM_DIST); ls *.idl > filelist
 	
 clean:: 
-	@rm -f $(XPCOM_DIST)/*.idl
-	@rm -f $(XPCOM_DIST)/*.h
-	@rm -f $(XPCOM_DIST)/filelist
+	@rm -f $(XPCOM_DIST)/*.idl $(XPCOM_DIST)/*.h $(XPCOM_DIST)/filelist
 	
 include $(DEPTH)/config/rules.mk

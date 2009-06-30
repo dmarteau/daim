@@ -84,12 +84,6 @@ static inline dm_int __loadsym1( _F* _ppfn, const char* procname )
 
 #define DAIM_DLL DM_DLL_PREFIX "daim" DM_DLL_SUFFIX
 
-static const char* dependentLibs[] =
-{
-  DM_DLL_PREFIX "daim_utilities" DM_DLL_SUFFIX,
-  DM_DLL_PREFIX "daim_kernel"    DM_DLL_SUFFIX,
-  dm_null
-};
 
 cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, dmLOG_FUNCTION pfnLog )
 {
@@ -99,6 +93,14 @@ cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, d
   char libpath[MAX_PATH] = "\0";
 
   #ifdef DM_CONFIG_TARGET_LINUX
+  
+    static const char* dependentLibs[] =
+    {
+      DM_DLL_PREFIX "daim_utilities" DM_DLL_SUFFIX,
+      DM_DLL_PREFIX "daim_kernel"    DM_DLL_SUFFIX,
+      dm_null
+    };
+  
     // ====================================================
     //
     // Really ugly hack, chdir to the daim binaries location

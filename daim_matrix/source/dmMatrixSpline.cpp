@@ -168,7 +168,7 @@ dmMatrix_Spline_Eval( const dmMatrixRowCol& Y , const dmVectorArray& X,
   if(YR.Length() != XR.Size() )
      MatrixError( "Incompatible size for output vectors in dmMatrix_Spline_Eval" );
   
-  dm_int n = Y.Length(),m = YR.Length();  
+  dm_int m = YR.Length();  
   dm_int ord = spl->order;
   
   dm_matrix_t x;

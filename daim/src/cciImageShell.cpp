@@ -555,8 +555,7 @@ CCI_IMETHODIMP cciImageShell::Resample(cciImage dest, cciRegion rgn, dm_uint32 m
   CCI_ENSURE_ARG_POINTER(dest);
   CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_NOT_INITIALIZED);
 
-  dmImage* nativeImg = dest->GetNative();
-  CCI_PRECONDITION(nativeImg,"null image");
+  CCI_PRECONDITION(dest->GetNative(),"null image");
 
   cci_result rv;
   cci_Ptr<cciITransforms> tr = do_GetService("@daim.org/processing/transforms;1",&rv);
