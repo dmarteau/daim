@@ -27,7 +27,7 @@ endif
 endif
 
 ifndef GDAL_SVN
-GDAL_SVN=https://svn.osgeo.org/gdal/branches/1.5/gdal
+GDAL_SVN=https://svn.osgeo.org/gdal/tags/1.5.4/gdal
 endif
 
 all:
