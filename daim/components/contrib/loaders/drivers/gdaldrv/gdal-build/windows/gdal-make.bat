@@ -9,6 +9,8 @@ rem CLEAR MAKEFLAGS, otherwise it passes invalid options to nmake when called
 rem from Gnu make
 set MAKEFLAGS=
 
+rem Take care that WIN64 is undefined on non WIN64 plateforms
+rem  Mozilla build define WIN64=0, and gdal just check for existence of WIN64 !!!!!!
 if DEFINED WIN64 (
 if "%WIN64%"=="0" set WIN64=
 )
