@@ -9,6 +9,12 @@ rem CLEAR MAKEFLAGS, otherwise it passes invalid options to nmake when called
 rem from Gnu make
 set MAKEFLAGS=
 
+if DEFINED WIN64 (
+if "%WIN64%"=="0" set WIN64=
+)
+
+
+
 echo command=%GDAL_COMMAND% mode=%GDAL_BUILDTYPE% srcdir=%GDAL_SRC_DIR% installdir=%GDAL_INSTALLDIR%
 
 cd %GDAL_SRC_DIR%
@@ -19,6 +25,7 @@ if "%GDAL_BUILDTYPE%"=="debug" (
  set DEBUG_BUILD=
  echo building in release mode
 )
+
 
 echo on
 
