@@ -32,6 +32,7 @@ esac
 do_configure ()
 {
   ./configure --prefix=$GDAL_INSTALLDIR/ $ENABLE_DEBUG --enable-shared=no --without-libtool  --without-ld-shared \
+                --with-threads=yes \
                 --with-expat=no \
                 --without-ogr \
                 --with-sqlite3=no \

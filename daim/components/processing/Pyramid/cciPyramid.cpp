@@ -240,7 +240,7 @@ CCI_IMETHODIMP cciPyramid::Reconstruct(cciIImageList *srcImages, cciIImageList *
                                        dm_uint32 from, dm_uint32 to,
                                        cciIFilterContext *filterCtxt)
 {
-  //FIXME handle RGB images
+  //TODO handle RGB images
 
   CCI_ENSURE_ARG_POINTER(srcImages);
   CCI_ENSURE_ARG_POINTER(dstImages);
