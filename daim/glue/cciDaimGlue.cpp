@@ -84,6 +84,11 @@ static inline dm_int __loadsym1( _F* _ppfn, const char* procname )
 
 #define DAIM_DLL DM_DLL_PREFIX "daim" DM_DLL_SUFFIX
 
+#ifdef DM_CONFIG_TARGET_WIN32
+#define PATH_SEP "\\"
+#else
+#define PATH_SEP "/"
+#endif
 
 cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, dmLOG_FUNCTION pfnLog )
 {
@@ -143,7 +148,7 @@ cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, d
   #endif //DM_CONFIG_TARGET_LINUX
 
   // Bootstrap the library
-  snprintf(libpath,MAX_PATH-1,"%s/bin/%s",location,DAIM_DLL);
+  snprintf(libpath,MAX_PATH-1,"%s" PATH_SEP "bin" PATH_SEP "%s",location,DAIM_DLL);
 
   gDaimModule = __dm_dlopen( libpath );
 
