@@ -12,6 +12,10 @@ ifndef BUILD_DEBUG
 BUILD_DEBUG:=1
 endif
 
+ifeq ($(BUILD_DEBUG),1)
+DAIM_DEBUG:=1
+endif
+
 ifdef DAIM_BUILD_CONFIG
 BUILD_CONFIG=$(DAIM_BUILD_CONFIG)
 endif
@@ -32,9 +36,6 @@ BUILD_TESTS:=1
 
 # Use gdal driver (gdal required)
 DM_USE_GDAL=1
-
-# Use custom build of gdal
-GDAL_INTERNAL=1
 
 # Link dynamically with gdal (enable full gdal capabilities)
 #DM_GDAL_DLL=1
@@ -59,4 +60,17 @@ else
 #BUILD_DIR=$(call normalizepath,$(DAIM_OBJ_DIR))
 BUILD_DIR=$(DAIM_OBJ_DIR)
 endif
+
+#==========================================
+# Define GDAL_HOME
+#==========================================
+
+ifdef DM_USE_GDAL
+ifndef GDAL_HOME
+# Use gdal internal build
+DAIM_GDAL:=1
+GDAL_HOME=$(BUILD_DIR)/gdal
+endif
+endif
+
 

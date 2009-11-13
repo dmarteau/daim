@@ -5,7 +5,10 @@ Build Requirements :
 
  * MacOSX 10.4+
  * Linux
- * Windows 2000SP4/XP/Vista with Cygwin or MSYS environment
+ * Windows 2000SP4/XP/Vista with Cygwin or MSYS environment 
+
+MSYS environment with mozilla build:
+http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-1.4.exe
 
 
 Notes for all platforms:
@@ -14,7 +17,7 @@ Notes for all platforms:
 The build process use standard 'make' makefiles.
 The build process can be easily driven using the setup script located at
 
-http://3liz.org/svn/daim/trunk/daim2/build-tools/scripts/daim-setup.sh
+http://3liz.org/svn/daim/trunk/daim2/daim-setup.sh
 
 Checkout the file and follow command line instructions
 
@@ -43,7 +46,8 @@ Visual 8 or higher (DAIM WILL NOT compile on previous version of visual C++)
 
 Gnu make (available for windows with the Cygwin distribution http://www.cygwin.com or MSYS/MinGW configuration)
 
-A sh compatible shell (available for windows with the Cygwin distribution http://www.cygwin.com)
+A sh compatible shell (available for windows with the Cygwin distribution http://www.cygwin.com or
+the MSYS environment)
 
 A Python v2.5+ distribution for compiling idl files to c++ header files, 
 
@@ -73,18 +77,12 @@ Building width a pre-installed gdal distribution
 ======================================
 
 By default, daim use a custom build of gdal
-If you want use a preinstalled gdal distribution
-
-In daim2/src/config/setup.mk add/change the following line:
-
-GDAL_INTERNAL=0
+If you want use a preinstalled gdal distribution define GDAL_HOME to point to your 
+installed files
 
 Set DM_GDAL_DLL=0  f you plan to link statically (the default) to the GDAL code. 
 
-Set GDAL_LIB and GDAL_INCLUDE environement variables to the correct paths.
-
 Gdal driver will be dynamically linked with the pre-installed gdal distribution
-
 
 
 

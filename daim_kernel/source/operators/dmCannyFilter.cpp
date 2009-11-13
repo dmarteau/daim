@@ -60,8 +60,6 @@ struct __dm_impl_canny
      // Swap buffer and image;
      daim::swap(_buffer.BufferRgn(),_buffer.BufferSrc(),
            _imgbuf->Gen(),_Image.Gen());
-
-     // TODO
   }
 };
 //--------------------------------------------------------------------
