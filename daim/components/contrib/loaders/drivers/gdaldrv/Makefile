@@ -11,18 +11,12 @@ else
 LIBRARY_NAME=gdalmindrv
 endif
 
-# If GDAL_HOME si not set 
-# build our own version of gdal
-ifeq ($(GDAL_INTERNAL),1)
-
-GDAL_HOME=$(DIST_REPOSITORY)/gdal
-GDAL_INCLUDE=$(GDAL_HOME)/include
-GDAL_LIB=$(GDAL_HOME)/lib
-
-DIRS+=gdal-build
-
+ifndef GDAL_HOME
+$(error GDAL_HOME not defined !!)
 endif
 
+GDAL_INCLUDE=$(GDAL_HOME)/include
+GDAL_LIB=$(GDAL_HOME)/lib
 
 MODULE_INCL=$(GDAL_INCLUDE)
 
