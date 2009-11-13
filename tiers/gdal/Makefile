@@ -8,8 +8,7 @@ endif
 
 export GDAL_DIST_DIR:=$(call normalizepath,$(shell cd "$(DIST_REPOSITORY)"; pwd)/gdal)
 export GDAL_OBJ_DIR:=$(call normalizepath,$(shell cd "$(BUILD_REPOSITORY)"; pwd)/.parts/gdal)
-
-GDAL_SRC_DIR=$(DEPTH)/../gdal
+export GDAL_SRC_DIR:=$(DEPTH)/../gdal
 
 ifneq ($(OS_ARCH),WINNT)
 

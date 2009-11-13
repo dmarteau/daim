@@ -137,7 +137,7 @@ class ImageMap_BndrySearch
    ,part(_part) {}
 
    bool operator()(int _map) {
-     return part[_map]>=lbl;  // XXX This ensure that pixel is INSIDE object 
+     return part[_map]>=lbl;  // This ensure that pixel is INSIDE object 
                               // See problems on boundary search algorithm
    }
 };

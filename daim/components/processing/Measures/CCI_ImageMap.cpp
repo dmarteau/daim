@@ -1104,7 +1104,7 @@ static CCI_IMPL_METHOD( ImageMap, RegionProps )
   // Compute and add results in storage
   //--------------------------------------
 
-  _This->Storage.Resize( _This->NumPartitions + 1 ); // XXX Numpartition is the number of objects
+  _This->Storage.Resize( _This->NumPartitions + 1 ); // Numpartition is the number of objects
   dm_real* _results = _This->Storage.Begin();
 
   dmLink<dmImage>  _Image;
@@ -1170,7 +1170,7 @@ static CCI_IMPL_METHOD( ImageMap, RegionProps )
     // Store result in storage-map object
     if(bRes)
     {
-       // XXX Numpartition is the number of objects
+       // Numpartition is the number of objects
        dm_real* new_store = _IStorage.GetCol(item,_This->NumPartitions);
        if(new_store) {
           std::copy(_This->Storage.Begin()+1,_This->Storage.End(),new_store+1);
