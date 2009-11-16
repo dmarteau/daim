@@ -42,7 +42,10 @@ TIERS= \
 	config \
 	$(NULL)
 
-build: build_tiers make_tiers
+build: create_repository build_tiers make_tiers
+
+create_repository:
+	@mkdir -p $(DIST_REPOSITORY)
 
 build_tiers: $(TIERS)
 	@for d in $^; do \

@@ -35,7 +35,7 @@ BUILD_TESTS:=1
 # GDAL driver config
 
 # Use gdal driver (gdal required)
-DM_USE_GDAL=1
+DM_USE_GDAL:=1
 
 # Link dynamically with gdal (enable full gdal capabilities)
 #DM_GDAL_DLL=1

@@ -106,10 +106,7 @@ dos-path      = $(foreach p,$(1),$(if $(filter /%,$(p)),$(shell cd $(call root-p
 # Normalize to windows path (i.e c:\)
 normalizepath = $(subst /,\,$(call dos-path,$(1)))
 endif
-# Define alternative to rsync
-RSYNC = python $(DEPTH)/build/win/rsync.py -r
 else
 normalizepath = $(1)
-RSYNC = rsync -a -v
 endif
 
