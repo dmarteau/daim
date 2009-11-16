@@ -14,5 +14,5 @@ endif
 include $(topsrcdir)/config/rules.mk
 
 libs::
-	cp -R $(GDAL_SRC_DIR)/* $(GDAL_OBJ_DIR)
+	$(RSYNC) --exclude .svn $(GDAL_SRC_DIR)/ $(GDAL_OBJ_DIR)
 	cmd.exe \/c "build.bat all $(BUILD_MODE) $(GDAL_OBJ_DIR) $(GDAL_DIST_DIR)"
