@@ -2,6 +2,9 @@ DEPTH = ../..
 
 include $(DEPTH)/config/config.mk
 
+# We need to declare LIBRARY_NAME
+LIBRARY_NAME = gdal
+
 ifeq ($(OS_ARCH),WINNT)
 DIRS += windows
 endif
@@ -9,6 +12,9 @@ endif
 export GDAL_DIST_DIR:=$(call normalizepath,$(shell cd "$(DIST_REPOSITORY)"; pwd)/gdal)
 export GDAL_OBJ_DIR:=$(call normalizepath,$(shell cd "$(BUILD_REPOSITORY)"; pwd)/.parts/gdal)
 export GDAL_SRC_DIR:=$(call normalizepath,$(shell cd "$(DEPTH)/../gdal"; pwd))
+
+# Apply rules first
+include $(DEPTH)/config/rules.mk
 
 ifneq ($(OS_ARCH),WINNT)
 
@@ -63,5 +69,4 @@ clean::
 
 endif
 
-include $(DEPTH)/config/rules.mk
 
