@@ -1,9 +1,6 @@
-DEPTH		= ../../..
-topsrcdir	= @top_srcdir@
-srcdir		= @srcdir@
-VPATH		= @srcdir@
+DEPTH = ../../..
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/config/config.mk
 
 ifdef DAIM_DEBUG
 BUILD_MODE:=debug
@@ -11,8 +8,9 @@ else
 BUILD_MODE:=release
 endif
 
-include $(topsrcdir)/config/rules.mk
+include $(DEPTH)/config/rules.mk
 
 libs::
-	$(RSYNC) --exclude .svn $(GDAL_SRC_DIR)/ $(GDAL_OBJ_DIR)
+	mkdir -p "$(GDAL_OBJ_DIR)"
+	cd "$(GDAL_SRC_DIR)" && cp -RLf * "$(GDAL_OBJ_DIR)"
 	cmd.exe \/c "build.bat all $(BUILD_MODE) $(GDAL_OBJ_DIR) $(GDAL_DIST_DIR)"

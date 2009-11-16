@@ -23,7 +23,7 @@ co:
 	@echo "Checking GDAL configuration"
 	@if test ! -d $(GDAL_SRC); then \
 	    echo "Checkout GDAL source from $(GDAL_SVN)"; \
-		cd $(DEPTH)/..;svn co $(GDAL_SVN) gdal; \
+		cd $(DEPTH)/..;svn export $(GDAL_SVN) gdal; \
 		cd gdal;$(foreach p,$(PATCH_FILES),patch < "$(_curdir)/patches/$(p)";) echo; \
 	fi
 

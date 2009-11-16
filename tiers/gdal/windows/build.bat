@@ -37,20 +37,23 @@ if "%GDAL_COMMAND%"=="all"       goto do_all
 goto end
 
 :do_all
-nmake -f makefile.vc MSVC_VER=1400 GDAL_HOME=%GDAL_INSTALLDIR% clean
+cd %GDAL_SRC_DIR%
 nmake -f makefile.vc MSVC_VER=1400 GDAL_HOME=%GDAL_INSTALLDIR% %DEBUG_BUILD%
 nmake -f makefile.vc MSVC_VER=1400 GDAL_HOME=%GDAL_INSTALLDIR% devinstall
 goto end
 
 :do_build
+cd %GDAL_SRC_DIR%
 nmake -f makefile.vc MSVC_VER=1400 GDAL_HOME=%GDAL_INSTALLDIR% %DEBUG_BUILD%
 goto end
 
 :do_install
+cd %GDAL_SRC_DIR%
 nmake -f makefile.vc MSVC_VER=1400 GDAL_HOME=%GDAL_INSTALLDIR% devinstall
 goto end
 
 :do_clean
+cd %GDAL_SRC_DIR%
 nmake -f makefile.vc MSVC_VER=1400 GDAL_HOME=%GDAL_INSTALLDIR% clean
 goto end
 

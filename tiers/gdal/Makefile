@@ -8,7 +8,7 @@ endif
 
 export GDAL_DIST_DIR:=$(call normalizepath,$(shell cd "$(DIST_REPOSITORY)"; pwd)/gdal)
 export GDAL_OBJ_DIR:=$(call normalizepath,$(shell cd "$(BUILD_REPOSITORY)"; pwd)/.parts/gdal)
-export GDAL_SRC_DIR:=$(DEPTH)/../gdal
+export GDAL_SRC_DIR:=$(call normalizepath,$(shell cd "$(DEPTH)/../gdal"; pwd))
 
 ifneq ($(OS_ARCH),WINNT)
 
@@ -60,8 +60,8 @@ clean::
 	rm -rf $(GDAL_DIST_DIR)
 	$(MAKE) -j1 -C $(GDAL_OBJ_DIR) clean;
 
-include $(DEPTH)/config/rules.mk
 
 endif
 
+include $(DEPTH)/config/rules.mk
 
