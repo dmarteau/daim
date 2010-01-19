@@ -25,7 +25,7 @@ co:
 	@if test ! -d $(GDAL_SRC); then \
 	    echo "Checkout GDAL source from $(GDAL_SVN)"; \
 		cd $(DEPTH)/..;svn export $(GDAL_SVN) gdal; \
-		cd gdal;$(foreach p,$(PATCH_FILES),patch < "$(_curdir)/patches/$(p)";) echo; \
+		cd gdal;$(foreach p,$(PATCH_FILES),patch -p0 < "$(_curdir)/patches/$(p)";) echo; \
 	fi
 
 apply_patches:
