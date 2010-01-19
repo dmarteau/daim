@@ -15,6 +15,7 @@ _curdir := $(shell pwd)
 PATCH_FILES= \
      p1.patch \
      p2.patch \
+     p3.patch \
      $(NULL)
 
 all: co
