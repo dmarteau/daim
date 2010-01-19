@@ -29,4 +29,4 @@ co:
 	fi
 
 apply_patches:
-	cd $(DEPTH)/../gdal;$(foreach p,$(PATCH_FILES),patch < "$(_curdir)/patches/$(p)";) echo
+	cd $(DEPTH)/../gdal;$(foreach p,$(PATCH_FILES),patch -p0 < "$(_curdir)/patches/$(p)";) echo
