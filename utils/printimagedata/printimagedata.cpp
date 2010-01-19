@@ -143,7 +143,7 @@ cci_result PrintImagedata( const char* inputFile, const char* domain )
   if(CCI_FAILED(rv))
      return rv;
 
-  dmString data;
+  dmCString data;
   cci_Ptr<cciIUTF8StringEnumerator> enumerator;
 
   rv = mdcontainer->GetMetadata(domain,getter_AddRefs(enumerator));
@@ -158,7 +158,7 @@ cci_result PrintImagedata( const char* inputFile, const char* domain )
     {
       rv = enumerator->GetNext(data);
       if(CCI_SUCCEEDED(rv))
-         wprintf(DM_LL("%ls\n"),data.get());
+         printf("%s\n",data.get());
     }
   }
 
