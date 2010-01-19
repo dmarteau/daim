@@ -27,7 +27,11 @@
 // Author       : David Marteau
 //--------------------------------------------------------
 
+#define dmUseUtilitiesExtra
+#define dmUseKernelImageTemplates
+
 #include "cciCOMPtr.h"
+#include "ccidaim.h"
 #include "cciString.h"
 #include "cciComponentManagerUtils.h"
 #include "cciServiceManagerUtils.h"
@@ -38,6 +42,10 @@
 #include "cciIColorTable.h"
 
 #include "gdaldrv.h"
+#include "daim_kernel.h"
+
+#include "gdalSurface.h"
+
 #include "dmCrt.h"
 
 struct driverTableEntry {
@@ -130,9 +138,12 @@ CCI_IMETHODIMP cciGDALProxy::OpenSurface(const char * location, dm_uint32 ioFlag
   GDALDatasetH hDS = GDALOpenShared(location,static_cast<GDALAccess>(ioFlags));
   if(hDS)
   {
-    rv = CCI_NewGDALSurface(hDS,ioFlags,dm_null,_retval);
+    cci_Ptr<gdalSurface> surf;
+    rv = gdalSurface::Create(hDS,ioFlags,dm_null,getter_AddRefs(surf));
     if(CCI_FAILED(rv))
        GDALClose(hDS);
+    
+    CCI_IF_ADDREF(*_retval =  surf);
   }
   else {
     CPLErr err = CPLGetLastErrorType();
@@ -144,25 +155,6 @@ CCI_IMETHODIMP cciGDALProxy::OpenSurface(const char * location, dm_uint32 ioFlag
   return rv;
 }
 
-/* cciISurface createSurface (in string location, in string type, in dm_uint32 width, in dm_uint32 height, in EPixelFormat format, in dm_bool hasAlpha, in string options ); */
-CCI_IMETHODIMP cciGDALProxy::CreateSurface(const char * location, const char * type,
-                                           dm_uint32 width, dm_uint32 height,
-                                           EPixelFormat format, dm_bool hasAlpha,
-                                           const char *options,
-                                           cciISurface * *_retval CCI_OUTPARAM)
-{
-  CCI_ENSURE_ARG_POINTER(_retval);
-  CCI_ENSURE_ARG_POINTER(type);
-
-  const char* gdalName = resolveDriverName(type);
-
-  GDALDriverH hDriver = GDALGetDriverByName(gdalName);
-  if(!hDriver)
-     return CCI_ERROR_NOT_AVAILABLE;
-
-  return CCI_NewGDALSurface(hDriver,location,width,height,format,hasAlpha,
-                            options,_retval);
-}
 
 /* cciISurfaceDriver getDriver (in string type, in dm_bool createCaps); */
 CCI_IMETHODIMP cciGDALProxy::GetDriver(const char * type, dm_bool createCaps,

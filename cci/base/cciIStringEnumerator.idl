@@ -40,18 +40,18 @@
 [scriptable, uuid(50d3ef6c-9380-4f06-9fb2-95488f7d141c)]
 interface cciIStringEnumerator : cciISupports
 {
-  ACString getNext();
+  AString getNext();
 
-  [noscript,notxpcom] boolean hasMore();
+  [notxpcom] boolean hasMore();
 };
 
 
 [scriptable, uuid(9bdf1010-3695-4907-95ed-83d0410ec307)]
 interface cciIUTF8StringEnumerator : cciISupports
 {
-  AString getNext();
+  AUTF8String getNext();
 
-  [noscript,notxpcom] boolean hasMore();
+  [notxpcom] boolean hasMore();
 };
 
 

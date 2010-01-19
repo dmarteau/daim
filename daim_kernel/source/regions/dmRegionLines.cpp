@@ -259,6 +259,35 @@ static inline long SubRegionLine( dmRegionLine* l1,dmRegionLine *l2,dmRegionLine
    _END
 }
 //--------------------------------------------------------------
+// Check the intersection of the x intervals between l1 and l2
+//--------------------------------------------------------------
+static inline bool IntersectRegionLine( dmRegionLine* l1,dmRegionLine *l2 )
+{
+  REGISTER dmRgnPair  *seg1,*seg2;
+  REGISTER long n1,n2,x1,x2;
+  
+  seg1 = &l1->rl_xpair[0];
+  n1   = l1->rl_npair;
+
+  seg2 = &l2->rl_xpair[0];
+  n2   = l2->rl_npair;
+
+  while(n1 && n2) {
+    if(seg1->x1 > seg2->x1) {
+      EXCHANGE(seg1,seg2);  // Choose the leftmost (first) segment
+      EXCHANGE(n1,n2);      // keep track of the end of each array
+    }
+    x1 = seg2->x1;          // begining of new segment set to the rightmost origine
+
+    if( x1 <= seg1->x2 ) // Does segment 2 overlap  ?
+       return true;
+ 
+    ++seg1; n1--;   // go to next segment
+  }
+
+  return false;
+}
+//--------------------------------------------------------------
 #undef _DECLARE
 #undef _END
 #undef STORE
@@ -280,7 +309,19 @@ DECLARE_DoRgnLinesOperation( Add )
 DECLARE_DoRgnLinesOperation( Sub )
 DECLARE_DoRgnLinesOperation( Xor )
 
+bool DoRgnLinesOperation_Intersect(rgnline_iterator l1,rgnline_iterator l2,long height)
+{
+   for(long i=0;i<height;i++) {
+     if(IntersectRegionLine(*l1,*l2))
+        return true;
+     ++l1; ++l2;
+   }
+   return false; 
+}
+
 #undef DECLARE_DoRgnLinesOperation
+
+
 //--------------------------------------------------------------
 // dmRgnLineArray allocation
 //--------------------------------------------------------------
@@ -933,6 +974,29 @@ __dmKernel bool dmRgnHandle::Intersect( const dm_rect& r ) const
     }
   }
   return false;
+}
+//--------------------------------------------------------------
+// Test if a region intersect the region
+//--------------------------------------------------------------
+__dmKernel bool dmRgnHandle::Intersect( const dmRgnHandle& _rgn ) const
+{
+  long h,ys,ye,xs,xe;
+
+  const dmRgnHandle& d1   = *this;
+  const dmRgnHandle& d2   = _rgn;
+
+  if(d1.Empty()||d2.Empty())
+     return false;  
+
+  dmGetBoxIntersection(xs,ys,xe,ye,d1.rgn_box,d2.rgn_box);
+  h = ye-ys + 1;  // Handle regions with no common area
+  if( (h<=0) || (xs>xe) )
+     return false;
+ 
+  rgnline_iterator l1 = dmGetRegionLine( d1.Begin(), ys - d1.rgn_box.top_left.y ); // start line for d1
+  rgnline_iterator l2 = dmGetRegionLine( d2.Begin(), ys - d2.rgn_box.top_left.y ); // start line for d2
+
+  return DoRgnLinesOperation_Intersect(l1,l2,h);
 }
 //--------------------------------------------------------------
 __dmKernel bool dmRgnHandle::operator==(const dmRgnHandle& _rgn) const

@@ -48,7 +48,24 @@ interface cciISurface : cciIXPCOMSupports
 
   [noscript,notxpcom] EPixelFormat PixelFormat();
   [noscript,notxpcom] dm_bool      HasAlpha();
+  
+  /**
+   * Return true if the surface has sampling capabilities 
+   * (i.e the surface can be resampled when accesing data)
+   * 
+   * Some block based reader can implement this
+   */
+  [noscript,notxpcom] dm_bool HasSamplingCapabilities();
 
+  /**
+   * Return true if the surface can convert data on the fly 
+   * (i.e the surface can convert data to the format provided 
+   * when accesing data)
+   * 
+   * Some block based reader can implement this
+   */
+  [noscript,notxpcom] dm_bool HasConvertCapabilities();
+  
   [noscript,notxpcom] boolean IsLocked();
   [noscript,notxpcom] boolean IsWritable();
 
@@ -65,6 +82,12 @@ interface cciISurface : cciIXPCOMSupports
   const unsigned long ELockAlpha      = 0x08; /*! Want alpha channel */
 
   const unsigned long ELockBandMask   = 0xff00;
+  
+  /**
+   * Flush internally held data (data will be written to disk if necessary)
+   */
+  void flush();
+  
 };
 
 [scriptable, uuid(295ed32c-e7d8-41c5-96b1-d7954abbb76c)]

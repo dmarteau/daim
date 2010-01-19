@@ -39,6 +39,7 @@ interface cciIImageFilter;
 interface cciIFilterContext;
 interface cciIImageContainer;
 interface cciIRegionContainer;
+interface cciIColorTable;
 
 /**
  * @ingroup daim_interfaces
@@ -52,10 +53,10 @@ interface cciIRegionContainer;
 interface cciIImageShell : cciIXPCOMSupports
 {
   [noscript] void lock(  in dmImageDataRef imData, in dmRectPtr rect );
-  [noscript] void unLock();
+  [noscript] void unlock();
 
   [noscript] void lockAlpha(  in dmImageDataRef imData, in dmRectPtr rect );
-  [noscript] void unLockAlpha();
+  [noscript] void unlockAlpha();
 
   /*
    * Image structure
@@ -90,8 +91,14 @@ interface cciIImageShell : cciIXPCOMSupports
    *
    * Create a new (empty) image
    */
-  void create( in unsigned long width, in unsigned long height, in EPixelFormat format, in dm_bool createAlpha );
+  void create( in unsigned long width, in unsigned long height, in EPixelFormat format, 
+               [optional] in dm_bool createAlpha );
 
+  /**
+   * Release all reources held by the image shell
+   */
+  void destroy();
+  
   /**
    * loadBuffer
    *
@@ -103,6 +110,7 @@ interface cciIImageShell : cciIXPCOMSupports
    */
   void loadBuffer( in cciIImageList imagelist, in unsigned long index, in boolean share );
 
+  
   /**
    * @brief Load an image directly from a external surface
    *
@@ -111,7 +119,7 @@ interface cciIImageShell : cciIXPCOMSupports
    *
    * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
    */
-  void loadSurfaceBits( in cciISurface surface, in cciRegion rgn, in boolean getAlpha );
+  void loadSurfaceBits( in cciISurface surface, in cciRegion rgn, [optional] in boolean getAlpha );
 
   /**
    * @brief Save an image directly to an external surface
@@ -121,7 +129,17 @@ interface cciIImageShell : cciIXPCOMSupports
    *
    * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
    */
-  void writeSurfaceBits( in cciISurface surface, in cciRegion rgn, in boolean getAlpha );
+  void writeSurfaceBits( in cciISurface surface, in cciRegion rgn, [optional] in boolean getAlpha );
+
+  /**
+   * Sample data from external surface
+   * 
+   * The pixels are resampled according to the current size
+   * @param keepFormat
+   *   If set to true, the shell convert the source pixel to the actual format.
+   */
+  void sampleSurfaceBits( in cciISurface surface, in cciRegion rgn, 
+                          in boolean keepFormat, [optional] in boolean getAlpha );
 
   /**
    * loadImage
@@ -130,7 +148,7 @@ interface cciIImageShell : cciIXPCOMSupports
    * @param path     the path of the image on the disk  (in native charset)
    * @param getAlpha if true, the alpha channel is also retrieved.
    */
-  [noscript] void loadImage( in string path, in boolean getAlpha );
+  [noscript] void loadImage( in string path, [optional] in boolean getAlpha );
 
   /**
    * saveImage
@@ -146,13 +164,23 @@ interface cciIImageShell : cciIXPCOMSupports
    *
    * Clear all internal buffer
    */
-  void clear();
+  void clear( [optional] in cciRegion rgn );
 
   /**
    * Access to the current opened surface
    */
   readonly attribute cciISurface currentSurface;
 
+  /**
+   * Access to the current opened surface
+   */
+  attribute cciIColorTable colorTable;
+
+  /** 
+   * Apply the current color table to the image 
+   */
+  void applyColorTable( [optional] in cciRegion rgn );
+  
   /**
    * If true, preserve the meta data (like EXIF metadata)
    * from the last opened image or surface.
@@ -197,7 +225,7 @@ interface cciIImageShell : cciIXPCOMSupports
    * @param mode   the resampling mode (1 : nearest neighbour, 2 : bilinear)
    */
   void resample( in cciImage dest, in cciRegion rgn, in unsigned long mode,
-                 in dm_bool getAlpha );
+                 [optional] in dm_bool getAlpha );
 
   /*
    * Compositing

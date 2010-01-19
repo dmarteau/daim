@@ -37,6 +37,8 @@
 
 #include "cciCOMPtr.h"
 
+#define CCI_INSTANCE_IS_ALIVE(p)  (*((dm_uint32*)(p)) != 0xDEADBEEF)
+
 cci_result
 cciQueryInterface::operator()( const dmIID& aIID, void** answer ) const
 	{
@@ -72,7 +74,14 @@ cciQueryInterfaceWithError::operator()( const dmIID& aIID, void** answer ) const
 cci_Ptr_base::~cci_Ptr_base()
 	{
     if ( mRawPtr )
-			CCICAP_RELEASE(this, mRawPtr);
+    {
+      if(CCI_INSTANCE_IS_ALIVE(mRawPtr))
+			   CCICAP_RELEASE(this, mRawPtr);
+#ifdef DEBUG
+      else 
+        CCI_WARNING("Attempt to release invalid object !");
+#endif
+    }
 	}
 
 void

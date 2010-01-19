@@ -61,7 +61,7 @@ public:
     CCI_DECL_IUTF8STRINGENUMERATOR
     // can't use CCI_DECL_NSISTRINGENUMERATOR because they share the
     // HasMore() signature
-    CCI_IMETHOD GetNext(dmACString& aResult);
+    CCI_IMETHOD GetNext(dmAString& aResult);
 
     static EmptyEnumeratorImpl* GetInstance() {
         return const_cast<EmptyEnumeratorImpl*>(&kInstance);

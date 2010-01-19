@@ -2,7 +2,7 @@
 #define gendrv_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2009 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -32,19 +32,11 @@
 #include "gdal.h"
 
 class cciISurfaceDriver;
-class cciISurface;
 class cciIColorTable;
 
 cci_result CCI_NewGDALDriver( GDALDriverH aDriver  , cciISurfaceDriver* *result );
 
-cci_result CCI_NewGDALSurface(GDALDatasetH aDataset, dm_uint32 ioFlags, GDALDriverH tmpDriver,
-                              cciISurface** result);
 
-cci_result CCI_NewGDALSurface(GDALDriverH aDriver,const char * location,
-                              dm_uint32 width, dm_uint32 height,
-                              EPixelFormat format, dm_bool hasAlpha,
-                              const char *options,
-                              cciISurface** result);
 
 cci_result CCI_NewGDALColorTable(GDALColorTableH aColorTable, cciIColorTable** result);
 

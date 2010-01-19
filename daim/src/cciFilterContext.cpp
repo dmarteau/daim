@@ -127,7 +127,7 @@ CCI_IMETHODIMP cciFilterContext::SetRange(dm_real rmin, dm_real rmax)
 /* void getInterface (in dmIIDRef uuid, [iid_is (uuid), retval] out nsQIResult result); */
 CCI_IMETHODIMP cciFilterContext::GetInterface(const dmIID & uuid, void * *result)
 {
-  return QueryInterface(uuid, result);;
+  return QueryInterface(uuid, result);
 }
 
 

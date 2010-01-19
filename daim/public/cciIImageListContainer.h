@@ -45,10 +45,10 @@
 class CCI_NO_VTABLE cciIImageListContainer : public cciISupports
 {
   public:
-    CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_IIMGLISTCONTAINER_IID)
-
     CCI_IMETHOD GetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 ) = 0;
     CCI_IMETHOD SetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 ) = 0;
+
+    CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_IIMGLISTCONTAINER_IID)
 };
 
 CCI_DEFINE_STATIC_IID_ACCESSOR(cciIImageListContainer, CCI_IIMGLISTCONTAINER_IID)

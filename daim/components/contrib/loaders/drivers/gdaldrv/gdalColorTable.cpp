@@ -34,25 +34,12 @@
 #include "gdaldrv.h"
 #include "daim_kernel.h"
 
+#include "gdalColorTable.h"
 
-/* Header file */
-class gdalColorTable : public cciIColorTable
-{
-public:
-  CCI_DECL_ISUPPORTS
-  CCI_DECL_ICOLORTABLE
-
-  gdalColorTable( GDALColorTableH colorTable );
-
-private:
-  ~gdalColorTable();
-
-protected:
-  GDALColorTableH mColorTable;
-};
+CCI_DEFINE_STATIC_IID_ACCESSOR(gdalColorTable, CCI_COLORTABLE_PRIVATE_IID)
 
 /* Implementation file */
-CCI_IMPL_ISUPPORTS1(gdalColorTable, cciIColorTable)
+CCI_IMPL_ISUPPORTS2(gdalColorTable, gdalColorTable, cciIColorTable)
 
 gdalColorTable::gdalColorTable( GDALColorTableH colorTable )
 : mColorTable(colorTable)
@@ -62,6 +49,11 @@ gdalColorTable::gdalColorTable( GDALColorTableH colorTable )
 gdalColorTable::~gdalColorTable()
 {
   GDALDestroyColorTable(mColorTable);
+}
+
+cci_result gdalColorTable::copyColorTable( cciIColorTable* src, GDALColorTableH dst )
+{
+    
 }
 
 /* long getColorEntryCount (); */

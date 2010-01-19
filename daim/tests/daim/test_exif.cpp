@@ -88,7 +88,7 @@ int main( int argc, char ** argv )
       cci_Ptr<cciIMetaDataContainer> mdcontainer = do_QueryInterface(surface,&rv);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
-      dmString data;
+      dmCString data;
       cci_Ptr<cciIUTF8StringEnumerator> enumerator;
 
       printf("\n### Can I Get default Metadata ?\n");
@@ -101,7 +101,7 @@ int main( int argc, char ** argv )
         {
           rv = enumerator->GetNext(data);
           if(CCI_SUCCEEDED(rv))
-             wprintf(DM_LL(" item : %ls\n"),data.get());
+             printf(" item : %s\n",data.get());
         }
       }
 
@@ -115,7 +115,7 @@ int main( int argc, char ** argv )
         {
           rv = enumerator->GetNext(data);
           if(CCI_SUCCEEDED(rv))
-             wprintf(DM_LL(" item : %ls\n"),data.get());
+             printf(" item : %s\n",data.get());
         }
       }
 

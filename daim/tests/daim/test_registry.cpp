@@ -87,7 +87,7 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("### Test 1.2: Can I enumerate categories ?\n");
-      cci_Ptr<cciIStringEnumerator> categories;
+      cci_Ptr<cciIUTF8StringEnumerator> categories;
 
       rv = catmngr->EnumerateCategories(getter_AddRefs(categories));
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));

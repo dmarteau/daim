@@ -46,13 +46,6 @@ interface cciIDriverProxy : cciIXPCOMSupports
   
   [noscript] cciISurface openSurface( in string location, in unsigned long ioFlags );
 
-  [noscript] cciISurface createSurface( in string location, in string type,
-                                        in dm_uint32 width,
-                                        in dm_uint32 height,
-                                        in EPixelFormat format,
-                                        in dm_bool hasAlpha,
-                                        in string options);
-
   cciISurfaceDriver getDriver( in string type, in dm_bool createCaps );
 
   const unsigned long IO_READONLY = 0;

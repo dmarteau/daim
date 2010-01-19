@@ -59,6 +59,8 @@ typedef float               dm_float  ;
 typedef double              dm_real   ;
 typedef double              dm_double ;
 
+[ptr] native bytePtr(PRUint8);
+
 %{C++
 
 typedef void*              dm_ptr ;

@@ -87,7 +87,7 @@ interface cciICategoryManager : cciISupports
      * @return a simple enumerator, each result QIs to
      *         nsISupportsCString.
      */
-    cciIStringEnumerator enumerateCategory(in string aCategory);
+    cciIUTF8StringEnumerator enumerateCategory(in string aCategory);
 
     /**
      * Enumerate all existing categories
@@ -95,6 +95,6 @@ interface cciICategoryManager : cciISupports
      * @return a simple enumerator, each result QIs to
      *         nsISupportsCString.
      */
-    cciIStringEnumerator enumerateCategories();
+    cciIUTF8StringEnumerator enumerateCategories();
 };
 

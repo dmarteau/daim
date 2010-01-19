@@ -23,7 +23,6 @@ IDLSRC = ccirootidl.idl \
          cciIStringEnumerator.idl \
          cciICategoryManager.idl \
          cciIXPCOMSupports.idl \
-         cciIStringWriter.idl \
          $(NULL)
 
 include $(DEPTH)/config/rules.mk

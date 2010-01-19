@@ -15,10 +15,17 @@ IDLSRC = ccidaim.idl \
          cciIImageContainer.idl \
          cciIRegionContainer.idl \
          cciIRegion.idl \
-         cciIMetaDataProvider.idl \
+         cciIFilterMask.idl \
+         cciIImageFilter.idl \
+         cciIKernelFamily.idl \
+         cciIKernelFamilyContainer.idl \
+         cciIKernelService.idl \
+         cciIScriptableKernelFamily.idl \
+         cciIColorSpace.idl \
+         cciIFilterContext.idl \
+         cciIImageShell.idl \
+         cciIColorTable.idl \
          $(NULL)
-
-DIRS = processing
 
 EXPORTS = cciIImageListContainer.h
 

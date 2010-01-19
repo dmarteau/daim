@@ -208,7 +208,7 @@ int main( int argc, char ** argv )
       {
         printf("### Test 1.2: Can I enumerate categories ?\n");
 
-        cci_Ptr<cciIStringEnumerator> categories;
+        cci_Ptr<cciIUTF8StringEnumerator> categories;
 
         rv = catmngr->EnumerateCategories(getter_AddRefs(categories));
         DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
@@ -226,7 +226,7 @@ int main( int argc, char ** argv )
       {
         printf("### Test 1.3: Can I enumerate category entries ?\n");
 
-        cci_Ptr<cciIStringEnumerator> category;
+        cci_Ptr<cciIUTF8StringEnumerator> category;
 
         const char cat1[] = "cat1";
 

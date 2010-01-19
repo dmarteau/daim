@@ -104,8 +104,8 @@ class dmImageDescriptor
     bool operator==(const dmImageDescriptor& _desc) { return PixelFormat() == _desc.PixelFormat(); }
     bool operator!=(const dmImageDescriptor& _desc) { return PixelFormat() != _desc.PixelFormat(); }
 
-    int  GetPixelFormatIndex     () { return dmGetPixelFormatIndex     (PixelFormat())==1; }
-    int  GetPixelFormatBits      () { return dmGetPixelFormatBits      (PixelFormat())==1; }
+    int  GetPixelFormatIndex     () { return dmGetPixelFormatIndex     (PixelFormat()); }
+    int  GetPixelFormatBits      () { return dmGetPixelFormatBits      (PixelFormat()); }
     bool IsPixelFormatIndexed    () { return dmIsPixelFormatIndexed    (PixelFormat())==1; }
     bool IsPixelFormatDisplayable() { return dmIsPixelFormatDisplayable(PixelFormat())==1; }
     bool IsPixelFormatScalar     () { return dmIsPixelFormatScalar     (PixelFormat())==1; }

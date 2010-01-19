@@ -48,6 +48,7 @@ struct cci_ObjectImpl {
     cci_ObjectHandle       o_Handle;
     void*                  o_Owner;
     CCI_STATIC_DESTRUCTOR  o_Destructor;
+    size_t                 o_Size;
 	//... Instance data follows
 };
 
@@ -65,13 +66,19 @@ inline cci_ObjectImpl* CCI_OBJECT_TO_HANDLE( void* o ) {
 #define CCI_ENSURE_MAGIC_(o)  ((o)->o_Magic==CCI_MAGIC_NUMBER)
 
 #define CCI_ENSURE_MAGIC(o) CCI_ENSURE_MAGIC_(CCI_OBJECT_TO_HANDLE(o))
-#define CCI_ENSURE_VALID(o) ((o)!=dm_null && CCI_ENSURE_MAGIC(o))
 
-#define CCI_SIZEOF_INSTANCE(size) ( size + sizeof (struct cci_ObjectImpl ) )
+#define CCI_SIZEOF_INSTANCE(size) ( (size) + sizeof (struct cci_ObjectImpl ) )
 
 #define ALLOC_OBJ( size ) static_cast<cci_ObjectImpl*>( dmMemory::Malloc(CCI_SIZEOF_INSTANCE(size)) )
 #define FREE_OBJ( ob  ) dmMemory::Free(ob)
 
+#define ROTTED_VALUE 0xDEADBEEF
+#define MARK_DEAD_BYTES( loc, n ) \
+  DM_BEGIN_MACRO  \
+    dm_uint32* p = static_cast<dm_uint32*>(loc); \
+    for(int i = n >> 2;--i>=0;) \
+      *p++ = ROTTED_VALUE; \
+  DM_END_MACRO
 //---------------------------------------------------------
 
 typedef struct cciAllocatorState {
@@ -161,6 +168,10 @@ void cciAllocatorBase::FreeAllObjects()
     // Force call to destructor
     if(impl->o_Destructor)
        impl->o_Destructor(obj);
+    
+    // Munge data so that it's going to mess up any
+    // held reference
+    MARK_DEAD_BYTES(obj,impl->o_Size);
   }
 
   mNuminsts = 0;
@@ -175,7 +186,9 @@ cciAllocatorBase::NewObject(  size_t n, CCI_STATIC_DESTRUCTOR _dtor )
 {
   dmCRITICAL_SECTION( mLock );
 
-  cci_ObjectImpl*  _object = ALLOC_OBJ( n );
+  size_t _allocated = dm_align32(n);
+  
+  cci_ObjectImpl*  _object = ALLOC_OBJ( _allocated );
 
   if(!_object)
 	  return dm_null;
@@ -191,6 +204,7 @@ cciAllocatorBase::NewObject(  size_t n, CCI_STATIC_DESTRUCTOR _dtor )
   _object->o_Owner      = this;
   _object->o_Magic      = CCI_MAGIC_NUMBER;
   _object->o_Destructor = _dtor;
+  _object->o_Size       = _allocated;
 
   mInstances.Push_Back(&_object->o_Handle);
   mNuminsts++;
@@ -248,7 +262,7 @@ cciAllocatorBase::NumberOfInstances()
 dm_bool
 cciAllocatorBase::IsObjectValid(void* p)
 {
-  return CCI_ENSURE_VALID(p) ? DM_TRUE : DM_FALSE;
+  return (p !=dm_null &&  CCI_ENSURE_MAGIC(p));
 }
 
 //===================================================
@@ -329,7 +343,7 @@ CCI_VerifyObject(void* ptr)
 {
   CCI_PRECONDITION(gAllocatorState != dm_null,"Allocator not available !");
   if(gAllocatorState)
-  {
+  {    
     if(gAllocatorState->mAllocator.IsObjectValid(ptr))
        return CCI_OK;
 

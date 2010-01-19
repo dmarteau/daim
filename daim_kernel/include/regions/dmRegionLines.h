@@ -208,11 +208,12 @@ class dmRgnHandle {
     const dmRect&  Rectangle() const { return (rgn_box); }
 
     __dmKernel void Translate(long dx,long dy);
-	__dmKernel dmRgnHandle* ClipToRect(const dm_rect& );
+    __dmKernel dmRgnHandle* ClipToRect(const dm_rect& );
 
     __dmKernel bool PointInRegion( long x, long y ) const;
-    __dmKernel bool Intersect( const dm_rect& r) const; // renvoie vraie si r intersecte la region
-
+    __dmKernel bool Intersect( const dm_rect& r) const;         // return true if intersects the region
+    __dmKernel bool Intersect( const dmRgnHandle& _rgn ) const; // return true if both regions intersect
+        
     __dmKernel bool    IsRectRgn() const;  // test si la region est rectangulaire
     __dmKernel dm_uint Area()      const;  // retourne l'"Aire" de la region
 

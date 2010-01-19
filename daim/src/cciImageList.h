@@ -36,15 +36,18 @@
 #include "daim_kernel.h"
 #include "cciIImageList.h"
 #include "cciIImageListContainer.h"
+#include "cciIImageContainer.h"
 
 /* Header file */
 class cciImageList : public cciIImageList,
-                     public cciIImageListContainer
+                     public cciIImageListContainer,
+                     public cciIImageContainer
 {
 public:
   CCI_DECL_ISUPPORTS
   CCI_DECL_IIMAGELIST
-
+  CCI_DECL_IIMAGECONTAINER
+  
   // cciIImgLinkContainer
   CCI_IMETHOD GetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 );
   CCI_IMETHOD SetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 );

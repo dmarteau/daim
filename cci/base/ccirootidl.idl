@@ -76,6 +76,7 @@ typedef double              dm_double ;
 [ptr]         native voidPtr(void);
 [ptr]         native charPtr(char);
 [ptr]         native unicharPtr(dm_unichar);
+[ptr]         native bytePtr(dm_uint8);
 
 [ref, nsid]   native dmIDRef(dmID);
 [ref, nsid]   native dmIIDRef(dmIID);
@@ -104,6 +105,10 @@ typedef double              dm_double ;
 [ref, cstring] native ACString(ignored);
 [ref, cstring] native ACStringRef(ignored);
 [ptr, cstring] native ACStringPtr(ignored);
+
+[ref, utf8string] native AUTF8String(ignored);
+[ref, utf8string] native AUTF8StringRef(ignored);
+[ptr, utf8string] native AUTF8StringPtr(ignored);
 
 [ref, astring] native AString(ignored);
 [ref, astring] native AStringRef(ignored);

@@ -37,6 +37,7 @@ interface cciISurface;
 interface cciIRemoteSurface;
 interface cciIInterfaceRequestor;
 interface cciIMetaDataContainer;
+interface cciIColorTable;
 
 [scriptable, uuid(2b86bcda-f881-467c-80b4-7362adf62feb)]
 interface cciISurfaceDriver : cciIXPCOMSupports
@@ -47,7 +48,12 @@ interface cciISurfaceDriver : cciIXPCOMSupports
    * Methods are noscripts because they require native char set for
    * the location
    */
-  
+
+  [noscript] cciISurface createSurfaceFromData( in string location,
+                                                in dmImageDataRef imData,
+                                                in bytePtr alphaBits, in long alphaStride,
+                                                in string options);
+
   [noscript] cciISurface createSurface( in string location,
                                         in dm_uint32 width,
                                         in dm_uint32 height,
@@ -59,12 +65,16 @@ interface cciISurfaceDriver : cciIXPCOMSupports
 
   readonly attribute boolean hasCreateCapabilities;
 
-  [noscript] void saveImageBits( in string newLocation, in dmImageDataRef imData,
-                                 in cciIMetaDataContainer exif, in string options );
+  [noscript] void saveImageBits( in string newLocation, in dmImageDataRef imData, in string options );
 
-  [noscript] cciIRemoteSurface createTmpSurfaceFromImageBits( in dmImageDataRef imData,
-                                                              in cciIMetaDataContainer exif );
-
+  [noscript] void saveImageBitsWithAlpha( in string newLocation, 
+                                          in dmImageDataRef imData, 
+                                          in bytePtr alphaBits, in long alphaStride,
+                                          in cciIMetaDataContainer exif, 
+                                          in cciIColorTable colorTable,
+                                          in string options );
+  
+  
   void unlink( in string location );
   void rename( in string newLocation, in string oldLocation );
   void copyFiles( in string newLocation, in string oldLocation );

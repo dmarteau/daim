@@ -32,7 +32,7 @@
 using namespace daim;
 
 // TODO : Use fitting models for mapping non 8 bits values.
-//         may be should créate an another component
+//         may be should create an another component
 
 //----------------------------------------------------------------------
 // Transform Map

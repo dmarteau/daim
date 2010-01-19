@@ -43,10 +43,10 @@ extern "C" {
 
 static cciIAllocator* gAllocator = dm_null;
 
-static void* _CCI_NewObject(size_t n,CCI_STATIC_DESTRUCTOR aDestructorFunc)
+static void* _CCI_NewObject(size_t n, CCI_STATIC_DESTRUCTOR _dtor )
 {
   if(gAllocator)
-     return gAllocator->NewObject(n,aDestructorFunc);
+     return gAllocator->NewObject(n,_dtor);
 
   return dm_null;
 }

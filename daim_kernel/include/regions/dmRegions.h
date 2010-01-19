@@ -171,7 +171,8 @@ public:
    }
 
    dm_uint Area() const;
-   bool    Intersect( const dm_rect& r) const;
+   bool    Intersect( const dm_rect& r    ) const;
+   bool    Intersect( const dmRegion& rgn ) const;
 
    void Translate( long dx,long dy);
    void Translate( const dmPoint& p ) { Translate(p.x,p.y); }
@@ -179,7 +180,7 @@ public:
    void OffsetRoi( const dmPoint& p ) { Translate(-p.x,-p.y); } 
    void OffsetRoi() { OffsetRoi(Rectangle().TopLeft()); }
 
-   // fonctions virtuelle définies dans dmCoordinates
+   // fonctions virtuelle definies dans dmCoordinates
    ECoordinatesType TypeOfCoords() const { return eRegionType; }
    unsigned long BoxWidth()        const { return Rectangle().BoxWidth(); }
    unsigned long BoxHeight()       const { return Rectangle().BoxHeight(); }
@@ -211,6 +212,13 @@ inline bool dmRegion::Intersect( const dm_rect& r) const
    return (IsRectRoi()
     ? dmClipRectangle( _rect, RoiRect )
     : (IsValidRoi() ? RoiRgn.Intersect(r) : false) ); 
+}
+//----------------------------------------------------------
+inline bool dmRegion::Intersect( const dmRegion& roi ) const 
+{
+  return (IsRectRoi()
+     ? roi.Intersect(RoiRect)
+     : (IsValidRoi() ? RoiRgn.Intersect(roi.RoiRgn) : false) ); 
 } 
 //----------------------------------------------------------
 inline void dmRegion::Translate(long dx,long dy) 

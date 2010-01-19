@@ -14,7 +14,7 @@ class cciAllocatorBase  {
 public:
   cciAllocatorBase();
 
-  void*       NewObject( size_t n, CCI_STATIC_DESTRUCTOR dtor );
+  void*       NewObject( size_t n, CCI_STATIC_DESTRUCTOR _dtor );
   cci_result  RevokeObject( void* p ,dm_bool discard );
 
   dm_uint32   NumberOfInstances();

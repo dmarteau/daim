@@ -46,11 +46,14 @@
 // BaseStringEnumerator is subclassed by EntryEnumerator and
 // CategoryEnumerator
 //
-class BaseStringEnumerator : public cciIStringEnumerator
+class BaseStringEnumerator : public cciIUTF8StringEnumerator,
+                             public cciIStringEnumerator
+                             
 {
 public:
   CCI_DECL_ISUPPORTS
-  CCI_DECL_ISTRINGENUMERATOR
+  CCI_IMETHOD GetNext(dmAString& aResult);
+  CCI_DECL_IUTF8STRINGENUMERATOR
 
 BaseStringEnumerator(dmHashPtrDict::iterator first,dmHashPtrDict::iterator end,
                      cciISupports* owner, dmRWLock& aLock)
@@ -80,6 +83,16 @@ BaseStringEnumerator::HasMore()
 
 CCI_IMETHODIMP
 BaseStringEnumerator::GetNext(dmACString& _retval)
+{
+  if(mCurrent==mEnd)
+     return CCI_ERROR_FAILURE;
+
+  _retval.Assign((*mCurrent++).first);
+  return CCI_OK;
+}
+
+CCI_IMETHODIMP
+BaseStringEnumerator::GetNext(dmAString& _retval)
 {
   if(mCurrent==mEnd)
      return CCI_ERROR_FAILURE;
@@ -135,7 +148,7 @@ struct cciCategoryNode
   dmHashPtrDict mEntries;
   dmRWLock      mLock;
 
-  cci_result Enumerate(cciISupports*, cciIStringEnumerator **_retval);
+  cci_result Enumerate(cciISupports*, cciIUTF8StringEnumerator **_retval);
   cci_result AddEntry( const char* aEntry, const char* aValue,
                        dm_bool persist, dm_bool replace);
 
@@ -163,11 +176,11 @@ struct cciCategoryNode
 dmFastMemory<cciCategoryNode>
 cciCategoryNode::_MemPool("cciCategoryNode",dm_true);
 
-cci_result cciCategoryNode::Enumerate(cciISupports* aOwner, cciIStringEnumerator **_retval)
+cci_result cciCategoryNode::Enumerate(cciISupports* aOwner, cciIUTF8StringEnumerator **_retval)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
 
-  cciIStringEnumerator* enumerator =
+  cciIUTF8StringEnumerator* enumerator =
     new BaseStringEnumerator(mEntries.begin(),mEntries.end(),aOwner,mLock);
 
   CCI_ADDREF(*_retval = enumerator);
@@ -392,7 +405,7 @@ cciCategoryManager::DeleteCategory( const char *aCategoryName )
 
 CCI_IMETHODIMP
 cciCategoryManager::EnumerateCategory( const char *aCategoryName,
-                                       cciIStringEnumerator **_retval )
+                                       cciIUTF8StringEnumerator **_retval )
 {
   CCI_ENSURE_ARG_POINTER(aCategoryName);
   CCI_ENSURE_ARG_POINTER(_retval);
@@ -407,13 +420,13 @@ cciCategoryManager::EnumerateCategory( const char *aCategoryName,
 }
 
 CCI_IMETHODIMP
-cciCategoryManager::EnumerateCategories(cciIStringEnumerator **_retval)
+cciCategoryManager::EnumerateCategories(cciIUTF8StringEnumerator **_retval)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
 
   dmREAD_LOCK(mLock);
 
-  cciIStringEnumerator* enumerator =
+  cciIUTF8StringEnumerator* enumerator =
     new BaseStringEnumerator(mCategories.begin(),mCategories.end(),
                              CCI_ISUPPORTS_CAST(cciICategoryManager*,this),mLock);
 

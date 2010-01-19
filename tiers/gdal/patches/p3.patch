@@ -1,0 +1,59 @@
+Index: frmts/jpeg/jpgdataset.cpp
+===================================================================
+--- frmts/jpeg/jpgdataset.cpp	(révision 18013)
++++ frmts/jpeg/jpgdataset.cpp	(copie de travail)
+@@ -1256,7 +1256,7 @@
+        (nXSize == nBufXSize) && (nXSize == nRasterXSize) &&
+        (nYSize == nBufYSize) && (nYSize == nRasterYSize) &&
+        (eBufType == GDT_Byte) && (sDInfo.data_precision != 12) &&
+-       /*(nPixelSpace >= 3)*/(nPixelSpace > 3) &&
++       (nPixelSpace >= 3) &&
+        (nLineSpace == (nPixelSpace*nXSize)) &&
+        (nBandSpace == 1) &&
+        (pData != NULL) &&
+@@ -1268,19 +1268,34 @@
+         CPLErr tmpError;
+         int x;
+ 
+-        // handles copy with padding case
+-        for(y = 0; y < nYSize; ++y)
++        GByte* dstLine = &(((GByte*)pData)[0]);  
++
++        if(nPixelSpace > 3)
+         {
+-            tmpError = LoadScanline(y);
+-            if(tmpError != CE_None) return tmpError;
++           // handles copy with padding case
++           for(y = 0; y < nYSize; ++y)
++           {
++              tmpError = LoadScanline(y);
++              if(tmpError != CE_None) return tmpError;
+ 
+-            for(x = 0; x < nXSize; ++x)
+-            {
+-                tmpError = LoadScanline(y);
+-                if(tmpError != CE_None) return tmpError;
+-                memcpy(&(((GByte*)pData)[(y*nLineSpace) + (x*nPixelSpace)]), 
+-                       (const GByte*)&(pabyScanline[x*3]), 3);
+-            }
++              for(x = 0; x < nXSize; ++x)
++              {
++                 memcpy(&dstLine[x*nPixelSpace],(const GByte*)&(pabyScanline[x*3]), 3);
++              }
++
++              dstLine += nLineSpace;
++           }
++        } 
++        else
++        {
++           for(y = 0; y < nYSize; ++y) 
++           {
++              tmpError = LoadScanline(y);
++              if(tmpError != CE_None) return tmpError;
++
++              memcpy(dstLine, (const GByte*)pabyScanline,nLineSpace);
++              dstLine += nLineSpace;
++           }
+         }
+ 
+         return CE_None;

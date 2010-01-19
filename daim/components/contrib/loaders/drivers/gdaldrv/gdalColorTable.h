@@ -1,8 +1,8 @@
-#ifndef cciImageShell_h
-#define cciImageShell_h
+#ifndef gdalColorTable_h
+#define gdalColorTable_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2010 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -24,57 +24,33 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : cciImageShell.h
-// Date         : 15 déc. 2008
+// File         : gdalColorTable.h
+// Date         : 15 janv. 2010
 // Author       : David Marteau
 //--------------------------------------------------------
 
-#include "cciCOMPtr.h"
-#include "cciIFilterContext.h"
-#include "cciIImageContainer.h"
-#include "cciIImageShell.h"
-#include "cciIImageMath.h"
-#include "cciIColorTable.h"
-
-#include "daim_kernel.h"
-
-class cciISurfaceDriver;
-
 /* Header file */
-class cciImageShell : public cciIImageShell,
-                      public cciIImageContainer
+#define CCI_COLORTABLE_PRIVATE_IID \
+    { 0x20ec68de, 0xb94f, 0x4cb4, { 0xa6, 0x3f, 0x2f, 0xa1, 0x58, 0x5c, 0x65, 0xa6 } }
+class gdalColorTable : public cciIColorTable
 {
+friend class gdalSurface;
+friend class cciGDALDriver;
 public:
+  CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_COLORTABLE_PRIVATE_IID)
+    
   CCI_DECL_ISUPPORTS
-  CCI_DECL_IIMAGESHELL
-  CCI_DECL_IIMAGECONTAINER
+  CCI_DECL_ICOLORTABLE
 
-  cciImageShell();
-  cciImageShell(const cciImageShell* aSrc);
+  gdalColorTable( GDALColorTableH colorTable );
 
-private:
-  ~cciImageShell();
-
-  cci_result EnsureFilterContext();
-  cci_result EnsureImageMath();
-
-  void ClearOpenedResources();
+  static cci_result copyColorTable( cciIColorTable* src, GDALColorTableH dst );
   
+private:
+  ~gdalColorTable();
+
 protected:
-  dm_bool mLock;
-  dm_bool mLockAlpha;
-  dm_bool mPreserveMetaData;
-
-  dmLink<dmImage> mImage;
-  dmLink<dmImage> mAlpha;
-
-  cci_Ptr<cciIImageMath>      mImageMath;
-  cci_Ptr<cciIFilterContext>  mFilterContext;
-  cci_Ptr<cciISurface>        mCurrentSurface;
-  cci_Ptr<cciIColorTable>     mColorTable;
-
-  cci_Ptr<cciISurfaceDriver>  mDriverCache;
+  GDALColorTableH mColorTable;
 };
 
-
-#endif /* cciImageShell_h */
+#endif /* gdalColorTable_h */

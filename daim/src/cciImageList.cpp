@@ -37,8 +37,9 @@
 #include "cciImageList.h"
 
 /* Implementation file */
-CCI_IMPL_ISUPPORTS2(cciImageList, cciIImageList,
-                                  cciIImageListContainer)
+CCI_IMPL_ISUPPORTS3(cciImageList, cciIImageList,
+                                  cciIImageListContainer,
+                                  cciIImageContainer)
 
 #define BUFFER_DFLT_SIZE 16
 #define BUFFER_MAX_SIZE  4096
@@ -509,5 +510,20 @@ CCI_IMETHODIMP cciImageList::SetImageLink( dmLink<dmImage>& link, dm_uint32 inde
   }
 
   return CCI_ERROR_INVALID_ARG;
+}
+
+
+//===============================================
+// cciIImageContainer
+//===============================================
+
+/* [noscript,notxpcom] dmImagePtr getNative (); */
+CCI_IMETHODIMP_(dmImage *) cciImageList::GetNative()
+{
+  if(mBuffers.size()>0) {
+     return mBuffers[0];
+  }
+  
+  return dm_null;
 }
 

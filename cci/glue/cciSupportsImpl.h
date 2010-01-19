@@ -71,7 +71,6 @@ class dmAutoRefCnt {
     cci_refcnt mValue;
 };
 
-
 /**
  * Declare the reference count variable and the implementations of the
  * AddRef and QueryInterface methods.
@@ -84,7 +83,7 @@ public:                                                                       \
   CCI_IMETHOD_(cci_refcnt) AddRef(void);                                      \
   CCI_IMETHOD_(cci_refcnt) Release(void);                                     \
                                                                               \
-  static void CCI_STDCALL DestructorCallback( void* obj );                    \
+  static void  CCI_STDCALL DestructorCallback( void* obj );                   \
 protected:                                                                    \
   dmAutoRefCnt mRefCnt;                                                       \
 public:                                                                       \
@@ -166,7 +165,6 @@ CCI_IMETHODIMP_(cci_refcnt) _class::Release(void)                             \
     CCI_WARNING("Releasing an invalid object");                               \
     return 0;                                                                 \
   }                                                                           \
-                                                                              \
   CCI_PRECONDITION(0 != mRefCnt, "dup release");                              \
   --mRefCnt;                                                                  \
   if (mRefCnt == 0) {                                                         \
