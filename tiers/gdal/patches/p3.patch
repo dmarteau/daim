@@ -1,7 +1,7 @@
 Index: frmts/jpeg/jpgdataset.cpp
 ===================================================================
---- frmts/jpeg/jpgdataset.cpp	(révision 18013)
-+++ frmts/jpeg/jpgdataset.cpp	(copie de travail)
+--- frmts/jpeg/jpgdataset.cpp	(revision 18013)
++++ frmts/jpeg/jpgdataset.cpp	(working copy)
 @@ -1256,7 +1256,7 @@
         (nXSize == nBufXSize) && (nXSize == nRasterXSize) &&
         (nYSize == nBufYSize) && (nYSize == nRasterYSize) &&
