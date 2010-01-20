@@ -53,7 +53,8 @@ gdalColorTable::~gdalColorTable()
 
 cci_result gdalColorTable::copyColorTable( cciIColorTable* src, GDALColorTableH dst )
 {
-    
+   //FIXME
+   return CCI_OK;
 }
 
 /* long getColorEntryCount (); */
