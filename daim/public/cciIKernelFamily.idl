@@ -36,8 +36,6 @@
 [scriptable, uuid(2e1e6596-6272-4094-96c1-7b2b76816b72)]
 interface cciIKernelFamily : cciIKernelFamilyContainer
 {
-  [noscript] readonly attribute dmMaskDescriptionRef mask;
-
-
+  [noscript] void getMaskDescription( in dmMaskDescriptionRef aMask );
 };
 

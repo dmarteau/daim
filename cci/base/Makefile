@@ -22,6 +22,8 @@ IDLSRC = ccirootidl.idl \
          cciISimpleEnumerator.idl \
          cciIStringEnumerator.idl \
          cciICategoryManager.idl \
+         cciIMemory.idl \
+         cciIStringIterator.idl \
          cciIXPCOMSupports.idl \
          $(NULL)
 

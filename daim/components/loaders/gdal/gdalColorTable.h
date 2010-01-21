@@ -1,8 +1,8 @@
-#ifndef cciDaimModule_h
-#define cciDaimModule_h
+#ifndef gdalColorTable_h
+#define gdalColorTable_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2010 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -24,13 +24,33 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : cciDaimModule.h
-// Date         : 16 janv. 2009
+// File         : gdalColorTable.h
+// Date         : 15 janv. 2010
 // Author       : David Marteau
 //--------------------------------------------------------
 
-#ifndef cciDaimCID_h
-#include "cciDaimCID.h"
-#endif
+/* Header file */
+#define CCI_COLORTABLE_PRIVATE_IID \
+    { 0x20ec68de, 0xb94f, 0x4cb4, { 0xa6, 0x3f, 0x2f, 0xa1, 0x58, 0x5c, 0x65, 0xa6 } }
+class gdalColorTable : public cciIColorTable
+{
+friend class gdalSurface;
+friend class cciGDALDriver;
+public:
+  CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_COLORTABLE_PRIVATE_IID)
+    
+  CCI_DECL_ISUPPORTS
+  CCI_DECL_ICOLORTABLE
 
-#endif /* cciDaimModule_h */
+  gdalColorTable( GDALColorTableH colorTable );
+
+  static cci_result copyColorTable( cciIColorTable* src, GDALColorTableH dst );
+  
+private:
+  ~gdalColorTable();
+
+protected:
+  GDALColorTableH mColorTable;
+};
+
+#endif /* gdalColorTable_h */

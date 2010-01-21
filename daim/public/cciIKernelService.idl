@@ -50,21 +50,12 @@ interface cciIKernelService : cciIXPCOMSupports
 
    [noscript,notxpcom] dmKernelFamilyPtr getNativeFamily( in string name );
 
-   [noscript] dmKernelFamilyRef getCopyOfNativeFamily( in string name );
+   [noscript] void getCopyOfNativeFamily( in string name, in dmKernelFamilyRef dest );
 
    [noscript] cciKernelFamily NewFamilyFromNative( in dmKernelFamilyRef aNativefamily );
 };
 
-
 %{C++
-
-#ifndef cciCOMPtr_h
-#include "cciCOMPtr.h"
-#endif
-
-#ifndef cciServiceManagerUtils_h
-#include "cciServiceManagerUtils.h"
-#endif
 
 #define CCI_KERNELSERVICE_CID \
 { /* 197D373F-0EEC-4B0A-B9DE-544A7C130CDF */       \
@@ -76,30 +67,6 @@ interface cciIKernelService : cciIXPCOMSupports
 
 #define CCI_KERNELSERVICE_CONTRACTID "@daim.org/kernel-service;1"
 #define CCI_KERNELSERVICE_CLASSNAME  "Kernel service"
-
-inline cci_result
-CCI_GetKernelFamily( const char* name, dmKernelFamily& retval )
-{
-  cci_result rv;
-
-  cci_Ptr<cciIKernelService> kernSrvc = cci::do_GetService(CCI_KERNELSERVICE_CONTRACTID,&rv);
-  if(CCI_SUCCEEDED(rv))
-     rv = kernSrvc->GetCopyOfNativeFamily(name,retval);
-
-  return rv;
-}
-
-inline cci_result
-CCI_NewKernelFamily( dmKernelFamily& aNativeFamily, cciKernelFamily* _retval )
-{
-  cci_result rv;
-
-  cci_Ptr<cciIKernelService> kernSrvc = cci::do_GetService(CCI_KERNELSERVICE_CONTRACTID,&rv);
-  if(CCI_SUCCEEDED(rv))
-     rv = kernSrvc->NewFamilyFromNative(aNativeFamily,_retval);
-
-  return rv;
-}
 
 %}
 

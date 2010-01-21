@@ -29,10 +29,10 @@
 
 #include "cciCOMPtr.h"
 #include "cciInterfaceRequestorUtils.h"
+#include "cciKernelServiceUtils.h"
 #include "cciIFilterContext.h"
 #include "cciIImageList.h"
 #include "cciIPyramid.h"
-#include "cciIKernelService.h"
 #include "cciIImageFilter.h"
 #include "cciIRegionContainer.h"
 #include "cciIImageContainer.h"

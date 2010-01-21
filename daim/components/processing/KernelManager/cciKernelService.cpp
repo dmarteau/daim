@@ -214,10 +214,12 @@ protected:
 /* Implementation file */
 CCI_IMPL_ISUPPORTS2(cciKernelFamilyImpl, cciIKernelFamily, cciIKernelFamilyContainer)
 
-/* readonly attribute cciMaskDescription mask; */
-CCI_IMETHODIMP cciKernelFamilyImpl::GetMask(dmMaskDescription & aMask)
+
+/* [noscript] void getMaskDescription (in dmMaskDescriptionRef aMask); */
+CCI_IMETHODIMP cciKernelFamilyImpl::GetMaskDescription(dmMaskDescription & aMask)
 {
-  return CCI_ERROR_NOT_IMPLEMENTED;
+  mFamily.GetMaskDescription(aMask);
+  return CCI_OK;
 }
 
 /* [noscript,notxpcom] dmKernelFamilyPtr getNative (); */

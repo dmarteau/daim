@@ -86,6 +86,12 @@ typedef double              dm_double ;
 [ptr, nsid]   native dmIIDPtr(dmIID);
 [ptr, nsid]   native dmCIDPtr(dmCID);
 
+// Native array of char pointer
+native charPtrArray(char * *);
+native unicharPtrArray(dm_unichar * *);
+[ref] native charPtrArrayRef(char * *);
+[ref] native unicharPtrArrayRef(dm_unichar * *);
+
 // NOTE: Be careful in using the following 3 types. The *Ref and *Ptr variants
 // are more commonly used (and better supported). Those variants require
 // nsMemory alloc'd copies when used as 'out' params while these types do not.

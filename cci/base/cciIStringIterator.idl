@@ -31,39 +31,23 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#include "ccidaim.idl"
+#include "cciIXPCOMSupports.idl"
 
-interface cciIUTF8StringIterator;
-interface cciIMetaDataContainer;
-
-%{C++
-
-typedef CCI_CALLBACK(cciWriteMetaDataFun)(cciIMetaDataContainer *aSrcContainer, void *aClosure,
-                                          const char* aDomain, char** data);
-%}
-
-native cciWriteMetaDataFun(cciWriteMetaDataFun);
-
-[scriptable, uuid(0c3b0a80-85c6-4883-8a67-f360201bd656)]
-interface cciIMetaDataContainer : cciIXPCOMSupports
+[scriptable, uuid(d92dd90e-ff5e-4ff3-bf4c-f0eda0b26cee)]
+interface cciIStringIterator : cciIXPCOMSupports
 {
-  /* Methods */
-  void getMetadataItem( in string aName, in string aDomain, [shared,retval] out string aValue );
-  void setMetadataItem( in string aName, in string aValue, in string aDomain );
+  void getNext([shared,retval] out wstring value );
 
-  void copyMetaData( in cciIMetaDataContainer destContainer, in string aDomain );
-
-  cciIUTF8StringIterator getMetadata( in string aDomain );
-
-  /**
-   * Copy an array of string containing metadata of the form "<key>=<value>"
-   * 
-   * @note The default implementation expects a null teminated array
-   */
-  [noscript] void setMetaData( in string  aDomain, in charPtrArray data );
-
-  [noscript] void readMetaData( in cciWriteMetaDataFun writer, in voidPtr closure, in string aDomain );
-
+  [notxpcom] boolean hasMore();
 };
+
+[scriptable, uuid(365e77bb-aac1-4329-97fe-ebcaa5552895)]
+interface cciIUTF8StringIterator : cciIXPCOMSupports
+{
+  void getNext([shared,retval] out string value );
+
+  [notxpcom] boolean hasMore();
+};
+
 
 

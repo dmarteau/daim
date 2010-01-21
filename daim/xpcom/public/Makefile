@@ -11,7 +11,9 @@ MODULE_NAME = xpcom
 XPCOM_DIST=$(DIST_REPOSITORY)/xpcom
 
 XPCOM_EXPORTS=$(DEPTH)/cci/xpcom/cciIXPCOMSupports.idl \
-              $(DIST_REPOSITORY)/idl/cci/cciIStringWriter.idl \
+              $(DIST_REPOSITORY)/idl/cci/cciIMemory.idl \
+              $(DIST_REPOSITORY)/idl/cci/cciIStringIterator.idl \
+              $(DIST_REPOSITORY)/include/daim/cciDaimCID.h \
               $(DIST_REPOSITORY)/include/daim/dmCoordinatesTypes.h \
               $(DIST_REPOSITORY)/include/daim/dmPixelFormats.h \
               $(DIST_REPOSITORY)/include/daim/dmImageData.h \

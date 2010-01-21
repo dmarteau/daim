@@ -48,7 +48,7 @@ GDAL_OPTIONS =  --with-threads=yes \
 ifdef DAIM_DEBUG
 GDAL_OPTIONS += --enable-debug
 else
-#GDAL_OPTIONS += CFLAGS=-O2 CXXFLAGS=-O2
+GDAL_OPTIONS += CFLAGS=-O2 CXXFLAGS=-O2
 endif
 
 libs::

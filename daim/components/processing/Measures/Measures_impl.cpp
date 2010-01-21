@@ -47,7 +47,7 @@ void cciMeasurements::M_UpdateCount()
 {
   if((mUpdate & IMAGEMAP_UPDATE_COUNT)==0) 
   {
-    M_UpdatePartRoi();
+    UpdatePartRoi();
 
     info_list_type::iterator it   = mNodeList.Begin();
     info_list_type::iterator last = mNodeList.End();
@@ -95,7 +95,7 @@ void cciMeasurements::M_UpdateCentroids()
 {
   if((mUpdate & IMAGEMAP_UPDATE_CENTROID)==0) 
   {
-    M_UpdateRoi();
+    UpdateRoi();
     M_UpdateCount();
 
     info_list_type::iterator it   = mNodeList.Begin();
@@ -446,7 +446,7 @@ void cciMeasurements::M_UpdateDir()
 {
   if( (mUpdate & IMAGEMAP_UPDATE_DIR)==0 )
   {
-    M_BuildIndexTable();
+    BuildIndexTable();
  
     size_t nPart = mNumPartitions+1;
 

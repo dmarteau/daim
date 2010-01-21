@@ -1,8 +1,8 @@
-#ifndef cciDaimModule_h
-#define cciDaimModule_h
+#ifndef cciKernelServiceUtils_h
+#define cciKernelServiceUtils_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2010 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -24,13 +24,47 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : cciDaimModule.h
-// Date         : 16 janv. 2009
+// File         : cciKernelServiceUtils.h
+// Date         : 21 janv. 2010
 // Author       : David Marteau
 //--------------------------------------------------------
 
-#ifndef cciDaimCID_h
-#include "cciDaimCID.h"
+#ifndef cciCOMPtr_h
+#include "cciCOMPtr.h"
 #endif
 
-#endif /* cciDaimModule_h */
+#ifndef cciServiceManagerUtils_h
+#include "cciServiceManagerUtils.h"
+#endif
+
+#ifndef cciServiceManagerUtils_h
+#include "cciServiceManagerUtils.h"
+#endif
+
+#include "cciIKernelService.h"
+
+inline cci_result
+CCI_GetKernelFamily( const char* name, dmKernelFamily& retval )
+{
+  cci_result rv;
+
+  cci_Ptr<cciIKernelService> kernSrvc = cci::do_GetService(CCI_KERNELSERVICE_CONTRACTID,&rv);
+  if(CCI_SUCCEEDED(rv))
+     rv = kernSrvc->GetCopyOfNativeFamily(name,retval);
+
+  return rv;
+}
+
+inline cci_result
+CCI_NewKernelFamily( dmKernelFamily& aNativeFamily, cciKernelFamily* _retval )
+{
+  cci_result rv;
+
+  cci_Ptr<cciIKernelService> kernSrvc = cci::do_GetService(CCI_KERNELSERVICE_CONTRACTID,&rv);
+  if(CCI_SUCCEEDED(rv))
+     rv = kernSrvc->NewFamilyFromNative(aNativeFamily,_retval);
+
+  return rv;
+}
+
+#endif /* cciKernelServiceUtils_h */

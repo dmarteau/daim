@@ -86,6 +86,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *
    * @param params  parameter object ( see dmIParameters )
    * @param connect the connectivity ( 4 or 8 )
+   * @param 
    * @param flags   flags cn be a combination of the following values:
    * - \c CCIV_ImageMap_NoClip   The region will not be clipped with
    *      the input image rectangle (if any). Instead the bounding rectangle
@@ -122,7 +123,10 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a labels is a temporary object and should not be
    *  stored for later use.
    */
-  [noscript,notxpcom] dm_uint32 getLabels( in cciRegion rgn, [array] out dm_int32 labels );
+ 
+  void getLabels( in cciRegion rgn, 
+                  [array,size_is(count)] out dm_int32 labels,
+                  [retval] out dm_uint32 count );
 
   /**
    *  @brief Return the label of the object located at (x,y)
@@ -137,7 +141,7 @@ interface cciIMeasurements : cciIXPCOMSupports
   /**
    * @brief Create the mask corresponding to all the objects in \a labels
    */
-  void selectLabels( in cciRegion mask,  [array,size_is(count)] in dm_int32 labels, in dm_uint32 count );
+  void selectLabels( in cciRegion mask, [array,size_is(count)] in dm_int32 labels, in dm_uint32 count );
 
   /**
    * @brief Set the spatial calibration
@@ -151,7 +155,8 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a labels is a temporary object and should not be
    *  stored for later use.
    */
-  [noscript,notxpcom] dm_uint32 getChildRegionLabels( in dm_int32 label, [array] out dm_int32  labels );
+  void getChildRegionLabels( in dm_int32 label, out dm_uint32 count,
+                             [array,size_is(count),shared,retval] out dm_int32  labels );
 
   /**
    * @brief Return a inversed index tables for all objects labels.
@@ -165,7 +170,8 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a table is a temporary object and should not be
    *  stored for later use.
    */
-  [noscript,notxpcom] dm_uint32 getIndexTable( [array] out dm_int32 table );
+  void getIndexTable( out dm_uint32 count,
+                      [array,size_is(count),shared,retval] out dm_int32 table );
 
   /**
    * @brief Fill holes in objects
@@ -181,7 +187,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  @brief Return properties for the object designated by \a label
    *
    *  @param label the object label
-   *  @param flags A combinaison of CCIV_ImageMap_Values which deifine the property
+   *  @param flags A combinaison of CCIV_ImageMap_Values which define the property
    *         returned by the GetProperties() method.
    *         See the Properties structure for information on the returned
    *         properties and the associated flags.
@@ -234,6 +240,36 @@ interface cciIMeasurements : cciIXPCOMSupports
    */
    //void getRegionProperties( dm_cci(PropertyList) props, dm_param key, dm_cci(StorageMap) store,
    //                         in cciImage refImage );
+  
+  /**
+   * Return the current connectivity used
+   * to compute the partitions
+   */
+  readonly attribute dm_uint32 connectivity;
+
+  /**
+   * Return the number of disjoint objects
+   */
+  readonly attribute dm_uint32 count;
+
+  /**
+   * Return the depth of the partition:
+   * i.e the maximum level of nested regions
+   */
+  readonly attribute dm_uint32 depth;
+
+  /* Flags for Build method */
+  const dm_int32 CCIV_ImageMap_NoClip    = 0x01;
+  const dm_int32 CCIV_ImageMap_OffsetRoi = 0x02;
+
+  /* Flags for GetProperties method */
+  const dm_int32 CCIV_ImageMap_Area  =  0x01;
+  const dm_int32 CCIV_ImageMap_Dir   =  0x02;
+  const dm_int32 CCIV_ImageMap_Rect  =  0x04;
+  const dm_int32 CCIV_ImageMap_Loc   =  0x08;
+  const dm_int32 CCIV_ImageMap_Shape =  0x10;
+  const dm_int32 CCIV_ImageMap_Euler =  0x20;
+
 };
 
 

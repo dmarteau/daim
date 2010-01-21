@@ -27,7 +27,7 @@
 #include "cciServiceManagerUtils.h"
 #include "cciILoaderService.h"
 #include "cciIRemoteSurface.h"
-#include "cciIStringEnumerator.h"
+#include "cciIStringIterator.h"
 #include "cciIMetaDataContainer.h"
 #include "cciString.h"
 
@@ -143,8 +143,8 @@ cci_result PrintImagedata( const char* inputFile, const char* domain )
   if(CCI_FAILED(rv))
      return rv;
 
-  dmCString data;
-  cci_Ptr<cciIUTF8StringEnumerator> enumerator;
+  const char* data;
+  cci_Ptr<cciIUTF8StringIterator> enumerator;
 
   rv = mdcontainer->GetMetadata(domain,getter_AddRefs(enumerator));
   if(rv == CCI_ERROR_NOT_AVAILABLE)
@@ -156,9 +156,9 @@ cci_result PrintImagedata( const char* inputFile, const char* domain )
   {
     while(enumerator->HasMore())
     {
-      rv = enumerator->GetNext(data);
+      rv = enumerator->GetNext(&data);
       if(CCI_SUCCEEDED(rv))
-         printf("%s\n",data.get());
+         printf("%s\n",data);
     }
   }
 

@@ -39,6 +39,7 @@
                       cciIModule** result)
 
 DECLARE_STATIC_MODULE(RGBColorSpaceModule);
+DECLARE_STATIC_MODULE(LoaderServiceModule);
 DECLARE_STATIC_MODULE(DaimModule);
 
 #define STATIC_MODULE_INFO(name) \
@@ -47,6 +48,7 @@ DECLARE_STATIC_MODULE(DaimModule);
 static cciStaticModuleInfo gStaticModules[] =
 {
   STATIC_MODULE_INFO(RGBColorSpaceModule),
+  STATIC_MODULE_INFO(LoaderServiceModule),
   STATIC_MODULE_INFO(DaimModule),
 };
 

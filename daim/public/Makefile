@@ -27,6 +27,9 @@ IDLSRC = ccidaim.idl \
          cciIColorTable.idl \
          $(NULL)
 
-EXPORTS = cciIImageListContainer.h
+EXPORTS = cciDaimCID.h \
+          cciIImageListContainer.h \
+          cciKernelServiceUtils.h \
+          $(NULL)
 
 include $(DEPTH)/config/rules.mk

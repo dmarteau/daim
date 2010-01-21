@@ -61,6 +61,12 @@ typedef double              dm_double ;
 
 [ptr] native bytePtr(PRUint8);
 
+// Native array of char pointer
+native charPtrArray(char * *);
+native unicharPtrArray(dm_unichar * *);
+[ref] native charPtrArrayRef(char * *);
+[ref] native unicharPtrArrayRef(dm_unichar * *);
+
 %{C++
 
 typedef void*              dm_ptr ;

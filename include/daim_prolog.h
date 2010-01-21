@@ -40,7 +40,7 @@
 
 #if defined(DAIM_GLUE)
 
-  // In DAIM_GLUE modules must be compiled with daim_glue.cpp
+  // DAIM_GLUE modules must be linked with cciglue static lib
 
   #define __daim_export extern
   #define __daim_call( _proc ) (*_proc)

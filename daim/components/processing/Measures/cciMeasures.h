@@ -2,7 +2,7 @@
 #define cciMeasures_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2010 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -185,7 +185,7 @@ protected:
   info_table_type          mNodeTable;     // Indexed table of nodes
   index_table_type         mNodeIndexTable;
   daim::basic_partition    mNodePartition;
-  daim::connectivity       Connect;
+  daim::connectivity       mConnect;
   info_list_type           mNodeList;    // List of active nodes
 
   dmRegion                 mPartRoi;     // Roi for regions elements map (holes+regions)
@@ -205,10 +205,6 @@ protected:
   dm_bool  use_image_calibration;
   dm_real  aspect_ratio;
   dm_real  uppxls;
-  
-protected:
-  
-#include "Nodes_inc.h"
 
 public:
   
@@ -226,8 +222,20 @@ public:
 
 protected:
 
+  // Nodes manipulation
+  void InsertNodes();
+  bool CreateNodes();
+  int  UpdatePartition(); 
+  void UpdateRoi();
+  void UpdatePartRoi();
+  int  BuildIndexTable(); 
+  void CollectChildLabels( XNODE node, bool include_holes );
+  void MergeChilds( XNODE node );
+  bool MergeNode( XNODE node );
+  bool ClearNode( XNODE node );
+  bool RemoveLabels();
+
 #include "Measures_inc.h" 
-  
 #include "Properties_inc.h"
  
 };

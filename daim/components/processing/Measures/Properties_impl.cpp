@@ -76,7 +76,7 @@ bool cciMeasurements::ComputeDensity( const dmIImage<dmPixelFormat32bppFloat>& _
                                       dm_uint  _Order,
                                       dm_real* _Results, const dmPoint& p  )
 {
-  M_UpdateRoi();
+  UpdateRoi();
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -109,7 +109,7 @@ bool cciMeasurements::ComputeDensity( const dmIImage<dmPixelFormat32bppFloat>& _
 bool cciMeasurements::ComputeMeanDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
                                           dm_real* _Results, const dmPoint& p  )
 {
-  M_UpdateRoi();
+  UpdateRoi();
   M_UpdateCount();
 
   info_list_type::iterator it   = mNodeList.Begin();
@@ -153,7 +153,7 @@ struct Prop_MinDensity
 bool cciMeasurements::ComputeMinDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
                                          dm_real* _Results, const dmPoint& p  ) 
 {
-  M_UpdateRoi();
+  UpdateRoi();
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
@@ -196,7 +196,7 @@ struct Prop_MaxDensity
 bool cciMeasurements::ComputeMaxDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
                                          dm_real* _Results, const dmPoint& p  ) 
 {
-  M_UpdateRoi();
+  UpdateRoi();
 
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();

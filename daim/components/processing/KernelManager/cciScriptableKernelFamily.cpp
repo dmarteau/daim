@@ -169,8 +169,8 @@ CCI_IMETHODIMP cciScriptableKernelFamily::Clone(cciIKernelFamily * *_retval CCI_
 // cciIKernelFamily implementation
 //-----------------------------------------------
 
-/* readonly attribute cciMaskDescription mask; */
-CCI_IMETHODIMP cciScriptableKernelFamily::GetMask(dmMaskDescription & aMask)
+/* [noscript] void getMaskDescription (in dmMaskDescriptionRef aMask); */
+CCI_IMETHODIMP cciScriptableKernelFamily::GetMaskDescription(dmMaskDescription & aMask)
 {
   mFamily.GetMaskDescription(aMask);
   return CCI_OK;

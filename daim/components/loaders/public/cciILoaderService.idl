@@ -31,39 +31,32 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#include "ccidaim.idl"
+#include "cciIDriverProxy.idl"
 
-interface cciIUTF8StringIterator;
-interface cciIMetaDataContainer;
+interface cciISimpleEnumerator;
+
+[scriptable,uuid(2c1ce023-e9c5-46b3-a270-608a50ed2b5f)]
+interface cciILoaderService : cciIDriverProxy
+{
+
+};
+
+
 
 %{C++
 
-typedef CCI_CALLBACK(cciWriteMetaDataFun)(cciIMetaDataContainer *aSrcContainer, void *aClosure,
-                                          const char* aDomain, char** data);
+#define CCI_LOADERSERVICE_CID \
+{ /* 37E0B73B-949B-411B-A6F8-6D39CD8EEB5C */       \
+  0x37E0B73B,                                      \
+  0x949B,                                          \
+  0x411B,                                          \
+  {0xA6, 0xF8, 0x6D, 0x39, 0xCD, 0x8E, 0xEB, 0x5C} \
+}
+
+#define CCI_LOADERSERVICE_CLASSNAME  "Loader service"
+#define CCI_LOADERSERVICE_CONTRACTID "@daim.org/contrib/loader-service;1"
+
 %}
 
-native cciWriteMetaDataFun(cciWriteMetaDataFun);
-
-[scriptable, uuid(0c3b0a80-85c6-4883-8a67-f360201bd656)]
-interface cciIMetaDataContainer : cciIXPCOMSupports
-{
-  /* Methods */
-  void getMetadataItem( in string aName, in string aDomain, [shared,retval] out string aValue );
-  void setMetadataItem( in string aName, in string aValue, in string aDomain );
-
-  void copyMetaData( in cciIMetaDataContainer destContainer, in string aDomain );
-
-  cciIUTF8StringIterator getMetadata( in string aDomain );
-
-  /**
-   * Copy an array of string containing metadata of the form "<key>=<value>"
-   * 
-   * @note The default implementation expects a null teminated array
-   */
-  [noscript] void setMetaData( in string  aDomain, in charPtrArray data );
-
-  [noscript] void readMetaData( in cciWriteMetaDataFun writer, in voidPtr closure, in string aDomain );
-
-};
 
 

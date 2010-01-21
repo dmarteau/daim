@@ -31,39 +31,22 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#include "ccidaim.idl"
+#include "cciISurface.idl"
 
-interface cciIUTF8StringIterator;
-interface cciIMetaDataContainer;
+interface cciIInterfaceRequestor;
+interface cciISurfaceDriver;
 
-%{C++
-
-typedef CCI_CALLBACK(cciWriteMetaDataFun)(cciIMetaDataContainer *aSrcContainer, void *aClosure,
-                                          const char* aDomain, char** data);
-%}
-
-native cciWriteMetaDataFun(cciWriteMetaDataFun);
-
-[scriptable, uuid(0c3b0a80-85c6-4883-8a67-f360201bd656)]
-interface cciIMetaDataContainer : cciIXPCOMSupports
+[scriptable, uuid(10bfe82c-b511-4d2e-aded-c1469893ae94)]
+interface cciIRemoteSurface : cciISurface
 {
-  /* Methods */
-  void getMetadataItem( in string aName, in string aDomain, [shared,retval] out string aValue );
-  void setMetadataItem( in string aName, in string aValue, in string aDomain );
+  attribute cciIInterfaceRequestor callbacks;
 
-  void copyMetaData( in cciIMetaDataContainer destContainer, in string aDomain );
+  readonly attribute cciISurfaceDriver driver;
 
-  cciIUTF8StringIterator getMetadata( in string aDomain );
+  readonly attribute dm_uint32 ioFlags;
 
-  /**
-   * Copy an array of string containing metadata of the form "<key>=<value>"
-   * 
-   * @note The default implementation expects a null teminated array
-   */
-  [noscript] void setMetaData( in string  aDomain, in charPtrArray data );
+  void createCopy( in string newLocation, in string options );
 
-  [noscript] void readMetaData( in cciWriteMetaDataFun writer, in voidPtr closure, in string aDomain );
-
+  void Close();
 };
-
 

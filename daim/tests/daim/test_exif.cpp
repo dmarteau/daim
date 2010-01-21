@@ -36,7 +36,7 @@
 #include "cciIComponentRegistrar.h"
 #include "cciILoaderService.h"
 #include "cciIRemoteSurface.h"
-#include "cciIStringEnumerator.h"
+#include "cciIStringIterator.h"
 #include "cciIMetaDataContainer.h"
 #include "cciString.h"
 
@@ -88,20 +88,21 @@ int main( int argc, char ** argv )
       cci_Ptr<cciIMetaDataContainer> mdcontainer = do_QueryInterface(surface,&rv);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
-      dmCString data;
-      cci_Ptr<cciIUTF8StringEnumerator> enumerator;
-
+      const char* data;
+      cci_Ptr<cciIUTF8StringIterator> enumerator;
+      
       printf("\n### Can I Get default Metadata ?\n");
       rv = mdcontainer->GetMetadata("",getter_AddRefs(enumerator));
       if(rv == CCI_ERROR_NOT_AVAILABLE)
         printf("==> No metadata\n");
       else
       {
+       
         while(enumerator->HasMore())
         {
-          rv = enumerator->GetNext(data);
+          rv = enumerator->GetNext(&data);
           if(CCI_SUCCEEDED(rv))
-             printf(" item : %s\n",data.get());
+             printf(" item : %s\n",data);
         }
       }
 
@@ -113,9 +114,9 @@ int main( int argc, char ** argv )
       {
         while(enumerator->HasMore())
         {
-          rv = enumerator->GetNext(data);
+          rv = enumerator->GetNext(&data);
           if(CCI_SUCCEEDED(rv))
-             printf(" item : %s\n",data.get());
+             printf(" item : %s\n",data);
         }
       }
 

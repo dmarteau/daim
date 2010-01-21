@@ -1,11 +1,9 @@
 #
 
-DEPTH= ../..
+DEPTH= ../../..
 
 include $(DEPTH)/config/config.mk
 
-MODULE_NAME=daim
-
-DIRS = processing loaders
+DIRS= public gdal
 
 include $(DEPTH)/config/rules.mk

@@ -3,7 +3,7 @@
 #
 
 DEPTH= ../..
-VPATH = ./:../components/processing/ColorSpaces/:../components/image/:../components/streams/
+VPATH = ./:../components/processing/ColorSpaces/:../components/loaders/
 
 include $(DEPTH)/config/config.mk
 
@@ -21,6 +21,7 @@ MODULE_FILES=daim.cpp \
              cciImageShell.cpp \
              cciDaimModule.cpp \
              cciScriptableRegion.cpp \
+             cciLoaderService.cpp \
              RGB.cpp \
              $(NULL)
 

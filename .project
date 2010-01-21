@@ -89,10 +89,5 @@
 			<type>2</type>
 			<location>/Users/david/Projets/daim2/trunk/bin-darwin-gcc-debug</location>
 		</link>
-		<link>
-			<name>bin-release</name>
-			<type>2</type>
-			<location>/Users/david/Projets/daim2/trunk/bin-darwin-gcc-release</location>
-		</link>
 	</linkedResources>
 </projectDescription>
