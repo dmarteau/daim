@@ -61,6 +61,8 @@ struct cciRgnProperties
 [ptr]   native cciRgnPropertiesPtr(cciRgnProperties);
 [ref]   native cciRgnPropertiesRef(cciRgnProperties);
 
+[ptr]   native labelArray(dm_int32)
+
 interface cciIRegionContainer;
 interface cciImageContainer;
 
@@ -123,10 +125,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a labels is a temporary object and should not be
    *  stored for later use.
    */
- 
-  void getLabels( in cciRegion rgn, 
-                  [array,size_is(count)] out dm_int32 labels,
-                  [retval] out dm_uint32 count );
+  [noscript,notxpcom] dm_uint32 getLabels (in cciRegion rgn, [shared] out labelArray labels);
 
   /**
    *  @brief Return the label of the object located at (x,y)
@@ -149,14 +148,13 @@ interface cciIMeasurements : cciIXPCOMSupports
   void setCalibration( in dm_real unitsPerPixel, in dm_real aSpectRatio );
 
   /**
-   * @brief Return a list of labels correponding to connnexe objects
+   * @brief Return a list of labels correponding to connexe objects
    *         included in the object designated by \a label.
    *
    *  Warning that \a labels is a temporary object and should not be
    *  stored for later use.
    */
-  void getChildRegionLabels( in dm_int32 label, out dm_uint32 count,
-                             [array,size_is(count),shared,retval] out dm_int32  labels );
+  [noscript,notxpcom] dm_uint32 getChildRegionLabels( in dm_int32 label, [shared] out labelArray labels );
 
   /**
    * @brief Return a inversed index tables for all objects labels.
@@ -170,8 +168,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a table is a temporary object and should not be
    *  stored for later use.
    */
-  void getIndexTable( out dm_uint32 count,
-                      [array,size_is(count),shared,retval] out dm_int32 table );
+  [noscript,notxpcom] dm_uint32 getIndexTable( [shared] out labelArray labels );
 
   /**
    * @brief Fill holes in objects
@@ -193,7 +190,8 @@ interface cciIMeasurements : cciIXPCOMSupports
    *         properties and the associated flags.
    *  @param props A reference to a Properties structure.
    */
-  [noscript] void getProperties( in dm_int32 label, in dm_uint32 flags, in cciRgnPropertiesRef props );
+  [noscript] void getProperties( in dm_int32 label, in dm_uint32 flags, 
+                                  in cciRgnPropertiesRef props );
 
   /**
    * @brief Perform a reconstruction using the mask given in \a mask

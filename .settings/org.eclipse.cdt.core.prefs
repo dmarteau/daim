@@ -1,5 +1,6 @@
-#Fri Jan 15 10:35:46 CET 2010
+#Mon Jan 25 22:46:31 CET 2010
 eclipse.preferences.version=1
+environment/project/converted.config.1098787376=<?xml version\="1.0" encoding\="UTF-8"?>\n<environment append\="true" appendContributed\="true">\n<variable delimiter\=";" name\="MAKEFLAGS" operation\="append" value\="-w"/>\n<variable delimiter\=";" name\="DOXYGEN_PATH" operation\="append" value\="/Applications/Doxygen.app/Contents/Resources/doxygen"/>\n</environment>\n
 indexer/filesToParseUpFront=
 indexer/indexAllFiles=false
 indexer/indexUnusedHeadersWithAlternateLang=false

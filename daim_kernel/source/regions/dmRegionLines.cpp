@@ -264,7 +264,7 @@ static inline long SubRegionLine( dmRegionLine* l1,dmRegionLine *l2,dmRegionLine
 static inline bool IntersectRegionLine( dmRegionLine* l1,dmRegionLine *l2 )
 {
   REGISTER dmRgnPair  *seg1,*seg2;
-  REGISTER long n1,n2,x1,x2;
+  REGISTER long n1,n2;
   
   seg1 = &l1->rl_xpair[0];
   n1   = l1->rl_npair;
@@ -277,9 +277,8 @@ static inline bool IntersectRegionLine( dmRegionLine* l1,dmRegionLine *l2 )
       EXCHANGE(seg1,seg2);  // Choose the leftmost (first) segment
       EXCHANGE(n1,n2);      // keep track of the end of each array
     }
-    x1 = seg2->x1;          // begining of new segment set to the rightmost origine
 
-    if( x1 <= seg1->x2 ) // Does segment 2 overlap  ?
+    if( seg2->x1 <= seg1->x2 ) // Does segment 2 overlap  ?
        return true;
  
     ++seg1; n1--;   // go to next segment
