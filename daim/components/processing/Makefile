@@ -16,6 +16,7 @@ DIRS = KernelManager \
        Pyramid \
        ImageMath \
        Transforms \
+       Results \
        $(NULL)
 
 include $(DEPTH)/config/rules.mk

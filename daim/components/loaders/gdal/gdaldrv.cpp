@@ -43,6 +43,7 @@
 #include "cciIRemoteSurface.h"
 
 #include "gdaldrv.h"
+#include "gdalMetadata.h"
 #include "daim_kernel.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
@@ -178,20 +179,6 @@ CCI_IMETHODIMP cciGDALDriver::GetHasCreateCapabilities(dm_bool *aHasCreateCapabi
   return CCI_OK;
 }
 
-
-static CCI_METHOD writeMetaDataCallback(cciIMetaDataContainer *aSrcContainer, void *aClosure,
-                                        const char* aDomain, char** data)
-{
-  GDALDatasetH hDS = reinterpret_cast<GDALDatasetH>(aClosure);
-
-  CPLErr err = GDALSetMetadata(hDS,data,aDomain);
-  if(err != CE_None)
-     return CCI_ERROR_FAILURE;
-
-  return CCI_OK;
-}
-
-
 /* [noscript] void saveImageBits (in string newLocation, in dmImageDataRef imData, in string options); */
 CCI_IMETHODIMP cciGDALDriver::SaveImageBits(const char * newLocation, dmImageData & imData, const char * options )
 {
@@ -199,8 +186,10 @@ CCI_IMETHODIMP cciGDALDriver::SaveImageBits(const char * newLocation, dmImageDat
 }
 
 /* [noscript] void saveImageBitsWithAlpha (in string newLocation, in dmImageDataRef imData, [array, size_is (count)] in dm_uint8 alphaBits, in long alphaStride, in cciIMetaDataContainer exif, in cciIColorTable colorTable, in string options); */
-CCI_IMETHODIMP cciGDALDriver::SaveImageBitsWithAlpha(const char * newLocation, dmImageData & imData, 
-                                                     dm_uint8 *alphaBits, dm_int32 alphaStride, 
+CCI_IMETHODIMP cciGDALDriver::SaveImageBitsWithAlpha(const char * newLocation, 
+                                                     dmImageData & imData, 
+                                                     dm_uint8 *alphaBits, 
+                                                     dm_int32 alphaStride, 
                                                      cciIMetaDataContainer *exif, 
                                                      cciIColorTable *colorTable, 
                                                      const char * options)
@@ -221,13 +210,24 @@ CCI_IMETHODIMP cciGDALDriver::SaveImageBitsWithAlpha(const char * newLocation, d
   // Clone meta data
   if(exif)
   {
-    rv = exif->ReadMetaData(writeMetaDataCallback,hDS,"");
-    if(rv == CCI_ERROR_NOT_AVAILABLE)
-       rv = CCI_OK;
-
+    cci_Ptr<gdalMetadata> metaData = do_QueryInterface(exif);
+    if(metaData) 
+    {
+      char** data = metaData->GetMetaData("");
+      if(data) {
+        CPLErr err = GDALSetMetadata(hDS,data,"");
+        if(err != CE_None)
+           rv = CCI_ERROR_FAILURE;
+      }
+    }
+    else
+    {
+      // Need to  gravel
+      // FIXME Implement me !!
+    }
+    
     if(CCI_FAILED(rv))
        dmLOG_ERROR("Failed to copy meta data !");
-
   }
   
   // Copy color table
@@ -236,8 +236,7 @@ CCI_IMETHODIMP cciGDALDriver::SaveImageBitsWithAlpha(const char * newLocation, d
     GDALRasterBandH hBand = GDALGetRasterBand(hDS,1);
     CCI_ENSURE_TRUE(hBand,CCI_ERROR_UNEXPECTED);
 
-    GDALColorTableH hColorTable = GDALCreateColorTable(GPI_RGB);
-    CCI_ENSURE_TRUE(hColorTable,CCI_ERROR_OUT_OF_MEMORY);
+    GDALColorTableH hColorTable;
     
     // Copy data from src colortable
     rv = gdalColorTable::copyColorTable(colorTable,hColorTable);

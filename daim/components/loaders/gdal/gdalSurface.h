@@ -31,10 +31,12 @@
 
 #include "cciIRemoteSurface.h"
 #include "cciIMetaDataContainer.h"
+#include "gdalMetadata.h"
 
 class gdalSurface : public cciIRemoteSurface,
                     public cciIScriptableSurface,
-                    public cciIMetaDataContainer
+                    public cciIMetaDataContainer,
+                    public gdalMetadata
 {
 friend class cciGDALDriver;
 public:
@@ -43,6 +45,9 @@ public:
   CCI_DECL_ISCRIPTABLESURFACE
   CCI_DECL_IREMOTESURFACE
   CCI_DECL_IMETADATACONTAINER
+
+  CCI_IMETHOD SetMetaData(const char * aDomain, char* * data);  
+  CCI_IMETHOD_(char* *) GetMetaData(const char * aDomain);
 
    gdalSurface();
   ~gdalSurface();

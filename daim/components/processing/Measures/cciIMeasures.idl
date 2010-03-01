@@ -61,20 +61,22 @@ struct cciRgnProperties
 [ptr]   native cciRgnPropertiesPtr(cciRgnProperties);
 [ref]   native cciRgnPropertiesRef(cciRgnProperties);
 
-[ptr]   native labelArray(dm_int32)
+[ptr]   native labelArray(dm_int32);
 
 interface cciIRegionContainer;
 interface cciImageContainer;
+interface cciIResultSet;
 
 /**
+ *  @ingroup daim
  *  @brief Compute various topological elements from a region description
  *
- *  The Measures interface will compute topological attributs
+ *  The Measures interface will compute topological attributes
  *  from a partition in connexe components of a given region.
  *  The partition is organized so has to take advantage of the hierarchical structure
  *  of objects and holes in the computation of the objects properties.
- *  Each connexe components is designated by a label used as an object réference
- *  in ImageMap methods.
+ *  Each connexe components is designated by a label used as an object reference
+ *  in cciIMeasurements methods.
  *
  *  Note that the label 0 always correspond to background.
  */
@@ -125,7 +127,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a labels is a temporary object and should not be
    *  stored for later use.
    */
-  [noscript,notxpcom] dm_uint32 getLabels (in cciRegion rgn, [shared] out labelArray labels);
+  [noscript] void getLabels (in cciRegion rgn, [shared] out labelArray labels, [retval] out dm_uint32 count);
 
   /**
    *  @brief Return the label of the object located at (x,y)
@@ -154,13 +156,13 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a labels is a temporary object and should not be
    *  stored for later use.
    */
-  [noscript,notxpcom] dm_uint32 getChildRegionLabels( in dm_int32 label, [shared] out labelArray labels );
+  [noscript] void getChildRegionLabels( in dm_int32 label, [shared] out labelArray labels, [retval] out dm_uint32 count );
 
   /**
    * @brief Return a inversed index tables for all objects labels.
    *
    *  This table will enable to fetch values from labels in arrays
-   *  returned by the compute() method. Given a label value, the array return
+   *  returned by the doMeasures() method. Given a label value, the array return
    *  the index for the value of a given property.
    *
    *  @return the number of elements in \a table
@@ -168,7 +170,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  Warning that \a table is a temporary object and should not be
    *  stored for later use.
    */
-  [noscript,notxpcom] dm_uint32 getIndexTable( [shared] out labelArray labels );
+  [noscript] void getIndexTable( [shared] out labelArray table, [retval] out dm_uint32 count );
 
   /**
    * @brief Fill holes in objects
@@ -191,7 +193,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *  @param props A reference to a Properties structure.
    */
   [noscript] void getProperties( in dm_int32 label, in dm_uint32 flags, 
-                                  in cciRgnPropertiesRef props );
+                                 in cciRgnPropertiesRef props );
 
   /**
    * @brief Perform a reconstruction using the mask given in \a mask
@@ -212,32 +214,35 @@ interface cciIMeasurements : cciIXPCOMSupports
   /**
    *  @brief Compute object properties
    *
-   *  @param store  an instance of a dmIStorageMap object. Storage will
-   *                be obtained with dmIStorageMap::GetCol().
-   *  @param params array of tagitem structure defining the desired
-   *                properties. The \a tg_Tag member can contain following values:
-   *    - CCIA_RgnDesc_Labels   return labels
-   *    - CCIA_RgnDesc_Border   return full border length
-   *    - CCIA_RgnDesc_Boundary return external border length
-   *    - CCIA_RgnDesc_Area     return size
-   *    - CCIA_RgnDesc_Dir      return direction
-   *    - CCIA_RgnDesc_Euler    return euler number
-   *    - CCIA_RgnDesc_CX       return X-Centroid
-   *    - CCIA_RgnDesc_CY       return Y-Centroid
-   *    - CCIA_RgnDesc_L1       return min axis length
-   *    - CCIA_RgnDesc_L2       return max axis length
-   *    - CCIA_RgnDesc_Moment   return central moment of order (arguments: xn,yn)
+   *  @param properties array of string defining the desired
+   *                properties. Can be the following:
+   *    - 'RgnDesc_Labels'   return labels
+   *    - 'RgnDesc_Border'   return full border length
+   *    - 'RgnDesc_Boundary' return external border length
+   *    - 'RgnDesc_Area'     return size
+   *    - 'RgnDesc_Dir'      return direction
+   *    - 'RgnDesc_Euler'    return euler number
+   *    - 'RgnDesc_CX'       return X-Centroid
+   *    - 'RgnDesc_CY'       return Y-Centroid
+   *    - 'RgnDesc_L1'       return min axis length
+   *    - 'RgnDesc_L2'       return max axis length
+   *    - 'RgnDesc_Moment'   return central moment of order (arguments: xn,yn)
    *
+   *  @param count
+   *  @param results 
+   *  @param refImage 
+   *  
    *  if \a refImage is supplied then the following properties can be computed:
-   *    - CCIA_ImgDesc_TotalDensity     return total density value of order n  (arguments: n)
-   *    - CCIA_ImgDesc_MeanDensity      return mean density value
-   *    - CCIA_ImgDesc_MinDensity       return min luminance value
-   *    - CCIA_ImgDesc_MaxDensity       return max luminance value
-   *    - CCIA_ImgDesc_MeanDensity      return mean luminance value
+   *    - 'ImgDesc_TotalDensity'    return total density value of order n  (arguments: n)
+   *    - 'ImgDesc_MeanDensity'     return mean density value
+   *    - 'ImgDesc_MinDensity'      return min luminance value
+   *    - 'ImgDesc_MaxDensity'      return max luminance value
+   *    - 'ImgDesc_MeanDensity'     return mean luminance value
    *
    */
-   //void getRegionProperties( dm_cci(PropertyList) props, dm_param key, dm_cci(StorageMap) store,
-   //                         in cciImage refImage );
+   void doMeasures( [array,size_is(count)] in string properties, in dm_uint32 count,
+                     in cciIResultSet results, 
+                     in cciImage refImage );
   
   /**
    * Return the current connectivity used
@@ -267,7 +272,6 @@ interface cciIMeasurements : cciIXPCOMSupports
   const dm_int32 CCIV_ImageMap_Loc   =  0x08;
   const dm_int32 CCIV_ImageMap_Shape =  0x10;
   const dm_int32 CCIV_ImageMap_Euler =  0x20;
-
 };
 
 

@@ -61,7 +61,8 @@
     operator ContainerInterface* () { return this; }
   };
 
-  #define CCI_NATIVE( container ) (container->GetNative())
+  #define CCI_NATIVE( container )    ((container)->GetNative())
+  #define CCI_IF_NATIVE( container ) ((container)?(container)->GetNative():dm_null)
 
 
 #define DECL_NATIVE_WRAPPER( T, ContainerInterface)              \

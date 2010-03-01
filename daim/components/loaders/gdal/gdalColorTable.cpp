@@ -51,9 +51,41 @@ gdalColorTable::~gdalColorTable()
   GDALDestroyColorTable(mColorTable);
 }
 
-cci_result gdalColorTable::copyColorTable( cciIColorTable* src, GDALColorTableH dst )
+cci_result gdalColorTable::copyColorTable( cciIColorTable* src, GDALColorTableH &dst )
 {
-   //FIXME
+   cci_Ptr<gdalColorTable> clrtble = do_QueryInterface(src);
+   if(clrtble) {
+     dst = GDALCloneColorTable(clrtble->mColorTable);
+     CCI_ENSURE_TRUE(dst,CCI_ERROR_OUT_OF_MEMORY);
+   }
+   else
+   {
+     dst = GDALCreateColorTable(GPI_RGB);
+     CCI_ENSURE_TRUE(dst,CCI_ERROR_OUT_OF_MEMORY);
+     
+     int dstCount = GDALGetColorEntryCount(dst);
+   
+     int srcCount = 0;
+     cci_result rv = src->GetColorEntryCount(&srcCount);
+     CCI_ENSURE_SUCCESS(rv,rv);
+     
+     if(srcCount > dstCount)
+        srcCount = dstCount;
+     
+     dm_uint32 value;
+     GDALColorEntry entry;
+     
+     for(int i=0;i<srcCount;++i) {
+       rv = src->GetColorEntry(i,&value);
+       if(CCI_SUCCEEDED(rv)) {
+         entry.c1 = DM_GETRVALUE( value );
+         entry.c2 = DM_GETGVALUE( value );
+         entry.c3 = DM_GETBVALUE( value );
+         entry.c4 = DM_GETAVALUE( value );
+         GDALSetColorEntry(dst,i,&entry);
+       }
+     }
+   }
    return CCI_OK;
 }
 

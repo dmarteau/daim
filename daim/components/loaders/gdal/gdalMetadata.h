@@ -1,8 +1,8 @@
-#ifndef gdalColorTable_h
-#define gdalColorTable_h
+#ifndef gdalMetadata_h
+#define gdalMetadata_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2010 David Marteau
+ * Copyright (c) 2004-2005 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -24,33 +24,26 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : gdalColorTable.h
-// Date         : 15 janv. 2010
+// File         : gdalMetadata.h
+// Date         : 9 févr. 2010
 // Author       : David Marteau
 //--------------------------------------------------------
 
+#include "cciISupports.h"
+
 /* Header file */
-#define CCI_COLORTABLE_PRIVATE_IID \
-    { 0x20ec68de, 0xb94f, 0x4cb4, { 0xa6, 0x3f, 0x2f, 0xa1, 0x58, 0x5c, 0x65, 0xa6 } }
-class gdalColorTable : public cciIColorTable
+#define CCI_METADATA_PRIVATE_IID \
+    { 0xfc67a37e, 0x1f9c, 0x4c82, { 0x9a, 0x18, 0xb0, 0xa3, 0x49, 0x43, 0x09, 0x39 } }
+class gdalMetadata : public cciISupports
 {
-friend class gdalSurface;
-friend class cciGDALDriver;
 public:
-  CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_COLORTABLE_PRIVATE_IID)
-    
-  CCI_DECL_ISUPPORTS
-  CCI_DECL_ICOLORTABLE
-
-  gdalColorTable( GDALColorTableH colorTable );
-
-  static cci_result copyColorTable( cciIColorTable* src, GDALColorTableH &dst );
+  CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_METADATA_PRIVATE_IID);
   
-private:
-  ~gdalColorTable();
-
-protected:
-  GDALColorTableH mColorTable;
+  CCI_IMETHOD SetMetaData(const char * aDomain, char* * data)  = 0;
+  
+  CCI_IMETHOD_(char**) GetMetaData(const char * aDomain) = 0;
 };
 
-#endif /* gdalColorTable_h */
+CCI_DEFINE_STATIC_IID_ACCESSOR(gdalMetadata,CCI_METADATA_PRIVATE_IID)
+
+#endif /* gdalMetadata_h */

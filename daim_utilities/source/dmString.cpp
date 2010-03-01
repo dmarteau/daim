@@ -128,7 +128,7 @@ class __dm_string_allocator
     pointer allocate(size_type n, const void *hint)
     {
        pointer p = new char_type[n+1];
-       std::fill(p,p+(n+1),tokens_type::end_of_string);
+       std::fill(p,p+(n+1),end_of_string);
        return p;
     }
 

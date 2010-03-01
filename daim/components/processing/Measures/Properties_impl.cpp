@@ -72,7 +72,7 @@ struct Prop_CumulateDensityOrderN
   }
 };
 //--------------------------------------------------------------
-bool cciMeasurements::ComputeDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
+bool cciMeasurements::ComputeDensity( const floatImage& _Image,
                                       dm_uint  _Order,
                                       dm_real* _Results, const dmPoint& p  )
 {
@@ -84,8 +84,7 @@ bool cciMeasurements::ComputeDensity( const dmIImage<dmPixelFormat32bppFloat>& _
   for(;it != last; ++it)
      (*it).ri_fvalue = 0;
 
-  dmIImage<dmPixelFormat32bppFloat>* pImg = 
-    const_cast<dmIImage<dmPixelFormat32bppFloat>*>(&_Image);
+  floatImage* pImg = const_cast<floatImage*>(&_Image);
 
   if(_Order == 1) {
     daim::evaluate(mRoi,p,mMap,pImg->Gen(),Prop_CumulateDensity(*this));
@@ -106,7 +105,7 @@ bool cciMeasurements::ComputeDensity( const dmIImage<dmPixelFormat32bppFloat>& _
   return true;
 }
 //--------------------------------------------------------------
-bool cciMeasurements::ComputeMeanDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
+bool cciMeasurements::ComputeMeanDensity( const floatImage& _Image,
                                           dm_real* _Results, const dmPoint& p  )
 {
   UpdateRoi();
@@ -118,8 +117,7 @@ bool cciMeasurements::ComputeMeanDensity( const dmIImage<dmPixelFormat32bppFloat
   for(;it != last; ++it)
      (*it).ri_fvalue = 0;
 
-  dmIImage<dmPixelFormat32bppFloat>* pImg = 
-    const_cast<dmIImage<dmPixelFormat32bppFloat>*>(&_Image);
+  floatImage* pImg =  const_cast<floatImage*>(&_Image);
 
   daim::evaluate(mRoi,p,mMap,pImg->Gen(),Prop_CumulateDensity(*this));
 
@@ -150,7 +148,7 @@ struct Prop_MinDensity
   }
 };
 //--------------------------------------------------------------
-bool cciMeasurements::ComputeMinDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
+bool cciMeasurements::ComputeMinDensity( const floatImage& _Image,
                                          dm_real* _Results, const dmPoint& p  ) 
 {
   UpdateRoi();
@@ -159,10 +157,9 @@ bool cciMeasurements::ComputeMinDensity( const dmIImage<dmPixelFormat32bppFloat>
   info_list_type::iterator last = mNodeList.End();
 
   for(;it != last; ++it)
-     (*it).ri_fvalue = dmIImage<dmPixelFormat32bppFloat>::traits_type::max();
+     (*it).ri_fvalue = floatImage::traits_type::max();
 
-  dmIImage<dmPixelFormat32bppFloat>* pImg = 
-    const_cast<dmIImage<dmPixelFormat32bppFloat>*>(&_Image);
+  floatImage* pImg =  const_cast<floatImage*>(&_Image);
 
   daim::evaluate(mRoi,p,mMap,pImg->Gen(),Prop_MinDensity(*this));
 
@@ -193,7 +190,7 @@ struct Prop_MaxDensity
   }
 };
 //--------------------------------------------------------------
-bool cciMeasurements::ComputeMaxDensity( const dmIImage<dmPixelFormat32bppFloat>& _Image,
+bool cciMeasurements::ComputeMaxDensity( const floatImage& _Image,
                                          dm_real* _Results, const dmPoint& p  ) 
 {
   UpdateRoi();
@@ -202,10 +199,9 @@ bool cciMeasurements::ComputeMaxDensity( const dmIImage<dmPixelFormat32bppFloat>
   info_list_type::iterator last = mNodeList.End();
 
   for(;it != last; ++it)
-     (*it).ri_fvalue = dmIImage<dmPixelFormat32bppFloat>::traits_type::min();
+     (*it).ri_fvalue = floatImage::traits_type::min();
 
-  dmIImage<dmPixelFormat32bppFloat>* pImg = 
-    const_cast<dmIImage<dmPixelFormat32bppFloat>*>(&_Image);
+  floatImage* pImg =  const_cast<floatImage*>(&_Image);
 
   daim::evaluate(mRoi,p,mMap,pImg->Gen(),Prop_MaxDensity(*this));
 

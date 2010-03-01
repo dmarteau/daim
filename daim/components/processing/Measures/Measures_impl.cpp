@@ -243,11 +243,13 @@ bool cciMeasurements::M_ComputeArea(  dm_real* _Results )
 
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it != last; ++it) 
   {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) 
-     _Results[mIndexTable[pNode->ri_Part]] = _fac * pNode->ri_Count;
+     _Results[_itable[pNode->ri_Part]] = _fac * pNode->ri_Count;
   }
 
   return true;
@@ -269,6 +271,8 @@ bool cciMeasurements::M_ComputeBoundary( dm_real* _Results )
 
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it != last; ++it) 
   {
     pNode = &(*it);
@@ -297,7 +301,7 @@ bool cciMeasurements::M_ComputeBoundary( dm_real* _Results )
       pNode->ri_Border = length;
 
       if(_Results && pNode->ri_Status==RI_REGION) 
-         _Results[mIndexTable[pNode->ri_Part]] = length; 
+         _Results[_itable[pNode->ri_Part]] = length; 
     }
   }  
   return true;
@@ -432,10 +436,12 @@ bool cciMeasurements::M_ComputeLabels( dm_real* _Results )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) 
-     _Results[mIndexTable[pNode->ri_Part]] = mPartition[pNode->ri_Part];
+     _Results[_itable[pNode->ri_Part]] = mPartition[pNode->ri_Part];
   }  
   return true;  
 }
@@ -471,11 +477,13 @@ void cciMeasurements::M_UpdateDir()
 
     int nindex;
  
+    index_table_type& _itable = mIndexTable;
+    
     for(;it!= last;++it) {
       pNode = &(*it);
       if(pNode->ri_Status==RI_REGION) 
       {
-        nindex = mIndexTable[pNode->ri_Part];
+        nindex = _itable[pNode->ri_Part];
         pNode->ri_Theta = 0.5 * atan2(2.0*m11[nindex],m20[nindex]-m02[nindex]);
       }
     }  
@@ -548,12 +556,12 @@ bool cciMeasurements::M_ComputeDir( dm_real* _Results )
 {
   M_UpdateDir();
 
-  index_table_type& _itable = mIndexTable;
-
   info_list_type::iterator it   = mNodeList.Begin();
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
-
+  
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) 
@@ -570,11 +578,13 @@ bool cciMeasurements::M_ComputeRectProps( dm_real* _Results, int l )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) {
-      if(l>1) _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_L1; 
-      else    _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_L2; 
+      if(l>1) _Results[_itable[pNode->ri_Part]] = pNode->ri_L1; 
+      else    _Results[_itable[pNode->ri_Part]] = pNode->ri_L2; 
     }
   } 
   return true;
@@ -588,10 +598,12 @@ bool cciMeasurements::M_ComputeEuler( dm_real* _Results  )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Euler; 
+      _Results[_itable[pNode->ri_Part]] = pNode->ri_Euler; 
   } 
   return true;
 
@@ -603,10 +615,12 @@ bool cciMeasurements::M_ComputeDepth( dm_real* _Results  )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Depth; 
+      _Results[_itable[pNode->ri_Part]] = pNode->ri_Depth; 
   } 
   return true;
 
@@ -618,10 +632,12 @@ bool cciMeasurements::M_ComputeHoles( dm_real* _Results  )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Childs; 
+      _Results[_itable[pNode->ri_Part]] = pNode->ri_Childs; 
   } 
   return true;
 
@@ -633,10 +649,12 @@ bool cciMeasurements::M_ComputeParentLabels( dm_real* _Results  )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+  
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION)
-      _Results[mIndexTable[pNode->ri_Part]] = pNode->ri_Father; 
+      _Results[_itable[pNode->ri_Part]] = pNode->ri_Father; 
   } 
   return true;
 
@@ -653,11 +671,13 @@ bool cciMeasurements::M_ComputePosition( dm_real* _Results, int p )
   info_list_type::iterator last = mNodeList.End();
   XNODE pNode;
 
+  index_table_type& _itable = mIndexTable;
+
   for(;it!= last;++it) {
     pNode = &(*it);
     if(pNode->ri_Status==RI_REGION) {
-      if(p==1) _Results[mIndexTable[pNode->ri_Part]] = _xcal * pNode->ri_Position_x;
-      else     _Results[mIndexTable[pNode->ri_Part]] = _ycal * pNode->ri_Position_y;
+      if(p==1) _Results[_itable[pNode->ri_Part]] = _xcal * pNode->ri_Position_x;
+      else     _Results[_itable[pNode->ri_Part]] = _ycal * pNode->ri_Position_y;
     }
   }
   return true;

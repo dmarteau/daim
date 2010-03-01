@@ -50,10 +50,11 @@
 #include "gdalColorTable.h"
 
 /* gdalSurface Implementation */
-CCI_IMPL_ISUPPORTS4(gdalSurface, cciISurface,
+CCI_IMPL_ISUPPORTS5(gdalSurface, cciISurface,
                                  cciIRemoteSurface,
                                  cciIScriptableSurface,
-                                 cciIMetaDataContainer)
+                                 cciIMetaDataContainer,
+                                 gdalMetadata)
 
 gdalSurface::gdalSurface()
 : mDS(dm_null)
@@ -915,8 +916,7 @@ CCI_IMETHODIMP gdalSurface::SetColorTable( cciIColorTable *colorTable )
   if(err != CE_None)
      return CCI_ERROR_FAILURE;
 
-  GDALColorTableH hColorTable = GDALCreateColorTable(GPI_RGB);
-  CCI_ENSURE_TRUE(hColorTable,CCI_ERROR_OUT_OF_MEMORY);
+  GDALColorTableH hColorTable;
 
   // Copy data from src colortable
   cci_result rv = gdalColorTable::copyColorTable(colorTable,hColorTable);
@@ -1149,40 +1149,6 @@ CCI_IMETHODIMP gdalSurface::SetMetadataItem(const char * aName, const char * aVa
   return CCI_OK;
 }
 
-
-/* void copyMetaData (in cciIMetaDataContainer destContainer, in string aDomain); */
-CCI_IMETHODIMP gdalSurface::CopyMetaData(cciIMetaDataContainer *destContainer, const char * aDomain)
-{
-  CCI_ENSURE_TRUE(mDS,CCI_ERROR_NOT_INITIALIZED);
-  CCI_ENSURE_ARG_POINTER(destContainer);
-
-  return destContainer->SetMetaData(aDomain,GDALGetMetadata(mDS,aDomain));
-}
-
-/* [noscript] void setMetaData (in string aDomain, in charPtrArray data); */
-CCI_IMETHODIMP gdalSurface::SetMetaData(const char * aDomain, char **data)
-{
-  CCI_ENSURE_TRUE(mDS,CCI_ERROR_NOT_INITIALIZED);
-  CCI_ENSURE_ARG_POINTER(data);
-
-  CPLErr err = GDALSetMetadata(mDS,data,aDomain);
-  if(err != CE_None)
-     return CCI_ERROR_FAILURE;
-
-  return CCI_OK;
-}
-
-/* [noscript] void readMetaData (in cciWriteMetaDataFun writer, in voidPtr closure, in string aDomain); */
-CCI_IMETHODIMP gdalSurface::ReadMetaData(cciWriteMetaDataFun writer, void *closure, const char * aDomain)
-{
-  CCI_ENSURE_TRUE(mDS,CCI_ERROR_NOT_INITIALIZED);
-  char **papszMetadata = GDALGetMetadata(mDS,aDomain);
-  if(!papszMetadata)
-     return CCI_ERROR_NOT_AVAILABLE;
-
-  return writer(this,closure,aDomain,papszMetadata);
-}
-
 /* cciIUTF8StringIterator getMetadata (in string aDomain); */
 CCI_IMETHODIMP gdalSurface::GetMetadata(const char * aDomain, cciIUTF8StringIterator * *_retval CCI_OUTPARAM)
 {
@@ -1195,6 +1161,31 @@ CCI_IMETHODIMP gdalSurface::GetMetadata(const char * aDomain, cciIUTF8StringIter
 
   *_retval = new cciMetaDataIterator(papszMetadata,CCI_ISUPPORTS_CAST(cciIMetaDataContainer*,this));
   CCI_ADDREF(*_retval);
+  return CCI_OK;
+}
+
+//==================================
+// gdalMetadata
+//==================================
+
+CCI_IMETHODIMP_(char* *)
+gdalSurface::GetMetaData(const char * aDomain)
+{
+  if(mDS)
+     return GDALGetMetadata(mDS,aDomain);
+  
+  return dm_null;
+}
+
+CCI_IMETHODIMP gdalSurface::SetMetaData(const char * aDomain, char* *data)
+{
+  CCI_ENSURE_TRUE(mDS,CCI_ERROR_NOT_INITIALIZED);
+  CCI_ENSURE_ARG_POINTER(data);
+
+  CPLErr err = GDALSetMetadata(mDS,data,aDomain);
+  if(err != CE_None)
+     return CCI_ERROR_FAILURE;
+
   return CCI_OK;
 }
 

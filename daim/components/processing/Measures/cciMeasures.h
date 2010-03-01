@@ -79,14 +79,14 @@ struct _RegionLink : public dmNode {
 //----------------------------
 struct _RegionInfo : public dmNode
 {
-  int ri_Status;
-  int ri_Count;
-  int ri_Childs;
-  int ri_Father;  // Father partition
+  int ri_Status;  // RI_REGION|RI_EMPTY|RI_NONE
+  int ri_Count;   // Size in pixels
+  int ri_Childs;  // Number of child nodes
+  int ri_Father;  // Father node partition index
   int ri_Depth;   // Invariant.
   int ri_Part;    // Invariant.
 
-  dm_real ri_Border;
+  dm_real ri_Border; // Length inner+outer borders
   dm_real ri_Theta;  // Invariant.
   dm_real ri_L1;     // Invariant.
   dm_real ri_L2;     // Invariant.
@@ -98,10 +98,10 @@ struct _RegionInfo : public dmNode
   dm_real ri_Position_y;
   dm_bool ri_pos;
 
-  dm_real ri_fvalue;
+  dm_real ri_fvalue;   // For intermediate storage
 
-  _RegionLink ri_ChildNode;
-  dmList      ri_ChildList;
+  _RegionLink ri_ChildNode; // Node linked to parent child list
+  dmList      ri_ChildList; // List of child nodes
 
   dm_int      ri_Euler;
 
@@ -174,6 +174,8 @@ public:
   CCI_DECL_ISUPPORTS
   CCI_DECL_IMEASUREMENTS
 
+  typedef dmIImage<dmPixelFormat32bppFloat> floatImage;
+  
   cciMeasurements();
 
 private:
@@ -222,6 +224,8 @@ public:
 
 protected:
 
+  cci_result GetImage( dmImage* refImage, dmPoint& offs, dmLink<dmImage>& _retval );
+
   // Nodes manipulation
   void InsertNodes();
   bool CreateNodes();
@@ -235,9 +239,31 @@ protected:
   bool ClearNode( XNODE node );
   bool RemoveLabels();
 
-#include "Measures_inc.h" 
-#include "Properties_inc.h"
- 
+  // Measures
+  void M_UpdateCount();
+  void M_UpdateCentroids(); 
+  void M_UpdateEuler(); 
+  void M_UpdateBoundary(); 
+  bool M_ComputeArea(  dm_real* _Results );
+  bool M_ComputeBoundary( dm_real* _Results );
+  bool M_ComputeBorder( dm_real* _Results );
+  bool M_ComputeMomentum( dm_real* _Results, int p, int q);
+  bool M_ComputeLabels( dm_real* _Results );
+  void M_UpdateDir(); 
+  void M_UpdateRectProps(); 
+  bool M_ComputeDir( dm_real* _Results );
+  bool M_ComputeRectProps( dm_real* _Results, int l );
+  bool M_ComputeEuler( dm_real* _Results  ); 
+  bool M_ComputeDepth( dm_real* _Results  );
+  bool M_ComputeHoles(  dm_real* _Results  ); 
+  bool M_ComputeParentLabels(  dm_real* _Results  ); 
+  bool M_ComputePosition( dm_real* _Results, int p );
+
+  // Properties
+  bool ComputeDensity( const floatImage& , dm_uint _Order, dm_real* _Results, const dmPoint& );
+  bool ComputeMeanDensity( const floatImage& , dm_real* _Results, const dmPoint& );
+  bool ComputeMinDensity( const floatImage&  , dm_real* _Results, const dmPoint& );
+  bool ComputeMaxDensity( const floatImage&  , dm_real* _Results, const dmPoint& ); 
 };
 
 #endif /* cciMeasures_h */

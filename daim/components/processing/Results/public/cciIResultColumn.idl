@@ -1,0 +1,128 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "cciISupports.idl"
+
+[ptr] native doublePtr(double);
+
+/** 
+ *  @ingroup daim
+ *  @brief Implement methods for storing and retrieving numerical data 
+ *
+ *  The ResultColumn interface expose methods for storing/retrieving 
+ *  numerical data.
+ */
+
+[scriptable, uuid(29482acc-9592-4aa5-97fa-fe14efd5cc7c)]
+interface cciIResultColumn : cciISupports
+{
+  /**
+   * @brief Return internal data storage pointer to array
+   */
+  [noscript,notxpcom] unsigned long getData( /*[shared]*/ out doublePtr data );
+
+  /**
+   * @brief Return internal data storage pointer to array with specified length
+   */
+  [noscript,notxpcom] doublePtr getNewData( in unsigned long desiredSize );
+
+  /**
+   * @brief Copy new data array
+   */
+  void setData( [array,size_is(count)] in double data, in unsigned long count );
+  
+  /**
+   * @brief Set all values to \a value
+   */
+  void fill( in double value );
+  
+  /** 
+   * @brief Clear data (set 0 length column)
+   */
+  void clear();
+
+  /** 
+   * @brief Preallocate storage
+   */
+  void reserve( in unsigned long capacity );
+
+  /** 
+   * @brief Preallocate storage
+   */
+  void resize( in unsigned long newsize, [optional] in double padding );
+
+  /** 
+   * @brief return the current length of the column 
+   */       
+  readonly attribute unsigned long length;
+
+ /** 
+   * @brief Get value from given column and row 
+   */
+  double getValue( in unsigned long row );
+
+  /** 
+   * @brief Set value from column \a column at \a row 
+   */
+  void setValue( in unsigned long row, in double value);
+  
+  /**
+   *  push a new value at the end of the data array
+   */
+  void push( in double value );
+  
+  /**
+   *  @brief delete a value at specified row
+   */
+  void deleteRow( in unsigned long row );
+  
+  /** 
+   * @brief Copy a range of data from a column to another  
+   */
+  void copy( in cciIResultColumn from, in unsigned long srcStart, 
+                                       in unsigned long srcEnd,
+                                       in unsigned long dstRow);
+
+  /** 
+   * @brief Return the range of data lying in a specified interval
+   * 
+   *  Given the  /a start index, the method return the /a last index
+   *  that define the range of consecutive data lying in the specified 
+   *  interval.
+   */        
+  unsigned long getInterval( in unsigned long start, in double lower, 
+                                                     in double upper );
+
+};
+
+

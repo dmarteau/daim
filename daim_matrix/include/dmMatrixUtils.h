@@ -9,8 +9,7 @@ namespace dm_numerical
 template<class T> inline T max( const T& x, const T& y) { return (x >= y ? x : y); } 
 template<class T> inline T min( const T& x, const T& y) { return (x <= y ? x : y); } 
 template<class T> inline T abs( const T& x )     { return (x<0?-x:x); }
-template<class T> inline T sgn( const T& x )     { return (x >= 0 ? 1 : -1); }
-template<class T> inline T round( const T& x )   { return (x>=0 ? x+0.5f : x-0.5f); }   
+template<class T> inline T sgn( const T& x )     { return (x >= 0 ? 1 : -1); }  
 
 template<class T> inline T absdiff( const T& x, const T& y ) {
   return ( x >= y ? x - y : y - x );   

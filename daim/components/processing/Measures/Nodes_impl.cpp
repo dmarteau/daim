@@ -5,6 +5,9 @@
 // Nodes management
 //====================================
 
+/*
+ * Helper class.
+ */
 class MapAdjacency
 {
   cciMeasurements& _This;
@@ -56,11 +59,11 @@ public:
     {
       u = _part[p0[x]];
       if(!insert(u,_part[p0[x+1]]))
-          insert(u,_part[p1[x]]  );
+          insert(u,_part[p1[x]]);
     }
 
     // Right border
-    u =  _part[p0[x2]];
+    u = _part[p0[x2]];
     insert(u,0);
   }  
 };
@@ -114,8 +117,8 @@ bool cciMeasurements::CreateNodes()
    for(++it;it!=last;++it) 
    {
      #ifdef _DEBUG_IMAGEMAP
-      dmASSERT( (*it).ri_Part     != _NULL_NODE );
-      dmASSERT( (*it).ri_Father   != _NULL_NODE );
+      dmASSERT( (*it).ri_Part   != _NULL_NODE );
+      dmASSERT( (*it).ri_Father != _NULL_NODE );
      #endif   
    
      _pnode   = &(*it);
@@ -145,6 +148,7 @@ int cciMeasurements::UpdatePartition()
   if( (mUpdate & IMAGEMAP_UPDATE_PARTITION)==0 )
   {
     daim::basic_partition& part = mPartition;
+    
     part = mNodePartition;
 
     info_list_type::iterator it   = mNodeList.Begin();

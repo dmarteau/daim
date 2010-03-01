@@ -1,0 +1,153 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciIUTF8StringIterator;
+interface cciIResultColumn;
+
+[ptr] native doublePtr(double);
+
+/** 
+ *  @ingroup daim
+ *  @brief Implement methods for storing and retrieving numerical data 
+ *
+ *  The ResultSet interface expose methods for storing/retrieving 
+ *  list of numerical data by name.
+ */
+[scriptable, uuid(6f7e44d1-0d2c-11df-bb9b-002354c49b34)]
+interface cciIResultSet : cciIXPCOMSupports
+{
+  /** 
+   * @brief Return a pointer to a storage array               
+   * 
+   * @param name    the name of the column
+   *
+   * @return the size of the column (0 if the column is empty or does not exists)
+   */
+  [noscript,notxpcom] unsigned long getCol( in string column, /* [shared] */ out doublePtr data );
+
+  /**
+   * Create a column with the specified size
+   * 
+   * If the column exists it is resized to the given size;
+   */
+  [noscript,notxpcom] doublePtr createCol( in string column, in unsigned long length );
+
+  /** 
+   * @brief Remove specified column
+   * 
+   * @param name  the name of the column
+   */ 
+  void removeCol( in string column );
+
+  /** 
+   * @brief Return the specified column
+   */
+  cciIResultColumn getColumn( in string column, [optional] in boolean create );
+
+  /** 
+   * @brief Set the column
+   * 
+   * @note that the column can be shared across multiple sets
+   */
+  void setColumn( in string name,  in cciIResultColumn column );
+
+  /** 
+   * @brief Enumrate all columns names
+   */
+  cciIUTF8StringIterator enumerateColumns();
+  
+  /**
+   * @brief Return the number of columns in the set
+   */
+  readonly attribute unsigned long  numcols;
+  
+  /** 
+   * @brief Resize the column \a column to \a newsize
+   * 
+   * @note The column will be created if it does not exists.
+   */
+  void resizeCol( in string column, in unsigned long newsize, [optional] in double padding );
+
+  /**
+   *  @brief Delete row from all columns 
+   */
+  void deleteRow( in unsigned long row );
+
+  /** 
+   * @brief Get value from given column and row 
+   */
+  double getValue( in string column, in unsigned long row );
+
+  /** 
+   * @brief Set value from column \a column at \a row 
+   */
+  void setValue( in string column, in unsigned long row, in double value);
+
+  /** 
+   * @brief Set column size to zero 
+   */  
+  void clearCol( in string column );
+
+  /** 
+   * @brief Create a zero sized column with a preallocated 
+   *  storage capacity 
+   */
+  void reserve( in string column, in unsigned long capacity );
+
+  /** 
+   * @brief return the length of the the specified column
+   */       
+  unsigned long length( in string column );
+
+
+};
+
+
+
+%{C++
+
+#define CCI_RESULTSET_CID \
+{ /* 28d4476e-3fb5-4056-93ff-ef9b2c6140f5 */       \
+  0x28d4476e,                                      \
+  0x3fb5,                                          \
+  0x4056,                                          \
+  {0x93, 0xff, 0xef, 0x9b, 0x2c, 0x61, 0x40, 0xf5} \
+}
+
+#define CCI_RESULTSET_CONTRACTID "@daim.org/processing/result-set;1"
+#define CCI_RESULTSET_CLASSNAME  "Numeric data storage"
+
+%}
+
