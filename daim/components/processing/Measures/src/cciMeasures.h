@@ -38,7 +38,7 @@
 #include "daim_kernel.h"
 #include "common/dmUserLib.h"
 
-#include "cciIMeasures.h"
+#include "cciIMeasures2.h"
 
 #include "templates/processing/dmPartition.h"
 #include "templates/processing/dmObjectDetection.h"
@@ -165,7 +165,7 @@ typedef daim::basic_partition::index_table index_table_type;
 #endif
 
 /* Header file */
-class cciMeasurements : public cciIMeasurements
+class cciMeasurements : public cciIMeasures2
 {
 
 friend class MapAdjacency;
@@ -173,6 +173,7 @@ friend class MapAdjacency;
 public:
   CCI_DECL_ISUPPORTS
   CCI_DECL_IMEASUREMENTS
+  CCI_DECL_IMEASURES2
 
   typedef dmIImage<dmPixelFormat32bppFloat> floatImage;
   

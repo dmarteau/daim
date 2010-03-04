@@ -17,6 +17,7 @@ DIRS = KernelManager \
        ImageMath \
        Transforms \
        Results \
+       Measures \
        $(NULL)
 
 include $(DEPTH)/config/rules.mk

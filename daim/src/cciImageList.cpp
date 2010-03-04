@@ -395,40 +395,36 @@ CCI_IMETHODIMP cciImageList::CopyBuffers(dm_uint32 to, dm_uint32 from, cciIImage
   if (CCI_FAILED(rv))
       return rv;
 
-  if(from < srcSize)
+  if(from >= srcSize)
+     return CCI_ERROR_INVALID_ARG;
+  
+  // For optimisation we require a cciIImageListContainer
+  // This will prevent creating a new dmImage container for the data
+  cci_Ptr<cciIImageListContainer> _Container = do_QueryInterface(source,&rv);
+  if (CCI_FAILED(rv))
+      return rv;
+
+  if(count==_NOINDEX_)
+     count = srcSize - from;
+
+  dm_uint last_from = from + count;
+  if(last_from > srcSize)
+     last_from = srcSize;
+
+  if(to + count > mBuffers.size())
+     mBuffers.resize(to + count);
+
+  dmLink<dmImage> _src;
+
+  for(;from < last_from;++from,++to)
   {
-    // For optimisation we require a cciIImageListContainer
-    // This will prevent creating a new dmImage container for the data
-    cci_Ptr<cciIImageListContainer> _Container = do_QueryInterface(source,&rv);
+    rv = _Container->GetImageLink(_src,from);
     if (CCI_FAILED(rv))
         return rv;
 
-    if(count==_NOINDEX_)
-      count = srcSize - from;
-
-    dm_uint last_from = from + count;
-    if(last_from > srcSize)
-       last_from = srcSize;
-
-    if(to + count > mBuffers.size())
-       mBuffers.resize(to + count);
-
-    dmLink<dmImage> _src;
-
-    for(;from < last_from;++from,++to)
-    {
-      rv = _Container->GetImageLink(_src,from);
-      if (CCI_FAILED(rv))
-          return rv;
-
-      if(!_src.IsNull())
-         mBuffers[to] = _src->CreateCopy();
-    }
-
-    rv = CCI_OK;
-
-  } else
-    rv = CCI_ERROR_INVALID_ARG;
+    if(!_src.IsNull())
+       mBuffers[to] = _src->CreateCopy();
+  }
 
   return rv;
 }

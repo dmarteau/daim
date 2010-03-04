@@ -87,11 +87,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>bin-debug</name>
-			<type>2</type>
-			<location>/Users/david/Projets/daim2/trunk/bin-darwin-gcc-debug</location>
-		</link>
-	</linkedResources>
 </projectDescription>

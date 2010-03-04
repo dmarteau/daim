@@ -66,6 +66,7 @@ struct cciRgnProperties
 interface cciIRegionContainer;
 interface cciImageContainer;
 interface cciIResultSet;
+interface cciIResultColumn;
 
 /**
  *  @ingroup daim

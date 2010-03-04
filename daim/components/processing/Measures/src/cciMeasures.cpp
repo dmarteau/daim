@@ -29,6 +29,7 @@
 
 #include "cciMeasures.h"
 #include "cciIResultSet.h"
+#include "cciIResultColumn.h"
 
 #define IMAGEMAP_VERIFY_LABEL( lbl ) \
 DM_BEGIN_MACRO \
@@ -42,7 +43,7 @@ DM_END_MACRO
   CCI_ENSURE_TRUE(mBuilt,CCI_ERROR_NOT_INITIALIZED)
 
 /* Implementation file */
-CCI_IMPL_ISUPPORTS1(cciMeasurements, cciIMeasurements)
+CCI_IMPL_ISUPPORTS2(cciMeasurements,cciIMeasurements,cciIMeasures2)
 
 cciMeasurements::cciMeasurements()
 :mUpdate(0)
@@ -570,6 +571,7 @@ CCI_IMETHODIMP cciMeasurements::Reconstruct(cciRegion mask)
 
   int index = daim::get_overlapping_regions_labels(*rgn,mPartition,mMap,mLabels);
 
+  // Copy the partition
   daim::basic_partition _part = mPartition;
 
   int lbl = daim::merge_labels(_part,mLabels,index);
@@ -746,7 +748,141 @@ CCI_IMETHODIMP cciMeasurements::GetDepth(dm_uint32 *aDepth)
   return CCI_OK;
 }
 
+/////////////////////////////////
+// cciIMeasures2 
+/////////////////////////////////
+
+/* void getLabelsRT (in cciRegion rgn, in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::GetLabelsRT(cciRegion rgn, cciIResultColumn *col)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+  
+  const dm_int32* labels;
+  dm_uint32 count = 0;
+
+  cci_result rv = GetLabels(rgn,&labels,&count);
+  CCI_ENSURE_SUCCESS(rv,rv);
+  
+  dm_real* data = col->GetNewData( count );
+  if(!data)
+     return CCI_ERROR_FAILURE;
+  
+  std::copy(labels,labels+count,data);
+  
+  return CCI_OK;
+}
+
+/* voidgetChildRegionLabelsRT (in dm_int32 label, in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::GetChildRegionLabelsRT(dm_int32 label, cciIResultColumn *col)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+  
+  const dm_int32* labels;
+  dm_uint32 count = 0;
+
+  cci_result rv = GetChildRegionLabels(label,&labels,&count);
+  CCI_ENSURE_SUCCESS(rv,rv);
+  
+  dm_real* data = col->GetNewData( count );
+  if(!data)
+     return CCI_ERROR_FAILURE;
+  
+  std::copy(labels,labels+count,data);
+  
+  return CCI_OK;
+}
+
+/* void getIndexTableRT (in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::GetIndexTableRT(cciIResultColumn *col)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+  
+  const dm_int32* labels;
+  dm_uint32 count = 0;
+
+  cci_result rv = GetIndexTable(&labels,&count);
+  CCI_ENSURE_SUCCESS(rv,rv);
+  
+  dm_real* data = col->GetNewData( count );
+  if(!data)
+     return CCI_ERROR_FAILURE;
+  
+  std::copy(labels,labels+count,data);
+  
+  return CCI_OK;
+}
+
+static cci_result CopyLabelArray( cciIResultColumn *col,
+                                  daim::labels_array_type& labels, 
+                                  daim::basic_partition& part,
+                                  dm_int max )
+{
+  dm_real* data   = dm_null;
+  dm_uint32 count = col->GetData(&data);
+  
+  if(count == 0)
+     return CCI_ERROR_INVALID_ARG;
+
+  labels.resize(count);
+  
+  dm_real* it   = data;
+  dm_real* last = data+count;
+
+  daim::labels_array_type::iterator dst = labels.begin();
+  
+  for(dm_int lbl;it!=last;++it,++dst)
+  {
+    lbl = static_cast<dm_int>( *it );
+    if(lbl >= max) 
+       return CCI_ERROR_OUT_OF_RANGE;
+    
+    *dst = part[lbl];
+  }
+  
+  return CCI_OK;
+}
+
+/* void removeLabelsRT (in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::RemoveLabelsRT(cciIResultColumn *col)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+  IMAGEMAP_ENSURE_BUILT();
+
+  cci_result rv = CopyLabelArray(col,mLabels,mPartition,mNodePartition.size());
+  CCI_ENSURE_SUCCESS(rv,rv);
+ 
+  RemoveLabels();
+
+  mUpdate &= ~(IMAGEMAP_UPDATE_MAP|IMAGEMAP_UPDATE_CENTROID);
+
+  return CCI_OK;
+}
+
+/* void selectLabelsRT (in cciRegion mask, in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::SelectLabelsRT(cciRegion _mask, cciIResultColumn *col)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+  
+  IMAGEMAP_ENSURE_BUILT();
+
+  dmRegion* mask = CCI_IF_NATIVE(_mask);
+  CCI_ENSURE_ARG_POINTER(mask);
+  
+  cci_result rv = CopyLabelArray(col,mLabels,mPartition,mNodePartition.size());
+  CCI_ENSURE_SUCCESS(rv,rv);
+  
+  daim::basic_partition _part = mPartition;
+  int lbl = daim::merge_labels(_part,mLabels,mLabels[0]);
+
+  daim::create_roi(mMap,_part.bind(std::bind2nd(std::equal_to<dm_int>(),lbl)),tmpRoi);
+
+  *mask = tmpRoi;
+
+  return CCI_OK;
+}
+
 ///////////////////////////////////////////////////////////////////
+
 
 
 //=====================================
