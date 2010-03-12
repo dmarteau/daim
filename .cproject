@@ -65,6 +65,10 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.989893913" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -76,6 +80,10 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1651850709" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -87,6 +95,10 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1968412187" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -352,22 +364,6 @@
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
-<target name="Build" path="include" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-<buildCommand>make</buildCommand>
-<buildArguments>-k</buildArguments>
-<buildTarget>module</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>true</useDefaultCommand>
-<runAllBuilders>true</runAllBuilders>
-</target>
-<target name="Clean" path="include" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-<buildCommand>make</buildCommand>
-<buildArguments>-k</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>true</useDefaultCommand>
-<runAllBuilders>true</runAllBuilders>
-</target>
 <target name="Build" path="daim/components/processing/Pyramid" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
@@ -384,7 +380,7 @@
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
-<target name="Build" path="daim/xpcom" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<target name="Build" path="include" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
 <buildTarget>module</buildTarget>
@@ -392,11 +388,11 @@
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
-<target name="Clean" path="daim/xpcom" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<target name="Clean" path="include" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
 <buildTarget>clean</buildTarget>
-<stopOnError>false</stopOnError>
+<stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
@@ -415,6 +411,22 @@
 <stopOnError>false</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>false</runAllBuilders>
+</target>
+<target name="Build" path="daim/xpcom" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<buildCommand>make</buildCommand>
+<buildArguments>-k</buildArguments>
+<buildTarget>module</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>true</runAllBuilders>
+</target>
+<target name="Clean" path="daim/xpcom" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<buildCommand>make</buildCommand>
+<buildArguments>-k</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>false</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>true</runAllBuilders>
 </target>
 <target name="Build" path="daim_matrix" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
@@ -672,6 +684,22 @@
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
+<target name="Build" path="utils" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<buildCommand>make</buildCommand>
+<buildArguments>-k</buildArguments>
+<buildTarget>module</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>true</runAllBuilders>
+</target>
+<target name="Clean" path="utils" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<buildCommand>make</buildCommand>
+<buildArguments>-k</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>false</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>true</runAllBuilders>
+</target>
 <target name="Build" path="doc" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
@@ -688,19 +716,11 @@
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
-<target name="Build" path="utils" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<target name="Build" path="daim/components/processing/Lacunarity" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
 <buildTarget>module</buildTarget>
 <stopOnError>true</stopOnError>
-<useDefaultCommand>true</useDefaultCommand>
-<runAllBuilders>true</runAllBuilders>
-</target>
-<target name="Clean" path="utils" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-<buildCommand>make</buildCommand>
-<buildArguments>-k</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>false</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
@@ -736,22 +756,6 @@
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>
 </target>
-<target name="Clean" path="cci" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-<buildCommand>make</buildCommand>
-<buildArguments>-k</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>true</useDefaultCommand>
-<runAllBuilders>true</runAllBuilders>
-</target>
-<target name="Build" path="cci" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-<buildCommand>make</buildCommand>
-<buildArguments>-k</buildArguments>
-<buildTarget>module</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>true</useDefaultCommand>
-<runAllBuilders>true</runAllBuilders>
-</target>
 <target name="Build" path="cci/components" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
@@ -764,6 +768,22 @@
 <buildCommand>make</buildCommand>
 <buildArguments>-k</buildArguments>
 <buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>true</runAllBuilders>
+</target>
+<target name="Clean" path="cci" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<buildCommand>make</buildCommand>
+<buildArguments>-k</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>true</runAllBuilders>
+</target>
+<target name="Build" path="cci" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+<buildCommand>make</buildCommand>
+<buildArguments>-k</buildArguments>
+<buildTarget>module</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>true</runAllBuilders>

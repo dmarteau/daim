@@ -36,19 +36,29 @@
 [scriptable, uuid(3da3282c-774c-40d7-a621-1408a7448fba)]
 interface cciIMeasures2 : cciIMeasurements
 {
-  /** Same as cciMeasures::getLabels, store data in result table */
+  /**
+   *  @brief Same as cciMeasures::getLabels, store data in result table
+   */
   void getLabelsRT(in cciRegion rgn, in cciIResultColumn col );
 
-  /** Same as cciMeasures::getChildRegionLabels, store data in result table */
+  /**
+   * @brief Same as cciMeasures::getChildRegionLabels, store data in result table 
+   */
   void getChildRegionLabelsRT( in dm_int32 label, in cciIResultColumn col  );
 
-  /** Same as cciMeasures::getIndexTable, store data in result table */
+  /** 
+   * @brief Same as cciMeasures::getIndexTable, store data in result table 
+   */
   void getIndexTableRT( in cciIResultColumn col  );
 
-  /** Same as cciMeasures::removeLabels, get data from result table */
+  /** 
+   * @brief Same as cciMeasures::removeLabels, get data from result table 
+   */
   void removeLabelsRT( in cciIResultColumn col  );
 
-  /** Same as cciMeasures::selectLabels, get data from result table */
+  /** 
+   * @brief Same as cciMeasures::selectLabels, get data from result table 
+   */
   void selectLabelsRT( in cciRegion mask, in cciIResultColumn col );
 
 };

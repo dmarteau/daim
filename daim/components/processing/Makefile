@@ -18,6 +18,7 @@ DIRS = KernelManager \
        Transforms \
        Results \
        Measures \
+       Lacunarity \
        $(NULL)
 
 include $(DEPTH)/config/rules.mk

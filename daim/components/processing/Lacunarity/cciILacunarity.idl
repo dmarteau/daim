@@ -1,0 +1,112 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+
+interface cciIRegionContainer;
+interface cciImageContainer;
+
+/**
+ *  @ingroup daim
+ *  @brief Compute lacunarity measures on image.
+ */
+[scriptable, uuid(8b0d6419-8bf1-4766-8cda-74997be7b4bb)]
+interface cciILacunarity : cciIXPCOMSupports
+{
+  /**
+   * @brief Initialize image and region
+   *
+   * Call this method before any other methods.
+   * 
+   * @param image the image to be measured
+   * @param rgn the region of interest
+   * @param flags combination of flags that control the algorithm:
+   *     - CCIV_Lacunarity_Fractional : 
+   *         Set this flag of you plan to use fractional correction 
+   *         @see lacunarity
+   */
+  void init( in cciImage image, in cciRegion rgn , in dm_uint32 flags );
+  
+  /** 
+   * @brief Compute the lacunarity for the \a size (in pixels)
+   *
+   * The lacunarity is computed using the gliding box algorithm and
+   * for the given roi (i.e the box will "glide" on pixels
+   * belonging to the given roi, but taking into account pixels that lies outside
+   * the roi).
+   *
+   * @param size  is the size (in pixels) of the gliding box
+   * @param flags combination of flags that control the algorithm:
+   *     - CCIV_Lacunarity_Fractional : 
+   *         By setting this flag, ROI border correction is applied by taking into 
+   *         account for the fractional part of the gliding box outside the ROI.
+   * 
+   * @return the lacunarity value
+   */
+  double lacunarity( in unsigned long size, in dm_uint32 flags );
+
+  /**
+   * flag to be passed to lacunarity
+   * a non linear order L-filter with first and last coefficient
+   * coefficients equals to 1/2 (i.e (min+max)/2)
+   */
+  const dm_uint32 CCIV_Lacunarity_Fractional = 1;
+ 
+  /**
+   * @brief Destroy allocated resources.
+   * 
+   * Init must be called again before calling lacunarity.
+   */
+   void clear();
+};
+
+
+
+%{C++
+
+#define CCI_LACUNARITY_CID \
+{ /* 2009a2d6-d525-447f-9147-f5badab00577 */       \
+  0x2009a2d6,                                      \
+  0xd525,                                          \
+  0x447f,                                          \
+  {0x91, 0x47, 0xf5, 0xba, 0xda, 0xb0, 0x05, 0x77} \
+}
+
+#define CCI_LACUNARITY_CONTRACTID "@daim.org/processing/lacunarity;1"
+#define CCI_LACUNARITY_CLASSNAME  "Fractal lacunarity measure"
+
+%}
+
+
+
