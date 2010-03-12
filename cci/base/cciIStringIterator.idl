@@ -38,7 +38,7 @@ interface cciIStringIterator : cciIXPCOMSupports
 {
   void getNext([shared,retval] out wstring value );
 
-  [notxpcom] boolean hasMore();
+  boolean hasMore();
 };
 
 [scriptable, uuid(365e77bb-aac1-4329-97fe-ebcaa5552895)]
@@ -46,7 +46,7 @@ interface cciIUTF8StringIterator : cciIXPCOMSupports
 {
   void getNext([shared,retval] out string value );
 
-  [notxpcom] boolean hasMore();
+  boolean hasMore();
 };
 
 

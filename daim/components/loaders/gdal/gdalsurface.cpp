@@ -1068,6 +1068,8 @@ public:
   CCI_IMETHOD GetNext(dmAString& );
   CCI_IMETHOD GetNext(dmACString&);
   
+  CCI_IMETHOD_(dm_bool) HasMore(void);
+  
   cciMetaDataIterator(char **papszMetadata, cciISupports* owner)
   : mCurrent(papszMetadata)
   , mOwner(owner)
@@ -1090,6 +1092,15 @@ cciMetaDataIterator::HasMore()
 {
   return (*mCurrent != dm_null);
 }
+
+/* boolean hasMore (); */
+CCI_IMETHODIMP 
+cciMetaDataIterator::HasMore(dm_bool *_retval CCI_OUTPARAM)
+{
+  *_retval = HasMore();
+  return CCI_OK;
+}
+
 
 /* void getNext ([shared, retval] out string value); */
 CCI_IMETHODIMP 

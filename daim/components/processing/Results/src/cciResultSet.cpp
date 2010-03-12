@@ -206,6 +206,8 @@ public:
   CCI_IMETHOD GetNext(dmAString& );
   CCI_IMETHOD GetNext(dmACString&);
   
+  CCI_IMETHOD_(dm_bool) HasMore(void);
+  
   cciColumnIterator(const dmStoreDict& dict, cciISupports* owner)
   : mFirst(dict.begin())
   , mLast(dict.end())
@@ -233,6 +235,15 @@ cciColumnIterator::HasMore()
 {
   return (mFirst != mLast);
 }
+
+/* boolean hasMore (); */
+CCI_IMETHODIMP 
+cciColumnIterator::HasMore(dm_bool *_retval CCI_OUTPARAM)
+{
+  *_retval = HasMore();
+  return CCI_OK;
+}
+
 
 /* void getNext ([shared, retval] out string value); */
 CCI_IMETHODIMP 
