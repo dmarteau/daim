@@ -112,7 +112,8 @@ int main( int argc, char ** argv )
         printf("==> No metadata\n");
       else
       {
-        while(enumerator->HasMore())
+        dm_bool hasMore;
+        while(CCI_SUCCEEDED(enumerator->HasMore(&hasMore)) && hasMore)
         {
           rv = enumerator->GetNext(&data);
           if(CCI_SUCCEEDED(rv))
