@@ -6,12 +6,12 @@
 
 .SUFFIXES: .idl
 
-PYIDLBIN=$(DEPTH)/build/idl-parser/header.py
+PYIDLBIN=$(topsrcdir)/build/idl-parser/header.py
 
 CPP_IDL_FILES = $(patsubst %.idl,$(EXPORT_DIR)/%.h,$(IDLSRC))
 IDL_REQUIRES  = cci $(MODULE_EXPORT_NAME) $(REQUIRES)
 IDL_INCLUDES  = $(patsubst %,-I"$(IDLDIR)/%",$(IDL_REQUIRES))
-IDL_PYCACHE   = "$(BUILD_REPOSITORY)/.parts/xpidl" 
+IDL_PYCACHE   = "$(BUILD_DIR)/.parts/xpidl" 
 IDL_FLAGS     = --cachedir $(IDL_PYCACHE)
 
 build_idl:$(CPP_IDL_FILES)

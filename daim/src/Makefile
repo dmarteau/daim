@@ -38,4 +38,4 @@ DAIM_MATRIX:=1
 
 MODULE_LIBS += -ldaim_dmatrix
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

@@ -7,6 +7,10 @@ DAIM_RUNTIME_VER_MAJOR    = 3
 DAIM_RUNTIME_VER_MINOR    = 0
 DAIM_RUNTIME_VER_REVISION = 0
 
+ifdef DAIM_BUILD_CONFIG
+BUILD_CONFIG=$(DAIM_BUILD_CONFIG)
+endif
+
  # Try to guess build config
 ifeq ($(BUILD_CONFIG),)
 
@@ -30,9 +34,69 @@ endif
 
 endif
 
+ifndef topsrcdir
+topsrcdir = $(shell cd $(DEPTH); pwd)
+endif
 
-# Add local configuration
-include $(DEPTH)/config/setup.mk
+#
+# Personal makefile customizations go in these optional make include files.
+#
+MY_CONFIG := $(DEPTH)/config/myconfig.mk
+MY_RULES  := $(DEPTH)/config/myrules.mk
+
+# Build unit tests
+BUILD_TESTS:=1
+
+#=============================================
+# Set the following options in myconfig.mk
+# And set the variable DAIM_BUILD_OPTIONS to 
+# the location of that file
+#=============================================
+
+# GDAL driver config
+
+# Use gdal driver (gdal required)
+DM_USE_GDAL:=1
+
+# Link dynamically with gdal (enable full gdal capabilities)
+#DM_GDAL_DLL=1
+
+#
+# Include user/app overrides
+#
+-include $(MY_CONFIG)
+
+#==========================================
+# Define output object dir if not already defined
+#==========================================
+ifndef DAIM_OBJ_DIR
+
+ifdef DAIM_DEBUG
+BUILD_DIR=$(shell cd $(topsrcdir)/../;pwd)/bin$(BUILD_CONFIG)-debug
+else
+BUILD_DIR=$(shell cd $(topsrcdir)/../;pwd)/bin$(BUILD_CONFIG)-release
+endif
+
+else
+BUILD_DIR=$(DAIM_OBJ_DIR)
+endif
+
+#==========================================
+# Define GDAL_HOME
+#==========================================
+
+ifdef DM_USE_GDAL
+ifndef GDAL_HOME
+# Use gdal internal build
+DAIM_GDAL:=1
+GDAL_HOME=$(BUILD_DIR)/gdal
+endif
+endif
+
+
+#=======================================
+# Build configuration
+#=======================================
 
 # Ensure that we have a build config set
 ifeq ($(BUILD_CONFIG),)
@@ -42,7 +106,7 @@ endif
 ifeq ($(BUILD_CONFIG),-win32-msvc)
 
   OS_ARCH = WINNT
-  MAKE_TARGET=$(DEPTH)/config/Makefile.msvc.mk
+  MAKE_TARGET=$(topsrcdir)/config/Makefile.msvc.mk
   DLLPREFIX=
   LIBPREFIX=
   LIBSFX=.lib
@@ -55,7 +119,7 @@ endif
 ifeq ($(BUILD_CONFIG),-linux-gcc)
 
   OS_ARCH = LINUX
-  MAKE_TARGET=$(DEPTH)/config/Makefile.gcc.mk
+  MAKE_TARGET=$(topsrcdir)/config/Makefile.gcc.mk
   DLLPREFIX=lib
   LIBPREFIX=lib
   LIBSFX=.a
@@ -69,7 +133,7 @@ endif
 ifeq ($(BUILD_CONFIG),-darwin-gcc)
 
   OS_ARCH = DARWIN
-  MAKE_TARGET=$(DEPTH)/config/Makefile.darwin-gcc.mk
+  MAKE_TARGET=$(topsrcdir)/config/Makefile.darwin-gcc.mk
   DLLPREFIX=lib
   LIBPREFIX=lib
   LIBSFX=.a
@@ -84,11 +148,8 @@ ifeq ($(MAKE_TARGET),)
 $(error Invalid target $(BUILD_CONFIG))
 endif
 
-BUILD_REPOSITORY = $(BUILD_DIR)
-DIST_REPOSITORY  = $(BUILD_DIR)
-
 # Special contrib directory
-CONTRIB=$(DEPTH)/contrib
+CONTRIB=$(topsrcdir)/contrib
 
 
 ifeq ($(OS_ARCH),WINNT)

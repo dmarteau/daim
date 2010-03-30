@@ -38,7 +38,7 @@ CCFLAGS += -fvisibility-inlines-hidden -fvisibility=hidden
 # Debug options
 #=====================
 
-ifeq ($(BUILD_DEBUG),1)
+ifdef DAIM_DEBUG
  OPT  += -g
  DEFS += -D_DEBUG
 else
@@ -64,7 +64,7 @@ LDFLAGS += -Xlinker -rpath-link -Xlinker $(BINDIR)
 
 else # MODULE_EXE
 
-ifneq ($(BUILD_DEBUG),1)
+ifdef DAIM_DEBUG
 # Optimize : May be useful on some platforms
 #OPT     += -ffunction-sections
 #LDFLAGS += -Wl,--gc-sections
@@ -113,7 +113,7 @@ $(OBJDIR)/%.o : %.c
 $(MODULE_EXPORT): $(OBJECTS)
 ifdef MODULE_EXE
 	$(LD) $(LDFLAGS) -o $(MODULE_EXPORT) $(OBJECTS) $(MODULE_STATIC_LIBS) $(LIBS)  
-# ifneq ($(BUILD_DEBUG),1)
+# ifdef DAIM_DEBUG
 #	strip $(MODULE_EXPORT)
 # endif
 else

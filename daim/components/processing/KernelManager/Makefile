@@ -20,4 +20,4 @@ IS_COMPONENT=1
 
 DAIM_UTILITIES:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

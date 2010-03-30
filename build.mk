@@ -35,7 +35,7 @@ include $(DEPTH)/config/config.mk
 
 .PHONY: build build_tiers make_tiers
 
-export BUILD_DEBUG
+export DAIM_DEBUG
 
 TIERS= \
 	tiers \
@@ -61,5 +61,5 @@ clean: $(TIERS)
 
 register:
 	@echo "Registering DAIM components"
-	cd $(DIST_REPOSITORY)/bin; ./cciregister ../modules/ccireg.dat ../modules
+	cd $(BUILD_DIR)/bin; ./cciregister ../modules/ccireg.dat ../modules
 

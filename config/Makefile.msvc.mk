@@ -32,8 +32,7 @@ RSC = rc.exe
 #=====================
 
 
-
-ifeq ($(BUILD_DEBUG),1)
+ifdef DAIM_DEBUG
 RUNTIME_OPT  = -MDd
 MODULE_DEFS += -D "_DEBUG"
 OPTIMIZE_OPT = -ZI -Od -RTC1
@@ -65,7 +64,7 @@ ifdef MODULE_EXE
 # Building executable
 #=====================
 
-INCL    = $(LOCAL_INCLUDE) $(MSVC_INCLUDES) $(MODULE_INCL) -I "$(DEPTH)/include"
+INCL    = $(LOCAL_INCLUDE) $(MSVC_INCLUDES) $(MODULE_INCL)
 LIBS    = $(MODULE_LIBS) $(MODULE_EXTRA_LIBS) kernel32.lib user32.lib advapi32.lib
 LDFLAGS = -nologo \
           -machine:I386 \

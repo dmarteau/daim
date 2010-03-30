@@ -9,12 +9,12 @@ ifeq ($(OS_ARCH),WINNT)
 DIRS += windows
 endif
 
-export GDAL_DIST_DIR:=$(call normalizepath,$(shell cd "$(DIST_REPOSITORY)"; pwd)/gdal)
-export GDAL_OBJ_DIR:=$(call normalizepath,$(shell cd "$(BUILD_REPOSITORY)"; pwd)/.parts/gdal)
+export GDAL_DIST_DIR:=$(call normalizepath,$(shell cd "$(BUILD_DIR)"; pwd)/gdal)
+export GDAL_OBJ_DIR:=$(call normalizepath,$(shell cd "$(BUILD_DIR)"; pwd)/.parts/gdal)
 export GDAL_SRC_DIR:=$(call normalizepath,$(shell cd "$(DEPTH)/../gdal"; pwd))
 
 # Apply rules first
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 ifneq ($(OS_ARCH),WINNT)
 

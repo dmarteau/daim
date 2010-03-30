@@ -16,6 +16,6 @@ EXPORTS = dmKernelBase.h \
           dmCoordinatesTypes.h \
           $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 

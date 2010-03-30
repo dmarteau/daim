@@ -7,5 +7,5 @@ DIRS= daim_ports utils
 
 EXPORTS= daim_config.h daim_prolog.h daim.h
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 

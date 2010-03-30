@@ -21,4 +21,4 @@ DIRS = KernelManager \
        Lacunarity \
        $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

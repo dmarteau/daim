@@ -22,7 +22,7 @@ MODULE_LIBS = -lcci_s
 
 DAIM_UTILITIES:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 libs::
 	cp cciregister $(BINDIR)/

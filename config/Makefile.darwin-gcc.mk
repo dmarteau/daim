@@ -38,7 +38,7 @@ CCFLAGS += -fvisibility-inlines-hidden -fvisibility=hidden
 # Debug options
 #=====================
 
-ifeq ($(BUILD_DEBUG),1)
+ifdef DAIM_DEBUG
  OPT  += -g
  DEFS += -D_DEBUG
 else
@@ -88,7 +88,7 @@ endif
 
 else
 # Don't export new/delete custom symbols 
-LDFLAGS += -unexported_symbols_list $(DEPTH)/config/unexported.exp
+LDFLAGS += -unexported_symbols_list $(topsrcdir)/config/unexported.exp
 LDFLAGS += -dynamiclib
 LDFLAGS += -install_name @loader_path/$(MODULE_LIBRARY_NAME) 
 endif

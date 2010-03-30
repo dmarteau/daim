@@ -19,4 +19,4 @@ MODULE_LIBS=-ldaimglue
 
 DAIM_LIBKERNEL:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

@@ -16,7 +16,7 @@ libs:: clean_tests
 clean:: clean_tests
 endif
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 ifeq ($(BUILD_TESTS),1)
 libs:: build_tests

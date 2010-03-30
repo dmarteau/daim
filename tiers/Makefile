@@ -6,4 +6,4 @@ ifdef DAIM_GDAL
 DIRS += gdal
 endif
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

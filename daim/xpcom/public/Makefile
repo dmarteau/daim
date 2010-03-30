@@ -8,23 +8,23 @@ include $(DEPTH)/config/config.mk
 
 MODULE_NAME = xpcom
 
-XPCOM_DIST=$(DIST_REPOSITORY)/xpcom
+XPCOM_DIST=$(BUILD_DIR)/xpcom
 
 XPCOM_EXPORTS=$(DEPTH)/cci/xpcom/cciIXPCOMSupports.idl \
-              $(DIST_REPOSITORY)/idl/cci/cciIMemory.idl \
-              $(DIST_REPOSITORY)/idl/cci/cciIStringIterator.idl \
-              $(DIST_REPOSITORY)/include/daim/cciDaimCID.h \
-              $(DIST_REPOSITORY)/include/daim/dmCoordinatesTypes.h \
-              $(DIST_REPOSITORY)/include/daim/dmPixelFormats.h \
-              $(DIST_REPOSITORY)/include/daim/dmImageData.h \
-              $(DIST_REPOSITORY)/include/daim/dmOperators.h \
-              $(DIST_REPOSITORY)/include/daim/dmRGBColor.h \
+              $(BUILD_DIR)/idl/cci/cciIMemory.idl \
+              $(BUILD_DIR)/idl/cci/cciIStringIterator.idl \
+              $(BUILD_DIR)/include/daim/cciDaimCID.h \
+              $(BUILD_DIR)/include/daim/dmCoordinatesTypes.h \
+              $(BUILD_DIR)/include/daim/dmPixelFormats.h \
+              $(BUILD_DIR)/include/daim/dmImageData.h \
+              $(BUILD_DIR)/include/daim/dmOperators.h \
+              $(BUILD_DIR)/include/daim/dmRGBColor.h \
               $(NULL)
 
 libs::
 	@mkdir -p $(XPCOM_DIST)
 	@rm -f $(XPCOM_DIST)/*.idl $(XPCOM_DIST)/*.h $(XPCOM_DIST)/filelist
-	cp $(DIST_REPOSITORY)/idl/daim/*.idl $(XPCOM_DIST)/
+	cp $(BUILD_DIR)/idl/daim/*.idl $(XPCOM_DIST)/
 	cp ccidaim.idl $(XPCOM_DIST)/
 	for f in $(XPCOM_EXPORTS); do \
 	  cp "$$f" $(XPCOM_DIST)/; \
@@ -34,4 +34,4 @@ libs::
 clean:: 
 	@rm -f $(XPCOM_DIST)/*.idl $(XPCOM_DIST)/*.h $(XPCOM_DIST)/filelist
 	
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

@@ -53,6 +53,6 @@ MODULE_FILES= \
 DAIM_UTILITIES:=1
 DAIM_MATRIX:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 

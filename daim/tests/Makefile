@@ -5,4 +5,4 @@ include $(DEPTH)/config/config.mk
 
 DIRS = cci daim glue
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

@@ -19,4 +19,4 @@ MODULE_FILES=cciDaimGlue.cpp \
 
 EXPORTS = cciDaimGlue.h
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

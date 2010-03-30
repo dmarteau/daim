@@ -25,6 +25,6 @@ clean::
 		$(MAKE) -f test.mk TEST_NAME=$$d clean; \
 	done
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 

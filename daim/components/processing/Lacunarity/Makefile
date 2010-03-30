@@ -16,4 +16,4 @@ IDLSRC = cciILacunarity.idl \
 
 DAIM_LIBKERNEL:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

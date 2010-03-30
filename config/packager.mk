@@ -18,6 +18,6 @@ endif
 
 export::
 	@for d in $(DIST_DIRS); do \
-		cp -R $(DIST_REPOSITORY)/$$d $(INSTALL_DIR)/; \
+		cp -R $(BUILD_DIR)/$$d $(INSTALL_DIR)/; \
 	done
 

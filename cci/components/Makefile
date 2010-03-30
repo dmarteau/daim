@@ -43,4 +43,4 @@ MODULE_FILES=cciComponentManagerUtils.cpp \
 
 DAIM_UTILITIES:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

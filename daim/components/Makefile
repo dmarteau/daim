@@ -8,4 +8,4 @@ MODULE_NAME=daim
 
 DIRS = processing loaders
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

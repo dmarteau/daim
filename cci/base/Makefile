@@ -27,4 +27,4 @@ IDLSRC = ccirootidl.idl \
          cciIXPCOMSupports.idl \
          $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

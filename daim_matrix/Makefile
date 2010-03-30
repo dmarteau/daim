@@ -38,5 +38,5 @@ DAIM_UTILITIES:=1
 
 DIRS = precision
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 

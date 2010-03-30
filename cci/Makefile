@@ -9,4 +9,4 @@ DIRS= base io components glue ccireg
 EXPORTS= cciCOM.h \
          $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

@@ -10,6 +10,6 @@ ifneq ($(OS_ARCH),WINNT)
 DIRS += printimagedata
 endif
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 .PHONY: build_tests

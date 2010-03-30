@@ -10,7 +10,7 @@ ifndef DOXYGEN_PATH
 $(error DOXYGEN_PATH not set !)
 endif
 
-DOC_INSTALL = $(DIST_REPOSITORY)/doc
+DOC_INSTALL = $(BUILD_DIR)/doc
 
 libs::
 	@mkdir -p $(DOC_INSTALL)
@@ -20,4 +20,4 @@ libs::
 clean::
 	@rm -fr $(DOC_INSTALL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

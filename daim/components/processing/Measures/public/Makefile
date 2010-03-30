@@ -10,4 +10,4 @@ IDLSRC = cciIMeasures.idl \
          cciIMeasures2.idl \
          $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

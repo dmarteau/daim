@@ -24,4 +24,4 @@ MODULE_FILES=cciComponentManagerUtils.cpp \
              cciEnumeratorUtils.cpp \
              $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

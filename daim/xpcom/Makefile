@@ -10,4 +10,4 @@ MODULE_NAME  = xpcom
 
 DIRS = public
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

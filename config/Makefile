@@ -26,7 +26,7 @@ contrib:
 	@$(MAKE) -C $(DEPTH)/contrib/sources
 
 create_repository:
-	@mkdir -p $(DIST_REPOSITORY)
+	@mkdir -p $(BUILD_DIR)
 
 $(BUILD_DIRS):
 	@$(MAKE) -C $@ module
@@ -44,9 +44,9 @@ clean:
 		$(MAKE) -C $$d clean; \
 	done
 
-config:
+echo-config:
 	@echo BUILD_CONFIG            = $(BUILD_CONFIG)
 	@echo MAKE_TARGET             = $(MAKE_TARGET)
-	@echo BUILD_DEBUG             = $(BUILD_DEBUG)
+	@echo DAIM_DEBUG              = $(DAIM_DEBUG)
 	@echo BUILD_DIR               = $(BUILD_DIR)
 	@$(MAKE) -f $(MAKE_TARGET) config DEPTH=.. BUILD_CONFIG=$(BUILD_CONFIG)

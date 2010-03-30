@@ -12,4 +12,4 @@ IDLSRC = cciIDriverProxy.idl   \
          cciILoaderService.idl \
          $(NULL)
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

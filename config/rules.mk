@@ -9,8 +9,7 @@
 # MODULE_DEFS    Additional defines
 # MODULE_FILES   List of source files to compile and link
 #
-# DIST_REPOSITORY  is defined in config/config.mk
-# BUILD_REPOSITORY is defined in config/config.mk
+# BUILD_DIR  is defined in config/config.mk
 #=========================================================
 
 # Defines for lib version
@@ -27,31 +26,31 @@ MODULE_DEFS += DAIM_RUNTIME_VER_REVISION=$(DAIM_RUNTIME_VER_REVISION)
 # Use a specific package
 ifdef MODULE_PACKAGE
   MOD_PATH      += apps/$(MODULE_PACKAGE)/
-  MODULE_LIBDIR += $(DIST_REPOSITORY)/lib
+  MODULE_LIBDIR += $(BUILD_DIR)/lib
 endif
 
-BINDIR=$(DIST_REPOSITORY)/$(MOD_PATH)bin
-LIBDIR=$(DIST_REPOSITORY)/$(MOD_PATH)lib
-CCIDIR=$(DIST_REPOSITORY)/$(MOD_PATH)modules
-EXEDIR=$(DIST_REPOSITORY)/$(MOD_PATH)bin
-INCDIR=$(DIST_REPOSITORY)/$(MOD_PATH)include
-IDLDIR=$(DIST_REPOSITORY)/$(MOD_PATH)idl
+BINDIR=$(BUILD_DIR)/$(MOD_PATH)bin
+LIBDIR=$(BUILD_DIR)/$(MOD_PATH)lib
+CCIDIR=$(BUILD_DIR)/$(MOD_PATH)modules
+EXEDIR=$(BUILD_DIR)/$(MOD_PATH)bin
+INCDIR=$(BUILD_DIR)/$(MOD_PATH)include
+IDLDIR=$(BUILD_DIR)/$(MOD_PATH)idl
 
 MODULE_INCL += $(INCDIR)
 
 ifdef LIBRARY_NAME
-OBJDIR=$(BUILD_REPOSITORY)/.parts/$(LIBRARY_NAME)
+OBJDIR=$(BUILD_DIR)/.parts/$(LIBRARY_NAME)
 endif
 
 MODULE_LIBDIR += $(LIBDIR)
 
 # Add the 'DEBUG' macros
-ifeq ($(BUILD_DEBUG),1)
+ifdef DAIM_DEBUG
  MODULE_DEFS += DEBUG
 endif
 
 # Add contrib directory for libs path
-MODULE_LIBDIR += $(DIST_REPOSITORY)/contrib/lib
+MODULE_LIBDIR += $(BUILD_DIR)/contrib/lib
 
 # Set EXPORTS directory
 
@@ -101,7 +100,7 @@ ifeq ($(IS_COMPONENT),1)
 MODULE_LIBRARY_NAME = $(LIBRARY_NAME).cci
 MODULE_EXPORT = $(CCIDIR)/$(MODULE_NAME)/$(MODULE_LIBRARY_NAME)
 MODULE_FILES += cciComponentGlue.cpp
-VPATH += :$(DEPTH)/cci/glue
+VPATH += :$(topsrcdir)/cci/glue
 MODULE_SHARED:=1
 REQUIRES += cci
 MODULE_DEFS  += DAIM_GLUE 
@@ -155,7 +154,7 @@ endif
 ifdef DAIM_KERNEL
 MODULE_DEFS += DAIM_KERNEL
 MODULE_LIBS += -ldaim_kernel
-MODULE_INCL += $(DEPTH)/daim_kernel/include
+MODULE_INCL += $(topsrcdir)/daim_kernel/include
 DAIM_UTILITIES:=1
 else
 # Add exported daim_kernel files to include path
@@ -164,14 +163,14 @@ endif
 
 ifdef DAIM_MATRIX
 MODULE_LIBS += -ldaim_matrix
-MODULE_INCL += $(DEPTH)/daim_matrix/include
+MODULE_INCL += $(topsrcdir)/daim_matrix/include
 DAIM_UTILITIES:=1
 endif
 
 ifdef DAIM_UTILITIES
 MODULE_DEFS += DAIM_UTILITIES
 MODULE_LIBS += -ldaim_utilities
-MODULE_INCL += $(DEPTH)/daim_utilities/include
+MODULE_INCL += $(topsrcdir)/daim_utilities/include
 endif
 
 
@@ -209,7 +208,7 @@ endif
 ifdef IDLSRC
 BUILD_IDL=build_idl
 CLEAN_IDL=clean_idl
-include $(DEPTH)/config/idl.mk
+include $(topsrcdir)/config/idl.mk
 endif
 
 
@@ -285,3 +284,17 @@ clean_subdirs:
 	@for d in $(DIRS); do \
 		$(MAKE) -C $$d clean; \
 	done
+
+-include $(MY_RULES)
+
+echo-variable-%:
+	@echo "$($*)"
+
+echo-dirs:
+	@echo $(DIRS)
+
+echo-module:
+	@echo $(MODULE_EXPORT_NAME)
+
+echo-requires:
+	@echo $(REQUIRES)

@@ -56,4 +56,4 @@ REQUIRES=daim
 
 DAIM_KERNEL:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

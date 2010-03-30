@@ -19,4 +19,4 @@ ifeq ($(BUILD_CONFIG),-linux-gcc)
 MODULE_LIBS += -ldl
 endif
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

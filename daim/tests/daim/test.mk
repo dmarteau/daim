@@ -16,4 +16,4 @@ MODULE_LIBS = -lcciglue_s
 
 DAIM_LIB:=1
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

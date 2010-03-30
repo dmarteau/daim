@@ -8,7 +8,7 @@ else
 BUILD_MODE:=release
 endif
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
 
 libs::
 	mkdir -p "$(GDAL_OBJ_DIR)"

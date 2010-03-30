@@ -6,4 +6,4 @@ include $(DEPTH)/config/config.mk
 
 DIRS= public gdal
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk

@@ -17,4 +17,4 @@ DAIM_UTILITIES:=1
 
 MODULE_INCL = $(DEPTH)/daim_matrix/include
 
-include $(DEPTH)/config/rules.mk
+include $(topsrcdir)/config/rules.mk
