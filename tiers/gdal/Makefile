@@ -52,15 +52,15 @@ GDAL_OPTIONS += CFLAGS=-O2 CXXFLAGS=-O2
 endif
 
 libs::
-	rsync -a -v --exclude .svn $(GDAL_SRC_DIR)/ $(GDAL_OBJ_DIR)
+	rsync -a -v --exclude=.svn --exclude=.hg $(GDAL_SRC_DIR)/ $(GDAL_OBJ_DIR)
 	cd $(GDAL_OBJ_DIR); ./configure --prefix=$(GDAL_DIST_DIR)/ \
 	       --enable-shared=no --without-libtool --without-ld-shared --with-hide-internal-symbols \
 	       $(GDAL_OPTIONS)
 	$(MAKE) -j1 -C $(GDAL_OBJ_DIR) 
 	$(MAKE) -j1 -C $(GDAL_OBJ_DIR) install
-ifndef DAIM_DEBUG
-	strip -S $(GDAL_DIST_DIR)/lib/libgdal.a
-endif
+#ifndef DAIM_DEBUG
+#	strip -S $(GDAL_DIST_DIR)/lib/libgdal.a
+#endif
 
 clean::
 	rm -rf $(GDAL_DIST_DIR)
