@@ -1,0 +1,58 @@
+Index: nmake.opt
+===================================================================
+--- nmake.opt	(revision 16068)
++++ nmake.opt	(working copy)
+@@ -76,14 +76,20 @@
+ !IFNDEF OPTFLAGS
+ !IF $(MSVC_VER) == 1400
+ # Uncomment the first for an optimized build or the second for a debug build.
++!IFNDEF DEBUG_BUILD
+ OPTFLAGS=	/nologo /MD /EHsc /Ox /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /DNDEBUG
+-#OPTFLAGS=	/nologo /MDd /EHsc /Zi /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /DDEBUG /D_DEBUG /Fd$(GDAL_ROOT)\gdal.pdb
+ !ELSE
++OPTFLAGS=	/nologo /MDd /EHsc /Zi /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /DDEBUG /D_DEBUG /Fd$(GDAL_ROOT)\gdal.pdb
++!ENDIF
++!ELSE
+ # Uncomment the first for an optimized build or the second for a debug build.
++!IFNDEF DEBUG_BUILD
+ OPTFLAGS=	/nologo /MD /EHsc /Ox /DNDEBUG
+-#OPTFLAGS=	/nologo /MDd /EHsc /Zi /DDEBUG /D_DEBUG /Fd$(GDAL_ROOT)\gdal.pdb
++!ELSE
++OPTFLAGS=	/nologo /MDd /EHsc /Zi /DDEBUG /D_DEBUG /Fd$(GDAL_ROOT)\gdal.pdb
+ !ENDIF
+ !ENDIF
++!ENDIF
+ 
+ # Uncomment the following if you are building for 64-bit windows
+ # (x64). You'll need to have PATH, INCLUDE and LIB set up for 64-bit
+@@ -100,7 +106,7 @@
+ 
+ # Comment the following out if you want PAM supported disabled
+ # by default.  
+-PAM_SETTING=-DPAM_ENABLED
++#PAM_SETTING=-DPAM_ENABLED
+ 
+ # Uncomment the following to link OGR utilities against main GDAL DLL
+ # instead of statically linking against OGR libraries.
+@@ -108,7 +114,7 @@
+ 
+ # Enable all OGR formats, or only raster formats?  Comment out to disable
+ # vector formats. 
+-INCLUDE_OGR_FRMTS = YES
++#INCLUDE_OGR_FRMTS = YES
+ 
+ # Location of Visual C++ directory (only required for following SETARGV stuff)
+ VCDIR   = 	D:\Software\VStudio\VC98
+@@ -118,10 +124,10 @@
+ #SETARGV =	"$(VCDIR)\lib\setargv.obj"
+ 
+ # Comment out the following to disable BSB support.
+-BSB_SUPPORTED = 1
++#BSB_SUPPORTED = 1
+ 
+ # Comment out the following to disable ODBC support.
+-ODBC_SUPPORTED = 1
++#ODBC_SUPPORTED = 1
+ 
+ # Comment out the following to disable JPEG support.
+ JPEG_SUPPORTED = 1

@@ -1,0 +1,13 @@
+Index: makefile.vc
+===================================================================
+--- makefile.vc	(revision 16068)
++++ makefile.vc	(working copy)
+@@ -188,6 +188,8 @@
+ 	cd ..\..
+ !ENDIF
+ !ENDIF
++	-mkdir $(LIBDIR)
++	copy gdal.lib $(LIBDIR)
+ 
+ devinstall: install
+ 	-mkdir $(INCDIR)

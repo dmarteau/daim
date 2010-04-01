@@ -1,0 +1,56 @@
+diff --git a/nmake.opt b/nmake.opt
+--- a/nmake.opt
++++ b/nmake.opt
+@@ -113,30 +113,30 @@ VERSION =	16
+ PAM_SETTING=-DPAM_ENABLED
+ 
+ # Uncomment the following to link OGR utilities against main GDAL DLL
+ # instead of statically linking against OGR libraries.
+ DLLBUILD=1
+ 
+ # Enable all OGR formats, or only raster formats?  Comment out to disable
+ # vector formats. 
+-INCLUDE_OGR_FRMTS = YES
++#INCLUDE_OGR_FRMTS = YES
+ 
+ # Location of Visual C++ directory (only required for following SETARGV stuff)
+ VCDIR   = 	D:\Software\VStudio\VC98
+ 
+ # Enable the following if VCDIR set properly, and you want the utility
+ # programs to be able to expand wildcards. 
+ #SETARGV =	"$(VCDIR)\lib\setargv.obj"
+ 
+ # Comment out the following to disable BSB support.
+-BSB_SUPPORTED = 1
++#BSB_SUPPORTED = 1
+ 
+ # Comment out the following to disable ODBC support.
+-ODBC_SUPPORTED = 1
++#ODBC_SUPPORTED = 1
+ 
+ # Comment out the following to disable JPEG support.
+ JPEG_SUPPORTED = 1
+ 
+ #if using an external jpeg library uncomment the follwing lines
+ #JPEG_EXTERNAL_LIB = 1
+ #JPEGDIR = c:/projects/jpeg-6b
+ #JPEG_LIB = $(JPEGDIR)/libjpeg.lib
+@@ -256,17 +256,17 @@ JPEG_SUPPORTED = 1
+ #FME_DIR =	d:\Software\fme
+ 
+ # Uncomment the following to enable FITS format support
+ #FITS_PLUGIN = NO
+ #FITS_INC_DIR =	c:\dev32\usr\include\cfitsio
+ #FITS_LIB =	c:\dev32\usr\lib\cfitsio.lib
+ 
+ # Comment out to disable GRIB support.
+-GRIB_SETTING=yes
++#GRIB_SETTING=yes
+ 
+ # Uncomment the following to enable NetCDF format.
+ #NETCDF_PLUGIN = NO
+ #NETCDF_SETTING=yes
+ #NETCDF_LIB=C:\Software\netcdf\lib\netcdf.lib
+ #NETCDF_INC_DIR=C:\Software\netcdf\include
+ # PROJ.4 stuff
+ # Uncomment the following lines to link PROJ.4 library statically. Otherwise

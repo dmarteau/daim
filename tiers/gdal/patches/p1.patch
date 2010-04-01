@@ -1,0 +1,22 @@
+diff --git a/makefile.vc b/makefile.vc
+--- a/makefile.vc
++++ b/makefile.vc
+@@ -193,16 +193,18 @@ install: $(GDAL_DLL) plugin_dir apps_dir
+ 	$(MAKE) /f makefile.vc install
+ 	cd ..
+ !IFDEF HTMLDIR
+ 	cd ogr\ogrsf_frmts
+ 	$(MAKE) /f makefile.vc html-install
+ 	cd ..\..
+ !ENDIF
+ !ENDIF
++	-mkdir $(LIBDIR)
++	copy gdal.lib $(LIBDIR)
+ 
+ devinstall: install
+ 	-mkdir $(INCDIR)
+ 	-mkdir $(LIBDIR)
+ 	copy port\*.h $(INCDIR)
+ 	copy gcore\*.h $(INCDIR)
+ 	copy alg\*.h $(INCDIR)
+ 	copy ogr\*.h $(INCDIR)
