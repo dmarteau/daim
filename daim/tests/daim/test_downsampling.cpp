@@ -98,7 +98,7 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       dmTimer timer;
-
+      
       rv = pyramid->Generate(image,dm_null,imgList,16,context);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 

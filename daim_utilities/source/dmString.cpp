@@ -311,7 +311,7 @@ int __dm_string_implementation<char_type>::_Format(
   }
 
   _impl->Reserve(n);
-  int count = _dm_vsnprintf(_impl->Begin(),n-1,fmt,ap);
+  int count = _dm_vsnprintf(_impl->Begin(),n,fmt,ap);
 
   //XXXDavid 05/07/2005
   // Use the number of char written returned by _vsntprintf

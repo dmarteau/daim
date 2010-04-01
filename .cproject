@@ -69,6 +69,7 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.989893913" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -84,6 +85,7 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1651850709" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -99,6 +101,7 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1968412187" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>

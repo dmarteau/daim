@@ -6,4 +6,5 @@
 (^|/)TAGS$
 (^|/)\.DS_Store$
 
-
+^config/myconfig.mk$
+^config/myrules.mk$
