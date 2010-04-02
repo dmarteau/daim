@@ -64,14 +64,10 @@ CCI_IMETHODIMP cciMemoryInputStream::Init(dm_uint8 *data, dm_uint32 length, dm_u
      return CCI_ERROR_INVALID_ARG;
 
   mBehaviors = behaviors;
-
-  if(mBehaviors & DM_BUFFER_COPY)
-     mBuffer = reinterpret_cast<dm_uint8*>(dmMemory::Clone(data,length));
-  else
-     mBuffer = data;
-
-  mLength = length;
-  mLeft   = mLength;
+  mBuffer    = data;
+  
+  mLength    = length;
+  mLeft      = mLength;
 
   return CCI_OK;
 }
@@ -150,13 +146,13 @@ CCI_IMETHODIMP cciMemoryInputStream::Close()
   if(!mBuffer)
     return CCI_ERROR_NOT_INITIALIZED;
 
+  if(mBehaviors & ADOPT_DATA)
+     dmMemory::Free(mBuffer);
+
   mLength    = 0;
   mOffset    = 0;
   mLeft      = 0;
   mBehaviors = 0;
-
-  if(mBuffer &&(mBehaviors & DM_BUFFER_COPY))
-    dmMemory::Free(mBuffer);
 
   mBuffer = dm_null;
 

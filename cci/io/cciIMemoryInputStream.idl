@@ -39,7 +39,8 @@ interface cciIMemoryInputStream : cciIInputStream
   void init( [array,size_is(length)] in octet data, in dm_uint32 length,
              in dm_uint32 behaviors);
 
-  const unsigned long DM_BUFFER_COPY = 0x01;
+  const unsigned long SHARE_DATA = 0x0;
+  const unsigned long ADOPT_DATA = 0x1;
 };
 
 

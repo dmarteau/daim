@@ -1,0 +1,253 @@
+diff --git a/port/cpl_vsil_win32.cpp b/port/cpl_vsil_win32.cpp
+--- a/port/cpl_vsil_win32.cpp
++++ b/port/cpl_vsil_win32.cpp
+@@ -38,16 +38,21 @@ CPL_CVSID("$Id: cpl_vsil_win32.cpp 17270
+ 
+ 
+ #if !defined(WIN32CE)
+ #  include <sys/types.h>
+ #  include <sys/stat.h>
+ #  include <io.h>
+ #  include <fcntl.h>
+ #  include <direct.h>
++
++#  include <stdio.h>
++#  include <errno.h>
++#  include <string.h> 
++
+ #else
+ #  include <wce_io.h>
+ #  include <wce_errno.h>
+ #  include <wce_stdio.h>
+ #  include <wce_stat.h>
+ #  include "cpl_win32ce_api.h"
+ #endif
+ 
+@@ -75,17 +80,18 @@ public:
+ /* ==================================================================== */
+ /*                            VSIWin32Handle                            */
+ /* ==================================================================== */
+ /************************************************************************/
+ 
+ class VSIWin32Handle : public VSIVirtualHandle
+ {
+   public:
+-    HANDLE       hFile;
++    //HANDLE       hFile;
++	FILE* fp;
+ 
+     virtual int       Seek( vsi_l_offset nOffset, int nWhence );
+     virtual vsi_l_offset Tell();
+     virtual size_t    Read( void *pBuffer, size_t nSize, size_t nMemb );
+     virtual size_t    Write( const void *pBuffer, size_t nSize, size_t nMemb );
+     virtual int       Eof();
+     virtual int       Flush();
+     virtual int       Close();
+@@ -178,26 +184,30 @@ static int ErrnoFromGetLastError()
+ 
+ /************************************************************************/
+ /*                               Close()                                */
+ /************************************************************************/
+ 
+ int VSIWin32Handle::Close()
+ 
+ {
+-    return CloseHandle( hFile ) ? 0 : -1;
++    return fclose(fp);
++    //return CloseHandle( hFile ) ? 0 : -1;
+ }
+ 
+ /************************************************************************/
+ /*                                Seek()                                */
+ /************************************************************************/
+ 
+ int VSIWin32Handle::Seek( vsi_l_offset nOffset, int nWhence )
+ 
+ {
++    return fseek( fp, nOffset, nWhence );
++
++/*
+     GUInt32       dwMoveMethod, dwMoveHigh;
+     GUInt32       nMoveLow;
+     LARGE_INTEGER li;
+ 
+     switch(nWhence)
+     {
+         case SEEK_CUR:
+             dwMoveMethod = FILE_CURRENT;
+@@ -235,123 +245,157 @@ int VSIWin32Handle::Seek( vsi_l_offset n
+         printf( "nOffset=%u, nMoveLow=%u, dwMoveHigh=%u\n", 
+                 (GUInt32) nOffset, nMoveLow, dwMoveHigh );
+ #endif
+         errno = ErrnoFromGetLastError();
+         return -1;
+     }
+     else
+         return 0;
++*/
+ }
+ 
+ /************************************************************************/
+ /*                                Tell()                                */
+ /************************************************************************/
+ 
+ vsi_l_offset VSIWin32Handle::Tell()
+ 
+ {
++   return  ftell( fp );
++
++/*
+     LARGE_INTEGER   li;
+ 
+     li.HighPart = 0;
+     li.LowPart = SetFilePointer( hFile, 0, (PLONG) &(li.HighPart), 
+                                  FILE_CURRENT );
+ 
+     return (static_cast<vsi_l_offset>(li.QuadPart));
++*/
+ }
+ 
+ /************************************************************************/
+ /*                               Flush()                                */
+ /************************************************************************/
+ 
+ int VSIWin32Handle::Flush()
+ 
+ {
++   return fflush( fp );
++/*
+     FlushFileBuffers( hFile );
+     return 0;
++*/
+ }
+ 
+ /************************************************************************/
+ /*                                Read()                                */
+ /************************************************************************/
+ 
+ size_t VSIWin32Handle::Read( void * pBuffer, size_t nSize, size_t nCount )
+ 
+ {
++  return fread( pBuffer, nSize, nCount, fp );
++/*
+     DWORD       dwSizeRead;
+     size_t      nResult;
+ 
+     if( !ReadFile( hFile, pBuffer, (DWORD)(nSize*nCount), &dwSizeRead, NULL ) )
+     {
+         nResult = 0;
+         errno = ErrnoFromGetLastError();
+     }
+     else if( nSize == 0 )
+         nResult = 0;
+     else
+         nResult = dwSizeRead / nSize;
+ 
+     return nResult;
++*/
+ }
+ 
+ /************************************************************************/
+ /*                               Write()                                */
+ /************************************************************************/
+ 
+ size_t VSIWin32Handle::Write( const void *pBuffer, size_t nSize, size_t nCount)
+ 
+ {
++   return fwrite( pBuffer, nSize, nCount, fp );
++/*
+     DWORD       dwSizeWritten;
+     size_t      nResult;
+ 
+     if( !WriteFile(hFile, (void *)pBuffer,
+                    (DWORD)(nSize*nCount),&dwSizeWritten,NULL) )
+     {
+         nResult = 0;
+         errno = ErrnoFromGetLastError();
+     }
+     else if( nSize == 0)
+         nResult = 0;
+     else
+         nResult = dwSizeWritten / nSize;
+ 
+     return nResult;
++*/
+ }
+ 
+ /************************************************************************/
+ /*                                Eof()                                 */
+ /************************************************************************/
+ 
+ int VSIWin32Handle::Eof()
+ 
+ {
++    return feof( fp );
++	/*
+     vsi_l_offset       nCur, nEnd;
+ 
+     nCur = Tell();
+     Seek( 0, SEEK_END );
+     nEnd = Tell();
+     Seek( nCur, SEEK_SET );
+ 
+     return (nCur == nEnd);
++	*/
+ }
+ 
+ /************************************************************************/
+ /* ==================================================================== */
+ /*                       VSIWin32FilesystemHandler                      */
+ /* ==================================================================== */
+ /************************************************************************/
+ 
+ /************************************************************************/
+ /*                                Open()                                */
+ /************************************************************************/
+ 
+ VSIVirtualHandle *VSIWin32FilesystemHandler::Open( const char *pszFilename, 
+                                                    const char *pszAccess )
+ 
+ {
++    FILE    *fp = fopen( pszFilename, pszAccess );
++    int     nError = errno;
++
++    if( fp == NULL )
++    {
++        errno = nError;
++        return NULL;
++    }
++
++    VSIWin32Handle *poHandle = new VSIWin32Handle;
++    
++    poHandle->fp = fp;
++
++    errno = nError;
++    return poHandle; 
++
++/*
+     DWORD dwDesiredAccess, dwCreationDisposition, dwFlagsAndAttributes;
+     HANDLE hFile;
+ 
+     if( strchr(pszAccess, '+') != NULL || strchr(pszAccess, 'w') != 0 )
+         dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
+     else
+         dwDesiredAccess = GENERIC_READ;
+ 
+@@ -381,16 +425,17 @@ VSIVirtualHandle *VSIWin32FilesystemHand
+     else
+     {
+         VSIWin32Handle *poHandle = new VSIWin32Handle;
+         
+         poHandle->hFile = hFile;
+         
+         return poHandle;
+     }
++	*/
+ }
+ 
+ /************************************************************************/
+ /*                                Stat()                                */
+ /************************************************************************/
+ 
+ int VSIWin32FilesystemHandler::Stat( const char * pszFilename, 
+                                      VSIStatBufL * pStatBuf )
