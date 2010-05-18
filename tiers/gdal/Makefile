@@ -58,9 +58,6 @@ libs::
 	       $(GDAL_OPTIONS)
 	$(MAKE) -j1 -C $(GDAL_OBJ_DIR) 
 	$(MAKE) -j1 -C $(GDAL_OBJ_DIR) install
-#ifndef DAIM_DEBUG
-#	strip -S $(GDAL_DIST_DIR)/lib/libgdal.a
-#endif
 
 clean::
 	rm -rf $(GDAL_DIST_DIR)

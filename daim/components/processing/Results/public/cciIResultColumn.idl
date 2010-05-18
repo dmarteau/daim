@@ -31,7 +31,7 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#include "cciISupports.idl"
+#include "ccidaim.idl"
 
 [ptr] native doublePtr(double);
 
@@ -44,7 +44,7 @@
  */
 
 [scriptable, uuid(29482acc-9592-4aa5-97fa-fe14efd5cc7c)]
-interface cciIResultColumn : cciISupports
+interface cciIResultColumn : cciIXPCOMSupports
 {
   /**
    * @brief Return internal data storage pointer to array

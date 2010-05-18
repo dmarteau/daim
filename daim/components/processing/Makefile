@@ -19,6 +19,7 @@ DIRS = KernelManager \
        Results \
        Measures \
        Lacunarity \
+       Profile \
        $(NULL)
 
 include $(topsrcdir)/config/rules.mk

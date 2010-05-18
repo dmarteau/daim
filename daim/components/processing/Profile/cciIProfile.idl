@@ -1,0 +1,148 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciIResultSet;
+
+/**
+ *  @ingroup daim
+ *  @brief Compute intensity profile from given path.
+ */
+[scriptable, uuid(e79dc54b-fff0-4335-afc1-80730f1b63ad)]
+interface cciIProfile : cciIXPCOMSupports
+{
+  /** 
+   * @brief Set the profile path  
+   *
+   * @param type   The type of path to be created
+   * @param points The object holding the coordinates of the path  
+   * 
+   * The path is computed using internal bresenham algorithms.  
+   */
+  [noscript] void setPath( in unsigned long type, 
+                           in voidPtr points,
+                           in unsigned long count );
+  /** 
+   * @brief Return an array of points corresponding to
+   *        the computed profile 
+   */
+  [noscript,notxpcom] unsigned long getPath( out /*[shared]*/ pointArray points );
+  
+  /**
+   * @brief Compute the profil    
+   *
+   * @param image the image from which to extract the profil
+   */
+  void compute( in cciImage image );
+
+  /**
+   * @brief Clear profile data 
+   */
+  void clear();
+  
+  /** 
+   * @brief Return an array of the profile intensity values 
+   */
+  [noscript,notxpcom] unsigned long getValues( out /*[shared]*/ doubleArray data );
+
+
+  /**
+   * @brief Store specified data in dmIStorageMap object
+   *
+   * @param storage An instance of a cciIResultSet object
+   * @param profile1 The label used to store the profile values, 
+   * @param profile2 The label used to store the raw profiles values (not filtered)
+   * @param xpath    The label used to store x coordinates of the points corresponding to
+   *                 the computed profile
+   * @param ypath    The label used to store y coordinates of the points corresponding to
+   *                 the computed profile
+   */
+  void getData( in cciIResultSet results,
+                in string  label,
+                in string  rawLabel,
+                in string  xlabel,
+                in string  ylabel);
+
+  /**
+   * @brief Return the min and max values the computed profile 
+   */
+  void getRange( out double upper, out double  lower );
+
+  /**
+   * @brief Set the Savitzky Golay filter parameters applied on profil 
+   * 
+   * By setting the parameters with \a order greater than 0, the values 
+   * of the profil will be filtered by a 1D symetrical a Savitzky Golay 
+   * smoothing filter of order \a order and half width \a extend.
+   * 
+   * The parameter \a deriv set the order of the derivation applied to 
+   * the signal 
+   * 
+   * Setting \a order to zero disable the filter
+   */ 
+  void setFilterParameters( in unsigned long order, 
+                            in unsigned long deriv, 
+                            in unsigned long extend,
+                            in string mode );
+  
+  /**
+   * Get the number of point in the profile
+   */
+  readonly attribute unsigned long count;
+
+
+  
+};
+
+
+
+%{C++
+
+#define CCI_PROFILE_CID \
+{ /* ac1c7d1c-9605-441e-84ff-31c6d4129292 */       \
+  0xac1c7d1c,                                      \
+  0x9605,                                          \
+  0x441e,                                          \
+  {0x84, 0xff, 0x31, 0xc6, 0xd4, 0x12, 0x92, 0x92} \
+}
+
+#define CCI_PROFILE_CONTRACTID "@daim.org/processing/profile;1"
+#define CCI_PROFILE_CLASSNAME  "Profile measure"
+
+%}
+
+
+
+
+

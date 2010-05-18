@@ -112,7 +112,9 @@ typedef unsigned long EPixelFormat;
 [ptr]   native dmMaskDescriptionPtr(dmMaskDescription);
 [ref]   native dmMaskDescriptionRef(dmMaskDescription);
 
-
+[ptr]   native intArray(dm_int32);
+[ptr]   native doubleArray(dm_real);
+[ptr]   native pointArray(dm_point);
 
 %{C++
 /*

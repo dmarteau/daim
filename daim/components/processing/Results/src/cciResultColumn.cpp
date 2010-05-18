@@ -50,7 +50,7 @@ cciResultColumn::cciResultColumn()
 }
 
 /* [noscript,notxpcom] unsigned long getData (out doublePtr data); */
-CCI_IMETHODIMP_(dm_uint32) cciResultColumn::GetData( double **data CCI_OUTPARAM)
+CCI_IMETHODIMP_(dm_uint32) cciResultColumn::GetData( double **data )
 {
   if(data)
     *data = Data();
@@ -114,7 +114,7 @@ CCI_IMETHODIMP cciResultColumn::GetLength(dm_uint32 *aLength)
 }
 
 /* double getValue (in unsigned long row); */
-CCI_IMETHODIMP cciResultColumn::GetValue(dm_uint32 row, dm_double *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciResultColumn::GetValue(dm_uint32 row, dm_double *_retval)
 {
   if(row < Size()) 
   {
@@ -180,7 +180,7 @@ CCI_IMETHODIMP cciResultColumn::Copy(cciIResultColumn *from, dm_uint32 srcStart,
 
 /* unsigned long getInterval (in unsigned long start, in double lower, in double upper); */
 CCI_IMETHODIMP cciResultColumn::GetInterval(dm_uint32 start, dm_double lower, dm_double upper, 
-                                            dm_uint32 *_retval CCI_OUTPARAM)
+                                            dm_uint32 *_retval )
 {
   /** 
    * @brief Return the range of data lying in a specified interval

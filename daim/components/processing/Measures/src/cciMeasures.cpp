@@ -752,8 +752,9 @@ CCI_IMETHODIMP cciMeasurements::GetDepth(dm_uint32 *aDepth)
 // cciIMeasures2 
 /////////////////////////////////
 
-/* void getLabelsRT (in cciRegion rgn, in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::GetLabelsRT(cciRegion rgn, cciIResultColumn *col)
+/* void getLabels2 (in cciRegion rgn, in cciIResultColumn col); */
+CCI_IMETHODIMP 
+cciMeasurements::GetLabels2(cciRegion rgn, cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
@@ -772,8 +773,9 @@ CCI_IMETHODIMP cciMeasurements::GetLabelsRT(cciRegion rgn, cciIResultColumn *col
   return CCI_OK;
 }
 
-/* voidgetChildRegionLabelsRT (in dm_int32 label, in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::GetChildRegionLabelsRT(dm_int32 label, cciIResultColumn *col)
+/* voidgetChildRegionLabels2 (in dm_int32 label, in cciIResultColumn col); */
+CCI_IMETHODIMP 
+cciMeasurements::GetChildRegionLabels2(dm_int32 label, cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
@@ -792,8 +794,8 @@ CCI_IMETHODIMP cciMeasurements::GetChildRegionLabelsRT(dm_int32 label, cciIResul
   return CCI_OK;
 }
 
-/* void getIndexTableRT (in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::GetIndexTableRT(cciIResultColumn *col)
+/* void getIndexTable2 (in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::GetIndexTable2(cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
@@ -842,8 +844,8 @@ static cci_result CopyLabelArray( cciIResultColumn *col,
   return CCI_OK;
 }
 
-/* void removeLabelsRT (in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::RemoveLabelsRT(cciIResultColumn *col)
+/* void removeLabels2 (in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::RemoveLabels2(cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   IMAGEMAP_ENSURE_BUILT();
@@ -858,8 +860,8 @@ CCI_IMETHODIMP cciMeasurements::RemoveLabelsRT(cciIResultColumn *col)
   return CCI_OK;
 }
 
-/* void selectLabelsRT (in cciRegion mask, in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::SelectLabelsRT(cciRegion _mask, cciIResultColumn *col)
+/* void selectLabels2 (in cciRegion mask, in cciIResultColumn col); */
+CCI_IMETHODIMP cciMeasurements::SelectLabels2(cciRegion _mask, cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
