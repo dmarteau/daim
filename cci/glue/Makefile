@@ -20,6 +20,7 @@ MODULE_FILES= cciComponentManagerUtils.cpp \
               cciSupportsImpl.cpp \
               cciCOMPtr.cpp \
               cciEnumeratorUtils.cpp \
+              cciWeakReference.cpp \
               cciStubs.cpp \
               cciCOMGlue.cpp \
               cciId.cpp \
@@ -43,6 +44,8 @@ EXPORTS= cciCore.h \
          cciString.h \
          cciIAllocator.h \
          cciNativeWrapper.h \
+         cciIWeakReferenceUtils.h \
+         cciWeakReference.h \
          $(NULL)
 
 include $(topsrcdir)/config/rules.mk

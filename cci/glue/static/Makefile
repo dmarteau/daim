@@ -22,6 +22,7 @@ MODULE_FILES=cciComponentManagerUtils.cpp \
              cciSupportsImpl.cpp \
              cciCOMPtr.cpp \
              cciEnumeratorUtils.cpp \
+             cciWeakReference.cpp \
              $(NULL)
 
 include $(topsrcdir)/config/rules.mk

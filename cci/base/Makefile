@@ -25,6 +25,7 @@ IDLSRC = ccirootidl.idl \
          cciIMemory.idl \
          cciIStringIterator.idl \
          cciIXPCOMSupports.idl \
+         cciIWeakReference.idl \
          $(NULL)
 
 include $(topsrcdir)/config/rules.mk
