@@ -61,8 +61,6 @@ struct cciRgnProperties
 [ptr]   native cciRgnPropertiesPtr(cciRgnProperties);
 [ref]   native cciRgnPropertiesRef(cciRgnProperties);
 
-[ptr]   native labelArray(dm_int32);
-
 interface cciIRegionContainer;
 interface cciImageContainer;
 interface cciIResultSet;

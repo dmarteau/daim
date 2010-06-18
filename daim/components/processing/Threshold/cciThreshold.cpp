@@ -85,7 +85,7 @@ CCI_IMETHODIMP cciThreshold::Threshold(cciImage image, cciRegion roi, cciRegion 
      return CCI_ERROR_INVALID_ARG;
   }
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmThreshold _Filter(rmin,rmax,*CCI_NATIVE(dstRgn));
 
@@ -100,7 +100,7 @@ CCI_IMETHODIMP cciThreshold::RGBThreshold(cciImage image, cciRegion roi, cciRegi
   CCI_ENSURE_ARG_POINTER(image);
   CCI_ENSURE_ARG_POINTER(dstRgn);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmRGBColor _Color;
   _Color.red   = static_cast<dm_uint8>(red);
@@ -132,7 +132,7 @@ CCI_IMETHODIMP cciThreshold::HysteresisThreshold(cciImage image, cciRegion roi, 
      return CCI_ERROR_INVALID_ARG;
   }
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmHysteresisThreshold _Filter(rmin,rmax,connect,*CCI_NATIVE(dstRgn));
 

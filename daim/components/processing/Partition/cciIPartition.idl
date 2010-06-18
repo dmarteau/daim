@@ -1,0 +1,167 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "ccidaim.idl"
+
+interface cciIRegionContainer;
+interface cciImageContainer;
+interface cciIResultColumn;
+
+/**
+ *  @ingroup daim
+ *  @brief Compute image partition and handle operations on it.
+ *
+ *  The partition is computed by agregation of pixels.
+ *  Once computed, the \a ImageParts object will store a partition table
+ *  and a image map of the same dimensions as the input image.
+ */
+[scriptable, uuid(77f4c8fe-484d-4600-84f7-da74a2b8c519)]
+interface cciIPartition : cciIXPCOMSupports
+{
+  /**
+   * @brief Compute partition of the given input image
+   *
+   *  Compute a partition of the image stored in \a param by
+   *  agregation of pixels whose value is less or equal than \a distance.
+   *  Once computed, the \a ImageParts object will store a partition table
+   *  and a image map of the same dimensions as the input image.
+   */
+  void buildPartition( in cciImage image, in cciRegion rgn, in double  distance, 
+                       in unsigned long connectivity );
+
+  /**
+   * @brief Compact the partition
+   *
+   * Compact the partition : i.e make the partition table the same
+   * as the index table and perform a relabelling of the internal
+   * stored map. Return the number of partitions.
+   */
+  long compactPartition();
+
+  /**
+   * @brief Remove region touching the border of the map
+   */
+  void removeBorderRgns();
+
+  /**
+   * @brief Merge regions overlapping the input region mask 
+   */
+  long resolveOverlappingRgn( in cciRegion rgn );
+ 
+  /**
+   * @brief Merge two regions
+   */
+  long mergeRegions( in long firstlabel, in long secondlabel );
+
+  /**
+   * @brief Return the label at the given location        
+   */
+  long getLabelFromPoint( in long x, in long y );
+
+  /**
+   * @brief Return the label of the largest region
+   */
+  long getMaxRegion();
+
+  /**
+   * @brief Return the size of the given region
+   */
+  unsigned long getRegionSize( in long label );
+
+  /**
+   * @brief Return the index of the given region 
+   */
+  long getRegionIndex( in long label );
+
+  /**
+   * @brief Return an array of labels of the regions overlapping
+   * the input region.
+   */
+  [noscript] void getRegionLabels( in cciRegion rgn,  
+                                  [shared] out labelArray labels, 
+                                  [retval] out dm_uint32 size );
+
+  /**
+   * @brief Compute the mask of the region corresponding to the given label
+   *
+   * @param rgn    the rgn where the mask will be stored
+   * @param label  the label for the region partition.
+   */
+  void getRegionMask( in cciRegion rgn, in long label );
+ 
+  /**
+   * @brief compute the region corresponding to the union
+   *       of all overlapping regions from the partition
+   *
+   * @param rgn    the rgn where the mask will be stored
+   */
+  void getOverlappingRegionMask( in cciRegion rgn );
+
+  /**
+   * @brief Merge regions specified by the array \a labels  
+   */
+   void mergeLabels( in long label, [array,size_is(count)] in long labels, 
+                     in unsigned long count );
+   
+  /**
+   * @brief select regions by their size
+   */
+  void selectRegionsBySize( in cciIResultColumn col,
+                            in unsigned long  minsize, 
+                            in unsigned long  maxsize, 
+                            in boolean exclude );
+
+  /**
+   * @brief Return the number of regions
+   */
+  readonly attribute unsigned long count;
+};
+
+
+
+%{C++
+
+#define CCI_PARTITION_CID \
+{ /* 1b7c5b4a-cd3b-4697-8861-5ebe6a656a0e */       \
+  0x1b7c5b4a,                                      \
+  0xcd3b,                                          \
+  0x4697,                                          \
+  {0x88, 0x61, 0x5e, 0xbe, 0x6a, 0x65, 0x6a, 0x0e} \
+}
+
+#define CCI_PARTITION_CONTRACTID "@daim.org/processing/partition;1"
+#define CCI_PARTITION_CLASSNAME  "Image partition"
+
+%}
+
+

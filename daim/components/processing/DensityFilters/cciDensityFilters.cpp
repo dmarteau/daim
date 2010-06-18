@@ -78,7 +78,7 @@ CCI_IMETHODIMP cciDensityFilters::Extend(cciImage image, cciRegion roi, dm_real 
   CCI_ENSURE_ARG_POINTER(image);
   CCI_ENSURE_ARG_POINTER(filterCtxt);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dm_real minRange,maxRange;
   filterCtxt->GetMinRange(&minRange);
@@ -116,7 +116,7 @@ CCI_IMETHODIMP cciDensityFilters::Transform(cciImage image, cciRegion roi, dm_ui
   filterCtxt->GetMinRange(&minRange);
   filterCtxt->GetMaxRange(&maxRange);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmTransformMap _Filter(ctable,minRange,maxRange);
 
@@ -163,7 +163,7 @@ CCI_IMETHODIMP cciDensityFilters::Equalize(cciImage image, cciRegion roi, cciIFi
   filterCtxt->GetMinRange(&minRange);
   filterCtxt->GetMaxRange(&maxRange);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   bool autoscan = maxRange <= minRange;
   dmEqualize _Filter(Histogram,Cmap,minRange,maxRange,autoscan);
@@ -184,7 +184,7 @@ CCI_IMETHODIMP cciDensityFilters::GammaCorrection(cciImage image, cciRegion roi,
   filterCtxt->GetMinRange(&minRange);
   filterCtxt->GetMaxRange(&maxRange);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmGammaCorrection _Filter(minRange,maxRange,gamma);
 
@@ -208,7 +208,7 @@ CCI_IMETHODIMP cciDensityFilters::BrightnessContrast(cciImage image, cciRegion r
   filterCtxt->GetMaxRange(&minRange);
   filterCtxt->GetMaxRange(&maxRange);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmEnhanceContrast _Filter(minRange,maxRange,brightness,contrast,useContextBuffer);
 
@@ -246,7 +246,7 @@ CCI_IMETHODIMP cciDensityFilters::Scale(cciImage image, cciRegion roi, dm_real m
   CCI_ENSURE_ARG_POINTER(image);
   CCI_ENSURE_ARG_POINTER(filterCtxt);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmScaleFunctor _Filter(minval,maxval);
 
@@ -317,7 +317,7 @@ CCI_IMETHODIMP cciDensityFilters::Specify(cciImage image, cciRegion roi, cciIHis
   dm_real rmin  = minRange;
   dm_real rmax  = maxRange;
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
 
   dmSpecifyMap _Filter(Histogram,Cmap,Inpt,rmin,rmax,autoscan);
 

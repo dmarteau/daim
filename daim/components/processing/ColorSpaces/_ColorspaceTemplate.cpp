@@ -304,7 +304,7 @@ CCI_IMETHODIMP COLORSPACE_CLASSNAME::Extract(cciImage image, cciRegion roi, dm_u
   if(src==NULL)
      return CCI_ERROR_INVALID_ARG;
 
-  dmRegion rgn  = roi ? *CCI_NATIVE(roi) : src->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,src->Rect());
 
   if(!CCI_SUCCEEDED(EnsureImageList()))
       return CCI_ERROR_FAILURE;

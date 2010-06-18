@@ -43,7 +43,7 @@
 #include "cciCOMPtr.h"
 #endif
 
-typedef cci_Ptr<cciIWeakReference> nsWeakPtr;
+typedef cci_Ptr<cciIWeakReference> cci_WeakPtr;
 
 /**
  *
@@ -101,9 +101,9 @@ do_QueryReferent( cciIWeakReference* aRawPtr, cci_result* error = 0 )
   /**
    * |do_GetWeakReference| is a convenience function that bundles up all the work needed
    * to get a weak reference to an arbitrary object, i.e., the |QueryInterface|, test, and
-   * call through to |GetWeakReference|, and put it into your |nsCOMPtr|.
-   * It is specifically designed to cooperate with |nsCOMPtr| (or |nsWeakPtr|) like so:
-   * |cciWeakPtr myWeakPtr = do_GetWeakReference(aPtr);|.
+   * call through to |GetWeakReference|, and put it into your |cci_Ptr|.
+   * It is specifically designed to cooperate with |cci_Ptr| (or |cci_WeakPtr|) like so:
+   * |cci_WeakPtr myWeakPtr = do_GetWeakReference(aPtr);|.
    */
 inline
 already_AddRefed<cciIWeakReference>

@@ -108,11 +108,12 @@ CCI_IMETHODIMP cciColorTransforms::SetTransformMatrix(cciIMatrix *aTransformMatr
 /* void fillChannel (in cciImage image, in cciRegion roi, in dm_real value, in dm_real alpha ); */
 CCI_IMETHODIMP cciColorTransforms::Fill(cciImage image, cciRegion roi, dm_real value, dm_real alpha )
 {
-  CCI_ENSURE_ARG_POINTER(image);
+  dmImage* _native = CCI_IF_NATIVE(image);
+  CCI_ENSURE_ARG_POINTER(_native);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,_native->Rect());
 
-  return dmFillScalar::SetValue(*CCI_NATIVE(image),rgn,value,alpha) ? CCI_OK : CCI_ERROR_FAILURE;
+  return dmFillScalar::SetValue(*_native,rgn,value,alpha) ? CCI_OK : CCI_ERROR_FAILURE;
 }
 
 /* void fillRGBA (in cciImage image, in cciRegion roi, in dm_uint16 red, in dm_uint16 green, in dm_uint16 blue, in dm_real alpha); */
@@ -120,9 +121,10 @@ CCI_IMETHODIMP cciColorTransforms::FillRGBA(cciImage image, cciRegion roi, dm_ui
 {
   CCI_ENSURE_ARG_POINTER(image);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmImage* native = CCI_NATIVE(image);
+  dmRegion rgn    = CCI_NATIVE_ROI(roi,native->Rect());
 
-  if(dmFillRGB::SetValues(*CCI_NATIVE(image),rgn,red,green,blue,alpha))
+  if(dmFillRGB::SetValues(*native,rgn,red,green,blue,alpha))
     return CCI_OK;
 
   return CCI_ERROR_FAILURE;
@@ -139,7 +141,8 @@ CCI_IMETHODIMP cciColorTransforms::Invert(cciImage image, cciRegion roi, cciIFil
   filterCtxt->GetMinRange(&minRange);
   filterCtxt->GetMaxRange(&maxRange);
 
-  dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
+  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
+  
   dmInvertMap _Filter(minRange,maxRange);
 
   return dmApplyFilter(_Filter,*filterCtxt->NativeBuffer(),*CCI_NATIVE(image),rgn,true)?
@@ -156,8 +159,8 @@ CCI_IMETHODIMP cciColorTransforms::DoRGBColorTransform(cciImage image, cciRegion
   if(matrix->Size()!=9)
      return CCI_ERROR_FAILURE;
 
-  dmImage* native =  CCI_NATIVE(image);
-  dmRegion rgn    = roi ? *CCI_NATIVE(roi) : native->Rect();
+  dmImage* native = CCI_NATIVE(image);
+  dmRegion rgn    = CCI_NATIVE_ROI(roi,native->Rect());
 
   // Apply only on RGB images
   dmIImage<dmPixelFormat24bppRGB>* pSrc = dmIImage<dmPixelFormat24bppRGB>::Cast(native);

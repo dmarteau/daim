@@ -335,6 +335,8 @@ CCI_IMETHODIMP cciPyramid::GetKernel(cciKernelFamily* aKernel)
 }
 CCI_IMETHODIMP cciPyramid::SetKernel(cciKernelFamily aKernel)
 {
+  CCI_ENSURE_ARG_POINTER(aKernel);
+  
   mKernel = *CCI_NATIVE(aKernel);
   return CCI_OK;
 }

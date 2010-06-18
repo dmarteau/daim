@@ -45,6 +45,9 @@ interface cciIRegionContainer : cciIXPCOMSupports
   #include "cciNativeWrapper.h"
   #endif
   DECL_NATIVE_WRAPPER(dmRegion,cciIRegionContainer)
+  
+  #define CCI_NATIVE_ROI( _roi, _alt  ) ((_roi)? *CCI_NATIVE(_roi) : (_alt))
+
 %}
 
 

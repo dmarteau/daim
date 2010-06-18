@@ -62,8 +62,7 @@
   };
 
   #define CCI_NATIVE( container )    ((container)->GetNative())
-  #define CCI_IF_NATIVE( container ) ((container)?(container)->GetNative():dm_null)
-
+  #define CCI_IF_NATIVE( container ) ((container)?(container)->GetNative():dm_null) 
 
 #define DECL_NATIVE_WRAPPER( T, ContainerInterface)              \
   CCI_NAMESPACE_BEGIN                                            \

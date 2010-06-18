@@ -73,6 +73,8 @@ CCI_IMETHODIMP cciConvolutionFilter::GetKernels(cciKernelFamily* aKernels)
 }
 CCI_IMETHODIMP cciConvolutionFilter::SetKernels(cciKernelFamily aKernels)
 {
+  CCI_ENSURE_ARG_POINTER(aKernels);
+
   mFamily = *CCI_NATIVE(aKernels);
   return CCI_OK;
 }

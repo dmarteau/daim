@@ -783,7 +783,7 @@ bool dmApplyFilter(F& _Filter, dmImageBuffer& buffer, dmImage&  img, const dmReg
       if(merge)
       {
         // Merge channel into dest
-        if(!dmCopyRGBData(*chan,img,ch))
+        if(!dmCopyRGBData(*chan,img,ch,rgn,rgn.Loc()))
             return false;
       }
     }

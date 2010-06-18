@@ -66,8 +66,8 @@ typedef unsigned long EPixelFormat;
 
 [ptr]   native intArray(dm_int32);
 [ptr]   native doubleArray(dm_real);
-
 [ptr]   native pointArray(dm_point);
+[ptr]   native labelArray(dm_int32);
 
 %{C++
 /*

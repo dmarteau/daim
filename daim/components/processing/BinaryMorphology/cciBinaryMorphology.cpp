@@ -96,6 +96,7 @@ CCI_IMETHODIMP cciBinaryMorphology::GetRoi(cciRegion *aRoi)
 CCI_IMETHODIMP cciBinaryMorphology::SetRoi(cciRegion aRoi)
 {
   CCI_ENSURE_ARG_POINTER(aRoi);
+
   mRoi = *CCI_NATIVE(aRoi);
   return CCI_OK;
 }
@@ -120,8 +121,8 @@ CCI_IMETHODIMP cciBinaryMorphology::ApplyKernel(cciRegion rgn, cciKernelFamily f
   dmRegion dest;
 
   if(conditional)
-     dest = *CCI_NATIVE(conditional);
-
+    dest = *CCI_NATIVE(conditional);
+  
   if(iter<=0)   // Idempotence
   {
     // if there is no conditional region we check the roi
@@ -315,7 +316,7 @@ CCI_IMETHODIMP cciBinaryMorphology::UltimateDilation(cciRegion rgn, cciKernelFam
   if(nativeRgn->IsEmptyRoi())
     return CCI_OK;  // Nothing to do;
 
-  dmRegion dest,_cond = cond ? *CCI_NATIVE(cond) : mRoi;
+  dmRegion dest,_cond =  cond ? *CCI_NATIVE(cond) : mRoi;
 
   if(_cond.IsEmptyRoi()) {
     dmLOG_ERROR("Cannot perform operation without roi or conditional mask !");
@@ -334,7 +335,7 @@ CCI_IMETHODIMP cciBinaryMorphology::LocalMax(cciImage image, cciIFilterContext *
   CCI_ENSURE_ARG_POINTER(image);
   CCI_ENSURE_ARG_POINTER(result);
   CCI_ENSURE_ARG_POINTER(filterCtxt);
-
+  
   dmBufferParameters _Params(*filterCtxt->NativeBuffer(),*CCI_NATIVE(image),mRoi);
   if(dmLocalMax(_Params,*CCI_NATIVE(result)))
      return CCI_OK;
@@ -349,6 +350,8 @@ CCI_IMETHODIMP cciBinaryMorphology::Reconstruct(cciRegion mask, dm_int16 connect
   CCI_ENSURE_ARG_POINTER(mask);
   CCI_ENSURE_ARG_POINTER(seeds);
 
+  CCI_PRECONDITION(CCI_NATIVE(seeds),"null region");
+  
   dmRegion* nativeMask = CCI_NATIVE(mask);
   CCI_PRECONDITION(nativeMask,"null region");
 
