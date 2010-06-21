@@ -35,6 +35,7 @@
 #include "cciIPartition.h"
 #include "cciIResultColumn.h"
 
+
 #define dmUseKernelImageTemplates
 #include "daim_kernel.h"
 #include "common/dmUserLib.h"
@@ -113,11 +114,12 @@ struct __dm_impl_partition
   DM_END_MACRO
 
   
-class cciPartition : public cciIPartition
+class cciPartition : public cciIPartition2
 {
 public:
   CCI_DECL_ISUPPORTS
   CCI_DECL_IPARTITION
+  CCI_DECL_IPARTITION2
 
   cciPartition();
 
@@ -138,7 +140,7 @@ protected:
 
 
 /* Implementation file */
-CCI_IMPL_ISUPPORTS1(cciPartition, cciIPartition)
+CCI_IMPL_ISUPPORTS2(cciPartition, cciIPartition,cciIPartition2)
 
 cciPartition::cciPartition()
 : mBuilt(dm_false)
@@ -277,8 +279,8 @@ CCI_IMETHODIMP cciPartition::GetRegionIndex(dm_int32 label, dm_int32 *_retval CC
   return CCI_OK;
 }
 
-/* [noscript] void getRegionLabels (in cciRegion rgn, [shared] out labelArray labels, [retval] out dm_uint32 size); */
-CCI_IMETHODIMP cciPartition::GetRegionLabels(cciRegion rgn, const dm_int32 **labels CCI_OUTPARAM, dm_uint32 *size CCI_OUTPARAM)
+/* [noscript] void getOverlappingRegionLabels (in cciRegion rgn, [shared] out labelArray labels, [retval] out dm_uint32 size); */
+CCI_IMETHODIMP cciPartition::GetOverlappingRegionLabels(cciRegion rgn, const dm_int32 **labels CCI_OUTPARAM, dm_uint32 *size CCI_OUTPARAM)
 {
   CCI_ENSURE_TRUE(mBuilt,CCI_ERROR_NOT_INITIALIZED);
   CCI_ENSURE_ARG_POINTER(rgn); 
@@ -363,14 +365,14 @@ CCI_IMETHODIMP cciPartition::MergeLabels(dm_int32 label, dm_int32 *labels, dm_ui
   return CCI_OK;
 }
 
-/* void selectRegionsBySize (in cciIResultColumn col, in unsigned long minsize, in unsigned long maxsize, in boolean exclude); */
-CCI_IMETHODIMP cciPartition::SelectRegionsBySize(cciIResultColumn *col, 
-                                                 dm_uint32 minsize, 
-                                                 dm_uint32 maxsize, 
-                                                 dm_bool exclude)
+/* [noscript] void getRegionBySizeLabels (in unsigned long minsize, in unsigned long maxsize, in boolean exclude, [shared] out labelArray labels, [retval] out dm_uint32 size); */
+CCI_IMETHODIMP cciPartition::GetRegionBySizeLabels(dm_uint32 minsize, 
+                                                   dm_uint32 maxsize, 
+                                                   dm_bool exclude, 
+                                                   const dm_int32 **labels CCI_OUTPARAM, 
+                                                   dm_uint32 *size CCI_OUTPARAM)
 {
   CCI_ENSURE_TRUE(mBuilt,CCI_ERROR_NOT_INITIALIZED);
-  CCI_ENSURE_ARG_POINTER(col);
   
   mLabels.clear();
   
@@ -381,12 +383,10 @@ CCI_IMETHODIMP cciPartition::SelectRegionsBySize(cciIResultColumn *col,
     mPartionMap.select_regions_size(mLabels,
               daim::between_excl<dm_uint>(maxsize,minsize));
 
-  //CCI_RETVAL_P(labels) = &_mLabels[0];
-  //CCI_RETVAL_P(count)  =  mLabels.size();
-
+  *labels = &mLabels[0];
+  *size   =  mLabels.size();
   
-  //FIXME
-  return CCI_ERROR_NOT_IMPLEMENTED;
+  return CCI_OK;
 }
 
 /* readonly attribute unsigned long count; */
@@ -398,6 +398,48 @@ CCI_IMETHODIMP cciPartition::GetCount(dm_uint32 *aCount)
   return CCI_OK;
 }
 
+
+// cciIPArtition2
+
+/* void storeRegionsBySize (in cciIResultColumn col, in unsigned long minsize, in unsigned long maxsize, in boolean exclude); */
+CCI_IMETHODIMP cciPartition::StoreRegionsBySize(cciIResultColumn *col, dm_uint32 minsize, dm_uint32 maxsize, dm_bool exclude)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+    
+  const dm_int32* labels;
+  dm_uint32 size;
+  
+  cci_result rv = GetRegionBySizeLabels(minsize,maxsize,exclude,&labels,&size);
+  if(CCI_FAILED(rv))
+     return rv;
+  
+  dm_real* data = col->GetNewData( size );
+  if(!data)
+     return CCI_ERROR_FAILURE;
+  
+  std::copy(labels,labels+size,data);
+  return rv;
+}
+
+/* void storeOverlappingRegionLabels (in cciIResultColumn col, in cciRegion rgn); */
+CCI_IMETHODIMP cciPartition::StoreOverlappingRegionLabels(cciIResultColumn *col, cciRegion rgn)
+{
+  CCI_ENSURE_ARG_POINTER(col);
+    
+  const dm_int32* labels;
+  dm_uint32 size;
+  
+  cci_result rv = GetOverlappingRegionLabels(rgn,&labels,&size);
+  if(CCI_FAILED(rv))
+     return rv;
+  
+  dm_real* data = col->GetNewData( size );
+  if(!data)
+     return CCI_ERROR_FAILURE;
+  
+  std::copy(labels,labels+size,data);
+  return rv;
+}
 
 
 //=====================================

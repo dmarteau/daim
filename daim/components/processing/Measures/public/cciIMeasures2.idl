@@ -39,27 +39,17 @@ interface cciIMeasures2 : cciIMeasurements
   /**
    *  @brief Same as cciMeasures::getLabels, store data in result table
    */
-  void getLabels2(in cciRegion rgn, in cciIResultColumn col );
+  void storeLabels(in cciRegion rgn, in cciIResultColumn col );
 
   /**
    * @brief Same as cciMeasures::getChildRegionLabels, store data in result table 
    */
-  void getChildRegionLabels2( in dm_int32 label, in cciIResultColumn col  );
+  void storeChildRegionLabels( in dm_int32 label, in cciIResultColumn col  );
 
   /** 
    * @brief Same as cciMeasures::getIndexTable, store data in result table 
    */
-  void getIndexTable2( in cciIResultColumn col  );
-
-  /** 
-   * @brief Same as cciMeasures::removeLabels, get data from result table 
-   */
-  void removeLabels2( in cciIResultColumn col  );
-
-  /** 
-   * @brief Same as cciMeasures::selectLabels, get data from result table 
-   */
-  void selectLabels2( in cciRegion mask, in cciIResultColumn col );
+  void storeIndexTable( in cciIResultColumn col  );
 
 };
 

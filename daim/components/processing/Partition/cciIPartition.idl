@@ -107,9 +107,19 @@ interface cciIPartition : cciIXPCOMSupports
    * @brief Return an array of labels of the regions overlapping
    * the input region.
    */
-  [noscript] void getRegionLabels( in cciRegion rgn,  
-                                  [shared] out labelArray labels, 
-                                  [retval] out dm_uint32 size );
+  [noscript] void getOverlappingRegionLabels( in cciRegion rgn,  
+                                              [shared] out labelArray labels, 
+                                              [retval] out dm_uint32 size );
+
+  /**
+   * @brief Return an array of labels of the regions
+   *        selected by size
+   */
+  [noscript] void getRegionBySizeLabels( in unsigned long  minsize, 
+                                         in unsigned long  maxsize, 
+                                         in boolean exclude,  
+                                         [shared] out labelArray labels, 
+                                         [retval] out dm_uint32 size );
 
   /**
    * @brief Compute the mask of the region corresponding to the given label
@@ -134,20 +144,27 @@ interface cciIPartition : cciIXPCOMSupports
                      in unsigned long count );
    
   /**
-   * @brief select regions by their size
-   */
-  void selectRegionsBySize( in cciIResultColumn col,
-                            in unsigned long  minsize, 
-                            in unsigned long  maxsize, 
-                            in boolean exclude );
-
-  /**
    * @brief Return the number of regions
    */
   readonly attribute unsigned long count;
 };
 
 
+[scriptable, uuid(3dc5e242-f238-4e29-aeeb-784bb50f3fa7)]
+interface cciIPartition2 : cciIPartition
+{
+  /**
+   * @brief select regions by their size
+   */
+  void storeRegionsBySize( in cciIResultColumn col,
+                           in unsigned long  minsize, 
+                           in unsigned long  maxsize, 
+                           in boolean exclude );
+
+  void storeOverlappingRegionLabels( in cciIResultColumn col,
+                                     in cciRegion rgn );
+
+};
 
 %{C++
 

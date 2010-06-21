@@ -752,9 +752,9 @@ CCI_IMETHODIMP cciMeasurements::GetDepth(dm_uint32 *aDepth)
 // cciIMeasures2 
 /////////////////////////////////
 
-/* void getLabels2 (in cciRegion rgn, in cciIResultColumn col); */
+/* void storeLabels (in cciRegion rgn, in cciIResultColumn col); */
 CCI_IMETHODIMP 
-cciMeasurements::GetLabels2(cciRegion rgn, cciIResultColumn *col)
+cciMeasurements::StoreLabels(cciRegion rgn, cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
@@ -773,9 +773,9 @@ cciMeasurements::GetLabels2(cciRegion rgn, cciIResultColumn *col)
   return CCI_OK;
 }
 
-/* voidgetChildRegionLabels2 (in dm_int32 label, in cciIResultColumn col); */
+/* void storeChildRegionLabels (in dm_int32 label, in cciIResultColumn col); */
 CCI_IMETHODIMP 
-cciMeasurements::GetChildRegionLabels2(dm_int32 label, cciIResultColumn *col)
+cciMeasurements::StoreChildRegionLabels(dm_int32 label, cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
@@ -794,8 +794,9 @@ cciMeasurements::GetChildRegionLabels2(dm_int32 label, cciIResultColumn *col)
   return CCI_OK;
 }
 
-/* void getIndexTable2 (in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::GetIndexTable2(cciIResultColumn *col)
+/* void storeIndexTable (in cciIResultColumn col); */
+CCI_IMETHODIMP 
+cciMeasurements::StoreIndexTable(cciIResultColumn *col)
 {
   CCI_ENSURE_ARG_POINTER(col);
   
@@ -841,45 +842,6 @@ static cci_result CopyLabelArray( cciIResultColumn *col,
     *dst = part[lbl];
   }
   
-  return CCI_OK;
-}
-
-/* void removeLabels2 (in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::RemoveLabels2(cciIResultColumn *col)
-{
-  CCI_ENSURE_ARG_POINTER(col);
-  IMAGEMAP_ENSURE_BUILT();
-
-  cci_result rv = CopyLabelArray(col,mLabels,mPartition,mNodePartition.size());
-  CCI_ENSURE_SUCCESS(rv,rv);
- 
-  RemoveLabels();
-
-  mUpdate &= ~(IMAGEMAP_UPDATE_MAP|IMAGEMAP_UPDATE_CENTROID);
-
-  return CCI_OK;
-}
-
-/* void selectLabels2 (in cciRegion mask, in cciIResultColumn col); */
-CCI_IMETHODIMP cciMeasurements::SelectLabels2(cciRegion _mask, cciIResultColumn *col)
-{
-  CCI_ENSURE_ARG_POINTER(col);
-  
-  IMAGEMAP_ENSURE_BUILT();
-
-  dmRegion* mask = CCI_IF_NATIVE(_mask);
-  CCI_ENSURE_ARG_POINTER(mask);
-  
-  cci_result rv = CopyLabelArray(col,mLabels,mPartition,mNodePartition.size());
-  CCI_ENSURE_SUCCESS(rv,rv);
-  
-  daim::basic_partition _part = mPartition;
-  int lbl = daim::merge_labels(_part,mLabels,mLabels[0]);
-
-  daim::create_roi(mMap,_part.bind(std::bind2nd(std::equal_to<dm_int>(),lbl)),tmpRoi);
-
-  *mask = tmpRoi;
-
   return CCI_OK;
 }
 
