@@ -367,9 +367,10 @@ CCI_IMETHODIMP COLORSPACE_CLASSNAME::SplitColor(dm_real *q1 CCI_INOUTPARAM, dm_r
   daim::colorspace::rgb_triple rgb;
   dm_uint8 c1,c2,c3;
 
-  rgb.red   = static_cast<dm_uint8>(*q1);
-  rgb.green = static_cast<dm_uint8>(*q2);
-  rgb.blue  = static_cast<dm_uint8>(*q3);
+  rgb.a = 0xff;
+  rgb.r = static_cast<dm_uint8>(*q1);
+  rgb.g = static_cast<dm_uint8>(*q2);
+  rgb.b = static_cast<dm_uint8>(*q3);
 
   COLORSPACE_NAMESPACE::splitter _Splitter;
   _Splitter( rgb, c1, c2, c3 );
@@ -396,9 +397,9 @@ CCI_IMETHODIMP COLORSPACE_CLASSNAME::MergeColor(dm_real *q1 CCI_INOUTPARAM, dm_r
   COLORSPACE_NAMESPACE::merger _Merger;
   _Merger( rgb, c1, c2, c3 );
 
-  *q1 = rgb.red  ;
-  *q2 = rgb.green;
-  *q3 = rgb.blue ;
+  *q1 = rgb.r;
+  *q2 = rgb.g;
+  *q3 = rgb.b;
 
   return CCI_OK;
 

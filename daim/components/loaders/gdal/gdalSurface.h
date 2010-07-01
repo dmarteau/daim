@@ -52,40 +52,31 @@ public:
    gdalSurface();
   ~gdalSurface();
   
-   static cci_result CreateInMemorySurface(const dmImageData &, 
-                                           const dm_uint8* alphaBits, 
-                                           dm_int32 alphaStride ,
-                                           GDALDatasetH& hDS );
+   static cci_result CreateInMemorySurface(const dmImageData&, GDALDatasetH& hDS);
 
-   static cci_result Create(GDALDatasetH aDataset, dm_uint32 ioFlags, GDALDriverH tmpDriver,
+   static cci_result Create(GDALDatasetH, dm_uint32 ioFlags, GDALDriverH tmpDriver,
                             gdalSurface** result);
 
-   static cci_result Create(GDALDriverH aDriver,const char * location,
+   static cci_result Create(GDALDriverH,const char * location,
                             dm_uint32 width, dm_uint32 height,
-                            EPixelFormat format, dm_bool hasAlpha,
+                            EPixelFormat format,
                             const char *options,
                             gdalSurface** result);
 
-   static cci_result Create(GDALDriverH aDriver,const char * location,
-                            dmImageData& imData, dm_uint8* alphaBits, dm_int32 alphaStride,
-                            const char *options,
+   static cci_result Create(GDALDriverH,const char * location, dmImageData&, const char *options,
                             gdalSurface** result);
 
 protected:
    
-   cci_result Init(GDALDatasetH aDS, dm_uint32 ioFlags, GDALDriverH tmpDriver );
+   cci_result Init(GDALDatasetH, dm_uint32 ioFlags, GDALDriverH tmpDriver );
 
-   cci_result Init(GDALDriverH aDriver,const char * location,
-                   dmImageData&, dm_uint8* alphaBits, dm_int32 alphaStride,
-                   const char *options);
+   cci_result Init(GDALDriverH,const char *location, dmImageData&, const char *options);
 
-   cci_result Init(GDALDriverH aDriver,const char * location,
-                   dm_uint32 width, dm_uint32 height,
-                   EPixelFormat format, dm_bool hasAlpha,
-                   const char *options);
+   cci_result Init(GDALDriverH,const char *location, dm_uint32 width, dm_uint32 height,
+                   EPixelFormat format, const char *options);
 
-  cci_result CreateUserBuffer(dmRect&, EPixelFormat, dmImageData&,dm_bool wantAlpha);
-  cci_result ReadData(EPixelFormat, dmImageData&, dm_bool wantAlpha, dm_uint32 lockModes);
+  cci_result CreateUserBuffer(dmRect&, EPixelFormat, dmImageData&);
+  cci_result ReadData(EPixelFormat, dmImageData&, dm_uint32 lockModes);
 
   GDALDatasetH mDS;
   GDALDriverH  mOutputDriver;
@@ -105,7 +96,6 @@ protected:
   dmCString    mLocation;
 
   dmLink<dmImage> mImageBuffer;
-  dmLink<dmImage> mAlphaBuffer;
 
   cci_Ptr<cciIInterfaceRequestor> mCallBacks;
 

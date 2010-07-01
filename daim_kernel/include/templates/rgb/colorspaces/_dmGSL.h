@@ -36,9 +36,9 @@
    struct _getter {
      dm_float fr,fg,fb,fden;
      void _calc( const rgb_triple& tr ) {
-       fr   = absdiff(tr.red  ,tr.green);
-       fg   = absdiff(tr.red  ,tr.blue );
-       fb   = absdiff(tr.green,tr.blue );
+       fr   = absdiff(tr.r,tr.g);
+       fg   = absdiff(tr.r,tr.b);
+       fb   = absdiff(tr.g,tr.b);
        fden = fr+fg+fb;
      }
    };
@@ -102,9 +102,9 @@
      // return normalized value from 0 -> 255 
      void operator()( const rgb_triple& tr, dm_uint8& L1, dm_uint8& L2, dm_uint8& L3 ) 
      { 
-       fr   = absdiff(tr.red  ,tr.green);
-       fg   = absdiff(tr.red  ,tr.blue );
-       fb   = absdiff(tr.green,tr.blue );
+       fr   = absdiff(tr.r,tr.g);
+       fg   = absdiff(tr.r,tr.b);
+       fb   = absdiff(tr.g,tr.b);
        fden = fr+fg+fb;
 
        if(fden > 0) { 
@@ -117,9 +117,9 @@
      // return value from [-1..1] 
      void operator()( const rgb_triple& tr,  dm_float& L1, dm_float& L2, dm_float& L3 )
      {
-       fr   = absdiff(tr.red  ,tr.green);
-       fg   = absdiff(tr.red  ,tr.blue );
-       fb   = absdiff(tr.green,tr.blue );
+       fr   = absdiff(tr.r,tr.g);
+       fg   = absdiff(tr.r,tr.b);
+       fb   = absdiff(tr.g,tr.b);
        fden = fr+fg+fb;
 
        if(fden > 0) { 

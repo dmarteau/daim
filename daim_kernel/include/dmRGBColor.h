@@ -77,10 +77,16 @@ namespace dmTk {
 //--------------------------------------------
 
 // This is mapped to a RGB value
-typedef struct { dm_byte red; dm_byte green; dm_byte blue; }                dmRGBColor;
+//typedef struct { dm_byte red; dm_byte green; dm_byte blue; }                dmRGBColor;
 
-// This is NOT mapped to packed ARGB value
-typedef struct { dm_byte alpha; dm_byte red; dm_byte green; dm_byte blue; } dmARGBColor;
+#ifdef DM_IS_LITTLE_ENDIAN
+typedef struct { dm_byte b; dm_byte g; dm_byte r; dm_byte a; } dmARGBColor;
+#else
+typedef struct { dm_byte a; dm_byte r; dm_byte g; dm_byte b; } dmARGBColor;
+#endif
+
+// Define RGBColor same as ARGBColor
+typedef dmARGBColor dmRGBColor;
 
 // LUT Specification for LUT8 bitmap type
 typedef dm_uint16       dmColorIndex;
@@ -95,16 +101,11 @@ typedef struct {
   dmColorIndex  CMap[dmLUT8_MAX_COLORS];     // 8  bits color mapping
 } dmLUTSpecs;
 
-#define ARGB_TO_RGB( argb ) (*((dmRGBColor*)&((argb).red)))
-
 inline dmARGBColor MAP_RGB( dm_byte r, dm_byte g, dm_byte b )  {
-  dmARGBColor rgbc = { 0xff,r,g,b };
-  return rgbc;
+  dm_uint32 rgbc = DM_RGB(r,g,b);
+  return *((dmARGBColor*)(&rgbc));
 }
 
-inline dm_uint32 DM_PACK_ARGB( const dmARGBColor& c ) {
-  return DM_ARGB(c.alpha,c.red,c.green,c.blue);
-}
 
 //---------------------------------------------------------------------------
 #endif // dmRGBColor_h

@@ -109,9 +109,8 @@ CCI_IMETHODIMP cciGDALDriver::SetCallbacks(cciIInterfaceRequestor *aCallbacks)
   return CCI_OK;
 }
 
-/* [noscript] cciISurface createSurfaceFromData (in string location, in dmImageDataRef imData, [array, size_is (count)] in dm_uint8 alphaBits, in long alphaStride, in string options); */
+/* [noscript] cciISurface createSurfaceFromData (in string location, in dmImageDataRef imData, in string options); */
 CCI_IMETHODIMP cciGDALDriver::CreateSurfaceFromData(const char * location, dmImageData & imData, 
-                                                    dm_uint8 *alphaBits, dm_int32 alphaStride, 
                                                     const char * options, 
                                                     cciISurface * *_retval CCI_OUTPARAM)
 {
@@ -122,17 +121,16 @@ CCI_IMETHODIMP cciGDALDriver::CreateSurfaceFromData(const char * location, dmIma
      return CCI_ERROR_NOT_AVAILABLE;
   
   cci_Ptr<gdalSurface> surf;
-  cci_result rv = gdalSurface::Create(mDriver,location,imData,alphaBits,alphaStride,options,
-                                      getter_AddRefs(surf));
+  cci_result rv = gdalSurface::Create(mDriver,location,imData,options,getter_AddRefs(surf));
 
   CCI_IF_ADDREF( *_retval = surf );
   return rv;
 }
 
 
-/* cciISurface createSurface (in string location, in dm_uint32 width, in dm_uint32 height, in EPixelFormat format, in dm_bool hasAlpha, [array, size_is (count)] in string options, in dm_uint32 count); */
+/* cciISurface createSurface (in string location, in dm_uint32 width, in dm_uint32 height, in EPixelFormat format, string options ); */
 CCI_IMETHODIMP cciGDALDriver::CreateSurface(const char * location, dm_uint32 width, dm_uint32 height,
-                                            EPixelFormat format, dm_bool hasAlpha,
+                                            EPixelFormat format,
                                             const char *options,
                                             cciISurface * *_retval CCI_OUTPARAM)
 {
@@ -144,7 +142,7 @@ CCI_IMETHODIMP cciGDALDriver::CreateSurface(const char * location, dm_uint32 wid
      return CCI_ERROR_NOT_AVAILABLE;
   
   cci_Ptr<gdalSurface> surf;
-  cci_result rv = gdalSurface::Create(mDriver,location,width,height,format,hasAlpha,options,
+  cci_result rv = gdalSurface::Create(mDriver,location,width,height,format,options,
                                       getter_AddRefs(surf));
   
   CCI_IF_ADDREF( *_retval = surf );
@@ -179,20 +177,11 @@ CCI_IMETHODIMP cciGDALDriver::GetHasCreateCapabilities(dm_bool *aHasCreateCapabi
   return CCI_OK;
 }
 
-/* [noscript] void saveImageBits (in string newLocation, in dmImageDataRef imData, in string options); */
-CCI_IMETHODIMP cciGDALDriver::SaveImageBits(const char * newLocation, dmImageData & imData, const char * options )
-{
-  return SaveImageBitsWithAlpha(newLocation,imData,dm_null,0,dm_null,dm_null,options);
-}
-
-/* [noscript] void saveImageBitsWithAlpha (in string newLocation, in dmImageDataRef imData, [array, size_is (count)] in dm_uint8 alphaBits, in long alphaStride, in cciIMetaDataContainer exif, in cciIColorTable colorTable, in string options); */
-CCI_IMETHODIMP cciGDALDriver::SaveImageBitsWithAlpha(const char * newLocation, 
-                                                     dmImageData & imData, 
-                                                     dm_uint8 *alphaBits, 
-                                                     dm_int32 alphaStride, 
-                                                     cciIMetaDataContainer *exif, 
-                                                     cciIColorTable *colorTable, 
-                                                     const char * options)
+/* [noscript] void saveImageBits (in string newLocation, in dmImageDataRef imData, in cciIMetaDataContainer exif, in cciIColorTable colorTable, in string options); */
+CCI_IMETHODIMP cciGDALDriver::SaveImageBits(const char * newLocation,  dmImageData & imData, 
+                                            cciIMetaDataContainer *exif, 
+                                            cciIColorTable *colorTable, 
+                                            const char * options)
 {
   CCI_ENSURE_TRUE(mDriver,CCI_ERROR_NOT_INITIALIZED);
   CCI_ENSURE_ARG_POINTER(newLocation);
@@ -200,8 +189,8 @@ CCI_IMETHODIMP cciGDALDriver::SaveImageBitsWithAlpha(const char * newLocation,
   char** createOpts = dm_null;
 
   GDALDatasetH hDS = dm_null;
-
-  cci_result rv = gdalSurface::CreateInMemorySurface(imData,alphaBits,alphaStride,hDS);
+    
+  cci_result rv = gdalSurface::CreateInMemorySurface(imData,hDS);
   CCI_ENSURE_SUCCESS(rv,rv);
 
   if(options)

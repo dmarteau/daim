@@ -49,9 +49,9 @@ bool dmFillRGB::SetValues( dmImage& _src, const dmRegion& rgn,
                            dm_real alpha )
 {
   dmRGBColor rgb;
-  rgb.red   = _get_range_value(red  ,pixel_traits<dm_uint8>(),integer_true());
-  rgb.green = _get_range_value(green,pixel_traits<dm_uint8>(),integer_true());
-  rgb.blue  = _get_range_value(blue ,pixel_traits<dm_uint8>(),integer_true());
+  rgb.r = _get_range_value(red  ,pixel_traits<dm_uint8>(),integer_true());
+  rgb.g = _get_range_value(green,pixel_traits<dm_uint8>(),integer_true());
+  rgb.b = _get_range_value(blue ,pixel_traits<dm_uint8>(),integer_true());
 
   if(dmIsPixelFormatScalar(_src.TypeDescriptor()->PixelFormat())) {
     return dmFillScalar::SetValue(_src,rgn,dm_rgb24::intensity(rgb),alpha);

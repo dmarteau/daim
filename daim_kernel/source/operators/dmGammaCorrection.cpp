@@ -80,9 +80,9 @@ struct __dm_impl_gamma
     for(int i=0;i<dmLUT8_MAX_COLORS;++i)
     {
       value = static_cast<unsigned char>(ctable[i]);
-      rgb_table[i].red   = value;
-      rgb_table[i].green = value;
-      rgb_table[i].blue  = value;
+      rgb_table[i].r = value;
+      rgb_table[i].g = value;
+      rgb_table[i].b = value;
     }
 
     apply_map(_img.Gen(),Params.thisRegion,rgb_table);

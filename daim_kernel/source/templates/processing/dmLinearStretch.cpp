@@ -33,9 +33,10 @@ static inline void _bilinear_rgb(  dmRGBColor& y,
                                    const dmRGBColor& x2,
                                    int   f100 )
 {
-   y.red   = (x1.red    * (100 - f100) + f100 * x2.red   )/100;
-   y.green = (x1.green  * (100 - f100) + f100 * x2.green )/100;
-   y.blue  = (x1.blue   * (100 - f100) + f100 * x2.blue  )/100;
+   y.a = (x1.a * (100 - f100) + f100 * x2.a )/100;
+   y.r = (x1.r * (100 - f100) + f100 * x2.r )/100;
+   y.g = (x1.g * (100 - f100) + f100 * x2.g )/100;
+   y.b = (x1.b * (100 - f100) + f100 * x2.b )/100;
 }
 
 //-----------------------------------------------------------
@@ -44,7 +45,7 @@ static inline void _bilinear_rgb(  dmRGBColor& y,
 // for computing strecthing on rows, then on colums
 //-----------------------------------------------------------
 bool bilinear_stretch( const image<dm_rgb24>& src, const dmRect& r,
-                        image<dm_rgb24>& dst )
+                       image<dm_rgb24>& dst )
 {
   dmRect rs = r;
 

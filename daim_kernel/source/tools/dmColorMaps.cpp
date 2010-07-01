@@ -47,9 +47,9 @@ void Spectrum ( dmRGBColorArray rgb )
    L = 128;
    S = 255;
    _hls2rgb(_rgb,H,L,S);
-   (*rgb).red   = _rgb.red;
-   (*rgb).green = _rgb.green;
-   (*rgb).blue  = _rgb.blue;
+   (*rgb).r   = _rgb.r;
+   (*rgb).g = _rgb.g;
+   (*rgb).b  = _rgb.b;
   }
 }
 //----------------------------------------------------
@@ -67,9 +67,9 @@ static void __gSpectrumN( dmRGBColorArray rgb, int n )
    S = 255;
    L = 128;
    _hls2rgb(_rgb,H,L,S);
-   (*rgb).red   = _rgb.red;
-   (*rgb).green = _rgb.green;
-   (*rgb).blue  = _rgb.blue;
+   (*rgb).r   = _rgb.r;
+   (*rgb).g = _rgb.g;
+   (*rgb).b  = _rgb.b;
   }
 }
 //----------------------------------------------------
@@ -87,9 +87,9 @@ void GrayScale( dmRGBColorArray rgb)
 {
   for(int i=0;i<dmLUT8_MAX_COLORS;++i)
   {
-    rgb[i].red   = i;
-    rgb[i].green = i;
-    rgb[i].blue  = i;
+    rgb[i].r = i;
+    rgb[i].g = i;
+    rgb[i].b = i;
   }
 }
 //----------------------------------------------------
@@ -109,9 +109,9 @@ void LogPalette( dmRGBColorArray rgb )
     L = 255;
     S = 128;
     _hls2rgb(_rgb,H,L,S);
-   (*rgb).red   = _rgb.red;
-   (*rgb).green = _rgb.green;
-   (*rgb).blue  = _rgb.blue;
+   (*rgb).r = _rgb.r;
+   (*rgb).g = _rgb.g;
+   (*rgb).b = _rgb.b;
   }
 }
 //----------------------------------------------------
@@ -119,9 +119,9 @@ void RedPalette( dmRGBColorArray rgb)
 {
   for(int i=0;i<dmLUT8_MAX_COLORS;++i)
   {
-    rgb[i].red   = i;
-    rgb[i].green = 0;
-    rgb[i].blue  = 0;
+    rgb[i].r = i;
+    rgb[i].g = 0;
+    rgb[i].b = 0;
   }
 }
 //----------------------------------------------------
@@ -129,9 +129,9 @@ void GreenPalette( dmRGBColorArray rgb)
 {
   for(int i=0;i<dmLUT8_MAX_COLORS;++i)
   {
-    rgb[i].red   = 0;
-    rgb[i].green = i;
-    rgb[i].blue  = 0;
+    rgb[i].r = 0;
+    rgb[i].g = i;
+    rgb[i].b = 0;
   }
 }
 //----------------------------------------------------
@@ -139,9 +139,9 @@ void BluePalette( dmRGBColorArray rgb)
 {
   for(int i=0;i<dmLUT8_MAX_COLORS;++i)
   {
-    rgb[i].red   = 0;
-    rgb[i].green = 0;
-    rgb[i].blue  = i;
+    rgb[i].r = 0;
+    rgb[i].g = 0;
+    rgb[i].b = i;
   }
 }
 //----------------------------------------------------
@@ -158,9 +158,9 @@ void HuePalette( dmRGBColorArray rgb, dm_uint8 hue )
 
     dmARGBColor& c = rgb[i];
     _hls2rgb(_rgb,hue,I,S);
-    c.red   = _rgb.red;
-    c.green = _rgb.green;
-    c.blue  = _rgb.blue;
+    c.r = _rgb.r;
+    c.g = _rgb.g;
+    c.b = _rgb.b;
   }
 }
 //----------------------------------------------------
@@ -169,29 +169,29 @@ void RGBColorPalette ( dmRGBColorArray rgb, dm_uint8 r,dm_uint8 g,dm_uint8 b)
   daim::colorspace::HLS::channels::get<1,daim::integer_true> _getHue;
   dmRGBColor _rgb;
 
-  _rgb.red   = r;
-  _rgb.green = g;
-  _rgb.blue  = b;
+  _rgb.r = r;
+  _rgb.g = g;
+  _rgb.b = b;
   HuePalette(rgb,_getHue(_rgb));
 }
 //----------------------------------------------------
 void LevelsPalette( dmRGBColorArray rgb  )
 {
-  rgb[0].red   = rgb[0].green = rgb[0].blue = 0;
-  rgb[dmLUT8_MAX_COLOR_INDEX].red   = 255;
-  rgb[dmLUT8_MAX_COLOR_INDEX].green = 255;
-  rgb[dmLUT8_MAX_COLOR_INDEX].blue  = 255;
+  rgb[0].r = rgb[0].g = rgb[0].b = 0;
+  rgb[dmLUT8_MAX_COLOR_INDEX].r = 255;
+  rgb[dmLUT8_MAX_COLOR_INDEX].g = 255;
+  rgb[dmLUT8_MAX_COLOR_INDEX].b = 255;
 
   for(int i=1;i<dmLUT8_MAX_COLOR_INDEX-2;i+=4)
   {
-    rgb[i+1].red   = rgb[i].red    = 255;
-    rgb[i+1].green = rgb[i+1].blue =
-    rgb[i].green   = rgb[i].blue = 0;
+    rgb[i+1].r = rgb[i].r   = 255;
+    rgb[i+1].g = rgb[i+1].b =
+    rgb[i].g   = rgb[i].b   = 0;
 
-    rgb[i+2].green = 255;
-    rgb[i+2].red   = rgb[i+2].blue = 0;
-    rgb[i+3].green = 255;
-    rgb[i+3].red   = rgb[i+3].blue = 0;
+    rgb[i+2].g = 255;
+    rgb[i+2].r = rgb[i+2].b = 0;
+    rgb[i+3].g = 255;
+    rgb[i+3].r = rgb[i+3].b = 0;
   }
 }
 

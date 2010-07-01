@@ -26,23 +26,23 @@
    };
 
    template<> struct getChannel<1,integer_true>  {
-     dm_uint8 operator()( const rgb_triple& tr ) { return tr.red; }
+     dm_uint8 operator()( const rgb_triple& tr ) { return tr.r; }
    };
    template<> struct getChannel<2,integer_true> {
-     dm_uint8 operator()( const rgb_triple& tr ) { return tr.green; }
+     dm_uint8 operator()( const rgb_triple& tr ) { return tr.g; }
    };
    template<> struct getChannel<3,integer_true> {
-     dm_uint8 operator()( const rgb_triple& tr ) { return tr.blue; }
+     dm_uint8 operator()( const rgb_triple& tr ) { return tr.b; }
    };
 
    template<> struct getChannel<1,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) { return tr.red/255.0f; }
+     dm_float operator()( const rgb_triple& tr ) { return tr.r/255.0f; }
    };
    template<> struct getChannel<2,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) { return tr.green/255.0f; }
+     dm_float operator()( const rgb_triple& tr ) { return tr.g/255.0f; }
    };
    template<> struct getChannel<3,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) { return tr.blue/255.0f; }
+     dm_float operator()( const rgb_triple& tr ) { return tr.b/255.0f; }
    };
 
    //-------------------------------------------------------
@@ -51,16 +51,16 @@
    struct splitter {
      void operator()( const rgb_triple& triple, dm_uint8& R, dm_uint8& G, dm_uint8& B ) 
      {
-       R = triple.red  ;
-       G = triple.green;
-       B = triple.blue ;
+       R = triple.r;
+       G = triple.g;
+       B = triple.b;
      }
 
      void operator()( const rgb_triple& triple, dm_float& R, dm_float& G, dm_float& B ) 
      {
-       R = triple.red  / 255.0f;
-       G = triple.green/ 255.0f;
-       B = triple.blue / 255.0f;
+       R = triple.r / 255.0f;
+       G = triple.g / 255.0f;
+       B = triple.b / 255.0f;
      }
    };
 
@@ -72,17 +72,17 @@
      void operator()( rgb_triple& triple, 
                       const dm_float& R, const dm_float& G, const dm_float& B ) 
      {
-       triple.red   = to_rgb_channel(R);
-       triple.green = to_rgb_channel(G);
-       triple.blue  = to_rgb_channel(B);
+       triple.r = to_rgb_channel(R);
+       triple.g = to_rgb_channel(G);
+       triple.b = to_rgb_channel(B);
      }
 
      void operator()( rgb_triple& triple, 
                       const dm_uint8& R, const dm_uint8& G, const dm_uint8& B ) 
      {
-       triple.red   = R;
-       triple.green = G;
-       triple.blue  = B;
+       triple.r = R;
+       triple.g = G;
+       triple.b = B;
      }
    
    };

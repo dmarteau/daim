@@ -43,8 +43,8 @@ class __dmKernel dmLUT : public dmLUTSpecs
     dmLUT& operator=( const dmLUT& );
 
     // Acces to color through mapping
-    const dmRGBColor& operator[](IndexType i) const { return ARGB_TO_RGB(ARGB[CMap[i]]); }
-          dmRGBColor& operator[](IndexType i)       { return ARGB_TO_RGB(ARGB[CMap[i]]); }
+    const dmRGBColor& operator[](IndexType i) const { return ARGB[CMap[i]]; }
+          dmRGBColor& operator[](IndexType i)       { return ARGB[CMap[i]]; }
 
     void SetExtraColor( dmColorIndex, const dmRGBColor& );
     void GetExtraColor( dmColorIndex,       dmRGBColor& );

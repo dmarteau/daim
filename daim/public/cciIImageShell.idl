@@ -55,9 +55,6 @@ interface cciIImageShell : cciIXPCOMSupports
   [noscript] void lock(  in dmImageDataRef imData, in dmRectPtr rect );
   [noscript] void unlock();
 
-  [noscript] void lockAlpha(  in dmImageDataRef imData, in dmRectPtr rect );
-  [noscript] void unlockAlpha();
-
   /*
    * Image structure
    */
@@ -77,22 +74,19 @@ interface cciIImageShell : cciIXPCOMSupports
    */
   readonly attribute EPixelFormat pixelFormat;
 
-  /**
-   * @return true if an alpha channel is available
-   */
-  readonly attribute boolean hasAlpha;
-
   /*
    * Initialisation
    */
 
   /**
-   * create
-   *
-   * Create a new (empty) image
+   * Enable/disable alpha channel for rgb images
    */
-  void create( in unsigned long width, in unsigned long height, in EPixelFormat format, 
-               [optional] in dm_bool createAlpha );
+  attribute boolean enableAlpha;
+  
+  /**
+   * @brief Create a new (empty) image
+   */
+  void create( in unsigned long width, in unsigned long height, in EPixelFormat format );
 
   /**
    * Release all reources held by the image shell
@@ -100,9 +94,8 @@ interface cciIImageShell : cciIXPCOMSupports
   void destroy();
   
   /**
-   * loadBuffer
-   *
-   * Load an image from an image list buffer
+   * @brief Load an image from an image list buffer
+   * 
    * @param index the index of the buffer in the imagelist
    * @param share if true, the image content is not copied and is shared with the buffer.
    *
@@ -115,21 +108,19 @@ interface cciIImageShell : cciIXPCOMSupports
    * @brief Load an image directly from a external surface
    *
    * @param rgn      the rgn that define the coordinates of the region that is to be retrieved.
-   * @param getAlpha if true, the alpha channel is also retrieved.
    *
    * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
    */
-  void loadSurfaceBits( in cciISurface surface, in cciRegion rgn, [optional] in boolean getAlpha );
+  void loadSurfaceBits( in cciISurface surface, in cciRegion rgn );
 
   /**
    * @brief Save an image directly to an external surface
    *
    * @param rgn      the rgn that define the coordinates of the region that is to be retrieved.
-   * @param getAlpha if true, the alpha channel is also saved.
    *
    * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
    */
-  void writeSurfaceBits( in cciISurface surface, in cciRegion rgn, [optional] in boolean getAlpha );
+  void writeSurfaceBits( in cciISurface surface, in cciRegion rgn );
 
   /**
    * Sample data from external surface
@@ -138,17 +129,16 @@ interface cciIImageShell : cciIXPCOMSupports
    * @param keepFormat
    *   If set to true, the shell convert the source pixel to the actual format.
    */
-  void sampleSurfaceBits( in cciISurface surface, in cciRegion rgn, 
-                          in boolean keepFormat, [optional] in boolean getAlpha );
+  void sampleSurfaceBits( in cciISurface surface, in cciRegion rgn, in boolean keepFormat );
 
   /**
    * loadImage
    *
    * Load an image from \a path
-   * @param path     the path of the image on the disk  (in native charset)
-   * @param getAlpha if true, the alpha channel is also retrieved.
+   * @param path the path of the image on the disk  (in native charset)
+   * @param alpha if true, the alpha channel is also retrieved.
    */
-  [noscript] void loadImage( in string path, [optional] in boolean getAlpha );
+  [noscript] void loadImage( in string path );
 
   /**
    * saveImage
@@ -224,8 +214,7 @@ interface cciIImageShell : cciIXPCOMSupports
    * @param rgn    the region of the image to be resampled (can be null)
    * @param mode   the resampling mode (1 : nearest neighbour, 2 : bilinear)
    */
-  void resample( in cciImage dest, in cciRegion rgn, in unsigned long mode,
-                 [optional] in dm_bool getAlpha );
+  void resample( in cciImage dest, in cciRegion rgn, in unsigned long mode );
 
   /*
    * Compositing

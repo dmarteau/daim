@@ -50,9 +50,9 @@ struct _apply_rgb_map : public std::unary_function<dmRGBColor,dmRGBColor>
   dmRGBColorArray map;
   _apply_rgb_map( dmRGBColorArray _rgb ) : map(_rgb) {}
   dmRGBColor& operator()( const dmRGBColor& src, dmRGBColor& dst ) {
-     dst.red   = map[src.red].red;
-     dst.green = map[src.green].green;
-     dst.blue  = map[src.blue].blue;
+     dst.r = map[src.r].r;
+     dst.g = map[src.g].g;
+     dst.b = map[src.b].b;
      return dst;
   }
 };

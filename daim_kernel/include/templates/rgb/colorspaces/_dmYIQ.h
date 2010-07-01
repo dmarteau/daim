@@ -28,39 +28,39 @@
    // Y
    template<> struct getChannel<1,integer_true> {
      dm_uint8 operator()( const rgb_triple& tr ) {
-       return to_rgb_channel(0.299f * tr.red + 0.587f * tr.green + 0.114f * tr.blue);
+       return to_rgb_channel(0.299f * tr.r + 0.587f * tr.g + 0.114f * tr.b);
      } 
    };
    // I
    template<> struct getChannel<2,integer_true> {
      dm_uint8 operator()( const rgb_triple& tr ) {
-       return to_rgb_channel(0.500f * tr.red - 0.231f * tr.green - 0.269f * tr.blue + 127.5f);
+       return to_rgb_channel(0.500f * tr.r - 0.231f * tr.g - 0.269f * tr.b + 127.5f);
      } 
    };
    // Q
    template<> struct getChannel<3,integer_true> {
      dm_uint8 operator()( const rgb_triple& tr ) {
-      return to_rgb_channel(0.203f * tr.red - 0.500f * tr.green + 0.297f * tr.blue + 127.5f); 
+      return to_rgb_channel(0.203f * tr.r - 0.500f * tr.g + 0.297f * tr.b + 127.5f); 
      } 
    };
 
    // Y
    template<> struct getChannel<1,integer_false> {
      dm_float operator()( const rgb_triple& tr ) {
-       return 0.299f * tr.red + 0.587f * tr.green + 0.114f * tr.blue;
+       return 0.299f * tr.r + 0.587f * tr.g + 0.114f * tr.b;
      } 
    };
    // I
    template<> struct getChannel<2,integer_false> {
      dm_float operator()( const rgb_triple& tr ) {
-       return 0.500f * tr.red - 0.231f * tr.green - 0.269f * tr.blue;
+       return 0.500f * tr.r - 0.231f * tr.g - 0.269f * tr.b;
      } 
    };
 
    // Q
    template<> struct getChannel<3,integer_false> {
      dm_float operator()( const rgb_triple& tr ) {
-       return 0.203f * tr.red - 0.500f * tr.green + 0.297f * tr.blue;
+       return 0.203f * tr.r - 0.500f * tr.g + 0.297f * tr.b;
      } 
    };
 
@@ -75,18 +75,18 @@
      void operator()( const rgb_triple& tr, 
                       dm_uint8& Y, dm_uint8& I, dm_uint8& Q ) 
      { 
-       Y = to_rgb_channel(0.299f * tr.red + 0.587f * tr.green + 0.114f * tr.blue);
-       I = to_rgb_channel(0.500f * tr.red - 0.231f * tr.green - 0.269f * tr.blue + 127.5f); 
-       Q = to_rgb_channel(0.203f * tr.red - 0.500f * tr.green + 0.297f * tr.blue + 127.5f); 
+       Y = to_rgb_channel(0.299f * tr.r + 0.587f * tr.g + 0.114f * tr.b);
+       I = to_rgb_channel(0.500f * tr.r - 0.231f * tr.g - 0.269f * tr.b + 127.5f); 
+       Q = to_rgb_channel(0.203f * tr.r - 0.500f * tr.g + 0.297f * tr.b + 127.5f); 
      }
 
      // unormalized values
      void operator()( const rgb_triple& tr, 
                       dm_float& Y, dm_float& I, dm_float& Q )
      {
-       Y = (0.299f * tr.red + 0.587f * tr.green + 0.114f * tr.blue)/255.0f;
-       I = (0.500f * tr.red - 0.231f * tr.green - 0.269f * tr.blue)/255.0f;
-       Q = (0.203f * tr.red - 0.500f * tr.green + 0.297f * tr.blue)/255.0f;
+       Y = (0.299f * tr.r + 0.587f * tr.g + 0.114f * tr.b)/255.0f;
+       I = (0.500f * tr.r - 0.231f * tr.g - 0.269f * tr.b)/255.0f;
+       Q = (0.203f * tr.r - 0.500f * tr.g + 0.297f * tr.b)/255.0f;
      }
    };
 
@@ -103,17 +103,17 @@
        fI = static_cast<dm_float>(I)/255.0f - 0.5f;  
        fQ = static_cast<dm_float>(Q)/255.0f - 0.5f;  
 
-       tr.red   = to_rgb_channel(fY + 1.139f * fI + 0.648f * fQ);
-       tr.green = to_rgb_channel(fY - 0.323f * fI - 0.677f * fQ);
-       tr.blue  = to_rgb_channel(fY - 1.323f * fI + 1.785f * fQ);
+       tr.r = to_rgb_channel(fY + 1.139f * fI + 0.648f * fQ);
+       tr.g = to_rgb_channel(fY - 0.323f * fI - 0.677f * fQ);
+       tr.b = to_rgb_channel(fY - 1.323f * fI + 1.785f * fQ);
      }
 
      void operator()( rgb_triple& tr, 
                       const dm_float& Y, const dm_float& I, const dm_float& Q ) 
      {
-       tr.red   =  to_rgb_channel((Y + 1.139f * I + 0.648f * Q) * 255.0f);
-       tr.green =  to_rgb_channel((Y - 0.323f * I - 0.677f * Q) * 255.0f);
-       tr.blue  =  to_rgb_channel((Y - 1.323f * I + 1.785f * Q) * 255.0f);
+       tr.r =  to_rgb_channel((Y + 1.139f * I + 0.648f * Q) * 255.0f);
+       tr.g =  to_rgb_channel((Y - 0.323f * I - 0.677f * Q) * 255.0f);
+       tr.b =  to_rgb_channel((Y - 1.323f * I + 1.785f * Q) * 255.0f);
      }
    };
 

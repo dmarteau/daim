@@ -51,38 +51,38 @@
    template<> struct getChannel<1,integer_true> {
      dm_uint8 operator()( const rgb_triple& tr ) {
        static const dm_real factor =  get_factor(integer_true());
-       return to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.red),max(tr.green,tr.blue )));
+       return to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.r),max(tr.g,tr.b)));
      } 
    };
    template<> struct getChannel<2,integer_true> {
      dm_uint8 operator()( const rgb_triple& tr ) {
        static const dm_real factor =  get_factor(integer_true());
-       return to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.green),max(tr.red  ,tr.blue )));
+       return to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.g),max(tr.r,tr.b )));
      } 
    };
    template<> struct getChannel<3,integer_true> {
      dm_uint8 operator()( const rgb_triple& tr ) {
        static const dm_real factor =  get_factor(integer_true());
-       return to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.blue),max(tr.red  ,tr.green)));
+       return to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.b),max(tr.r,tr.g)));
      } 
    };
 
    template<> struct getChannel<1,integer_false> {
      dm_float operator()( const rgb_triple& tr ) {
        static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
-       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.red),daim::max(tr.green,tr.blue )));
+       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.r),daim::max(tr.g,tr.b)));
      } 
    };
    template<> struct getChannel<2,integer_false> {
      dm_float operator()( const rgb_triple& tr ) {
        static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
-       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.green),daim::max(tr.red  ,tr.blue )));
+       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.g),daim::max(tr.r,tr.b)));
      } 
    };
    template<> struct getChannel<3,integer_false> {
      dm_float operator()( const rgb_triple& tr ) {
        static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
-       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.blue) ,daim::max(tr.red  ,tr.green)));
+       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.b),daim::max(tr.r,tr.g)));
      } 
    };
 
@@ -97,9 +97,9 @@
      { 
        static const dm_real factor =  get_factor(integer_true());
 
-       C1 = to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.red)  ,max(tr.green,tr.blue )));
-       C2 = to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.green),max(tr.red  ,tr.blue )));
-       C3 = to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.blue) ,max(tr.red  ,tr.green)));
+       C1 = to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.r),max(tr.g,tr.b)));
+       C2 = to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.g),max(tr.r,tr.b)));
+       C3 = to_rgb_channel(factor*atan2(static_cast<dm_real>(tr.b),max(tr.r,tr.g)));
      }
 
      // return value from [-1..1] 
@@ -107,9 +107,9 @@
      {
        static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
 
-       C1 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.red)  ,daim::max(tr.green,tr.blue )));
-       C2 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.green),daim::max(tr.red  ,tr.blue )));
-       C3 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.blue) ,daim::max(tr.red  ,tr.green)));
+       C1 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.r),daim::max(tr.g,tr.b)));
+       C2 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.g),daim::max(tr.r,tr.b)));
+       C3 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.b),daim::max(tr.r,tr.g)));
      }
    };
 

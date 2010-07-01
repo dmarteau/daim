@@ -80,15 +80,14 @@ int main( int argc, char ** argv )
 
       printf("\n### DAIM_HOME set to %s\n",location);
 
-      snprintf(sampleLocation,MAX_PATH-1,"%s/samples/exif/camera_no_corr.jpg",location);
-      snprintf(saveLocation  ,MAX_PATH-1,"%s/samples/exif/copy_of_camera.jpg",location);
+      snprintf(sampleLocation,MAX_PATH-1,"%s/samples/exif/camera.jpg",location);
 
       printf("\n### Can I create an image shell ?\n");
       cci_Ptr<cciIImageShell> shell = do_CreateInstance("@daim.org/image-shell;1",&rv);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("\n### Can I open an image at %s ?\n",sampleLocation);
-      rv  = shell->LoadImage(sampleLocation,dm_false);
+      rv  = shell->LoadImage(sampleLocation);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("\n### Can I create a sharpen filter ?\n");

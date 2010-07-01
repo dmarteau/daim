@@ -52,9 +52,9 @@ namespace daim {
 */
 
     bool operator()( const dmRGBColor& val ) {
-      return  (static_cast<dm_float>(daim::absdiff(val.red,  color.red  ))/rr +
-               static_cast<dm_float>(daim::absdiff(val.green,color.green))/rg +
-               static_cast<dm_float>(daim::absdiff(val.blue, color.blue ))/rb) <= 1.0f;
+      return  (static_cast<dm_float>(daim::absdiff(val.r,color.r))/rr +
+               static_cast<dm_float>(daim::absdiff(val.g,color.g))/rg +
+               static_cast<dm_float>(daim::absdiff(val.b,color.b))/rb) <= 1.0f;
     }
 
   };

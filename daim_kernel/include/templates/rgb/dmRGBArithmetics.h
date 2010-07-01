@@ -36,29 +36,29 @@
 namespace daim {
 
 inline bool operator==(const dmRGBColor& x,const dmRGBColor& y)  {
-  return (x.red==y.red && x.green==y.green && x.blue==y.blue);
+  return (x.r==y.r && x.g==y.g && x.b==y.b);
 }
 
 // Use absolute norm !
 
 inline bool operator<(const dmRGBColor& x,const dmRGBColor& y)  {
-  return (static_cast<int>(x.red)+x.blue+x.green) <
-         (static_cast<int>(y.red)+y.blue+y.green);
+  return (static_cast<int>(x.r)+x.b+x.g) <
+         (static_cast<int>(y.r)+y.b+y.g);
 }
 
 inline bool operator<=(const dmRGBColor& x,const dmRGBColor& y)  {
-  return (static_cast<int>(x.red)+x.blue+x.green) <=
-         (static_cast<int>(y.red)+y.blue+y.green);
+  return (static_cast<int>(x.r)+x.b+x.g) <=
+         (static_cast<int>(y.r)+y.b+y.g);
 }
 
 inline bool operator>(const dmRGBColor& x,const dmRGBColor& y)  {
-  return (static_cast<int>(x.red)+x.blue+x.green) >
-         (static_cast<int>(y.red)+y.blue+y.green);
+  return (static_cast<int>(x.r)+x.b+x.g) >
+         (static_cast<int>(y.r)+y.b+y.g);
 }
 
 inline bool operator>=(const dmRGBColor& x,const dmRGBColor& y)  {
-  return (static_cast<int>(x.red)+x.blue+x.green) >=
-         (static_cast<int>(y.red)+y.blue+y.green);
+  return (static_cast<int>(x.r)+x.b+x.g) >=
+         (static_cast<int>(y.r)+y.b+y.g);
 }
 
 //-----------------------------------------------------------------
@@ -91,9 +91,9 @@ struct add_pixel<dm_rgb24>  : public _pixel_binfun<dmRGBColor>
 {
   int ir,ig,ib;
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
-    x2.red   = ((ir = static_cast<int>(x1.red)   + x2.red  ) >= 256 ? 255: ir);
-    x2.green = ((ig = static_cast<int>(x1.green) + x2.green) >= 256 ? 255: ig);
-    x2.blue  = ((ib = static_cast<int>(x1.blue)  + x2.blue ) >= 256 ? 255: ib);
+    x2.r = ((ir = static_cast<int>(x1.r) + x2.r) >= 256 ? 255: ir);
+    x2.g = ((ig = static_cast<int>(x1.g) + x2.g) >= 256 ? 255: ig);
+    x2.b = ((ib = static_cast<int>(x1.b) + x2.b) >= 256 ? 255: ib);
     return x2;
   }
 };
@@ -102,9 +102,9 @@ template<>
 struct sub_pixel<dm_rgb24>  : public _pixel_binfun<dmRGBColor>
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
-    x2.red   = (x1.red   >= x2.red   ? x1.red   - x2.red   : 0);
-    x2.green = (x1.green >= x2.green ? x1.green - x2.green : 0);
-    x2.blue  = (x1.blue  >= x2.blue  ? x1.blue  - x2.blue  : 0);
+    x2.r = (x1.r >= x2.r ? x1.r - x2.r : 0);
+    x2.g = (x1.g >= x2.g ? x1.g - x2.g : 0);
+    x2.b = (x1.b >= x2.b ? x1.b - x2.b : 0);
     return x2;
   }
 };
@@ -113,9 +113,9 @@ template<>
 struct nsub_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor>
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
-    x2.red   = (x1.red   <= x2.red   ? x2.red   - x1.red   : 0);
-    x2.green = (x1.green <= x2.green ? x2.green - x1.green : 0);
-    x2.blue  = (x1.blue  <= x2.blue  ? x2.blue  - x1.blue  : 0);
+    x2.r = (x1.r <= x2.r ? x2.r - x1.r : 0);
+    x2.g = (x1.g <= x2.g ? x2.g - x1.g : 0);
+    x2.b = (x1.b <= x2.b ? x2.b - x1.b : 0);
     return x2;
   }
 };
@@ -125,9 +125,9 @@ struct diff_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor>
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
-    x2.red   = daim::absdiff(x1.red,x2.red);
-    x2.green = daim::absdiff(x1.green,x2.green);
-    x2.blue  = daim::absdiff(x1.blue,x2.blue);
+    x2.r = daim::absdiff(x1.r,x2.r);
+    x2.g = daim::absdiff(x1.g,x2.g);
+    x2.b = daim::absdiff(x1.b,x2.b);
     return x2;
   }
 };
@@ -136,9 +136,9 @@ template<>
 struct and_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
-    x2.red   = x1.red   & x2.red;
-    x2.green = x1.green & x2.green;
-    x2.blue  = x1.blue  & x2.blue;
+    x2.r = x1.r & x2.r;
+    x2.g = x1.g & x2.g;
+    x2.b = x1.b & x2.b;
     return x2;
   }
 };
@@ -147,9 +147,9 @@ template<>
 struct or_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
-    x2.red   = x1.red   | x2.red;
-    x2.green = x1.green | x2.green;
-    x2.blue  = x1.blue  | x2.blue;
+    x2.r = x1.r | x2.r;
+    x2.g = x1.g | x2.g;
+    x2.b = x1.b | x2.b;
     return x2;
   }
 };
@@ -158,9 +158,9 @@ template<>
 struct xor_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
-    x2.red   = x1.red   ^ x2.red;
-    x2.green = x1.green ^ x2.green;
-    x2.blue  = x1.blue  ^ x2.blue;
+    x2.r = x1.r ^ x2.r;
+    x2.g = x1.g ^ x2.g;
+    x2.b = x1.b ^ x2.b;
     return x2;
   }
 };
@@ -174,9 +174,9 @@ struct mul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
   mul_pixel( dm_float _a ) : a(_a) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
-    x2.red   = _get_range_value( x1.red   * a, pixel_traits<dm_uint8>(),integer_true());
-    x2.green = _get_range_value( x1.green * a, pixel_traits<dm_uint8>(),integer_true());
-    x2.blue  = _get_range_value( x1.blue  * a, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = _get_range_value( x1.r * a, pixel_traits<dm_uint8>(),integer_true());
+    x2.g = _get_range_value( x1.g * a, pixel_traits<dm_uint8>(),integer_true());
+    x2.b = _get_range_value( x1.b * a, pixel_traits<dm_uint8>(),integer_true());
     return x2;
   }
 };
@@ -188,9 +188,9 @@ struct addmul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
   addmul_pixel( dm_float _a, dm_float _b ) : a(_a),b(_b) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
-    x2.red   = _get_range_value( x1.red   * a + b, pixel_traits<dm_uint8>(),integer_true());
-    x2.green = _get_range_value( x1.green * a + b, pixel_traits<dm_uint8>(),integer_true());
-    x2.blue  = _get_range_value( x1.blue  * a + b, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = _get_range_value( x1.r * a + b, pixel_traits<dm_uint8>(),integer_true());
+    x2.g = _get_range_value( x1.g * a + b, pixel_traits<dm_uint8>(),integer_true());
+    x2.b = _get_range_value( x1.b * a + b, pixel_traits<dm_uint8>(),integer_true());
     return x2;
   }
 };
@@ -204,9 +204,9 @@ struct blend_pixels<dm_rgb24,dm_rgb24> : public _pixel_binfun<dmRGBColor>
   blend_pixels( dm_float _a ) : a(_a) {}
   dmRGBColor&  operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
-    x2.red   = _round_value( a * x1.red   + (1.0f-a) * x2.red  , pixel_traits<dm_uint8>(),integer_true());
-    x2.green = _round_value( a * x1.green + (1.0f-a) * x2.green, pixel_traits<dm_uint8>(),integer_true());
-    x2.blue  = _round_value( a * x1.blue  + (1.0f-a) * x2.blue , pixel_traits<dm_uint8>(),integer_true());
+    x2.r = _round_value( a * x1.r + (1.0f-a) * x2.r, pixel_traits<dm_uint8>(),integer_true());
+    x2.g = _round_value( a * x1.g + (1.0f-a) * x2.g, pixel_traits<dm_uint8>(),integer_true());
+    x2.b = _round_value( a * x1.b + (1.0f-a) * x2.b, pixel_traits<dm_uint8>(),integer_true());
     return x2;
   }
 };
@@ -218,9 +218,9 @@ struct blend_rgb24 :   public _pixel_binfun<dmRGBColor>
   dm_float   a;
   blend_rgb24( const dmRGBColor& _c,  dm_float _a ) : c(_c), a(_a) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const {
-    x2.red   = _round_value( (1.0f-a) * x1.red   + a * c.red  , pixel_traits<dm_uint8>(),integer_true());
-    x2.green = _round_value( (1.0f-a) * x1.green + a * c.green, pixel_traits<dm_uint8>(),integer_true());
-    x2.blue  = _round_value( (1.0f-a) * x1.blue  + a * c.blue , pixel_traits<dm_uint8>(),integer_true());
+    x2.r = _round_value( (1.0f-a) * x1.r + a * c.r, pixel_traits<dm_uint8>(),integer_true());
+    x2.g = _round_value( (1.0f-a) * x1.g + a * c.g, pixel_traits<dm_uint8>(),integer_true());
+    x2.b = _round_value( (1.0f-a) * x1.b + a * c.b, pixel_traits<dm_uint8>(),integer_true());
     return x2;
   }
 };
@@ -233,9 +233,9 @@ struct _blend_rgb_alpha
   _blend_rgb_alpha() {}
   dmRGBColor& operator()( const dmRGBColor& x1, const alpha_type& a,
                           dmRGBColor& x2 ) const {
-    x2.red   = _round_value( (a * x1.red   + (255-a) * x2.red  )/255.0, pixel_traits<dm_uint8>(),integer_true());
-    x2.green = _round_value( (a * x1.green + (255-a) * x2.green)/255.0, pixel_traits<dm_uint8>(),integer_true());
-    x2.blue  = _round_value( (a * x1.blue  + (255-a) * x2.blue )/255.0, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = _round_value( (a * x1.r + (255-a) * x2.r)/255.0, pixel_traits<dm_uint8>(),integer_true());
+    x2.g = _round_value( (a * x1.g + (255-a) * x2.g)/255.0, pixel_traits<dm_uint8>(),integer_true());
+    x2.b = _round_value( (a * x1.b + (255-a) * x2.b)/255.0, pixel_traits<dm_uint8>(),integer_true());
     return x2;
   }
 };
@@ -246,9 +246,9 @@ struct _rgb_color_transform
 
   _rgb_color_transform( dm_real* matrix ) : m(matrix) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const {
-    x2.red   = _round_value( m[0] * x1.red   + m[1] * x1.green + m[2] * x1.blue, pixel_traits<dm_uint8>(),integer_true());
-    x2.green = _round_value( m[3] * x1.red   + m[4] * x1.green + m[5] * x1.blue, pixel_traits<dm_uint8>(),integer_true());
-    x2.blue  = _round_value( m[6] * x1.red   + m[7] * x1.green + m[8] * x1.blue, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = _round_value( m[0] * x1.r + m[1] * x1.g + m[2] * x1.b, pixel_traits<dm_uint8>(),integer_true());
+    x2.g = _round_value( m[3] * x1.r + m[4] * x1.g + m[5] * x1.b, pixel_traits<dm_uint8>(),integer_true());
+    x2.b = _round_value( m[6] * x1.r + m[7] * x1.g + m[8] * x1.b, pixel_traits<dm_uint8>(),integer_true());
     return x2;
   }
 };

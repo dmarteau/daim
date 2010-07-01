@@ -62,11 +62,10 @@ private:
   
 protected:
   dm_bool mLock;
-  dm_bool mLockAlpha;
   dm_bool mPreserveMetaData;
+  dm_bool mEnableAlpha;
 
   dmLink<dmImage> mImage;
-  dmLink<dmImage> mAlpha;
 
   cci_Ptr<cciIImageMath>      mImageMath;
   cci_Ptr<cciIFilterContext>  mFilterContext;

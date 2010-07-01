@@ -85,7 +85,7 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("\n### Can I open an image at %s ?\n",sampleLocation);
-      rv  = shell->LoadImage(sampleLocation,dm_false);
+      rv  = shell->LoadImage(sampleLocation);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("\n### Can I save an image to %s ?\n",saveLocation);

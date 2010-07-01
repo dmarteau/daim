@@ -81,7 +81,7 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("\n### Can I open an image at %s ?\n",sampleLocation);
-      rv  = shell->LoadImage(sampleLocation,dm_false);
+      rv  = shell->LoadImage(sampleLocation);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       cci_Ptr<cciIImageList> imgList = do_CreateInstance("@daim.org/image/list;1",&rv);

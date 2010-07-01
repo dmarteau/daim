@@ -66,9 +66,9 @@ struct diff_compare<dmPixelFormat24bppRGB>
   diff_compare( int _dist ) : distance(_dist) {}
 
   bool operator()( const value_type& a, const value_type& b) {               
-    return  ( daim::absdiff(a.red  ,b.red  ) + 
-              daim::absdiff(a.green,b.green) + 
-              daim::absdiff(a.blue ,b.blue ) ) <= distance;
+    return  ( daim::absdiff(a.r,b.r) + 
+              daim::absdiff(a.g,b.g) + 
+              daim::absdiff(a.b,b.b) ) <= distance;
   }
 };
  //------------------------------------------------------------------------

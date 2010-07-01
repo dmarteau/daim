@@ -58,25 +58,19 @@ CCI_IMPL_ISUPPORTS2(cciImageShell, cciIImageShell,
 
 cciImageShell::cciImageShell()
 : mLock(DM_FALSE)
-, mLockAlpha(DM_FALSE)
 , mPreserveMetaData(DM_TRUE)
+, mEnableAlpha(DM_FALSE)
 {
   /* member initializers and constructor code */
 }
 
 cciImageShell::cciImageShell(const cciImageShell* aSrc)
 : mLock(DM_FALSE)
-, mLockAlpha(DM_FALSE)
 , mPreserveMetaData(DM_TRUE)
+, mEnableAlpha(DM_FALSE)
 {
   if(!aSrc->mImage.IsNull())
-  {
-    mImage = aSrc->mImage->CreateCopy();
-
-    // Copy the alpha channel
-    if(aSrc->mAlpha.IsNull())
-       mAlpha = aSrc->mImage->CreateCopy();
-  }
+     mImage = aSrc->mImage->CreateCopy();
 }
 
 cciImageShell::~cciImageShell()
@@ -110,35 +104,6 @@ void cciImageShell::ClearOpenedResources()
   mColorTable     = dm_null;
 }
 
-
-static cci_result ApplyColorTable( dmImage* image, cciIColorTable* aColorTable, cciRegion rgn )
-{
-  if(aColorTable && image->PixelFormat() == dmPixelFormat24bppRGB)
-  {
-    dm_uint32 c,colors[dmLUT8_MAX_COLORS];
-    
-    cci_result rv = aColorTable->GetColorEntries(reinterpret_cast<dm_uint32**>(&colors),dmLUT8_MAX_COLORS);
-    if(CCI_FAILED(rv))
-       return CCI_ERROR_FAILURE;
-    
-    dmRGBColorTable rgb_table;    
-
-    for(int i=0;i<dmLUT8_MAX_COLORS;++i)
-    {
-      c = colors[i];
-      rgb_table[i].red   = DM_GETRVALUE(c);
-      rgb_table[i].green = DM_GETGVALUE(c);
-      rgb_table[i].blue  = DM_GETBVALUE(c);
-    }
-
-    dmRegion roi = rgn ? *CCI_NATIVE(rgn) : image->Rect();
-    daim::apply_map(dmIImage<dmPixelFormat24bppRGB>::Cast(image)->Gen(),roi,rgb_table);
-  }
-  
-  return CCI_OK;
-}
-
-
 //===============================================
 // cciIImageContainer
 //===============================================
@@ -153,22 +118,12 @@ CCI_IMETHODIMP_(dmImage *) cciImageShell::GetNative()
 // cciIImageShell
 //===============================================
 
-
-static cci_result GetImageDataRect( dmImageData & imData, dm_rect& rect )
+static inline void 
+GetImageData( dmImage* img, dmImageData& imData, dm_bool alpha )
 {
-  dmRect _DstRect = rect;
-
-  if(!_DstRect.Clip(0,0,imData.Width-1,imData.Height-1))
-     return CCI_ERROR_OUT_OF_RANGE;
-
-  int PixelStride = dmGetPixelFormatBits(imData.PixelFormat) >> 3;
-
-  imData.Width  = _DstRect.Width();
-  imData.Height = _DstRect.Height();
-  imData.Scan0  = static_cast<dm_byte*>(imData.Scan0)  +
-                  (imData.Stride * _DstRect.Top()) + (_DstRect.Left() * PixelStride);
-
-  return CCI_OK;
+  img->GetImageData(imData);
+  if(imData.PixelFormat == dmPixelFormat24bppRGB && alpha)
+     imData.PixelFormat = dmPixelFormat32bppARGB;
 }
 
 /* [noscript] void lock (in dmImageDataRef imData, in dmRectPtr rect); */
@@ -178,11 +133,23 @@ CCI_IMETHODIMP cciImageShell::Lock(dmImageData & imData, dm_rect *rect)
   CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
 
   mLock = DM_TRUE;
-  mImage->GetImageData(imData);
+  
+  ::GetImageData(mImage,imData,mEnableAlpha);
 
-  if(rect)
-     return GetImageDataRect(imData,*rect);
+  if(rect) 
+  {
+    dmRect _DstRect = *rect;
 
+    if(!_DstRect.Clip(0,0,imData.Width-1,imData.Height-1))
+       return CCI_ERROR_OUT_OF_RANGE;
+
+    int PixelStride = dmGetPixelFormatBits(imData.PixelFormat) >> 3;
+
+    imData.Width  = _DstRect.Width();
+    imData.Height = _DstRect.Height();
+    imData.Scan0  = static_cast<dm_byte*>(imData.Scan0)  +
+                    (imData.Stride * _DstRect.Top()) + (_DstRect.Left() * PixelStride);
+  }
   return CCI_OK;
 }
 
@@ -192,30 +159,6 @@ CCI_IMETHODIMP cciImageShell::Unlock()
   CCI_ENSURE_TRUE(mLock,CCI_ERROR_FAILURE);
 
   mLock = DM_FALSE;
-  return CCI_OK;
-}
-
-/* [noscript] void lockAlpha (in dmImageDataRef imData, in dmRectPtr rect); */
-CCI_IMETHODIMP cciImageShell::LockAlpha(dmImageData & imData, dm_rect *rect)
-{
-  CCI_ENSURE_FALSE(mAlpha.IsNull(),CCI_ERROR_NOT_INITIALIZED);
-  CCI_ENSURE_FALSE(mLockAlpha,CCI_ERROR_FAILURE);
-
-  mLockAlpha = DM_TRUE;
-  mAlpha->GetImageData(imData);
-
-  if(rect)
-     return GetImageDataRect(imData,*rect);
-
-  return CCI_OK;
-}
-
-/* [noscript] void unLockAlpha (); */
-CCI_IMETHODIMP cciImageShell::UnlockAlpha()
-{
-  CCI_ENSURE_TRUE(mLockAlpha,CCI_ERROR_FAILURE);
-
-  mLockAlpha = DM_FALSE;
   return CCI_OK;
 }
 
@@ -249,26 +192,33 @@ CCI_IMETHODIMP cciImageShell::GetPixelFormat(EPixelFormat *aPixelFormat)
   return CCI_OK;
 }
 
-/* readonly attribute boolean hasAlpha; */
-CCI_IMETHODIMP cciImageShell::GetHasAlpha(dm_bool *aHasAlpha)
+/* attribute boolean enableAlpha; */
+CCI_IMETHODIMP cciImageShell::GetEnableAlpha(dm_bool *aEnableAlpha)
 {
-  CCI_ENSURE_ARG_POINTER(aHasAlpha);
-
-  *aHasAlpha = mAlpha.IsNull()?DM_FALSE:DM_TRUE;
+  *aEnableAlpha = mEnableAlpha;
+  return CCI_OK;
+}
+CCI_IMETHODIMP cciImageShell::SetEnableAlpha(dm_bool aEnableAlpha)
+{
+  mEnableAlpha = aEnableAlpha;
   return CCI_OK;
 }
 
-/* void create (in unsigned long width, in unsigned long height, in EPixelFormat format, in dm_bool createAlpha); */
-CCI_IMETHODIMP cciImageShell::Create(dm_uint32 width, dm_uint32 height, EPixelFormat format, dm_bool createAlpha)
+/* void create (in unsigned long width, in unsigned long height, in EPixelFormat format ); */
+CCI_IMETHODIMP cciImageShell::Create(dm_uint32 width, dm_uint32 height, EPixelFormat format )
 {
   CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
 
   ClearOpenedResources();
-
+  
+  EPixelFormat imgfmt = format;
+  if(imgfmt == dmPixelFormat32bppARGB)
+     imgfmt  = dmPixelFormat24bppRGB;
+  
   if(mImage.IsNull() 
      || width  != mImage->Width() 
      || height != mImage->Height() 
-     || format != mImage->PixelFormat())
+     || imgfmt != mImage->PixelFormat())
   {
     dmImageDescriptor* desc = dmGetDescriptor(format);
     if(desc)
@@ -278,12 +228,9 @@ CCI_IMETHODIMP cciImageShell::Create(dm_uint32 width, dm_uint32 height, EPixelFo
   if(mImage.IsNull())
     return CCI_ERROR_OUT_OF_MEMORY; 
 
-  if(createAlpha && (mAlpha.IsNull() || width != mAlpha->Width() || height != mAlpha->Height())) 
-  {
-    mAlpha = dmCreateImage<dmPixelFormat8bppIndexed>(width,height);
-    if(mAlpha.IsNull())
-       return CCI_ERROR_OUT_OF_MEMORY;
-  }     
+  // Enable alpha if argb specified
+  if(format == dmPixelFormat32bppARGB)
+     mEnableAlpha = DM_TRUE;
     
   return CCI_OK;
 }
@@ -294,7 +241,7 @@ CCI_IMETHODIMP cciImageShell::Destroy()
   ClearOpenedResources();
   
   mImage.Release();
-  mAlpha.Release();
+  mEnableAlpha = DM_FALSE;
 
   if(mFilterContext) {
      mFilterContext->ClearBuffer();
@@ -333,12 +280,11 @@ CCI_IMETHODIMP cciImageShell::LoadBuffer(cciIImageList *imagelist, dm_uint32 ind
 }
 
 
-/* void loadSurfaceBits (in cciISurface surface, in cciRegion rgn, in boolean getAlpha); */
-CCI_IMETHODIMP cciImageShell::LoadSurfaceBits(cciISurface *surface, cciRegion rgn, dm_bool getAlpha)
+/* void loadSurfaceBits (in cciISurface surface, in cciRegion rgn); */
+CCI_IMETHODIMP cciImageShell::LoadSurfaceBits(cciISurface *surface, cciRegion rgn)
 {
   CCI_ENSURE_ARG_POINTER(surface);
   CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
-  CCI_ENSURE_FALSE(mLockAlpha,CCI_ERROR_FAILURE);
 
   dmRegion* nativeRgn = rgn ? rgn->GetNative() : dm_null;
 
@@ -346,45 +292,35 @@ CCI_IMETHODIMP cciImageShell::LoadSurfaceBits(cciISurface *surface, cciRegion rg
 
   cci_result rv;
 
-  EPixelFormat surfaceFormat = surface->PixelFormat();
-
+  EPixelFormat format = surface->PixelFormat();
+  
   if(nativeRgn) {
     dmRect& r = nativeRgn->Rectangle();
-    rv = Create(r.Width(),r.Height(),surfaceFormat,getAlpha);
+    rv = Create(r.Width(),r.Height(),format);
   }
   else {
-    rv = Create(surface->Width(),surface->Height(),surfaceFormat,getAlpha);
+    rv = Create(surface->Width(),surface->Height(),format);
   }
 
   if(CCI_FAILED(rv))
      return rv;
-
+    
   dmImageData _Data;
-  mImage->GetImageData(_Data);
-
+  ::GetImageData(mImage,_Data,mEnableAlpha);
+  
   dm_uint32 lock = cciISurface::ELockRead|cciISurface::ELockUserBuffer;
 
   // Copy data in our buffer
-  if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),_Data.PixelFormat,_Data,lock);
-  else          rv = surface->LockBits(_Data.PixelFormat,_Data,lock);
+  if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),format,_Data,lock);
+  else          rv = surface->LockBits(format,_Data,lock);
 
   surface->UnlockBits(_Data);
-
-  if(CCI_SUCCEEDED(rv) && getAlpha && surface->HasAlpha())
-  {
-    mAlpha->GetImageData(_Data);
-
-    if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-    else          rv = surface->LockBits(_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-
-    surface->UnlockBits(_Data);
-  }
 
   return rv;
 }
 
-/* void writeSurfaceBits (in cciISurface surface, in cciRegion rgn, in boolean getAlpha); */
-CCI_IMETHODIMP cciImageShell::WriteSurfaceBits(cciISurface *surface, cciRegion rgn, dm_bool getAlpha)
+/* void writeSurfaceBits (in cciISurface surface, in cciRegion rgn ); */
+CCI_IMETHODIMP cciImageShell::WriteSurfaceBits(cciISurface *surface, cciRegion rgn )
 {
   CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_NOT_INITIALIZED);
   CCI_ENSURE_ARG_POINTER(surface);
@@ -397,10 +333,10 @@ CCI_IMETHODIMP cciImageShell::WriteSurfaceBits(cciISurface *surface, cciRegion r
      return CCI_OK; //Nothing to do
 
   dmImageData _Data;
-  mImage->GetImageData(_Data);
-
+  ::GetImageData(mImage,_Data,mEnableAlpha);
+  
   dm_uint32 lock = cciISurface::ELockWrite|cciISurface::ELockUserBuffer;
-
+ 
   // Copy image data in surface
   cci_result rv = surface->LockBitsRect(dstRect,_Data.PixelFormat,_Data,lock);
   CCI_ENSURE_SUCCESS(rv,rv);
@@ -408,49 +344,26 @@ CCI_IMETHODIMP cciImageShell::WriteSurfaceBits(cciISurface *surface, cciRegion r
   // Set color table if any
   if(mColorTable && mImage->PixelFormat()==dmPixelFormat8bppIndexed)
      surface->SetColorTable(mColorTable);
-
+    
   rv = surface->UnlockBits(_Data);
-
-  if(CCI_SUCCEEDED(rv) && getAlpha && !mAlpha.IsNull())
-  {
-    mAlpha->GetImageData(_Data);
-
-    rv = surface->LockBitsRect(dstRect,_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-    CCI_ENSURE_SUCCESS(rv,rv);
-
-    rv = surface->UnlockBits(_Data);
-  }
-
+  
   return rv;
 }
 
-/* void sampleSurfaceBits (in cciISurface surface, in cciRegion rgn, in boolean keepFormat, [optional] in boolean getAlpha); */
-CCI_IMETHODIMP cciImageShell::SampleSurfaceBits(cciISurface *surface, cciRegion rgn, dm_bool keepFormat, dm_bool getAlpha)
+/* void sampleSurfaceBits (in cciISurface surface, in cciRegion rgn, in boolean keepFormat ); */
+CCI_IMETHODIMP cciImageShell::SampleSurfaceBits(cciISurface *surface, cciRegion rgn, dm_bool keepFormat )
 {
   CCI_ENSURE_ARG_POINTER(surface);
   CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
-  CCI_ENSURE_FALSE(mLockAlpha,CCI_ERROR_FAILURE);
 
   if(mImage.IsNull()) 
-     return LoadSurfaceBits(surface,rgn,getAlpha);
+     return LoadSurfaceBits(surface,rgn);
   
   dmRegion* nativeRgn = rgn ? rgn->GetNative() : dm_null;
   cci_result rv;
 
   dm_uint32 width  = mImage->Width();
   dm_uint32 height = mImage->Height();
-
-  // Create alpha if required
-  if(getAlpha && mAlpha.IsNull() && surface->HasAlpha()) 
-  {
-    mAlpha = dmCreateImage<dmPixelFormat8bppIndexed>(width,height);
-    if(mAlpha.IsNull())
-       return CCI_ERROR_OUT_OF_MEMORY;
-  }
-  else 
-  {
-    getAlpha = false;
-  }
 
   EPixelFormat format        = mImage->PixelFormat();  
   EPixelFormat surfaceFormat = surface->PixelFormat();
@@ -462,7 +375,7 @@ CCI_IMETHODIMP cciImageShell::SampleSurfaceBits(cciISurface *surface, cciRegion 
     width  = surface->Width();
     height = surface->Height();
   }
-
+    
   dmImageData _Data;
   dm_uint32 lock = cciISurface::ELockRead|cciISurface::ELockUserBuffer;
     
@@ -479,8 +392,8 @@ CCI_IMETHODIMP cciImageShell::SampleSurfaceBits(cciISurface *surface, cciRegion 
     if(dstImage.IsNull())
        return CCI_ERROR_OUT_OF_MEMORY; 
     
-    dstImage->GetImageData(_Data);
-
+    ::GetImageData(dstImage,_Data,mEnableAlpha);
+     
     // Copy data in our buffer
     if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),_Data.PixelFormat,_Data,lock);
     else          rv = surface->LockBits(_Data.PixelFormat,_Data,lock);
@@ -512,49 +425,26 @@ CCI_IMETHODIMP cciImageShell::SampleSurfaceBits(cciISurface *surface, cciRegion 
       }
       
       dstImage.Release();
-      
-      // Get alpha channel
-      if(CCI_SUCCEEDED(rv) && getAlpha)
-      {
-        tmp = dmCreateImage<dmPixelFormat8bppIndexed>(width,height);
-        tmp->GetImageData(_Data);
-
-        if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-        else          rv = surface->LockBits(_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-        surface->UnlockBits(_Data);
-
-        // Resample directly into alpha channel
-        rv = tr->Strech(native_Wrapper(tmp),dm_null,dmBilinear,native_Wrapper(mAlpha));
-      }
     }
   }
   else
   {
     // Sample data directly from surface
-    mImage->GetImageData(_Data);
+
+    ::GetImageData(mImage,_Data,mEnableAlpha);
 
     // Copy data in our buffer
     if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),_Data.PixelFormat,_Data,lock);
     else          rv = surface->LockBits(_Data.PixelFormat,_Data,lock);
     surface->UnlockBits(_Data);
-    
-    if(CCI_SUCCEEDED(rv) && getAlpha)
-    {
-      mAlpha->GetImageData(_Data);
-
-      if(nativeRgn) rv = surface->LockBitsRect(nativeRgn->Rectangle(),_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-      else          rv = surface->LockBits(_Data.PixelFormat,_Data,lock|cciISurface::ELockAlpha);
-
-      surface->UnlockBits(_Data);
-    }
   }
 
   return rv;
 }
 
 
-/* void loadImage (in string path, in boolean getAlpha ); */
-CCI_IMETHODIMP cciImageShell::LoadImage(const char * path, dm_bool getAlpha )
+/* void loadImage (in string path ); */
+CCI_IMETHODIMP cciImageShell::LoadImage(const char * path )
 {
   CCI_ENSURE_ARG_POINTER(path);
 
@@ -570,7 +460,7 @@ CCI_IMETHODIMP cciImageShell::LoadImage(const char * path, dm_bool getAlpha )
   if(CCI_FAILED(rv))
      return rv;
 
-  rv = LoadSurfaceBits(surface,dm_null,getAlpha);
+  rv = LoadSurfaceBits(surface,dm_null);
 
   if(CCI_SUCCEEDED(rv)) 
   {
@@ -614,21 +504,9 @@ CCI_IMETHODIMP cciImageShell::SaveImage(const char * path, const char * type, co
     _MetaData = do_QueryInterface(mCurrentSurface);
 
   dmImageData imData;
-  mImage->GetImageData(imData);
-
-  dm_uint8 *alphaBytes  = dm_null;;
-  dm_int32  alphaStride = 0;  
+  ::GetImageData(mImage,imData,mEnableAlpha);
   
-  if(!mAlpha.IsNull()) {
-    dmImageData alphaData;
-    mAlpha->GetImageData(alphaData);
-    
-    alphaBytes  = static_cast<dm_uint8*>(alphaData.Scan0);
-    alphaStride = alphaData.Stride;
-  }
-  
-  return mDriverCache->SaveImageBitsWithAlpha(path,imData,alphaBytes,alphaStride,
-                                              _MetaData,mColorTable,options);
+  return mDriverCache->SaveImageBits(path,imData,_MetaData,mColorTable,options);
 }
 
 
@@ -639,13 +517,10 @@ CCI_IMETHODIMP cciImageShell::Clear( cciRegion rgn )
     return CCI_OK;
   
   dmRegion* nativeRgn = rgn ? rgn->GetNative() : dm_null;
-  if(nativeRgn) {
+  if(nativeRgn)
     mImage->ClearArea(*nativeRgn);
-    mAlpha->ClearArea(*nativeRgn);
-  } else {
+  else
     mImage->Clear();
-    mAlpha->Clear();    
-  }
   return CCI_OK;
 }
 
@@ -680,7 +555,30 @@ CCI_IMETHODIMP cciImageShell::ApplyColorTable( cciRegion rgn )
 {
   CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_NOT_INITIALIZED);
   
-  return ::ApplyColorTable(mImage,mColorTable,rgn);
+  if(mColorTable && mImage->PixelFormat() == dmPixelFormat24bppRGB)
+  {
+    dm_uint32 c,colors[dmLUT8_MAX_COLORS];
+    
+    cci_result rv = mColorTable->GetColorEntries(reinterpret_cast<dm_uint32**>(&colors),dmLUT8_MAX_COLORS);
+    if(CCI_FAILED(rv))
+       return CCI_ERROR_FAILURE;
+    
+    dmRGBColorTable rgb_table;    
+
+    //XXX Find what to do with alpha value
+    for(int i=0;i<dmLUT8_MAX_COLORS;++i)
+    {
+      c = colors[i];
+      rgb_table[i].r = DM_GETRVALUE(c);
+      rgb_table[i].g = DM_GETGVALUE(c);
+      rgb_table[i].b = DM_GETBVALUE(c);
+    }
+
+    dmRegion roi = rgn ? *CCI_NATIVE(rgn) : mImage->Rect();
+    daim::apply_map(dmIImage<dmPixelFormat24bppRGB>::Cast(mImage)->Gen(),roi,rgb_table);
+  }  
+  
+  return CCI_OK;
 }
 
 
@@ -707,10 +605,13 @@ CCI_IMETHODIMP cciImageShell::Clone(cciIImageShell * *_retval CCI_OUTPARAM)
   if(!cloned)
       return CCI_ERROR_OUT_OF_MEMORY;
 
+  cloned->mEnableAlpha      = mEnableAlpha;
+  cloned->mPreserveMetaData = mPreserveMetaData;
+
   if(mPreserveMetaData)
      cloned->mCurrentSurface = mCurrentSurface;
-
-  CCI_ADDREF( *_retval = cloned);
+  
+  CCI_ADDREF(*_retval = cloned);
   return CCI_OK;
 }
 
@@ -729,23 +630,17 @@ CCI_IMETHODIMP cciImageShell::CreateCopy(cciRegion rgn, EPixelFormat format, cci
   dmRect rect = rgn ? rgn->GetNative()->Rectangle() : mImage->Rect();
 
   cloned->mImage = dmCreateCopy(mImage,rect,format);
-
+  
   if(cloned->mImage.IsNull())
      goto out;
-
-  if(!mAlpha.IsNull())
-  {
-    cloned->mAlpha = mAlpha->CreateCopy(rect);
-    if(cloned->mAlpha.IsNull())
-       goto out;
-  }
-
+  
   // Clone color table
   if(mColorTable) 
   {
     mColorTable->Clone(getter_AddRefs(cloned->mColorTable));
     // Apply color table  if needed
-    if(format == dmPixelFormat24bppRGB && mImage->PixelFormat() != format) 
+    if( dmIsPixelFormatScalar(mImage->PixelFormat())
+    && ((format == dmPixelFormat24bppRGB)||(format == dmPixelFormat32bppARGB)))
        cloned->ApplyColorTable(dm_null); 
   }
 
@@ -762,8 +657,8 @@ out:
   return CCI_ERROR_FAILURE;
 }
 
-/* void resample (in cciImage dest, in cciRegion rgn, in unsigned long mode, in dm_bool getAlpha); */
-CCI_IMETHODIMP cciImageShell::Resample(cciImage dest, cciRegion rgn, dm_uint32 mode, dm_bool getAlpha)
+/* void resample (in cciImage dest, in cciRegion rgn, in unsigned long mode ); */
+CCI_IMETHODIMP cciImageShell::Resample(cciImage dest, cciRegion rgn, dm_uint32 mode )
 {
   CCI_ENSURE_ARG_POINTER(dest);
   CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_NOT_INITIALIZED);
@@ -775,15 +670,8 @@ CCI_IMETHODIMP cciImageShell::Resample(cciImage dest, cciRegion rgn, dm_uint32 m
   if(CCI_FAILED(rv))
      return rv;
 
-  if(getAlpha)
-  {
-    if(mAlpha.IsNull())
-      return CCI_ERROR_NOT_AVAILABLE;
-
-    rv = tr->Strech(native_Wrapper(mAlpha),rgn,mode,dest);
-  } else
-    rv = tr->Strech(native_Wrapper(mImage),rgn,mode,dest);
-
+  rv = tr->Strech(native_Wrapper(mImage),rgn,mode,dest);
+  
   return rv;
 }
 

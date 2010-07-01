@@ -57,7 +57,7 @@
 </outputEntries>
 </builder>
 <tool errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="org.eclipse.cdt.build.core.settings.holder.libs.286949028" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs">
-<option id="org.eclipse.cdt.build.core.settings.holder.libpaths.1013225556" superClass="org.eclipse.cdt.build.core.settings.holder.libpaths" valueType="libPaths">
+<option id="org.eclipse.cdt.build.core.settings.holder.libpaths.1013225556" name="Library Paths" superClass="org.eclipse.cdt.build.core.settings.holder.libpaths" valueType="libPaths">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/bin}&quot;"/>
 </option>
 </tool>
@@ -74,6 +74,13 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.989893913" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -90,6 +97,13 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1651850709" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -106,6 +120,13 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1968412187" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>

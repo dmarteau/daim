@@ -29,8 +29,8 @@
 //
 // template class dmImageDescriptor<EPixelFormat> :
 //
-// descripteur générique d'image et définition des images associées
-// chaque descripteur de type est défini comme un singleton 
+// descripteur gï¿½nï¿½rique d'image et dï¿½finition des images associï¿½es
+// chaque descripteur de type est dï¿½fini comme un singleton 
 //------------------------------------------------------------------
 
 template<EPixelFormat _PixelFormat>
@@ -79,6 +79,7 @@ dmImageDescriptor* dmImageDescriptor::GetDescriptor( EPixelFormat _PixelFmt )
   {
     case dmPixelFormat8bppIndexed    : return &dmIImageDescriptor<dmPixelFormat8bppIndexed>   ::This;
     case dmPixelFormat24bppRGB       : return &dmIImageDescriptor<dmPixelFormat24bppRGB>      ::This;
+    case dmPixelFormat32bppARGB      : return &dmIImageDescriptor<dmPixelFormat24bppRGB>      ::This;
     case dmPixelFormat16bppGrayScale : return &dmIImageDescriptor<dmPixelFormat16bppGrayScale>::This;
     case dmPixelFormat32bppGrayScale : return &dmIImageDescriptor<dmPixelFormat32bppGrayScale>::This;
     case dmPixelFormat32bppFloat     : return &dmIImageDescriptor<dmPixelFormat32bppFloat>    ::This;

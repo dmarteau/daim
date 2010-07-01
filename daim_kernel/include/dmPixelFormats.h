@@ -57,7 +57,7 @@ enum EPixelFormat
                                                 | dmPixelFormatDisplayable
                                                 | dmPixelFormatScalar,
 
-  dmPixelFormat24bppRGB        =  2 | (24 << 8) | dmPixelFormatDisplayable,  /*!< 24 bits RGB pixel format            */
+  dmPixelFormat24bppRGB        =  2 | (32 << 8) | dmPixelFormatDisplayable,  /*!< 24 bits RGB pixel format            */
   dmPixelFormat16bppGrayScale  =  3 | (16 << 8) | dmPixelFormatScalar,       /*!< 16 bits gray scale pixel format     */
   dmPixelFormat32bppGrayScale  =  4 | (32 << 8) | dmPixelFormatScalar,       /*!< 32 bits gray scale pixel format     */
   dmPixelFormat32bppFloat      =  5 | (32 << 8) | dmPixelFormatScalar        /*!< 32 bits floating point pixel format */

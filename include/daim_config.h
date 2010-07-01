@@ -112,6 +112,13 @@
 #define DM_ASSUME_BYTES_PER_INT 4
 
 //--------------------------------------------
+// By default assume that we ar running on Intel
+// arch
+//--------------------------------------------
+
+#define DM_IS_LITTLE_ENDIAN
+
+//--------------------------------------------
 // Supported (or not yet) target system
 // Should be defined in makefile specific for that
 // target
@@ -133,7 +140,6 @@
 // Cygwin
 
 //#define DM_CONFIG_TARGET_CYGWIN
-
 
 // Include specific target configurations
 #include "dmTarget.h"

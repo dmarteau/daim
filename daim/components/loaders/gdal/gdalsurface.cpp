@@ -56,6 +56,15 @@ CCI_IMPL_ISUPPORTS5(gdalSurface, cciISurface,
                                  cciIMetaDataContainer,
                                  gdalMetadata)
 
+static GDALColorInterp bandsInterp[5] = {
+  GCI_Undefined,                                  
+  GCI_RedBand,
+  GCI_GreenBand,
+  GCI_BlueBand,
+  GCI_AlphaBand
+};
+
+                                 
 gdalSurface::gdalSurface()
 : mDS(dm_null)
 , mOutputDriver(dm_null)
@@ -75,8 +84,7 @@ gdalSurface::~gdalSurface()
 }
 
 // Static method
-cci_result gdalSurface::CreateInMemorySurface( const dmImageData & imData, const dm_uint8* alphaBits, 
-                                               dm_int32 alphaStride ,GDALDatasetH& hDS )
+cci_result gdalSurface::CreateInMemorySurface( const dmImageData& imData, GDALDatasetH& hDS )
 {
   GDALDataType dataType = resolveDataType(imData.PixelFormat);
   if(dataType == GDT_Unknown) {
@@ -90,20 +98,44 @@ cci_result gdalSurface::CreateInMemorySurface( const dmImageData & imData, const
   int BandStride  = imData.Stride * imData.Height;
 
   const char* pszType = GDALGetDataTypeName(dataType);
+  
+  dm_byte* bands[4];
+  dm_byte* pScan0 = reinterpret_cast<dm_byte*>(imData.Scan0);
 
   if(imData.PixelFormat==dmPixelFormat24bppRGB) {
     nBands     = 3;
-    BandStride = 1;
+    BandStride = 1; // 1 Byte between each band 
+  } else
+  if(imData.PixelFormat==dmPixelFormat32bppARGB) { // Take alpha channel 
+    nBands     = 4;
+    BandStride = 1;  // 1 Byte between each band    
   }
-
+   
+  if(nBands>1) {
+    #ifdef DM_IS_LITTLE_ENDIAN
+    // BGRA
+    bands[0] = pScan0 + 2; // Red
+    bands[1] = pScan0 + 1; // Green
+    bands[2] = pScan0 + 0; // Blue      
+    bands[3] = pScan0 + 3; // Alpha      
+    #else
+    // ARGB
+    bands[0] = pScan0 + 1; // Red
+    bands[1] = pScan0 + 2; // Green
+    bands[2] = pScan0 + 3; // Blue
+    bands[3] = pScan0 + 0; // Alpha
+    #endif
+  } else {
+    bands[0] = pScan0;
+  }
+  
   dmCString buf = dmCString::FormatString(256,
                                 "MEM:::DATAPOINTER=%ld,PIXELS=%ld,LINES=%ld,"
-                                "BANDS=%ld,DATATYPE=%s,PIXELOFFSET=%ld,"
-                                "LINEOFFSET=%ld,BANDOFFSET=%ld",
-                                 imData.Scan0,
+                                "BANDS=1,DATATYPE=%s,PIXELOFFSET=%ld,"
+                                "LINEOFFSET=%ld,BANDOFFSET=%ld",bands[0],
                                  imData.Width,
                                  imData.Height,
-                                 nBands,pszType,
+                                 pszType,
                                  PixelStride,
                                  LineStride,
                                  BandStride);
@@ -114,30 +146,33 @@ cci_result gdalSurface::CreateInMemorySurface( const dmImageData & imData, const
   
   cci_result rv = CCI_OK;
   
-  if(alphaBits)
+
+  if(nBands > 1)
   {
-    if((static_cast<dm_uint32>(alphaStride) >=  imData.Width * sizeof(dm_uint8)))
+    // Set band interpretation
+    GDALSetRasterColorInterpretation(GDALGetRasterBand(hDS,1),bandsInterp[1]);
+  
+    // Add remaining bands
+    for(int i=1;i<nBands;++i) 
     {
       char **papszOptions = dm_null;
-
-      papszOptions = CSLAppendPrintf(papszOptions,"DATAPOINTER=%ld",alphaBits);
-      papszOptions = CSLAppendPrintf(papszOptions,"PIXELOFFSET=%ld",1);
-      papszOptions = CSLAppendPrintf(papszOptions,"LINEOFFSET=%ld" ,alphaStride);
-
+      papszOptions = CSLAppendPrintf(papszOptions,"DATAPOINTER=%ld",bands[i]);
+      papszOptions = CSLAppendPrintf(papszOptions,"PIXELOFFSET=%ld",PixelStride);
+      papszOptions = CSLAppendPrintf(papszOptions,"LINEOFFSET=%ld" ,LineStride);
+      papszOptions = CSLAppendPrintf(papszOptions,"BANDOFFSET=%ld" ,BandStride);
+  
       CPLErr err = GDALAddBand(hDS,GDT_Byte,papszOptions);
-
+  
       CSLDestroy( papszOptions );
-      if(err != CE_None) 
+      if(err != CE_None) {
          rv = CCI_ERROR_FAILURE;
-      else
-         GDALSetRasterColorInterpretation(GDALGetRasterBand(hDS,nBands+1),GCI_AlphaBand);
-    }
-    else 
-    {
-      dmLOG_WARN("Invalid alpha channel format, dropping alpha channel !");
+         break;
+      }
+      
+      GDALSetRasterColorInterpretation(GDALGetRasterBand(hDS,i+1),bandsInterp[i+1]);
     }
   }
-
+  
   if(CCI_FAILED(rv)) {
      GDALClose(hDS);
      hDS = NULL;
@@ -157,8 +192,13 @@ cci_result gdalSurface::Init(GDALDatasetH aDS, dm_uint32 ioFlags, GDALDriverH tm
   if(nBands>=3 &&
      GDALGetRasterColorInterpretation(GDALGetRasterBand(aDS,1))==GCI_RedBand   &&
      GDALGetRasterColorInterpretation(GDALGetRasterBand(aDS,2))==GCI_GreenBand &&
-     GDALGetRasterColorInterpretation(GDALGetRasterBand(aDS,3))==GCI_BlueBand) {
+     GDALGetRasterColorInterpretation(GDALGetRasterBand(aDS,3))==GCI_BlueBand) 
+  {
      mFormat = dmPixelFormat24bppRGB;
+     
+     // Check for alpha band
+     if(GDALGetRasterColorInterpretation(GDALGetRasterBand(aDS,nBands))==GCI_AlphaBand)
+        mAlphaBand = nBands;
   }
   else
   {
@@ -172,10 +212,6 @@ cci_result gdalSurface::Init(GDALDatasetH aDS, dm_uint32 ioFlags, GDALDriverH tm
     }
   }
 
-  // Check for alpha band
-  if(GDALGetRasterColorInterpretation(GDALGetRasterBand(aDS,nBands))==GCI_AlphaBand)
-     mAlphaBand = nBands;
-
   mDS                = aDS;
   mOutputDriver      = dm_null;
   mTmpDriver         = tmpDriver;
@@ -186,51 +222,46 @@ cci_result gdalSurface::Init(GDALDatasetH aDS, dm_uint32 ioFlags, GDALDriverH tm
 }
 
 // Init from image data
-cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
-                             dmImageData& imData, dm_uint8* alphaBits, dm_int32 alphaStride,
+cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location, dmImageData& imData,
                              const char *options)
 {
+  // Ensure that provided driver has create copy capabilities
   if(aDriver && GDALGetMetadataItem(aDriver,GDAL_DCAP_CREATECOPY,NULL) == NULL)
      return CCI_ERROR_NOT_AVAILABLE;
 
   GDALDatasetH hDS = dm_null;
 
   // Wrap image data
-  dmImageDescriptor* pDesc = dmGetDescriptor(mFormat);
+  dmImageDescriptor* pDesc = dmGetDescriptor(imData.PixelFormat);
   if(pDesc) {
     mImageBuffer = pDesc->CreateImage(imData);
     if(!mImageBuffer)
        return CCI_ERROR_OUT_OF_MEMORY;
     
-    if(alphaBits && (static_cast<dm_uint32>(alphaStride) >= imData.Width * sizeof(dm_uint8)))
-    { 
-      dmImageData alphaData;
-      alphaData.PixelFormat = dmPixelFormat8bppIndexed;
-      alphaData.Scan0       = alphaBits;
-      alphaData.Stride      = alphaStride;
-      alphaData.Width       = imData.Width;
-      alphaData.Height      = imData.Height;
-    
-      mAlphaBuffer = dmCreateImage<dmPixelFormat8bppIndexed>(alphaData);
-    }
   } else {
+    // Huuu, no descriptor ?
     return CCI_ERROR_UNEXPECTED;
   }
   
-  cci_result rv = CreateInMemorySurface(imData,alphaBits,alphaStride,hDS);
+  // Create in-memory gdal surface
+  cci_result rv = CreateInMemorySurface(imData,hDS);
   if(CCI_FAILED(rv))
      return rv;
 
-  // Clone options;
+  // Clone options
   if(options)
      mCreateOpts = CSLTokenizeStringComplex(options,",",DM_FALSE,DM_FALSE);
+
+  mFormat            = pDesc->PixelFormat();
 
   mDS                = hDS;
   mLocation          = location;
   mOutputDriver      = aDriver;
-  mFormat            = imData.PixelFormat;
   mRequireUserBuffer = DM_FALSE;
   mAccess            = GA_Update;
+  
+  // Set alpha band
+  mAlphaBand         = imData.PixelFormat == dmPixelFormat32bppARGB ? 4 : 0;
 
   return rv;
 }
@@ -238,7 +269,7 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
 // Init from a driver
 cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
                              dm_uint32 width, dm_uint32 height,
-                             EPixelFormat format, dm_bool hasAlpha,
+                             EPixelFormat format,
                              const char *options)
 {
   CCI_ENSURE_ARG_POINTER(aDriver);
@@ -252,7 +283,7 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
     return CCI_ERROR_FAILURE;
   }
 
-  if(GDALGetMetadataItem(mOutputDriver,GDAL_DCAP_CREATE,NULL ) == NULL)
+  if(GDALGetMetadataItem(aDriver,GDAL_DCAP_CREATE,NULL ) == NULL)
      return CCI_ERROR_NOT_AVAILABLE;
     
   char** createOpts = dm_null;
@@ -263,8 +294,11 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
   int nBands = 1;
   if(format==dmPixelFormat24bppRGB)
      nBands = 3;
-
-  hDS = GDALCreate(mOutputDriver,location,width,height,nBands,dataType,createOpts);
+  else
+  if(format==dmPixelFormat32bppARGB)
+     nBands = 4;
+    
+  hDS = GDALCreate(aDriver,location,width,height,nBands,dataType,createOpts);
   if(createOpts)
      CSLDestroy(createOpts);
 
@@ -272,17 +306,25 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
      return CCI_ERROR_FAILURE;
 
   // Set alpha channel
-  if(hasAlpha) 
-     GDALSetRasterColorInterpretation( GDALGetRasterBand(hDS,++nBands),
-                                       GCI_AlphaBand );
-
+  if(nBands > 1) {
+    for(int i=1;i<=nBands;++i) 
+      GDALSetRasterColorInterpretation( GDALGetRasterBand(hDS,i),bandsInterp[i] );
+  }
+    
   mDS                = hDS;
   mLocation          = location;
   mFormat            = format;
   mOutputDriver      = dm_null;
   mRequireUserBuffer = DM_TRUE;
   mAccess            = GA_Update;
-
+  mAlphaBand         = 0; 
+ 
+  // Set alpha band
+  if(format==dmPixelFormat32bppARGB) {
+    mAlphaBand = 4;
+    mFormat    = dmPixelFormat24bppRGB;
+  }
+  
   return CCI_OK;
 }
 
@@ -305,7 +347,7 @@ CCI_IMETHODIMP_(dm_uint32) gdalSurface::Height()
 /* [noscript,notxpcom] dm_uint32 Bands (); */
 CCI_IMETHODIMP_(dm_uint32) gdalSurface::Bands()
 {
-  return GDALGetRasterCount(mDS);;
+  return GDALGetRasterCount(mDS);
 }
 
 /* [noscript,notxpcom] EPixelFormat PixelFormat (); */
@@ -383,25 +425,18 @@ CCI_IMETHODIMP gdalSurface::GetHasAlpha(dm_bool *aHasAlpha)
   return CCI_OK;
 }
 
-cci_result gdalSurface::CreateUserBuffer(dmRect & rect, EPixelFormat format, dmImageData& imData,
-                                         dm_bool wantAlpha)
+cci_result gdalSurface::CreateUserBuffer(dmRect & rect, EPixelFormat format, dmImageData& imData)
 {
-  EPixelFormat bufferFmt = format;
-  if(bufferFmt==dmPixelFormatUndefined)
-  {
-    bufferFmt = mFormat;
-    if(wantAlpha && !dmIsPixelFormatScalar(bufferFmt))
-       bufferFmt = dmPixelFormat8bppIndexed;
-  }
-  else
-  {
-    if(wantAlpha && !dmIsPixelFormatScalar(bufferFmt))
-       return CCI_ERROR_INVALID_ARG;
-  }
+   if(format==dmPixelFormatUndefined)
+      format = mFormat;
 
-  if(mImageBuffer.IsNull() || mImageBuffer->PixelFormat()!=bufferFmt||
-     mImageBuffer->Width()  != rect.Width() ||
-     mImageBuffer->Height() != rect.Height())
+   EPixelFormat bufferFmt = format;
+   if(bufferFmt == dmPixelFormat32bppARGB)
+     bufferFmt = dmPixelFormat24bppRGB;
+
+  if(mImageBuffer.IsNull() || mImageBuffer->PixelFormat()!=bufferFmt
+  || mImageBuffer->Width()  != rect.Width()
+  || mImageBuffer->Height() != rect.Height())
   {
     dmImageDescriptor* pDesc = dmGetDescriptor(bufferFmt);
     if(pDesc)
@@ -412,6 +447,10 @@ cci_result gdalSurface::CreateUserBuffer(dmRect & rect, EPixelFormat format, dmI
          return CCI_ERROR_OUT_OF_MEMORY;
 
       mImageBuffer->GetImageData(imData);
+      
+      // Ensure that imData is returned with the correct format
+      imData.PixelFormat = format;
+      
       return CCI_OK;
     }
   }
@@ -468,10 +507,11 @@ static void MapColorTable( GDALColorTableH hColorTable, EPixelFormat format, dmI
     for(int y=0;y<height;++y) {
       for(int x=0;x<width;++x) {
         dmRGBColor&  pixel = ((dmRGBColor*)(pixbuf))[x];        
-        entry = &colors[pixel.red];
-        pixel.red   = entry->c1;
-        pixel.green = entry->c2;
-        pixel.blue  = entry->c3;
+        entry = &colors[pixel.r];
+        pixel.a = 0xff;
+        pixel.r = entry->c1;
+        pixel.g = entry->c2;
+        pixel.b = entry->c3;
       }
       pixbuf += stride;    
     }    
@@ -479,15 +519,7 @@ static void MapColorTable( GDALColorTableH hColorTable, EPixelFormat format, dmI
 }
 
 
-
-static bool IsLittleEndian()
-{
-  static const dm_uint32 i32 = 0x000000ff;
-  return *(dm_byte*)(&i32) == 0xff;
-}
-
-cci_result gdalSurface::ReadData(EPixelFormat format, dmImageData& imData, dm_bool wantAlpha,
-                                 dm_uint32 lockModes)
+cci_result gdalSurface::ReadData(EPixelFormat format, dmImageData& imData, dm_uint32 lockModes)
 {
   GDALDataType dataType = resolveDataType(format);
 
@@ -508,22 +540,10 @@ cci_result gdalSurface::ReadData(EPixelFormat format, dmImageData& imData, dm_bo
 
   GDALColorTableH hColorTable = dm_null;
   
-  if( wantAlpha )
-  {
-    // Ensure that we have a scalar format
-    if(!dmIsPixelFormatScalar(format))
-    {
-      return CCI_ERROR_INVALID_ARG;      
-    }
-
-    nBandCount   = 1;
-    nBandSpace   = imData.Stride * imData.Height;
-    panBanMap[0] = mAlphaBand;
-  }
-  else
   // We are putting data into rgb format 
   if(format == dmPixelFormat24bppRGB || format == dmPixelFormat32bppARGB)
   {
+    // Source format is scalar
     if(dmIsPixelFormatScalar(mFormat))
     {
       nBandCount = 3;
@@ -536,78 +556,55 @@ cci_result gdalSurface::ReadData(EPixelFormat format, dmImageData& imData, dm_bo
       if(GDALGetRasterColorInterpretation(hBand)==GCI_PaletteIndex)
          hColorTable = GDALGetRasterColorTable(hBand);
 
-      // Just read all bands here
-      if(format == dmPixelFormat32bppARGB)
-      {
-        bool le = IsLittleEndian();
-        // Check for endianness
-
-        if(mAlphaBand)
-        {
-          nBandCount = 4;
-          if(le) {
-            panBanMap[3] = mAlphaBand;
-          } else {
-            panBanMap[0] = mAlphaBand;
-            panBanMap[1] = panBanMap[2] = panBanMap[3] = 1;
-          }
-        }
-        else
-        {
-          FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);
-          if(!le)
-             pScan0 += 1; // Advance scan pointer to skip alpha channel
-        }
-      } 
+      // Fill alpha channel 
+      FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);
+      #ifndef DM_IS_LITTLE_ENDIAN
+      pScan0 += 1; // Advance scan pointer to skip alpha channel
+      #endif
     }
     else
     {
+      // Source format is (A)RGB      
       nBandCount = 3;
       nBandSpace = 1;
 
-      // Just read all bands here
-      if(format == dmPixelFormat32bppARGB)
+      if(format == dmPixelFormat32bppARGB && mAlphaBand)
       {
-        bool le = IsLittleEndian();
-        // Check for endianness
-
-        if(mAlphaBand)
-        {
-          nBandCount   = 4;
-          if(le) {
-            panBanMap[0] = 3;
-            panBanMap[1] = 2;
-            panBanMap[2] = 1;
-            panBanMap[3] = mAlphaBand;
-          } else {
-            panBanMap[0] = mAlphaBand;
-            panBanMap[1] = 1;
-            panBanMap[2] = 2;
-            panBanMap[3] = 3;
-          }
-        }
-        else
-        {
-          FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);
-          if(le) {
-            panBanMap[0] = 3;
-            panBanMap[1] = 2;
-            panBanMap[2] = 1;
-          } else
-            pScan0 += 1; // Advance scan pointer to skip alpha channel
-        }
+        nBandCount   = 4;
+        #ifdef DM_IS_LITTLE_ENDIAN
+          panBanMap[0] = 3; //B
+          panBanMap[1] = 2; //G
+          panBanMap[2] = 1; //R
+          panBanMap[3] = mAlphaBand;          
+        #else
+          panBanMap[0] = mAlphaBand;
+          panBanMap[1] = 1;
+          panBanMap[2] = 2;
+          panBanMap[3] = 3;
+        #endif
+      }
+      else
+      {
+        if(format == dmPixelFormat32bppARGB)
+           FillAlphaChannel(pScan0,imData.Width,imData.Height,nLineSpace);          
+        #ifdef DM_IS_LITTLE_ENDIAN
+          panBanMap[0] = 3;
+          panBanMap[1] = 2;
+          panBanMap[2] = 1;
+        #else
+          pScan0 += 1; // Advance scan pointer to skip alpha channel
+        #endif        
       }
     }
   }
-  else
+  else // Destination format is scalar
   if(dmIsPixelFormatScalar(format))
   {
-    // Get a specific band if required or band 1 otherwise
     nBandCount = 1;
     nBandSpace = imData.Stride * imData.Height;
 
+    // Get a specific band if required or band 1 otherwise
     int band = (int)((ELockBandMask & lockModes) >> 16);
-
     if(band == 0) band = 1;
     else if(band > GDALGetRasterCount(mDS))
       return CCI_ERROR_OUT_OF_RANGE;
@@ -653,12 +650,6 @@ CCI_IMETHODIMP gdalSurface::LockBitsRect(dm_rect & rect, EPixelFormat format, dm
     return CCI_ERROR_FAILURE;
   }
 
-  dm_bool wantAlpha = (lockModes & ELockAlpha);
-
-  // Check that alpha request is valid
-  if(wantAlpha && !mAlphaBand)
-     return CCI_ERROR_NOT_AVAILABLE;
-
   mLockRect = rect;
 
   // Clip user ROI
@@ -666,38 +657,43 @@ CCI_IMETHODIMP gdalSurface::LockBitsRect(dm_rect & rect, EPixelFormat format, dm
      return CCI_ERROR_OUT_OF_RANGE;
 
   cci_result rv;
-
+  
   if((lockModes & ELockUserBuffer)==0)
   {
     if(mRequireUserBuffer)
     {
       // This will initialise imData
-      rv = CreateUserBuffer(mLockRect,format,imData,wantAlpha);
+      rv = CreateUserBuffer(mLockRect,format,imData);
       if(CCI_FAILED(rv))
          return rv;
 
       // Read data if required
       if((lockModes & ELockRead)!= 0)
-         rv = ReadData(imData.PixelFormat,imData,wantAlpha,lockModes);
+         rv = ReadData(imData.PixelFormat,imData,lockModes);
     }
     else
     {
-      dmImage* srcImage = wantAlpha ? mAlphaBuffer : mImageBuffer;
-
-      if(format!=dmPixelFormatUndefined && format != srcImage->PixelFormat())
-        return CCI_ERROR_INVALID_ARG;
-
+      if(format==dmPixelFormatUndefined)
+        format = mImageBuffer->PixelFormat();
+      else
+        if(format==dmPixelFormat32bppARGB && mImageBuffer->PixelFormat()!=dmPixelFormat24bppRGB)
+           return CCI_ERROR_INVALID_ARG;
+      else
+        if(format != mImageBuffer->PixelFormat())
+          return CCI_ERROR_INVALID_ARG;
+      
       dmImageData srcData;
-      srcImage->GetImageData(srcData);
+      mImageBuffer->GetImageData(srcData);
 
       size_t byteStart = mLockRect.Left() * (dmGetPixelFormatBits(format) >> 3);
 
+      imData.PixelFormat = format;
       imData.Width       = mLockRect.Width();
       imData.Height      = mLockRect.Height();
       imData.Stride      = srcData.Stride;
-      imData.Scan0       = static_cast<dm_byte*>(srcData.Scan0) + (srcData.Stride * mLockRect.Top()) + byteStart;
-      imData.PixelFormat = srcImage->PixelFormat();
-
+      imData.Scan0       = 
+          static_cast<dm_byte*>(srcData.Scan0) + (srcData.Stride * mLockRect.Top()) + byteStart;
+      
       rv = CCI_OK;
     }
   }
@@ -705,7 +701,7 @@ CCI_IMETHODIMP gdalSurface::LockBitsRect(dm_rect & rect, EPixelFormat format, dm
   {
     // Read data if required
     if((lockModes & ELockRead)!= 0)
-       rv = ReadData(format,imData,wantAlpha,lockModes);
+       rv = ReadData(format,imData,lockModes);
     else
        rv = CCI_OK; // Nothing more to do
   }
@@ -752,19 +748,6 @@ CCI_IMETHODIMP gdalSurface::UnlockBits(dmImageData & imData)
       int nBandCount;
       int panBanMap[4] = { 1,2,3,4 };
 
-      if(mLock & ELockAlpha)
-      {
-        // Ensure that we have a scalar format
-        if(!dmIsPixelFormatScalar(format) || format != dmPixelFormat32bppARGB) {
-           rv = CCI_ERROR_INVALID_ARG;
-           goto done;
-        }
-
-        nBandCount   = 1;
-        nBandSpace   = imData.Stride * imData.Height;
-        panBanMap[0] = mAlphaBand;
-      }
-      else
       if(format == dmPixelFormat24bppRGB || format == dmPixelFormat32bppARGB)
       {
         // Ensure that we are in compatible format
@@ -777,35 +760,30 @@ CCI_IMETHODIMP gdalSurface::UnlockBits(dmImageData & imData)
         nBandSpace = 1;
 
         // Just write all bands here
-        if(format == dmPixelFormat32bppARGB)
+        if(format == dmPixelFormat32bppARGB && mAlphaBand)
         {
-          bool le = IsLittleEndian();
-          // Check for endianness
-
-          if(mAlphaBand)
-          {
             nBandCount   = 4;
-            if(le) {
+            #ifdef DM_IS_LITTLE_ENDIAN
               panBanMap[0] = 3;
               panBanMap[1] = 2;
               panBanMap[2] = 1;
               panBanMap[3] = mAlphaBand;
-            } else {
+            #else
               panBanMap[0] = mAlphaBand;
               panBanMap[1] = 1;
               panBanMap[2] = 2;
               panBanMap[3] = 3;
-            }
-          }
-          else
-          {
-            if(le) {
-              panBanMap[0] = 3;
-              panBanMap[1] = 2;
-              panBanMap[2] = 1;
-            } else
-              pScan0 += 1; // Advance scan pointer to skip alpha channel
-          }
+            #endif
+        }
+        else
+        {
+          #ifdef DM_IS_LITTLE_ENDIAN
+            panBanMap[0] = 3;
+            panBanMap[1] = 2;
+            panBanMap[2] = 1;            
+          #else
+            pScan0 += 1; // Advance scan pointer to skip alpha channel
+          #endif
         }
       }
       else
@@ -1223,7 +1201,7 @@ cci_result gdalSurface::Create(GDALDatasetH aDataset, dm_uint32 ioFlags, GDALDri
 
 cci_result gdalSurface::Create(GDALDriverH aDriver,const char * location,
                                dm_uint32 width, dm_uint32 height,
-                               EPixelFormat format, dm_bool hasAlpha,
+                               EPixelFormat format,
                                const char *options,
                                gdalSurface** result)
 {
@@ -1231,7 +1209,7 @@ cci_result gdalSurface::Create(GDALDriverH aDriver,const char * location,
   if(!pSurface)
      return CCI_ERROR_OUT_OF_MEMORY;
   cci_result rv = pSurface->Init(aDriver,location,width,height,
-                                 format,hasAlpha,options);
+                                 format,options);
   if(CCI_FAILED(rv)) {
     delete pSurface;
   } else {
@@ -1241,16 +1219,14 @@ cci_result gdalSurface::Create(GDALDriverH aDriver,const char * location,
   return rv;
 }
 
-cci_result gdalSurface::Create(GDALDriverH aDriver,const char * location,
-                               dmImageData& imData, dm_uint8* alphaBits, dm_int32 alphaStride,
-                               const char *options,
+cci_result gdalSurface::Create(GDALDriverH aDriver,const char * location, dmImageData& imData, const char *options,
                                gdalSurface** result)
 {
   gdalSurface* pSurface = new gdalSurface();
   if(!pSurface)
      return CCI_ERROR_OUT_OF_MEMORY;
   
-  cci_result rv = pSurface->Init(aDriver,location,imData,alphaBits,alphaStride,options);
+  cci_result rv = pSurface->Init(aDriver,location,imData,options);
   if(CCI_FAILED(rv)) {
     delete pSurface;
   } else {

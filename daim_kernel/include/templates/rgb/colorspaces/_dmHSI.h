@@ -26,20 +26,20 @@
 
      void getHSI255( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& I )
      {
-        I    = 0.333333f * (static_cast<int>(tr.red)+tr.green+tr.blue);
-        mini = minimum(tr.red,tr.green,tr.blue);
+        I    = 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
+        mini = minimum(tr.r,tr.g,tr.b);
         if (I!=0) {
           S = 1.0f - (mini/I);
           if (S==0) {
             H=0;
           } else {
             delta = (I-mini)*6.0f;
-            if (tr.red==I) {
-              H = (tr.green-tr.blue)/delta;
-            } else if (tr.green==I) {
-              H = 0.333333f + (tr.blue-tr.red)/delta;
+            if (tr.r==I) {
+              H = (tr.g-tr.b)/delta;
+            } else if (tr.g==I) {
+              H = 0.333333f + (tr.b-tr.r)/delta;
             } else {
-              H = 0.666667f + (tr.red-tr.green)/delta;
+              H = 0.666667f + (tr.r-tr.g)/delta;
             }
             if (H<0) {
               H = H + 1.0f;
@@ -53,20 +53,20 @@
 
       dm_float hue( const rgb_triple& tr )
       {
-        fI   = 0.333333f * (static_cast<int>(tr.red)+tr.green+tr.blue);
-        mini = minimum(tr.red,tr.green,tr.blue);
+        fI   = 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
+        mini = minimum(tr.r,tr.g,tr.b);
         if (fI!=0) {
           fS = 1.0f - (mini/fI);
           if (fS==0)
             fH = 0;
           else {
             delta = (fI-mini)*6.0f;
-            if (tr.red==fI) {
-              fH = (tr.green-tr.blue)/delta;
-            } else if (tr.green==fI) {
-              fH = 0.333333f + (tr.blue-tr.red)/delta;
+            if (tr.r==fI) {
+              fH = (tr.g-tr.b)/delta;
+            } else if (tr.g==fI) {
+              fH = 0.333333f + (tr.b-tr.r)/delta;
             } else {
-              fH = 0.666667f + (tr.red-tr.green)/delta;
+              fH = 0.666667f + (tr.r-tr.g)/delta;
             }
             if (fH<0) {
               fH = fH + 1.0f;
@@ -80,14 +80,14 @@
 
       dm_float saturation( const rgb_triple& tr )
       {
-        fI   = 0.333333f * (static_cast<int>(tr.red)+tr.green+tr.blue);
-        mini = minimum(tr.red,tr.green,tr.blue);
+        fI   = 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
+        mini = minimum(tr.r,tr.g,tr.b);
         if (fI!=0)  return 1.0f - (mini/fI);
         else        return 1.0f; // undefined
       }
 
       dm_float intensity( const rgb_triple& tr ) {
-         return 0.333333f * (static_cast<int>(tr.red)+tr.green+tr.blue);
+         return 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
       }
 
      void operator()( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& I )
@@ -122,55 +122,55 @@
        i  = static_cast<int>(H*6);
        f  = H*6-i;
 
-       #define r (I*(1.0f-S))
-       #define q (I*(1.0f-(S*f)))
-       #define t (I*(1.0f-(S*(1.0f-f))))
-       #define v (I)
+       #define rr (I*(1.0f-S))
+       #define qq (I*(1.0f-(S*f)))
+       #define tt (I*(1.0f-(S*(1.0f-f))))
+       #define vv (I)
 
        switch (i)
        {
          case 0:
          case 6:
-              tr.red   = to_rgb_channel(v);
-              tr.green = to_rgb_channel(t);
-              tr.blue  = to_rgb_channel(r);
+              tr.r = to_rgb_channel(vv);
+              tr.g = to_rgb_channel(tt);
+              tr.b = to_rgb_channel(rr);
               break;
 
          case 1:
-              tr.red   = to_rgb_channel(q);
-              tr.green = to_rgb_channel(v);
-              tr.blue  = to_rgb_channel(r);
+              tr.r = to_rgb_channel(qq);
+              tr.g = to_rgb_channel(vv);
+              tr.b = to_rgb_channel(rr);
               break;
 
          case 2:
-              tr.red   = to_rgb_channel(r);
-              tr.green = to_rgb_channel(v);
-              tr.blue  = to_rgb_channel(t);
+              tr.r = to_rgb_channel(rr);
+              tr.g = to_rgb_channel(vv);
+              tr.b = to_rgb_channel(tt);
               break;
 
          case 3:
-              tr.red   = to_rgb_channel(r);
-              tr.green = to_rgb_channel(q);
-              tr.blue  = to_rgb_channel(v);
+              tr.r = to_rgb_channel(rr);
+              tr.g = to_rgb_channel(qq);
+              tr.b = to_rgb_channel(vv);
               break;
 
          case 4:
-              tr.red   = to_rgb_channel(t);
-              tr.green = to_rgb_channel(r);
-              tr.blue  = to_rgb_channel(v);
+              tr.r = to_rgb_channel(tt);
+              tr.g = to_rgb_channel(rr);
+              tr.b = to_rgb_channel(vv);
               break;
 
          case 5:
-              tr.red   = to_rgb_channel(v);
-              tr.green = to_rgb_channel(r);
-              tr.blue  = to_rgb_channel(q);
+              tr.r = to_rgb_channel(vv);
+              tr.g = to_rgb_channel(rr);
+              tr.b = to_rgb_channel(qq);
               break;
        } // switch
 
-       #undef r
-       #undef q
-       #undef t
-       #undef v
+       #undef rr
+       #undef qq
+       #undef tt
+       #undef vv
 
      }
 
@@ -179,7 +179,7 @@
                       const dm_float& H, const dm_float& S, const dm_float& I )
      {
 		if (S==0) {
-          tr.red  = tr.blue = tr.green = to_rgb_channel(I);
+          tr.r = tr.b = tr.g = to_rgb_channel(I);
 		}
 		else {
           fI = I * 255.0f;
@@ -194,7 +194,7 @@
                       const dm_uint8& H, const dm_uint8& S, const dm_uint8& I )
      {
 		if (S==0) {
-          tr.red  = tr.blue = tr.green = I;
+          tr.r = tr.b = tr.g = I;
 		}
 		else {
           fI = I; // let I unormalized

@@ -44,15 +44,15 @@ class dm_rgb24
     // Use the luminance model to convert rgb to gray scale
     static dm_uint8 intensity ( const dmRGBColor& rgb ) {
       return static_cast<dm_uint8>(
-        daim::round(0.299f * rgb.red + 0.587f * rgb.green + 0.114f * rgb.blue));
+        daim::round(0.299f * rgb.r + 0.587f * rgb.g + 0.114f * rgb.b));
     }
 
-    dm_rgb24() { _value.green = _value.red = _value.blue = 0; }
+    dm_rgb24() { _value.g = _value.r = _value.b = 0; _value.a = 0xff; }
   	dm_rgb24( dm_uint8 r,dm_uint8 g, dm_uint8 b) 
-		{ _value.red = r; _value.green = g; _value.blue = b; }
+		{ _value.r = r; _value.g = g; _value.b = b; _value.a = 0xff; }
 
   	dm_rgb24( dm_uint8 v )
-		{ _value.red = _value.green = _value.blue = v; }
+		{ _value.r = _value.g = _value.b = v; _value.a = 0xff; }
 
     dm_rgb24( const dmRGBColor& rgb ) : _value(rgb) {}
    ~dm_rgb24() {} 
@@ -65,13 +65,13 @@ class dm_rgb24
 
     dm_rgb24& operator=(const dmRGBColor& x) { _value = x; return *this; } 
     dm_rgb24& operator=(int x) { 
-       _value.red = _value.green = _value.blue = x; 
+       _value.r = _value.g = _value.b = x; 
        return *this; 
     }
 
-    dm_uint8 red()   const { return _value.red;   }
-    dm_uint8 green() const { return _value.green; }
-    dm_uint8 blue()  const { return _value.blue;  }
+    dm_uint8 red()   const { return _value.r;   }
+    dm_uint8 green() const { return _value.g; }
+    dm_uint8 blue()  const { return _value.b;  }
 
 };
 
@@ -131,9 +131,9 @@ struct pixel_traits<dm_rgb24>
        return dm_rgb24::intensity(_v);
   }
 
-  struct red   { dm_uint8 operator()(value_type x) { return x.red;   } };
-  struct green { dm_uint8 operator()(value_type x) { return x.green; } };
-  struct blue  { dm_uint8 operator()(value_type x) { return x.blue;  } };
+  struct red   { dm_uint8 operator()(value_type x) { return x.r; } };
+  struct green { dm_uint8 operator()(value_type x) { return x.g; } };
+  struct blue  { dm_uint8 operator()(value_type x) { return x.b; } };
 
   struct to_scalar : public std::unary_function<value_type,dm_uint8> 
   { dm_uint8 operator()( value_type x ) {return dm_rgb24::intensity(x);} };
@@ -147,32 +147,32 @@ struct pixel_traits<dm_rgb24>
   };
 
   struct get_red : public std::unary_function<value_type,dm_uint8>  {
-     dm_uint8 operator()( const value_type& _rgb ) { return _rgb.red; }
+     dm_uint8 operator()( const value_type& _rgb ) { return _rgb.r; }
   };
 
   struct get_green : public std::unary_function<value_type,dm_uint8>  {
-     dm_uint8 operator()( const value_type& _rgb ) { return _rgb.green; }
+     dm_uint8 operator()( const value_type& _rgb ) { return _rgb.g; }
   };
 
   struct get_blue : public std::unary_function<value_type,dm_uint8>  {
-     dm_uint8 operator()( const value_type& _rgb ) { return _rgb.blue; }
+     dm_uint8 operator()( const value_type& _rgb ) { return _rgb.b; }
   };
 
   struct set_red : public std::binary_function<dm_uint8,value_type,value_type>  {
      value_type& operator()( const dm_uint8& x, value_type& _rgb ) {
-       _rgb.red = x; return _rgb;
+       _rgb.r = x; return _rgb;
      }
   };
 
   struct set_green : public std::binary_function<dm_uint8,value_type,value_type>  {
      value_type& operator()( const dm_uint8& x, value_type& _rgb ) {
-       _rgb.green = x; return _rgb;
+       _rgb.g = x; return _rgb;
      }
   };
 
   struct set_blue : public std::binary_function<dm_uint8,value_type,value_type>  {
      value_type& operator()( const dm_uint8& x, value_type& _rgb ) {
-       _rgb.blue = x; return _rgb;
+       _rgb.b = x; return _rgb;
      }
   };
 

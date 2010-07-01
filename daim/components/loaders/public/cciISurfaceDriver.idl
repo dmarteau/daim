@@ -51,28 +51,23 @@ interface cciISurfaceDriver : cciIXPCOMSupports
 
   [noscript] cciISurface createSurfaceFromData( in string location,
                                                 in dmImageDataRef imData,
-                                                in bytePtr alphaBits, in long alphaStride,
                                                 in string options);
 
   [noscript] cciISurface createSurface( in string location,
                                         in dm_uint32 width,
                                         in dm_uint32 height,
                                         in EPixelFormat format,
-                                        in dm_bool hasAlpha,
                                         in string options);
 
   boolean isCompatibleDriver( in string type );
 
   readonly attribute boolean hasCreateCapabilities;
 
-  [noscript] void saveImageBits( in string newLocation, in dmImageDataRef imData, in string options );
-
-  [noscript] void saveImageBitsWithAlpha( in string newLocation, 
-                                          in dmImageDataRef imData, 
-                                          in bytePtr alphaBits, in long alphaStride,
-                                          in cciIMetaDataContainer exif, 
-                                          in cciIColorTable colorTable,
-                                          in string options );
+  [noscript] void saveImageBits( in string newLocation, 
+                                 in dmImageDataRef imData,
+                                 in cciIMetaDataContainer exif, 
+                                 in cciIColorTable colorTable,
+                                 in string options );
   
   
   void unlink( in string location );

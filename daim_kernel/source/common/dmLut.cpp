@@ -35,8 +35,8 @@ dmLUT::dmLUT()
 {
   for(int i=0;i<NumEntries;++i) {
     CMap[i] = i;
-    ARGB[i].red   = ARGB[i].green = ARGB[i].blue = i;
-    ARGB[i].alpha = 0;
+    ARGB[i].r = ARGB[i].g = ARGB[i].b = i;
+    ARGB[i].a = 0xff;
   }
   ARGB[dmLUT8_EXTRA_COLOR1] = MAP_RGB(255,0,0);
   ARGB[dmLUT8_EXTRA_COLOR2] = MAP_RGB(0,255,0);
@@ -103,13 +103,13 @@ void dmLUT::RestoreMap()
 void dmLUT::SetExtraColor( dmColorIndex extra, const dmRGBColor& _rgb )
 {
   if(IS_EXTRA_COLOR_INDEX(extra)) {
-    ARGB[extra] = MAP_RGB(_rgb.red,_rgb.green,_rgb.blue);
+    ARGB[extra] = MAP_RGB(_rgb.r,_rgb.g,_rgb.b);
   }
 }
 //--------------------------------------------------
 void dmLUT::GetExtraColor( dmColorIndex extra, dmRGBColor& _rgb )
 {
-  if(IS_EXTRA_COLOR_INDEX(extra)) { _rgb = ARGB_TO_RGB(ARGB[extra]); }
+  if(IS_EXTRA_COLOR_INDEX(extra)) { _rgb = ARGB[extra]; }
 }
 //--------------------------------------------------
 void dmLUT::MakePalette( void (*_buildfunc)(dmRGBColorArray) )
