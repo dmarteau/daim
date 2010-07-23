@@ -201,8 +201,6 @@ CCI_IMETHODIMP COLORSPACE_CLASSNAME::GetImageList(cciIImageList * *aImageList)
 }
 CCI_IMETHODIMP COLORSPACE_CLASSNAME::SetImageList(cciIImageList *aImageList)
 {
-  CCI_ENSURE_ARG_POINTER(aImageList);
-
   mImageList = aImageList;
   return CCI_OK;
 }

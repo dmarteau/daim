@@ -1,0 +1,77 @@
+/*
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+#
+# The Original Code is Daim code.
+#
+# The Initial Developer of the Original Code is
+#   David Marteau
+# Portions created by the Initial Developer are Copyright (C) 2008
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   David Marteau (dhmarteau@gmail.com)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either of the GNU General Public License Version 2 or later (the "GPL"),
+# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
+*/
+
+#include "cciDaim.idl"
+
+/**
+ *  @ingroup Interfaces
+ *  @brief Implement Flatfield correction
+ */
+[scriptable, uuid(fdd0c28f-cbb5-4d34-b221-9ae48fe69edc)]
+interface cciIFlatfield : cciISupports
+{
+  /**
+   * @brief Set flat field image
+   */
+  void setFlatField( in cciImage image, in dm_real offset, in dm_real norm, 
+                     [optional] in string colorspace );
+  
+  /**
+   * @brief Apply flatfield correction to image 
+   */
+  void apply( in cciImage image, in unsigned long flags);
+
+  /**
+   * @brief Clear the flat field image 
+   */
+  void clear();
+  
+};
+
+
+
+%{C++
+
+#define CCI_FLATFIELD_CID \
+{ /* 09187fb8-96c7-4fee-be5a-33d0a5baedd3 */       \
+  0x09187fb8,                                      \
+  0x96c7,                                          \
+  0x4fee,                                          \
+  {0xbe, 0x5a, 0x33, 0xd0, 0xa5, 0xba, 0xed, 0xd3} \
+}
+
+#define CCI_FLATFIELD_CONTRACTID "@daim.org/processing/flatfield;1"
+#define CCI_FLATFIELD_CLASSNAME  "Flatfield correction"
+
+%}
+

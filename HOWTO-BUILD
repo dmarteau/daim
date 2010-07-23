@@ -7,20 +7,10 @@ Build Requirements :
  * Linux
  * Windows 2000SP4/XP/Vista with Cygwin or MSYS environment 
 
-MSYS environment with mozilla build:
+MSYS environment with mozilla build (recommended):
 http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-1.4.exe
 
-
-Notes for all platforms:
-========================
-
 The build process use standard 'make' makefiles.
-The build process can be easily driven using the setup script located at
-
-http://3liz.org/svn/daim/trunk/daim2/daim-setup.sh
-
-Checkout the file and follow command line instructions
-
 
 Compiling DAIM on Linux:
 ===========================
@@ -49,9 +39,9 @@ Gnu make (available for windows with the Cygwin distribution http://www.cygwin.c
 A sh compatible shell (available for windows with the Cygwin distribution http://www.cygwin.com or
 the MSYS environment)
 
-A Python v2.5+ distribution for compiling idl files to c++ header files, 
+A Python v2.5+ distribution for compiling idl files to c++ header files (included in mozilla build), 
 
-NOTE: The mozilla build system (based on MSYS) provide all the necessary requirements for building DAIM (including svn).
+NOTE: The mozilla build system (based on MSYS) provide all the necessary requirements for building DAIM (including svn or mercurial).
 It can be downloaded at:
 
 http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/ 
