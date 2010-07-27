@@ -36,7 +36,12 @@
 #include "cciDaimService.h"
 #include "cciImageShell.h"
 #include "cciScriptableRegion.h"
+#include "cciImageContainerUtils.h"
 #include "cciDaimModule.h"
+
+
+// Implements ISUPPORTS for cciImageWrapper 
+CCI_IMPL_ISUPPORTS1(cciImageWrapper,cciIImageContainer);
 
 CCI_GENERIC_FACTORY_CONSTRUCTOR(cciImageList)
 CCI_GENERIC_FACTORY_CONSTRUCTOR(cciDaimService)

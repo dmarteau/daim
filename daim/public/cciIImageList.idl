@@ -48,7 +48,8 @@ interface cciIImageList : cciIXPCOMSupports
   /**
    * Store a \e copy of the image at buffer index \a index.
    */
-  [noscript] void storeBuffer( in dm_uint32 index, in dmImagePtr  image,
+  [noscript] void storeBuffer( in dm_uint32 index, 
+                               in dmImagePtr image,
                                in dmRectPtr rect,
                                in EPixelFormat format );
 
@@ -145,5 +146,19 @@ interface cciIImageList : cciIXPCOMSupports
    * @param index Buffer index
    */
   [noscript] void setBufferData( in dm_uint32 index, in dmImageDataRef data );
+  
+  /**
+   * Return an image container for the specified buffer
+   * 
+   * @param index  Buffer index to the image to be retrieved
+   */
+  cciImage getImage( in dm_uint32 index );
+  
+ /**
+  * Copy the image at the specified index
+  * 
+  * @param index  Buffer index to the buffer to copy image to
+  */
+  void setImage( in dm_uint32 index, in cciImage image, in cciRegion rgn, in EPixelFormat format );
 
 };

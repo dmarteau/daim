@@ -39,6 +39,7 @@
 #include "cciIStringEnumerator.h"
 #include "cciIInterfaceRequestor.h"
 #include "cciIColorTable.h"
+#include "cciIImageContainer.h"
 
 #include "gdaldrv.h"
 #include "daim_kernel.h"
@@ -1026,6 +1027,31 @@ CCI_IMETHODIMP gdalSurface::CreateCopy(const char * newLocation, const char * op
      CSLDestroy( createOpts );
 
   return rv;
+}
+
+/* void imageIO (in cciImage image, in long srcX, in long srcY, in unsigned long lockModes, [optional] in boolean alpha); */
+CCI_IMETHODIMP gdalSurface::ImageIO(cciImage image, dm_int32 srcX, dm_int32 srcY, dm_uint32 lockModes, dm_bool alpha)
+{
+  dmImage* img = CCI_IF_NATIVE(image);
+  CCI_ENSURE_ARG_POINTER(img);  
+  
+  dmRect rect(0,0,Width(),Height());
+  dmRect srcRect(srcX,srcY,img->Width(),img->Height());
+  
+  if(!rect.Clip(srcRect))
+    return CCI_OK; //Nothing to do
+  
+  dmImageData _Data;
+  img->GetImageData(_Data);
+  if(_Data.PixelFormat == dmPixelFormat24bppRGB && alpha)
+     _Data.PixelFormat = dmPixelFormat32bppARGB;
+  
+  cci_result rv = LockBitsRect(rect,_Data.PixelFormat,_Data,lockModes|cciISurface::ELockUserBuffer);
+  
+  if(CCI_SUCCEEDED(rv))
+     UnlockBits(_Data);
+  
+  return rv; 
 }
 
 //==================================

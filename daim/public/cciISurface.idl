@@ -33,12 +33,13 @@
 
 #include "ccidaim.idl"
 
+interface cciIColorTable;
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
 /**
  * @brief Interface to image provider
  */
-
-interface cciIColorTable;
-
 [scriptable, uuid(c520fae3-63c8-4c5d-bc75-2dfc754395e6)]
 interface cciISurface : cciIXPCOMSupports
 {
@@ -76,11 +77,9 @@ interface cciISurface : cciIXPCOMSupports
   cciIColorTable getColorTable();
   void           setColorTable( in cciIColorTable colorTable );
 
-  const unsigned long ELockWrite      = 0x01; /*! Write access */
-  const unsigned long ELockRead       = 0x02; /*! Read access  */
-  const unsigned long ELockUserBuffer = 0x04; /*! Buffer is provided by client */
-  const unsigned long ELockAlpha      = 0x08; /*! Want alpha channel */
-
+  const unsigned long ELockWrite      = 0x01;   /*! Write access */
+  const unsigned long ELockRead       = 0x02;   /*! Read access  */
+  const unsigned long ELockUserBuffer = 0x04;   /*! Buffer is provided by client */
   const unsigned long ELockBandMask   = 0xff00;
   
   /**
@@ -103,4 +102,7 @@ interface cciIScriptableSurface : cciIXPCOMSupports
 
   readonly attribute  boolean isLocked;
   readonly attribute  boolean isWritable;
+  
+  void imageIO( in cciImage image, in long srcX, in long srcY, in unsigned long lockModes, 
+                [optional] in boolean alpha );
 };

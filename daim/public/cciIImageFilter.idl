@@ -68,7 +68,7 @@ interface cciIImageFilter : cciIXPCOMSupports
     * @param roi  the region mask for application of the filter
     * @param context the context used, the context must implement
     * an cciIInterfaceRequestor interface from where colorspace (@see ccIIColorSpace)
-    * and image buffer (@see cciIImageBuffer) can be retrieved
+    * and image buffer (@see cciIImageBuffer) can eventually be retrieved
     *
     * If no context is provided, it is the responsability of the filter
     * implementation to provide the required elements or return an error
