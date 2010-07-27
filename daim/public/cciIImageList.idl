@@ -33,6 +33,9 @@
 
 #include "ccidaim.idl"
 
+interface cciIImageContainer;
+interface cciIRegionContainer;
+
 /**
  *  @ingroup daim_interfaces
  *
