@@ -31,7 +31,7 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#include "cciDaim.idl"
+#include "ccidaim.idl"
 
 /**
  *  @ingroup Interfaces

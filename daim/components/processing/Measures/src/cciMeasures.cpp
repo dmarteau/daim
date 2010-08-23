@@ -30,6 +30,7 @@
 #include "cciMeasures.h"
 #include "cciIResultSet.h"
 #include "cciIResultColumn.h"
+#include "dmCrt.h"
 
 #define IMAGEMAP_VERIFY_LABEL( lbl ) \
 DM_BEGIN_MACRO \
