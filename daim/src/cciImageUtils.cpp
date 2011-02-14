@@ -47,8 +47,7 @@ cci_result CCI_NewImageList( cciIImageList** _result )
   cci_Ptr<cciIImageList> imagelist = do_CreateInstance("@daim.org/image/list;1",&rv);
   if(CCI_SUCCEEDED(rv))
     imagelist.forget(_result);
-    //CCI_ADDREF(*_result = buffer);
-
+ 
   return rv;
 }
 
@@ -85,4 +84,3 @@ cci_result CCI_NewColorSpace( const char* colorSpace, cciIColorSpace** _result )
 
   return rv;
 }
-

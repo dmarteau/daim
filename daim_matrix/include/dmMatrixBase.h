@@ -32,6 +32,22 @@
 #include "dmMatrix.h"
 #include "dmRowCol.h"
 
+/**
+ * @startuml
+ * 
+ * abstract class dmMatrix
+ * 
+ * dmMatrix <|-- dmMatrixBase
+ * dmMatrixBase <|-- dmMatrixRowCol
+ * dmMatrixBase <|-- dmRectMatrix
+ * dmMatrixBase <|-- dmSymMatrix
+ * dmMatrixBase <|-- dmColumnVector
+ * dmMatrixBase <|-- dmRowVector
+ * dmMatrixRowCol <|-- dmMatrixCol 
+ * dmMatrixRowCol <|-- dmMatrixRow 
+ * @enduml
+ */
+
 BEGIN_MATRIX()
 //----------------------------------------------------------------------------
 // Base Matrix
@@ -46,10 +62,10 @@ class dmMatrixBase : public dmMatrix
     enum MatrixStatus { NoStatus, Temporary, ToReuse } ;
 
   protected:
-    MatrixStatus Status;  // Utilisé dans les évaluations
-    int       NbCol;       // Colonnes
-    int       NbRow;       // Lignes
-    int       Storage;     // taille des données
+    MatrixStatus Status;   // Used un evaluations
+    int       NbCol;       // Columns
+    int       NbRow;       // Lines
+    int       Storage;     // Data size
     dm_matrix_t* Store;
 
     dmMatrixBase& operator=(const dmMatrix& );

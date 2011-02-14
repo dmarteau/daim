@@ -158,7 +158,7 @@ INLINE  void dmMatrixRowCol::Add(const dmMatrixRowCol& _Lhs,const dmMatrixRowCol
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=_Lhs.Ptr,*p=Ptr;
   int Rs=_Rhs.RCSkip,Ls=_Lhs.RCSkip,s=RCSkip;
-  for(int i=RCLength;--i>=0;) { *p = *Lp - *Rp; p+=s; Lp+=Ls; Rp+=Rs; }
+  for(int i=RCLength;--i>=0;) { *p = *Lp + *Rp; p+=s; Lp+=Ls; Rp+=Rs; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Sub(const dmMatrixRowCol& _Lhs,const dmMatrixRowCol& _Rhs)

@@ -356,8 +356,9 @@ CCI_IMETHODIMP cciImageShell::SampleSurfaceBits(cciISurface *surface, cciRegion 
   CCI_ENSURE_ARG_POINTER(surface);
   CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
 
+  // Image must be initialized first
   if(mImage.IsNull()) 
-     return LoadSurfaceBits(surface,rgn);
+     return CCI_ERROR_NOT_INITIALIZED;
   
   dmRegion* nativeRgn = rgn ? rgn->GetNative() : dm_null;
   cci_result rv;

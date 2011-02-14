@@ -35,6 +35,7 @@
 
 interface cciIImageContainer;
 interface cciIRegionContainer;
+interface cciIImage;
 
 /**
  *  @ingroup daim_interfaces
@@ -156,12 +157,12 @@ interface cciIImageList : cciIXPCOMSupports
    * @param index  Buffer index to the image to be retrieved
    */
   cciImage getImage( in dm_uint32 index );
-  
+
  /**
   * Copy the image at the specified index
   * 
   * @param index  Buffer index to the buffer to copy image to
   */
   void setImage( in dm_uint32 index, in cciImage image, in cciRegion rgn, in EPixelFormat format );
-
+  
 };

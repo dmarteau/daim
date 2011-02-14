@@ -72,7 +72,7 @@ ifdef MODULE_SHARED
 #=====================
 
 CCFLAGS += -fPIC 
- 
+
 # GCC4 visibility
 CCFLAGS += -Wno-strict-aliasing
 
@@ -81,9 +81,9 @@ LDFLAGS += -Wl,-exported_symbol,__CCI_Module
 LDFLAGS += -bundle
 
 ifeq ($(MODULE_EXPORT_NAME),)
-DYLD_FILE_PATH=../bin
+DYLD_FILE_PATH=..
 else
-DYLD_FILE_PATH=../../bin
+DYLD_FILE_PATH=../..
 endif
 
 else

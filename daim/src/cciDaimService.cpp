@@ -29,6 +29,7 @@
 
 #include "cciDaimService.h"
 #include "cciImageUtils.h"
+#include "cciScriptableImage.h"
 
 /* Implementation file */
 CCI_IMPL_ISUPPORTS1(cciDaimService, cciIDaimService)
@@ -52,7 +53,6 @@ CCI_IMETHODIMP cciDaimService::NewMatrix(dm_real *coeffs, dm_uint32 count, dm_ui
   return CCI_NewMatrix(coeffs,rows,columns,_retval);
 }
 
-
 /* cciIFilterContext newFilterContext (); */
 CCI_IMETHODIMP cciDaimService::NewFilterContext(cciIFilterContext * *_retval CCI_OUTPARAM)
 {
@@ -64,4 +64,19 @@ CCI_IMETHODIMP cciDaimService::NewColorSpace(const char * clrSpaceName, cciIColo
 {
   // Creeate a default RGB colorspace
   return CCI_NewColorSpace(clrSpaceName,_retval);
+}
+
+/* cciIImage newImage (in unsigned long width, in unsigned long height, in EPixelFormat format); */
+CCI_IMETHODIMP cciDaimService::NewImage(dm_uint32 width, dm_uint32 height, EPixelFormat format, cciIImage * *_retval CCI_OUTPARAM)
+{
+    cciScriptableImage* img = new cciScriptableImage(width,height,format);
+    
+    if(!img || !img->isValid()) 
+    {
+      CCI_IF_RELEASE(img);
+      return CCI_ERROR_OUT_OF_MEMORY;
+    }
+     
+    CCI_ADDREF( *_retval = img );
+    return CCI_OK;
 }

@@ -61,5 +61,5 @@ clean: $(TIERS)
 
 register:
 	@echo "Registering DAIM components"
-	cd $(BUILD_DIR)/bin; ./cciregister ../modules/ccireg.dat ../modules
+	cd $(BUILD_DIR)/bin; ./cciregister ./cci/ccireg.dat ./cci
 

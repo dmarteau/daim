@@ -118,7 +118,7 @@ DM_Initialize( const char** _argv, int _argc, dmLOG_FUNCTION pfnLog )
     if(!daimLibraryPath.IsEmpty())
     {
       dmCString cciComponentPath = daimLibraryPath;
-      cciComponentPath.Append("/modules");
+      cciComponentPath.Append("/bin/cci");
 
       // Append to component paths
       dmPortability::SetEnv(CCI_COMPONENTS_PATH_ENV,

@@ -36,14 +36,31 @@
 interface cciIMatrix;
 interface cciIColorSpace;
 interface cciIFilterContext;
+interface cciIImage;
 
 [scriptable, uuid(FFEF598E-3103-4151-A975-27347612607E)]
 interface cciIDaimService : cciIXPCOMSupports
 {
+  /**
+   * Create a new matrix object
+   */
   cciIMatrix newMatrix([array,size_is(count)] in dm_real coeffs, in  unsigned long count,
                        in unsigned long rows, in unsigned long columns );
 
+  /**
+   * Create a new filter context
+   */
   cciIFilterContext newFilterContext();
-  cciIColorSpace    newColorSpace( in string clrSpaceName );
+  
+  /**
+   * Create a new color space
+   */
+  cciIColorSpace newColorSpace( in string clrSpaceName );
+
+  /**
+   * Create a new image
+   */
+  cciIImage newImage( in unsigned long width, in unsigned long height, 
+                      in EPixelFormat format );
 
 };

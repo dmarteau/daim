@@ -36,6 +36,7 @@
 #define dmUseKernelImage
 #include "cciImageList.h"
 #include "cciImageContainerUtils.h"
+#include "cciScriptableImage.h"
 #include "cciIRegionContainer.h"
 
 /* Implementation file */
@@ -495,7 +496,7 @@ CCI_IMETHODIMP cciImageList::GetImage(dm_uint32 index, cciImage *_retval CCI_OUT
       return CCI_ERROR_FAILURE;
 
     // Create a new wrapper for this image
-    cciIImageContainer* wrapper = new cciImageWrapper(_Img);
+    cciIImageContainer* wrapper = new cciScriptableImage(_Img);
     if(!wrapper)
        return CCI_ERROR_OUT_OF_MEMORY;
     

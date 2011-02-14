@@ -39,7 +39,6 @@
 #include "cciImageContainerUtils.h"
 #include "cciDaimModule.h"
 
-
 // Implements ISUPPORTS for cciImageWrapper 
 CCI_IMPL_ISUPPORTS1(cciImageWrapper,cciIImageContainer);
 

@@ -22,6 +22,7 @@ MODULE_FILES=daim.cpp \
              cciDaimModule.cpp \
              cciScriptableRegion.cpp \
              cciLoaderService.cpp \
+             cciScriptableImage.cpp \
              RGB.cpp \
              $(NULL)
 
