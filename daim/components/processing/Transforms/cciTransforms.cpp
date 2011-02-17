@@ -77,107 +77,92 @@ CCI_IMETHODIMP cciTransforms::Strech(cciImage image, cciRegion roi, dm_uint32 mo
 
   dmInterpolationType _Mode = static_cast<dmInterpolationType>(mode);
 
-  dmRegion rgn = roi ? CCI_NATIVE(roi)->Rectangle() : CCI_NATIVE(image)->Rect();
+  dmRect srcRect = roi ? CCI_NATIVE(roi)->Rectangle() : CCI_NATIVE(image)->Rect();
 
-  if(dmLinearStretch(_Mode,*CCI_NATIVE(image),rgn.Rectangle(),*CCI_NATIVE(dest)))
+  if(dmLinearStretch(_Mode,*CCI_NATIVE(image),srcRect,*CCI_NATIVE(dest)))
      return CCI_OK;
 
   return CCI_ERROR_FAILURE;
 }
 
-/* void rotate (in cciImage image, in cciRegion roi, in dm_real angle, in boolean crop, in cciISupports context); */
-CCI_IMETHODIMP cciTransforms::Rotate(cciImage image, cciRegion roi, dm_real angle, dm_bool crop,
-                                     cciIFilterContext *filterCtxt)
+/* void rotate (in cciImage image, in cciRegion roi, in dm_real angle, in cciImage dest); */
+CCI_IMETHODIMP cciTransforms::Rotate(cciImage image, cciRegion roi, dm_real angle, cciImage dest)
 {
-  CCI_ENSURE_ARG_POINTER(image);
-  CCI_ENSURE_ARG_POINTER(filterCtxt);
+  dmImage* srcImg = CCI_IF_NATIVE(image);
+  dmImage* dstImg = CCI_IF_NATIVE(dest);
 
-  dmImageBuffer* buffer    = filterCtxt->NativeBuffer();
-  dmImage*       nativeImg = CCI_NATIVE(image);
+  CCI_ENSURE_ARG_POINTER(srcImg);
+  CCI_ENSURE_ARG_POINTER(dstImg);
 
-  dmRect rect   = roi ? CCI_NATIVE(roi)->Rectangle() : nativeImg->Rect();
+  dmRect rect = roi ? CCI_NATIVE(roi)->Rectangle() : srcImg->Rect();
 
-  dm_int32 width  = rect.Width();
-  dm_int32 height = rect.Height();
-
-  if(!crop)
-  {
-    // Compute new width and height for the image
-    width  = daim::round(daim::abs(width * cos(angle)) + daim::abs(height * sin(angle)));
-    height = daim::round(daim::abs(width * sin(angle)) + daim::abs(height * cos(angle)));
-  }
-
-  buffer->CreateBuffer(*nativeImg->TypeDescriptor(),dmRect(0,0,width,height));
-
-  if(dmRotateImage(angle,*nativeImg,rect,*buffer->Buffer()))
+  if(dmRotateImage(angle,*srcImg,rect,*dstImg))
      return CCI_OK;
 
   return CCI_ERROR_FAILURE;
-
 }
 
-/* void createMotif (in cciImage image, in cciRegion roi, in boolean periodic, in cciISupports context); */
-CCI_IMETHODIMP cciTransforms::CreateMotif(cciImage image, cciRegion roi, dm_bool periodic,
-                                          cciIFilterContext *filterCtxt)
+/* void createMotif (in cciImage image, in cciRegion roi, in boolean periodic, in cciImage dest); */
+CCI_IMETHODIMP cciTransforms::CreateMotif(cciImage image, cciRegion roi, dm_bool periodic, cciImage dest)
 {
-  CCI_ENSURE_ARG_POINTER(image);
+  dmImage*  srcImg = CCI_IF_NATIVE(image);
+  dmImage*  dstImg = CCI_IF_NATIVE(dest);
+
+  CCI_ENSURE_ARG_POINTER(srcImg);
+  CCI_ENSURE_ARG_POINTER(dstImg);
   CCI_ENSURE_ARG_POINTER(roi);
-  CCI_ENSURE_ARG_POINTER(filterCtxt);
 
-  dmImageBuffer* buffer = filterCtxt->NativeBuffer();
-
-  buffer->CreateBuffer(*CCI_NATIVE(image),false);
-
-  dmLink<dmImage> dest = buffer->Buffer();
-
-  dest->GetCopy(*CCI_NATIVE(image),CCI_NATIVE(roi)->Rectangle());
-
+  dmRegion* rgn = CCI_NATIVE(roi);
+  if(!rgn || rgn->IsEmptyRoi())
+    return CCI_ERROR_ILLEGAL_VALUE;
+  
+  if(dstImg!=srcImg) {
+     dstImg->GetCopy(*srcImg,*rgn);
+     rgn->OffsetRoi();
+  }
+  
+  dmRect srcRect = rgn->Rectangle();
+  
   if(periodic)
-     dmMakePeriodic(*dest, CCI_NATIVE(roi)->Rectangle(),dest->Rect());
+     dmMakePeriodic(*dstImg,srcRect,dstImg->Rect());
   else
-     dmCreateMotif(*dest, CCI_NATIVE(roi)->Rectangle(),dest->Rect());
+     dmCreateMotif(*dstImg ,srcRect,dstImg->Rect());
 
   return CCI_OK;
 }
 
-/* void flip (in cciImage image, in cciRegion roi, in unsigned long way, in cciISupports context); */
-CCI_IMETHODIMP cciTransforms::Flip(cciImage image, cciRegion roi, dm_uint32 way, cciIFilterContext *filterCtxt)
+/* void flip (in cciImage image, in cciRegion roi, in unsigned long way, in cciImage dest); */
+CCI_IMETHODIMP cciTransforms::Flip(cciImage image, cciRegion roi, dm_uint32 way, cciImage dest)
 {
-  CCI_ENSURE_ARG_POINTER(image);
-  CCI_ENSURE_ARG_POINTER(filterCtxt);
+  dmImage*  srcImg = CCI_IF_NATIVE(image);
+  dmImage*  dstImg = CCI_IF_NATIVE(dest);
 
-  dmImageBuffer* buffer    = filterCtxt->NativeBuffer();
-  dmImage*       nativeImg = CCI_NATIVE(image);
-  dmRect         srcRect   = roi ? CCI_NATIVE(roi)->Rectangle() : nativeImg->Rect();
+  CCI_ENSURE_ARG_POINTER(srcImg);
+  CCI_ENSURE_ARG_POINTER(dstImg);
 
-  buffer->CreateBuffer(*nativeImg->TypeDescriptor(),dmRect(0,0,srcRect.Height(),srcRect.Width()));
+  dmRect  srcRect = roi ? CCI_NATIVE(roi)->Rectangle() : srcImg->Rect();
 
-  if(dmFlipCopy(*nativeImg,*buffer->Buffer(),srcRect,dmPoint(0,0),way))
+  if(dmFlipCopy(*srcImg,*dstImg,srcRect,dmPoint(0,0),way))
      return CCI_OK;
 
   return CCI_ERROR_FAILURE;
 }
 
-/* void rotate90 (in cciImage image, in cciRegion roi, in boolean clockwise, in cciISupports context); */
-CCI_IMETHODIMP cciTransforms::Rotate90(cciImage image, cciRegion roi, dm_bool clockwise,
-                                       cciIFilterContext *filterCtxt)
+/* void rotate90 (in cciImage image, in cciRegion roi, in boolean clockwise, in cciImage dest); */
+CCI_IMETHODIMP cciTransforms::Rotate90(cciImage image, cciRegion roi, dm_bool clockwise, cciImage dest)
 {
-  CCI_ENSURE_ARG_POINTER(image);
-  CCI_ENSURE_ARG_POINTER(filterCtxt);
+  dmImage*  srcImg = CCI_IF_NATIVE(image);
+  dmImage*  dstImg = CCI_IF_NATIVE(dest);
 
-  dmImageBuffer* buffer    = filterCtxt->NativeBuffer();
-  dmImage*       nativeImg = CCI_NATIVE(image);
-  dmRect         srcRect   = roi ? CCI_NATIVE(roi)->Rectangle() : nativeImg->Rect();
+  CCI_ENSURE_ARG_POINTER(srcImg);
+  CCI_ENSURE_ARG_POINTER(dstImg);
 
-  buffer->CreateBuffer(*nativeImg->TypeDescriptor(),dmRect(0,0,srcRect.Height(),srcRect.Width()));
+  dmRect srcRect = roi ? CCI_NATIVE(roi)->Rectangle() : srcImg->Rect();
 
-  if(dmRotateCopy(*nativeImg,*buffer->Buffer(),srcRect,dmPoint(0,0),
-                   clockwise?dmTk::RotateRight:
-                             dmTk::RotateLeft))
+  if(dmRotateCopy(*srcImg,*dstImg,srcRect,dmPoint(0,0),clockwise?dmTk::RotateRight: dmTk::RotateLeft))
      return CCI_OK;
 
   return CCI_ERROR_FAILURE;
-
 }
 
 

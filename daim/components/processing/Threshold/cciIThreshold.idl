@@ -51,7 +51,7 @@ interface cciIThreshold : cciIXPCOMSupports
   * between \a rmin and \a rmax.
   */
   void threshold( in cciImage image, in cciRegion roi, in cciRegion dstRgn,
-                  in dm_real rmin, in dm_real rmax, in cciIFilterContext filterCtxt );
+                  in dm_real rmin, in dm_real rmax );
 
   /**
    * @brief Create a binary mask corresponding to the pixels values corresponding
@@ -75,7 +75,7 @@ interface cciIThreshold : cciIXPCOMSupports
    */
   void hysteresisThreshold(in cciImage image, in cciRegion roi, in cciRegion dstRgn,
                            in dm_real rmin, in dm_real rmax, in dm_uint32 connect,
-                           in cciIFilterContext filterCtxt );
+                           [optional] in cciIFilterContext filterCtxt );
 
 };
 

@@ -66,5 +66,7 @@ CCI_IMETHODIMP cciImageListImage::Init(cciIImageList *imagelist)
 CCI_IMETHODIMP cciImageListImage::Select(dm_uint32 index)
 {
   CCI_ENSURE_TRUE(mImageList,CCI_ERROR_NOT_INITIALIZED);
+  CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
+  
   return mImageList->GetImageLink(mImage,index);
 }

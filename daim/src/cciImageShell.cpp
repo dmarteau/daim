@@ -26,31 +26,18 @@
 // Date         : 12 déc. 2008
 // Author       : David Marteau
 //--------------------------------------------------------
-#define dmUseKernelImageTemplates
 #include "cciCOMPtr.h"
 #include "cciComponentManagerUtils.h"
 #include "cciServiceManagerUtils.h"
 #include "cciImageUtils.h"
 #include "cciIFilterContext.h"
 #include "cciIImageFilter.h"
-#include "cciIImageList.h"
 #include "cciIImageContainer.h"
 #include "cciIRegionContainer.h"
 #include "cciIImageMath.h"
-#include "cciITransforms.h"
 #include "cciISurface.h"
-#include "cciIRemoteSurface.h"
-#include "cciILoaderService.h"
-#include "cciISurfaceDriver.h"
-
-#include "cciImageShell.h"
 #include "cciScriptableImage.h"
-
-#include "daim_kernel.h"
-#include "templates/processing/dmDensityMap.h"
-#include "common/dmUserLib.h"
-
-#include "cciIImageListContainer.h"
+#include "cciImageShell.h"
 
 /* Implementation file */
 CCI_IMPL_ISUPPORTS1(cciImageShell, cciIImageShell)
@@ -159,25 +146,6 @@ CCI_IMETHODIMP cciImageShell::SaveImage(const char * path, const char * type, co
   return rv;
 }
 
-
-/* void stretch (in cciImage dest, in cciRegion rgn, in unsigned long mode ); */
-CCI_IMETHODIMP cciImageShell::Stretch(cciImage dest, cciRegion rgn, dm_uint32 mode )
-{
-  CCI_ENSURE_ARG_POINTER(dest);
-  CCI_ENSURE_TRUE(mImage,CCI_ERROR_NOT_INITIALIZED);
-
-  CCI_PRECONDITION(dest->GetNative(),"null image");
-
-  cci_result rv;
-  cci_Ptr<cciITransforms> tr = do_GetService("@daim.org/processing/transforms;1",&rv);
-  if(CCI_FAILED(rv))
-     return rv;
-
-  rv = tr->Strech(mImage,rgn,mode,dest);
-  
-  return rv;
-}
-
 /* void copy (in cciImage srcImage, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY, in dm_uint32 mode); */
 CCI_IMETHODIMP cciImageShell::Copy(cciImage srcImage, cciRegion roi, dm_int32 dstX, dm_int32 dstY, dm_uint32 mode)
 {
@@ -209,7 +177,7 @@ CCI_IMETHODIMP cciImageShell::Blend(cciImage srcImage, dm_real percent, cciRegio
   if(CCI_FAILED(rv))
      return rv;
 
-  return mImageMath->Blend(srcImage,mImage,percent,roi,dstX,dstY,mFilterContext);
+  return mImageMath->Blend(srcImage,mImage,percent,roi,dstX,dstY);
 }
 
 

@@ -90,6 +90,13 @@ CCI_IMETHODIMP cciFilterContext::ClearBuffer()
   return CCI_OK;
 }
 
+/* void releaseBuffer (); */
+CCI_IMETHODIMP cciFilterContext::ReleaseBuffer()
+{
+  mBuffer->Release();
+  return CCI_OK;
+}
+
 /* [noscript,notxpcom] dmImageBufferPtr nativeBuffer (); */
 CCI_IMETHODIMP_(dmImageBuffer *) cciFilterContext::NativeBuffer()
 {

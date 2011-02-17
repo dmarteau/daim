@@ -103,7 +103,7 @@ static cci_result _DoImageMath(dmImage *lhsImage,
   if(lhsImage->PixelFormat()!=rhsImage->PixelFormat())
   {
      if(!fctxt)
-         return CCI_ERROR_NO_INTERFACE;
+         return CCI_ERROR_FAILURE;
 
      dmImageBuffer* buffer = fctxt->NativeBuffer();
 
@@ -134,13 +134,6 @@ CCI_IMETHODIMP cciImageMath::DoImageMath(cciImage lhsImage, cciImage rhsImage,
 
   dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(rhsImage)->Rect();
   dmPoint  loc(x,y);
-
-  cci_Ptr<cciIFilterContext> fctxt;
-
-  if(CCI_NATIVE(lhsImage)->PixelFormat()!=CCI_NATIVE(rhsImage)->PixelFormat())
-  {
-    CCI_ENSURE_ARG_POINTER(filterCtxt);
-  }
 
   return _DoImageMath(CCI_NATIVE(lhsImage),CCI_NATIVE(rhsImage),rgn,loc,operation,filterCtxt);
 }
@@ -270,9 +263,8 @@ CCI_IMETHODIMP cciImageMath::DoImageListMath(cciIImageList *lhsimages, cciIImage
 // defined in daim_kernel library
 bool __dmKernel _dmDoImageMath4( dmImage& lhs , const dmRegion& r, dm_real a, dm_real b );
 
-/* void addMul (in cciImage image, in cciRegion roi, in dm_real addval, in dm_real mulval, in cciISupports context); */
-CCI_IMETHODIMP cciImageMath::AddMul(cciImage image, cciRegion roi, dm_real addval, dm_real mulval,
-                                    cciIFilterContext *filterCtxt)
+/* void addMul (in cciImage image, in cciRegion roi, in dm_real addval, in dm_real mulval); */
+CCI_IMETHODIMP cciImageMath::AddMul(cciImage image, cciRegion roi, dm_real addval, dm_real mulval)
 {
   CCI_ENSURE_ARG_POINTER(image);
 
@@ -284,10 +276,9 @@ CCI_IMETHODIMP cciImageMath::AddMul(cciImage image, cciRegion roi, dm_real addva
   return CCI_ERROR_FAILURE;
 }
 
-/* void blend (in cciImage srcImage, in cciImage dstImage, in dm_real percent, in cciRegion roi, in dm_int32 x, in dm_int32 y, in cciISupports context); */
+/* void blend (in cciImage srcImage, in cciImage dstImage, in dm_real percent, in cciRegion roi, in dm_int32 x, in dm_int32 y ); */
 CCI_IMETHODIMP cciImageMath::Blend(cciImage srcImage, cciImage dstImage, dm_real percent,
-                                   cciRegion roi, dm_int32 x, dm_int32 y,
-                                   cciIFilterContext *filterCtxt)
+                                   cciRegion roi, dm_int32 x, dm_int32 y )
 {
   CCI_ENSURE_ARG_POINTER(srcImage);
   CCI_ENSURE_ARG_POINTER(dstImage);
@@ -305,10 +296,9 @@ CCI_IMETHODIMP cciImageMath::Blend(cciImage srcImage, cciImage dstImage, dm_real
 
   if(srcNative->PixelFormat()!=dstNative->PixelFormat())
   {
-     dmLink<dmImage> copyOf = srcNative->CreateCopy(*dstNative->TypeDescriptor(),
-                                                    mask.Rectangle());
+     dmLink<dmImage> copyOfSrc = srcNative->CreateCopy(*dstNative->TypeDescriptor(),mask.Rectangle());
      mask.OffsetRoi();
-     if(dmBlendImage(percent,*srcNative,*dstNative,mask,offs))
+     if(dmBlendImage(percent,*copyOfSrc,*dstNative,mask,offs))
         return CCI_OK;
   } else {
      if(dmBlendImage(percent,*srcNative,*dstNative,mask,offs))

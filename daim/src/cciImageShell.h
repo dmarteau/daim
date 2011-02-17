@@ -31,12 +31,9 @@
 
 #include "cciCOMPtr.h"
 #include "cciIFilterContext.h"
-#include "cciIImageContainer.h"
 #include "cciIImage.h"
 #include "cciIImageShell.h"
 #include "cciIImageMath.h"
-
-#include "daim_kernel.h"
 
 class cciISurfaceDriver;
 

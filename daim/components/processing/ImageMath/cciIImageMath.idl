@@ -62,7 +62,7 @@ interface cciIImageMath : cciIXPCOMSupports
    */
   void doImageMath( in cciImage lhsImage, in cciImage rhsImage, in cciRegion roi,
                     in dm_int32 x, in dm_int32 y, in dm_int32 operation,
-                    in cciIFilterContext filterCtxt );
+                    [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Accumulate pixels values from imagelist
@@ -73,7 +73,8 @@ interface cciIImageMath : cciIXPCOMSupports
    * in the internal context buffer.
    */
   void accumulate( in cciIImageList imagelist, in cciImage dstImage, in cciRegion roi,
-                   in dm_bool normalize, in cciIFilterContext filterCtxt );
+                   in dm_bool normalize, 
+                   [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Apply arithmetical operation between two imagelists.
@@ -91,13 +92,12 @@ interface cciIImageMath : cciIXPCOMSupports
                         in cciIImageList rhsimages,
                         in cciRegion roi,
                         in dm_int32 operation,
-                        in cciIFilterContext filterCtxt );
+                        [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Add/mutliply by constants
    */
-  void addMul( in cciImage image, in cciRegion roi, in dm_real addval, in dm_real mulval,
-               in cciIFilterContext filterCtxt );
+  void addMul( in cciImage image, in cciRegion roi, in dm_real addval, in dm_real mulval );
 
   /**
    * @brief Blend images
@@ -113,8 +113,7 @@ interface cciIImageMath : cciIXPCOMSupports
    * @param y         The y destination of the region to be copied.
    */
   void blend( in cciImage srcImage, in cciImage dstImage, in dm_real percent,  in cciRegion roi,
-              in dm_int32 x, in dm_int32 y,
-              in cciIFilterContext filterCtxt );
+              in dm_int32 x, in dm_int32 y );
 
 };
 

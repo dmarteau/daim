@@ -72,35 +72,31 @@ cciThreshold::~cciThreshold()
 // cciIThreshold
 //================================
 
-/* void threshold (in cciImage image, in cciRegion roi, in cciRegion dstRgn, in dm_real rmin, in dm_real rmax, in cciISupports context); */
+/* void threshold (in cciImage image, in cciRegion roi, in cciRegion dstRgn, in dm_real rmin, in dm_real rmax ); */
 CCI_IMETHODIMP cciThreshold::Threshold(cciImage image, cciRegion roi, cciRegion dstRgn,
-                                       dm_real rmin, dm_real rmax, cciIFilterContext *filterCtxt)
+                                       dm_real rmin, dm_real rmax )
 {
-  CCI_ENSURE_ARG_POINTER(image);
+  dmImage* srcImg = CCI_IF_NATIVE(image);
+  
+  CCI_ENSURE_ARG_POINTER(srcImg);
   CCI_ENSURE_ARG_POINTER(dstRgn);
-  CCI_ENSURE_ARG_POINTER(filterCtxt);
 
-  if(!dmIsPixelFormatScalar(CCI_NATIVE(image)->PixelFormat())) {
-     dmLOG_ERROR("Cannot threshold on multi channel image, use RGBThreshold() instead !");
-     return CCI_ERROR_INVALID_ARG;
-  }
-
-  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
+  dmRegion rgn = CCI_NATIVE_ROI(roi,srcImg->Rect());
 
   dmThreshold _Filter(rmin,rmax,*CCI_NATIVE(dstRgn));
-
-  return dmApplyFilter(_Filter,*filterCtxt->NativeBuffer(),*CCI_NATIVE(image),rgn,true)?
-         CCI_OK : CCI_ERROR_FAILURE;
+  return _Filter.Apply( *srcImg, rgn ) ? CCI_OK : CCI_ERROR_FAILURE;
 
 }
 
 /* void RGBThreshold (in cciImage image, in cciRegion roi, in cciRegion dstRgn, in dm_uint16 red, in dm_uint16 green, in dm_uint16 blue, in dm_real rradius, in dm_real gradius, in dm_real bradius); */
 CCI_IMETHODIMP cciThreshold::RGBThreshold(cciImage image, cciRegion roi, cciRegion dstRgn, dm_uint16 red, dm_uint16 green, dm_uint16 blue, dm_real rradius, dm_real gradius, dm_real bradius)
 {
-  CCI_ENSURE_ARG_POINTER(image);
+  dmImage* srcImg = CCI_IF_NATIVE(image);
+  
+  CCI_ENSURE_ARG_POINTER(srcImg);
   CCI_ENSURE_ARG_POINTER(dstRgn);
 
-  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
+  dmRegion rgn = CCI_NATIVE_ROI(roi,srcImg->Rect());
 
   dmRGBColor _Color;
   _Color.r = static_cast<dm_uint8>(red);
@@ -113,7 +109,7 @@ CCI_IMETHODIMP cciThreshold::RGBThreshold(cciImage image, cciRegion roi, cciRegi
 
   dmRegion _Result;
 
-  if(dmRGBThreshold(*CCI_NATIVE(image),rgn,_Color,rr,rg,rb,*CCI_NATIVE(dstRgn)))
+  if(dmRGBThreshold(*srcImg,rgn,_Color,rr,rg,rb,*CCI_NATIVE(dstRgn)))
      return CCI_OK;
 
   return CCI_ERROR_FAILURE;
@@ -123,22 +119,29 @@ CCI_IMETHODIMP cciThreshold::RGBThreshold(cciImage image, cciRegion roi, cciRegi
 CCI_IMETHODIMP cciThreshold::HysteresisThreshold(cciImage image, cciRegion roi, cciRegion dstRgn, dm_real rmin, dm_real rmax, dm_uint32 connect,
                                                  cciIFilterContext *filterCtxt)
 {
-  CCI_ENSURE_ARG_POINTER(image);
+  dmImage* srcImg = CCI_IF_NATIVE(image);
+  
+  CCI_ENSURE_ARG_POINTER(srcImg);
   CCI_ENSURE_ARG_POINTER(dstRgn);
-  CCI_ENSURE_ARG_POINTER(filterCtxt);
 
-  if(!dmIsPixelFormatScalar(CCI_NATIVE(image)->PixelFormat())) {
-     dmLOG_ERROR("Cannot hysteresis threshold on multi channel image !");
-     return CCI_ERROR_INVALID_ARG;
-  }
-
-  dmRegion rgn = CCI_NATIVE_ROI(roi,CCI_NATIVE(image)->Rect());
+  dmImageBuffer *imgBuffer;
+  
+  if(filterCtxt)
+    imgBuffer = filterCtxt->NativeBuffer();
+  else
+    imgBuffer = new dmImageBuffer();
+    
+  dmRegion rgn = CCI_NATIVE_ROI(roi,srcImg->Rect());
 
   dmHysteresisThreshold _Filter(rmin,rmax,connect,*CCI_NATIVE(dstRgn));
 
-  return dmApplyFilter(_Filter,*filterCtxt->NativeBuffer(),*CCI_NATIVE(image),rgn,true)?
-         CCI_OK : CCI_ERROR_FAILURE;
-
+  dmBufferParameters _Params(*imgBuffer,*srcImg,rgn);
+  cci_result rv = _Filter.Apply( _Params )? CCI_OK : CCI_ERROR_FAILURE;
+  
+  if(!filterCtxt)
+     delete imgBuffer;
+  
+  return rv;
 }
 
 //=====================================

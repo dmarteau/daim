@@ -105,13 +105,21 @@ CCI_IMETHODIMP cciScriptableRegion::SetRectRgn(dm_int32 x, dm_int32 y, dm_uint32
   return CCI_OK;
 }
 
+/*  void setRegion( in cciIRegion aSrc ); */
+CCI_IMETHODIMP cciScriptableRegion::SetRegion(cciIRegion *aSrc)
+{
+  CCI_ENSURE_ARG_POINTER(aSrc);
+
+  mRegion = *aSrc->GetNative();
+  return CCI_OK;
+}
+
 /* void copy (in cciIRegion aSrc, in dm_int32 mode); */
 CCI_IMETHODIMP cciScriptableRegion::Copy(cciIRegion *aSrc, dm_int32 mode)
 {
   CCI_ENSURE_ARG_POINTER(aSrc);
-
+  
   return CopyNative(aSrc->GetNative(),mode);
-
 }
 
 /* boolean isEmpty (); */

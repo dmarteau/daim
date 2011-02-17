@@ -33,7 +33,6 @@
 
 #include "ccidaim.idl"
 
-interface cciIFilterContext;
 interface cciIImageContainer;
 interface cciIRegionContainer;
 
@@ -63,10 +62,9 @@ interface cciITransforms : cciIXPCOMSupports
    * @param index  index to store the transformed image in the dmIImageList
    *               held by the parameter object.
    * @param angle  the angle in radians.
-   *
+   * @param dest   the destination image
    */
-  void rotate( in cciImage image, in cciRegion roi, in dm_real angle, in boolean crop,
-               in cciIFilterContext filterCtxt );
+  void rotate( in cciImage image, in cciRegion roi, in dm_real angle, in cciImage dest );
 
   /**
    * @brief Create a motif repeated over the image.
@@ -80,11 +78,9 @@ interface cciITransforms : cciIXPCOMSupports
    * @param image  the src image
    * @param roi    the roi corrsponding to the position of the source rectangle (mandatory)
    * @param periodic if set to dm_true then a periodic pattern is created
+   * @param dest   the destination image
    */
-  void createMotif( in cciImage  image,
-                    in cciRegion roi,
-                    in boolean periodic,
-                    in cciIFilterContext filterCtxt );
+  void createMotif( in cciImage  image, in cciRegion roi, in boolean periodic, in cciImage dest);
 
   /**
    * @brief Flip image horizontally or vertically.
@@ -95,7 +91,7 @@ interface cciITransforms : cciIXPCOMSupports
    *
    * The result is stored in the buffer of the context
    */
-  void flip( in cciImage image, in cciRegion roi, in unsigned long way, in cciIFilterContext filterCtxt );
+  void flip( in cciImage image, in cciRegion roi, in unsigned long way, in cciImage dest );
 
   /**
    * @brief Rotate image 90 degres Clockwise (or Counter clockwise)
@@ -104,7 +100,7 @@ interface cciITransforms : cciIXPCOMSupports
    * @param index  index to store the transformed image
    * @param way    if true rotate clockwise
    */
-  void rotate90( in cciImage image, in cciRegion roi, in boolean clockwise, in cciIFilterContext filterCtxt );
+  void rotate90( in cciImage image, in cciRegion roi, in boolean clockwise, in cciImage dest );
 };
 
 

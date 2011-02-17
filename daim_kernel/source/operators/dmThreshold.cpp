@@ -160,17 +160,17 @@ bool dmHysteresisThreshold::Apply( dmBufferParameters& _Params )
 //---------------------------------------------------------------------
 struct __dm_impl_region_thr
 {
-  dmBufferParameters& Params;
-  dmRegion&           Result;
-  dm_real             LowThr;
-  dm_real             HighThr; 
+  const dmRegion&  Region;
+  dmRegion&        Result;
+  dm_real          LowThr;
+  dm_real          HighThr; 
   
   __dm_impl_region_thr(
-    dmBufferParameters& _Params, 
-    dmRegion&           _Result,
-    dm_real             _LowThr,
-    dm_real             _HighThr 
-  ) :Params(_Params)
+    const dmRegion& _Region, 
+    dmRegion&       _Result,
+    dm_real         _LowThr,
+    dm_real         _HighThr 
+  ) :Region(_Region)
     ,Result(_Result)
     ,LowThr(_LowThr)
     ,HighThr(_HighThr) {}
@@ -188,7 +188,7 @@ struct __dm_impl_region_thr
         _get_range_value(HighThr,traits_type(),integer_type())
     );
     create_rgnroi(_Image.Gen(),between<value_type>(thr.min(),thr.max()),
-                  Result,Params.thisRegion);
+                  Result,Region);
   }
 
   void operator()( dmIImage<dmPixelFormat24bppRGB>& _Image ) 
@@ -204,18 +204,17 @@ struct __dm_impl_region_thr
 
     between<value_type> pred(thr.min(),thr.max());
 
-    const dmRegion& src_rgn = Params.thisRegion;
-    create_rgnroi(_Image.Gen(),bind_func(rgb_traits::to_scalar(),pred),Result,src_rgn);
+    create_rgnroi(_Image.Gen(),bind_func(rgb_traits::to_scalar(),pred),Result,Region);
   }
 };
 //--------------------------------------------------------------------
-bool dmThreshold::Apply( dmBufferParameters& _Params )
+bool dmThreshold::Apply( const dmImage& image, const dmRegion& region )
 {
-  __dm_impl_region_thr _filter(_Params,
+  __dm_impl_region_thr _filter(region,
                        this->_Result,
                        this->_LowThreshold,
                        this->_HighThreshold);
 
-  return dmImplementOperation(_filter,_Params.thisImage);   
+  return dmImplementOperation(_filter,image);   
 }
 //--------------------------------------------------------------------

@@ -55,6 +55,8 @@ interface cciIRegion : cciIRegionContainer
 
   void setRectRgn( in long x, in long y, in unsigned long width, in unsigned long height );
 
+  void setRegion( in cciIRegion aSrc );
+
   void copy( in cciIRegion aSrc, in dm_int32 mode );
 
   boolean isEmpty();

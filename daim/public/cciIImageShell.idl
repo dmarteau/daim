@@ -82,15 +82,6 @@ interface cciIImageShell : cciIXPCOMSupports
   [noscript] void saveImage( in string path, in string type, in string options );
  
   /**
-   * stretch image according to the the size of the \a dest image
-   *
-   * @param dest   the destinatio image to copy the resampled data to
-   * @param rgn    the region of the image to be resampled (can be null)
-   * @param mode   the resampling mode (1 : nearest neighbour, 2 : bilinear)
-   */
-  void stretch( in cciImage dest, in cciRegion rgn, in unsigned long mode );
-
-  /**
    * Copy a region \a roi of the given \a srcImage a location \a dstX \a dstY of
    * the current image.
    *

@@ -50,6 +50,7 @@ interface cciIFilterContext : cciIXPCOMSupports
   void createBuffer(  in cciImage image, in cciRegion rgn, in unsigned long padX, in unsigned long padY, in long limit_type );
   void restoreBuffer( in cciImage image );
   void clearBuffer();
+  void releaseBuffer();
 
   [noscript,notxpcom] dmImageBufferPtr nativeBuffer();
 

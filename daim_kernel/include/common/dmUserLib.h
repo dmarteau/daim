@@ -377,7 +377,7 @@ class dmThreshold
    ,_Result(Result)
    {}
 
-   bool Apply( dmBufferParameters& );
+   bool Apply(  const dmImage& image, const dmRegion& region );
 };
 /*---------------------------------------------------------------------------------------
  functor    : dmHysteresisThreshold
