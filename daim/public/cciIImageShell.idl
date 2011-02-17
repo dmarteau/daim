@@ -122,10 +122,19 @@ interface cciIImageShell : cciIXPCOMSupports
    * Filter context
    */
 
+  /**
+   * The current filter context
+   */
   readonly attribute cciIFilterContext filterContext;
 
+  /**
+   * Copy range and image data to the given filtercontext
+   */
   void saveFilterContext( in cciIFilterContext filterCtxt, in cciRegion rgn );
 
+  /**
+   * Restore range and image data from the given filtercontext
+   */
   void restoreFilterContext( in cciIFilterContext filterCtxt );
 
 };

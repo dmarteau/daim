@@ -151,6 +151,11 @@ interface cciIImage : cciIImageContainer
    *    (for non rectangular region, the bounding box if the region is used).
    */
   cciIImage createCopy( in EPixelFormat format, [optional] in cciRegion rgn );
+  
+  /**
+   * Clone image (shortcut for createCopy(dmPixelFormatUndefined) )
+   */
+  cciIImage clone();
 };
 
 

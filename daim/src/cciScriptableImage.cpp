@@ -456,3 +456,9 @@ error:
   return CCI_ERROR_FAILURE;
 }
 
+/* cciIImage clone (); */
+CCI_IMETHODIMP cciScriptableImage::Clone(cciIImage * *_retval CCI_OUTPARAM)
+{
+  return CreateCopy(dmPixelFormatUndefined,dm_null,_retval);
+}
+
