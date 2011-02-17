@@ -34,7 +34,7 @@
 #include "ccidaim.idl"
 
 interface cciISurface;
-interface cciIImageList;
+interface cciIImage;
 interface cciIImageFilter;
 interface cciIFilterContext;
 interface cciIImageContainer;
@@ -52,36 +52,10 @@ interface cciIColorTable;
 [scriptable, uuid(FE8496B8-D7F8-4C19-983C-FE9B0CB21183)]
 interface cciIImageShell : cciIXPCOMSupports
 {
-  [noscript] void lock(  in dmImageDataRef imData, in dmRectPtr rect );
-  [noscript] void unlock();
-
-  /*
-   * Image structure
-   */
-
   /**
-   * @return the width of the image
+   * The underlying image
    */
-  readonly attribute unsigned long width;
-
-  /**
-   * @return the height of the image
-   */
-  readonly attribute unsigned long height;
-
-  /**
-   * @return the pixel format of the image
-   */
-  readonly attribute EPixelFormat pixelFormat;
-
-  /*
-   * Initialisation
-   */
-
-  /**
-   * Enable/disable alpha channel for rgb images
-   */
-  attribute boolean enableAlpha;
+  attribute cciIImage image;
   
   /**
    * @brief Create a new (empty) image
@@ -94,46 +68,6 @@ interface cciIImageShell : cciIXPCOMSupports
   void destroy();
   
   /**
-   * @brief Load an image from an image list buffer
-   * 
-   * @param index the index of the buffer in the imagelist
-   * @param share if true, the image content is not copied and is shared with the buffer.
-   *
-   * When the content is shared, all changes that occur is also made to the buffer content.
-   */
-  void loadBuffer( in cciIImageList imagelist, in unsigned long index, in boolean share );
-
-  
-  /**
-   * @brief Load an image directly from a external surface
-   *
-   * @param rgn      the rgn that define the coordinates of the region that is to be retrieved.
-   *
-   * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
-   */
-  void loadSurfaceBits( in cciISurface surface, in cciRegion rgn );
-
-  /**
-   * @brief Save an image directly to an external surface
-   *
-   * @param rgn      the rgn that define the coordinates of the region that is to be retrieved.
-   *
-   * Very large image can be handled that way (if the underlying surface driver has block read capabilities).
-   */
-  void writeSurfaceBits( in cciISurface surface, in cciRegion rgn );
-
-  /**
-   * Sample data from external surface
-   * 
-   * The pixels are resampled according to the current size
-   * @param keepFormat
-   *   If set to true, the shell convert the source pixel to the actual format.
-   */
-  void sampleSurfaceBits( in cciISurface surface, in cciRegion rgn, in boolean keepFormat );
-
-  /**
-   * loadImage
-   *
    * Load an image from \a path
    * @param path the path of the image on the disk  (in native charset)
    * @param alpha if true, the alpha channel is also retrieved.
@@ -141,88 +75,22 @@ interface cciIImageShell : cciIXPCOMSupports
   [noscript] void loadImage( in string path );
 
   /**
-   * saveImage
-   *
    * Load an image from \a path
    * @param path the path of the image on the disk  (in native charset)
    * @param type the mime type of the image on disk or the name of the driver to use.
    */
   [noscript] void saveImage( in string path, in string type, in string options );
-
+ 
   /**
-   * clear
-   *
-   * Clear all internal buffer
-   */
-  void clear( [optional] in cciRegion rgn );
-
-  /**
-   * Access to the current opened surface
-   */
-  readonly attribute cciISurface currentSurface;
-
-  /**
-   * Access to the current color table
-   */
-  attribute cciIColorTable colorTable;
-
-  /** 
-   * Apply the current color table to the image 
-   */
-  void applyColorTable( [optional] in cciRegion rgn );
-  
-  /**
-   * If true, preserve the meta data (like EXIF metadata)
-   * from the last opened image or surface.
-   *
-   * Metadata are preserved on copy/clone operations and when saving
-   * content with saveImage()
-   *
-   * If false, no metadata are preserved.
-   *
-   * Default value is true.
-   */
-  attribute boolean preserveMetaData;
-
-  /*
-   * Copy operations
-   */
-
-  /**
-   * clone
-   *
-   * Duplicate the current shell object
-   */
-  cciIImageShell clone();
-
-  /**
-   * createCopy
-   *
-   * Create a copy of a specified region of the current image
-   *
-   * @param rgn    the region of the image to be copied (can be null)
-   * @param format the format of the new image (can be dmPixelFormatUndefined)
-   */
-  cciIImageShell createCopy( in cciRegion rgn, in EPixelFormat format );
-
-  /**
-   * resample
-   *
-   * Resample image according to the the size of the \a dest image
+   * stretch image according to the the size of the \a dest image
    *
    * @param dest   the destinatio image to copy the resampled data to
    * @param rgn    the region of the image to be resampled (can be null)
    * @param mode   the resampling mode (1 : nearest neighbour, 2 : bilinear)
    */
-  void resample( in cciImage dest, in cciRegion rgn, in unsigned long mode );
-
-  /*
-   * Compositing
-   */
+  void stretch( in cciImage dest, in cciRegion rgn, in unsigned long mode );
 
   /**
-   * getCopy
-   *
    * Copy a region \a roi of the given \a srcImage a location \a dstX \a dstY of
    * the current image.
    *
@@ -231,12 +99,10 @@ interface cciIImageShell : cciIXPCOMSupports
    * @param format   the format of the new image (can be dmPixelFormatUndefined)
    * @param mode     the arithmetic/logical operation to be performed between source and destination
    */
-  void getCopy( in cciImage srcImage, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY,
-                in dm_uint32 mode);
+  void copy( in cciImage srcImage, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY,
+             in dm_uint32 mode);
 
   /**
-   * blend
-   *
    * Perform a blend copy a region \a roi of the given \a srcImage a location \a dstX \a dstY of
    * the current image.
    *
@@ -246,32 +112,6 @@ interface cciIImageShell : cciIXPCOMSupports
    * @param format   the format of the new image (can be dmPixelFormatUndefined)
    */
   void blend( in cciImage srcImage, in dm_real percent, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY );
-
-  /*
-   * Buffer storage
-   */
-
-  /**
-   * copyToBuffer
-   *
-   * Duplicate the content of the image to the buffer \a index of \a imagelist
-   *
-   * @see moveToBuffer
-   *
-   */
-  void copyToBuffer( in cciIImageList imagelist, in unsigned long index, in cciRegion rgn,
-                     in EPixelFormat format);
-
-  /**
-   * moveToBuffer
-   *
-   * Move the content of the image to the buffer \a index of \a imagelist
-   * Unlike copyToBuffer, image data are not duplicated and are shared between the image shell
-   * and the image list object.
-   *
-   * @see copyToBuffer
-   */
-  void moveToBuffer( in cciIImageList imagelist, in unsigned long index );
 
   /**
    * Apply generic Filter operation to current image

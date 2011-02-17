@@ -34,18 +34,20 @@
 #include "cciImageList.h"
 #include "cciFilterContext.h"
 #include "cciDaimService.h"
+#include "cciImageListImage.h"
+#include "cciStorageImage.h"
 #include "cciImageShell.h"
 #include "cciScriptableRegion.h"
 #include "cciImageContainerUtils.h"
 #include "cciDaimModule.h"
 
-// Implements ISUPPORTS for cciImageWrapper 
-CCI_IMPL_ISUPPORTS1(cciImageWrapper,cciIImageContainer);
 
 CCI_GENERIC_FACTORY_CONSTRUCTOR(cciImageList)
 CCI_GENERIC_FACTORY_CONSTRUCTOR(cciDaimService)
 CCI_GENERIC_FACTORY_CONSTRUCTOR(cciImageShell)
 CCI_GENERIC_FACTORY_CONSTRUCTOR(cciScriptableRegion)
+CCI_GENERIC_FACTORY_CONSTRUCTOR(cciImageListImage)
+CCI_GENERIC_FACTORY_CONSTRUCTOR(cciStorageImage)
 
 static const cciModuleComponentInfo components[] = {
     { CCI_IMAGELIST_CLASSNAME,
@@ -67,6 +69,16 @@ static const cciModuleComponentInfo components[] = {
        CCI_SCRIPTABLEREGION_CID,
        CCI_SCRIPTABLEREGION_CONTRACTID,
        cciScriptableRegionConstructor
+    },
+    {  CCI_IMAGELISTIMAGE_CLASSNAME,
+       CCI_IMAGELISTIMAGE_CID,
+       CCI_IMAGELISTIMAGE_CONTRACTID,
+       cciImageListImageConstructor
+    },
+    {  CCI_STORAGEIMAGE_CLASSNAME,
+       CCI_STORAGEIMAGE_CID,
+       CCI_STORAGEIMAGE_CONTRACTID,
+       cciStorageImageConstructor
     },
 };
 

@@ -26,19 +26,42 @@
 #include "cciIImageList.h"
 #include "cciIColorSpace.h"
 #include "cciIFilterContext.h"
+#include "cciIImage.h"
 #include "cciIMatrix.h"
+#include "cciILoaderService.h"
+#include "cciISurfaceDriver.h"
+#include "cciDaimglue.h"
 
-CCI_COM_GLUE
+
+DAIM_GLUE_EXPORT
 cci_result CCI_NewImageList( cciIImageList** _result );
 
-CCI_COM_GLUE
+DAIM_GLUE_EXPORT
 cci_result CCI_NewColorSpace( const char* colorSpace, cciIColorSpace** _result );
 
-CCI_COM_GLUE
+DAIM_GLUE_EXPORT
 cci_result CCI_NewFilterContext( cciIFilterContext** _result);
 
-CCI_COM_GLUE
+DAIM_GLUE_EXPORT
 cci_result CCI_NewMatrix( const dm_real* data, dm_uint32 rows, dm_uint32 columns,
                           cciIMatrix** _result );
+
+DAIM_GLUE_EXPORT 
+cci_result CCI_NewImage(dm_uint32 width, dm_uint32 height, EPixelFormat format, 
+                        cciIImage* *_result);
+DAIM_GLUE_EXPORT 
+cci_result CCI_NewImage(dmImageData & data, cciIImage* *_result);
+
+DAIM_GLUE_EXPORT
+cci_result CCI_GetLoader( cciILoaderService*, const char* type, dm_bool createCaps, 
+                          cciISurfaceDriver** _result );
+
+DAIM_GLUE_EXPORT
+cci_result CCI_SaveImage( cciISurfaceDriver* loader, const char* nativePath, cciIImage* image, 
+                          const char* options = dm_null );
+
+DAIM_GLUE_EXPORT
+cci_result CCI_LoadImage( cciILoaderService* srvc, const char* nativePath, 
+                          cciIImage* *_result);
 
 #endif // cciImageUtils_h

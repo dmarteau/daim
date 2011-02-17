@@ -33,21 +33,59 @@
 
 #include "cciCOMPtr.h"
 #include "cciComponentManagerUtils.h"
+#include "cciServiceManagerUtils.h"
 #include "cciImageUtils.h"
+#include "cciIStorageImage.h"
+#include "cciISurface.h"
+#include "cciIColorTable.h"
+#include "cciIMetaDataContainer.h"
+#include "cciISurfaceDriver.h"
+#include "cciDaimCID.h"
 
 #include <string.h> // for strncat
+
+#define LOADER_SERVICE_CONTRACTID \
+  "@daim.org/contrib/loader-service;1"
 
 #ifdef DAIM_GLUE
 CCI_USE_NS
 
-CCI_COM_GLUE
+DAIM_GLUE_EXPORT
 cci_result CCI_NewImageList( cciIImageList** _result )
 {
   cci_result rv;
-  cci_Ptr<cciIImageList> imagelist = do_CreateInstance("@daim.org/image/list;1",&rv);
+  cci_Ptr<cciIImageList> imagelist = do_CreateInstance(CCI_IMAGELIST_CONTRACTID,&rv);
   if(CCI_SUCCEEDED(rv))
     imagelist.forget(_result);
  
+  return rv;
+}
+
+DAIM_GLUE_EXPORT 
+cci_result CCI_NewImage(dm_uint32 width, dm_uint32 height, EPixelFormat format, cciIImage* *_result)
+{
+  cci_result rv;
+  cci_Ptr<cciIStorageImage> image = do_CreateInstance(CCI_STORAGEIMAGE_CONTRACTID,&rv);
+  CCI_ENSURE_SUCCESS(rv,rv);
+  
+  rv = image->Create(width,height,format);
+  if(CCI_SUCCEEDED(rv))
+     CCI_ADDREF(*_result = image);
+ 
+  return rv;
+}
+
+DAIM_GLUE_EXPORT 
+cci_result CCI_NewImage(dmImageData & data, cciIImage* *_result)
+{
+  cci_result rv;
+  cci_Ptr<cciIStorageImage> image = do_CreateInstance(CCI_STORAGEIMAGE_CONTRACTID,&rv);
+  CCI_ENSURE_SUCCESS(rv,rv);
+  
+  rv = image->ShareImageData(data);
+  if(CCI_SUCCEEDED(rv))
+     CCI_ADDREF(*_result = image);
+
   return rv;
 }
 
@@ -55,8 +93,9 @@ cci_result CCI_NewImageList( cciIImageList** _result )
 #else // !DAIM_GLUE
 
 #include "cciImageList.h"
+#include "cciScriptableImage.h"
 
-CCI_COM_GLUE
+DAIM_GLUE_EXPORT
 cci_result CCI_NewImageList( cciIImageList** _result )
 {
   cciIImageList* newList = new cciImageList();
@@ -64,12 +103,39 @@ cci_result CCI_NewImageList( cciIImageList** _result )
   return CCI_OK;
 }
 
+DAIM_GLUE_EXPORT 
+cci_result CCI_NewImage(dm_uint32 width, dm_uint32 height, EPixelFormat format, cciIImage* *_result)
+{
+  cciScriptableImage* newImage = new cciScriptableImage(width,height,format);
+  if(newImage && newImage->IsValid()) 
+  {
+    CCI_ADDREF(*_result = newImage);
+    return CCI_OK;
+  }
+  
+  CCI_IF_RELEASE(newImage);
+  return CCI_ERROR_OUT_OF_MEMORY;
+}
+
+DAIM_GLUE_EXPORT 
+cci_result CCI_NewImage(dmImageData & data, cciIImage* *_result)
+{
+  cciScriptableImage* newImage = new cciScriptableImage(data);
+  if(newImage && newImage->IsValid()) 
+  {
+    CCI_ADDREF(*_result = newImage);
+    return CCI_OK;
+  }
+  
+  CCI_IF_RELEASE(newImage);
+  return CCI_ERROR_OUT_OF_MEMORY;
+}
 
 #endif // DAIM_GLUE
 
 #define COLORSPACE_MAX_CHAR 10
 
-CCI_COM_GLUE
+DAIM_GLUE_EXPORT
 cci_result CCI_NewColorSpace( const char* colorSpace, cciIColorSpace** _result )
 {
   char
@@ -80,7 +146,84 @@ cci_result CCI_NewColorSpace( const char* colorSpace, cciIColorSpace** _result )
   cci_result rv;
   cci_Ptr<cciIColorSpace> buffer = do_CreateInstance(contractid,&rv);
   if(CCI_SUCCEEDED(rv))
-     CCI_ADDREF(*_result = buffer);
+     buffer.forget(_result);
 
+  return rv;
+}
+
+DAIM_GLUE_EXPORT
+cci_result CCI_GetLoader( cciILoaderService* srvc, const char* type, dm_bool createCaps, cciISurfaceDriver** _result )
+{
+  cci_result rv;
+  cci_Ptr<cciILoaderService> ldrSrvc = srvc; 
+  if(!ldrSrvc)
+  {
+    ldrSrvc = do_GetService(LOADER_SERVICE_CONTRACTID,&rv);
+    if(CCI_FAILED(rv))
+       return rv;
+  }
+  
+  // Get the corresponding driver
+  cci_Ptr<cciISurfaceDriver>  loader;
+  rv = ldrSrvc->GetDriver(type,createCaps,getter_AddRefs(loader));
+  if(CCI_SUCCEEDED(rv))
+     loader.forget(_result);
+  
+  return rv;
+}
+
+DAIM_GLUE_EXPORT
+cci_result CCI_SaveImage( cciISurfaceDriver* loader, const char* path, cciIImage* image, const char* options  )
+{  
+  cci_result rv;
+  
+  dmImageData imData;
+  
+  rv = image->Lock(imData,dm_null);
+  if(CCI_FAILED(rv))
+     return rv;
+  
+  cci_Ptr<cciIColorTable> colorTable;
+  image->GetColorTable(getter_AddRefs(colorTable));
+  
+  rv = loader->SaveImageBits(path,imData,dm_null,colorTable,options);
+  image->Unlock();
+  
+  return rv;
+}
+
+DAIM_GLUE_EXPORT
+cci_result CCI_LoadImage( cciILoaderService* srvc, const char* path, cciIImage* *_result)
+{
+  cci_result rv;
+  cci_Ptr<cciILoaderService> ldrSrvc = srvc; 
+  if(!ldrSrvc)
+  {
+    ldrSrvc = do_GetService(LOADER_SERVICE_CONTRACTID,&rv);
+    if(CCI_FAILED(rv))
+       return rv;
+  }
+
+  cci_Ptr<cciISurface> surface;
+
+  rv = ldrSrvc->OpenSurface(path,cciIDriverProxy::IO_READONLY,getter_AddRefs(surface));
+  if(CCI_FAILED(rv))
+     return rv;
+
+  rv = CCI_NewImage(surface->Width(),surface->Height(),surface->PixelFormat(),_result);
+  if(CCI_FAILED(rv))
+     return rv;
+  
+  rv = (*_result)->LoadSurfaceBits(surface,dm_null);
+
+  if(CCI_SUCCEEDED(rv)) 
+  {
+    cci_Ptr<cciIColorTable> colorTable;
+
+    // Try to get a possible color table
+    surface->GetColorTable(getter_AddRefs(colorTable));    
+    (*_result)->SetColorTable(colorTable);
+  }
+  
   return rv;
 }

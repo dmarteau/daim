@@ -1,8 +1,6 @@
-#ifndef cciDaimGlue_h
-#define cciDaimGlue_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2011 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -24,28 +22,38 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : cciDaimGlue.h
-// Date         : 6 janv. 2009
+// File         : cciStorageImage.cpp
+// Date         : 15 févr. 2011
 // Author       : David Marteau
 //--------------------------------------------------------
 
-#include "daim.h"
+#include "cciCOMPtr.h"
+#include "cciComponentManagerUtils.h"
+#include "cciServiceManagerUtils.h"
+#include "cciStorageImage.h"
 
-// Define CCI_DAIM_GLUE for function that we want to export 
-// when linking directly with daim library
-// otherwise we need to to link with the daimglue library
+/* Implementation file */
+CCI_IMPL_ISUPPORTS_INHERITED1(cciStorageImage,cciScriptableImage,
+                              cciIStorageImage)
 
-#ifdef DAIM_GLUE
+cciStorageImage::cciStorageImage()
+{
+  /* member initializers and constructor code */
+}
 
-cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, dmLOG_FUNCTION pfnLog );
-void       DM_ReleaseDaimGlue( dm_bool force );
+cciStorageImage::~cciStorageImage()
+{
+  /* destructor code */
+}
 
-#define DAIM_GLUE_EXPORT
+/* void create (in unsigned long width, in unsigned long height, in EPixelFormat format); */
+CCI_IMETHODIMP cciStorageImage::Create(dm_uint32 width, dm_uint32 height, EPixelFormat format)
+{
+  return Initialize(width,height,format);
+}
 
-#else
-
-#define DAIM_GLUE_EXPORT __daim_export
-
-#endif
-
-#endif /* cciDaimGlue_h */
+/* [noscript] void shareImageData (in dmImageDataRef data); */
+CCI_IMETHODIMP cciStorageImage::ShareImageData(dmImageData & data)
+{
+  return Initialize(data);
+}

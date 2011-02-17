@@ -66,17 +66,3 @@ CCI_IMETHODIMP cciDaimService::NewColorSpace(const char * clrSpaceName, cciIColo
   return CCI_NewColorSpace(clrSpaceName,_retval);
 }
 
-/* cciIImage newImage (in unsigned long width, in unsigned long height, in EPixelFormat format); */
-CCI_IMETHODIMP cciDaimService::NewImage(dm_uint32 width, dm_uint32 height, EPixelFormat format, cciIImage * *_retval CCI_OUTPARAM)
-{
-    cciScriptableImage* img = new cciScriptableImage(width,height,format);
-    
-    if(!img || !img->isValid()) 
-    {
-      CCI_IF_RELEASE(img);
-      return CCI_ERROR_OUT_OF_MEMORY;
-    }
-     
-    CCI_ADDREF( *_retval = img );
-    return CCI_OK;
-}

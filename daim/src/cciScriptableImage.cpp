@@ -42,9 +42,26 @@
 #include "templates/processing/dmDensityMap.h"
 #include "common/dmUserLib.h"
 
+#include "cciIImageListContainer.h"
+
 /* Implementation file */
-CCI_IMPL_ISUPPORTS2(cciScriptableImage, cciIImage,
-                                  cciIImageContainer)
+//CCI_IMPL_ISUPPORTS3(cciScriptableImage, cciIImage, cciImageWrapper, cciIImageContainer)
+
+// cciIImageContainer is an ambigous class of cciIImage and cciImageWrapper
+
+CCI_IMPL_ADDREF(cciScriptableImage)  
+CCI_IMPL_RELEASE(cciScriptableImage)   
+CCI_IMPL_ALLOCATOR(cciScriptableImage)
+//CCI_IMPL_QUERY_INTERFACE3(_class, _i1, _i2, _i3)
+CCI_INTERFACE_TABLE_HEAD(cciScriptableImage)
+CCI_INTERFACE_TABLE_BEGIN
+  CCI_INTERFACE_TABLE_ENTRY(cciScriptableImage, cciIImage)
+  CCI_INTERFACE_TABLE_ENTRY(cciScriptableImage, cciImageWrapper)
+  CCI_INTERFACE_TABLE_ENTRY_AMBIGUOUS(cciScriptableImage, cciIImageContainer, cciImageWrapper)
+  CCI_INTERFACE_TABLE_ENTRY_AMBIGUOUS(cciScriptableImage, cciISupports, cciIImage)
+CCI_INTERFACE_TABLE_END
+CCI_INTERFACE_TABLE_TAIL
+
 
 cciScriptableImage::cciScriptableImage()
 : mLock(DM_FALSE)
@@ -55,8 +72,8 @@ cciScriptableImage::cciScriptableImage()
 cciScriptableImage::cciScriptableImage( dmLink<dmImage>& imglink )
 : mLock(DM_FALSE)
 , mEnableAlpha(DM_FALSE)
-, mImage(imglink)
 {
+  mImage = imglink;
 }
 
 /* void init (in unsigned long width, in unsigned long height, in EPixelFormat format); */
@@ -64,36 +81,58 @@ cciScriptableImage::cciScriptableImage(dm_uint32 width, dm_uint32 height, EPixel
 : mLock(DM_FALSE)
 , mEnableAlpha(DM_FALSE)
 {
-  EPixelFormat imgfmt = format;
-  if(imgfmt == dmPixelFormat32bppARGB)
-     imgfmt  = dmPixelFormat24bppRGB;
+  Initialize(width,height,format);
+}
 
-  dmImageDescriptor* desc = dmGetDescriptor(format);
-  if(desc) {
-     mImage = desc->CreateImage(width,height);
-  }
-
-  // Enable alpha if argb specified
-  if(format == dmPixelFormat32bppARGB)
-     mEnableAlpha = DM_TRUE;
+cciScriptableImage::cciScriptableImage( dmImageData& imData )
+{
+  Initialize(imData);
 }
 
 cciScriptableImage::~cciScriptableImage()
 {
 }
 
-//===============================================
-// cciIImageContainer
-//===============================================
-
-/* [noscript,notxpcom] dmImagePtr getNative (); */
-CCI_IMETHODIMP_(dmImage *) cciScriptableImage::GetNative()
+cci_result cciScriptableImage::Initialize( dm_uint32 width, dm_uint32 height, EPixelFormat format )
 {
-   return mImage;
+  CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_ALREADY_INITIALIZED);
+  
+  dmImageDescriptor* desc = dmGetDescriptor(format);
+  if(desc) {
+     mImage = desc->CreateImage(width,height);
+  }
+  
+  if(mImage.IsNull())
+     return CCI_ERROR_OUT_OF_MEMORY;
+  
+  // Enable alpha if argb specified
+  if(format == dmPixelFormat32bppARGB)
+     mEnableAlpha = DM_TRUE;
+  
+  return CCI_OK;
+}
+
+cci_result cciScriptableImage::Initialize( dmImageData& imData )
+{
+  CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_ALREADY_INITIALIZED);
+
+  dmImageDescriptor* desc = dmGetDescriptor(imData.PixelFormat);
+  if(desc) {
+     mImage = desc->CreateImage(imData);
+  }
+
+  if(mImage.IsNull())
+     return CCI_ERROR_OUT_OF_MEMORY;
+
+  // Enable alpha if argb specified
+  if(imData.PixelFormat == dmPixelFormat32bppARGB)
+     mEnableAlpha = DM_TRUE;
+
+  return CCI_OK;
 }
 
 //===============================================
-// cciIImageShell
+// cciIImage
 //===============================================
 
 static inline void 
@@ -363,7 +402,7 @@ CCI_IMETHODIMP cciScriptableImage::Fill(dm_bool foregroundValue, cciRegion rgn)
   if(nativeRgn)
      mImage->FillArea(*nativeRgn,foregroundValue);
   else
-    mImage->FillArea(mImage->Rect(),foregroundValue);    
+     mImage->FillArea(mImage->Rect(),foregroundValue);    
   
   return CCI_OK;
 }
@@ -416,5 +455,4 @@ error:
 
   return CCI_ERROR_FAILURE;
 }
-
 

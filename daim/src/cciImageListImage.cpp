@@ -1,5 +1,3 @@
-#ifndef cciDaimGlue_h
-#define cciDaimGlue_h
 /* :::BEGIN LICENSE BLOCK:::
  *
  * Copyright (c) 2004-2005 David Marteau
@@ -24,28 +22,49 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : cciDaimGlue.h
-// Date         : 6 janv. 2009
+// File         : cciImageListImage.cpp
+// Date         : 15 févr. 2011
 // Author       : David Marteau
 //--------------------------------------------------------
 
-#include "daim.h"
+#include "cciCOMPtr.h"
+#include "cciComponentManagerUtils.h"
+#include "cciServiceManagerUtils.h"
+#include "cciImageList.h"
+#include "cciImageListImage.h"
 
-// Define CCI_DAIM_GLUE for function that we want to export 
-// when linking directly with daim library
-// otherwise we need to to link with the daimglue library
+/* Implementation file */
+CCI_IMPL_ISUPPORTS_INHERITED1(cciImageListImage,cciScriptableImage,
+                              cciIImageListImage)
 
-#ifdef DAIM_GLUE
+cciImageListImage::cciImageListImage()
+{
+  /* member initializers and constructor code */
+}
 
-cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, dmLOG_FUNCTION pfnLog );
-void       DM_ReleaseDaimGlue( dm_bool force );
+cciImageListImage::~cciImageListImage()
+{
+  /* destructor code */
+}
 
-#define DAIM_GLUE_EXPORT
+/* void init (in cciIImageList imagelist); */
+CCI_IMETHODIMP cciImageListImage::Init(cciIImageList *imagelist)
+{
+  CCI_ENSURE_FALSE(mImageList,CCI_ERROR_ALREADY_INITIALIZED);
+  CCI_ENSURE_ARG_POINTER(imagelist);
+ 
+  cci_result rv;
+  
+  mImageList = do_QueryInterface(imagelist,&rv);
+  if(CCI_FAILED(rv))
+     return rv;
+  
+  return Select(0);
+}
 
-#else
-
-#define DAIM_GLUE_EXPORT __daim_export
-
-#endif
-
-#endif /* cciDaimGlue_h */
+/* void select (in unsigned long index); */
+CCI_IMETHODIMP cciImageListImage::Select(dm_uint32 index)
+{
+  CCI_ENSURE_TRUE(mImageList,CCI_ERROR_NOT_INITIALIZED);
+  return mImageList->GetImageLink(mImage,index);
+}

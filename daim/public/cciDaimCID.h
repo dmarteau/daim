@@ -76,4 +76,27 @@
 #define CCI_IMAGESHELL_CONTRACTID "@daim.org/image-shell;1"
 #define CCI_IMAGESHELL_CLASSNAME  "Image shell"
 
+
+#define CCI_IMAGELISTIMAGE_CID \
+{ /* 00ee8919-4916-48cf-a60a-6070da557334 */       \
+  0x00ee8919,                                      \
+  0x4916,                                          \
+  0x48cf,                                          \
+  {0xa6, 0x0a, 0x60, 0x70, 0xda, 0x55, 0x73, 0x34} \
+}
+
+#define CCI_IMAGELISTIMAGE_CONTRACTID "@daim.org/imagelist-image;1"
+#define CCI_IMAGELISTIMAGE_CLASSNAME  "Image list image container"
+
+#define CCI_STORAGEIMAGE_CID \
+{ /* 041a7c4d-d904-43de-be2a-8af627074160 */       \
+  0x041a7c4d,                                      \
+  0xd904,                                          \
+  0x43de,                                          \
+  {0xbe, 0x2a, 0x8a, 0xf6, 0x27, 0x07, 0x41, 0x60} \
+}
+
+#define CCI_STORAGEIMAGE_CONTRACTID "@daim.org/storage-image;1"
+#define CCI_STORAGEIMAGE_CLASSNAME  "Storage image container"
+
 #endif /* cciDaimCID_h */

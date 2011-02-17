@@ -37,8 +37,11 @@
 #include "cciIImageShell.h"
 #include "cciIImageList.h"
 #include "cciIPyramid.h"
-#include "cciIImageContainer.h"
+#include "cciIImage.h"
+#include "cciIImageListImage.h"
+#include "cciISurfaceDriver.h"
 #include "cciIFilterContext.h"
+#include "cciImageUtils.h"
 #include "cciString.h"
 
 #include "utils/dmTimer.h"
@@ -94,7 +97,8 @@ int main( int argc, char ** argv )
       rv = shell->GetFilterContext(getter_AddRefs(context));
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
-      cci_Ptr<cciIImageContainer> image = do_QueryInterface(shell,&rv);
+      cci_Ptr<cciIImage> image;
+      rv = shell->GetImage(getter_AddRefs(image));
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       dmTimer timer;
@@ -111,18 +115,25 @@ int main( int argc, char ** argv )
 
       char buf[64];
 
-      // Move the image into buffer 0
-      rv = shell->MoveToBuffer(imgList,0);
-
+      cci_Ptr<cciIImageListImage> listimage = do_CreateInstance("@daim.org/imagelist-image;1",&rv);
+      DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
+      
+      rv = listimage->Init(imgList);
+      DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
+      
+      cci_Ptr<cciISurfaceDriver> driver;
+      rv = CCI_GetLoader(dm_null,"JPEG",DM_TRUE,getter_AddRefs(driver));
+      DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
+      
       for(unsigned int i=0;i<size;++i)
       {
-        sprintf(buf,saveLocationBase,i);
+        sprintf(buf,saveLocationBase,i+1);
 
-        rv = shell->LoadBuffer(imgList,i,dm_true);
+        rv = listimage->Select(i);
         DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
         printf("\n### Can I save an image to %s ?\n",buf);
-        rv  = shell->SaveImage(buf,"JPEG",0);
+        rv  = CCI_SaveImage(driver,buf,listimage);
         DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
       }
     }

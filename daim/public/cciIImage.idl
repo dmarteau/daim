@@ -35,6 +35,7 @@
 
 interface cciISurface;
 interface cciIColorTable;
+interface cciIImageList;
 
 /**
  *  @ingroup daim_interfaces
@@ -42,7 +43,7 @@ interface cciIColorTable;
  *  @brief interface to image (scriptable)
  */
 [scriptable, uuid(8e359cd4-3d17-4ba3-92f5-b8b654be0c5b)]
-interface cciIImage : cciIXPCOMSupports
+interface cciIImage : cciIImageContainer
 {
   [noscript] void lock(  in dmImageDataRef imData, in dmRectPtr rect );
   [noscript] void unlock();
@@ -150,7 +151,6 @@ interface cciIImage : cciIXPCOMSupports
    *    (for non rectangular region, the bounding box if the region is used).
    */
   cciIImage createCopy( in EPixelFormat format, [optional] in cciRegion rgn );
-
 };
 
 

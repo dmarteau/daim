@@ -1,8 +1,8 @@
-#ifndef cciDaimGlue_h
-#define cciDaimGlue_h
+#ifndef cciStorageImage_h
+#define cciStorageImage_h
 /* :::BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2011 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -24,28 +24,46 @@
  *  :::END LICENSE BLOCK::: */
 
 //--------------------------------------------------------
-// File         : cciDaimGlue.h
-// Date         : 6 janv. 2009
+// File         : cciStorageImage.h
+// Date         : 15 févr. 2011
 // Author       : David Marteau
 //--------------------------------------------------------
 
-#include "daim.h"
+#include "cciScriptableImage.h"
+#include "cciIStorageImage.h"
+#include "cciIImageListContainer.h"
 
-// Define CCI_DAIM_GLUE for function that we want to export 
-// when linking directly with daim library
-// otherwise we need to to link with the daimglue library
+/**
+ * @startuml
+ * 
+ * class  cciScriptableImage
+ * interface cciIImageContainer
+ * interface cciIStorageImage
+ * interface cciIImage
+ * 
+ * cciIImageContainer <|-- cciIImage
+ * cciIImage <|-- cciIStorageImage
+ * cciIStorageImage  <|.. cciStorageImage
+ * cciScriptableImage <|-- cciStorageImage
+ * cciIImage <|.. cciScriptableImage
+ *
+ * @enduml
+ */
 
-#ifdef DAIM_GLUE
+class cciStorageImage : public cciScriptableImage,
+                        public cciIStorageImage
+{
+public:
+  CCI_DECL_ISUPPORTS_INHERITED
+  CCI_DECL_ISTORAGEIMAGE
 
-cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, dmLOG_FUNCTION pfnLog );
-void       DM_ReleaseDaimGlue( dm_bool force );
+  CCI_FORWARD_IIMAGE(cciScriptableImage::)
+  CCI_FORWARD_IIMAGECONTAINER(cciScriptableImage::)
+  
+  cciStorageImage();
 
-#define DAIM_GLUE_EXPORT
+private:
+  ~cciStorageImage();
+};
 
-#else
-
-#define DAIM_GLUE_EXPORT __daim_export
-
-#endif
-
-#endif /* cciDaimGlue_h */
+#endif /* cciStorageImage_h */

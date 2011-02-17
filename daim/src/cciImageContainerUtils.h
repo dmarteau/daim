@@ -30,29 +30,32 @@
 //--------------------------------------------------------
 
 #include "cciIImageContainer.h"
+#include "daim_kernel.h"
 
 /* Header file */
+
+#define CCI_IMAGE_PRIVATE_IID \
+    { 0xf06ccafb, 0x80ca, 0x4f6f, { 0xa2, 0x02, 0x33, 0x46, 0x77, 0x2c, 0xa5, 0x75 } }
+
 class cciImageWrapper : public cciIImageContainer
 {
 public:
-  CCI_DECL_ISUPPORTS
+  CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_IMAGE_PRIVATE_IID)
+
   CCI_DECL_IIMAGECONTAINER
   
-  cciImageWrapper( dmLink<dmImage>& _link ) 
-  : imglink(_link)
-  {} 
-  
-private:
-  ~cciImageWrapper() {} 
+  dmLink<dmImage>& GetImage() { return mImage; }
 
 protected:
-  dmLink<dmImage> imglink;
+  dmLink<dmImage> mImage;
 };
+
+CCI_DEFINE_STATIC_IID_ACCESSOR(cciImageWrapper, CCI_IMAGE_PRIVATE_IID)
 
 inline 
 CCI_IMETHODIMP_(dmImage *) cciImageWrapper::GetNative()
 {
-  return imglink.Pointer();
+  return mImage.Pointer();
 }
 
 

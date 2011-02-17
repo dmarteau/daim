@@ -26,6 +26,8 @@ IDLSRC = ccidaim.idl \
          cciIImageShell.idl \
          cciIColorTable.idl \
          cciIImage.idl \
+         cciIImageListImage.idl \
+         cciIStorageImage.idl \
          $(NULL)
 
 EXPORTS = cciDaimCID.h \

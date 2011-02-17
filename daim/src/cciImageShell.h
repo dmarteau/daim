@@ -32,25 +32,22 @@
 #include "cciCOMPtr.h"
 #include "cciIFilterContext.h"
 #include "cciIImageContainer.h"
+#include "cciIImage.h"
 #include "cciIImageShell.h"
 #include "cciIImageMath.h"
-#include "cciIColorTable.h"
 
 #include "daim_kernel.h"
 
 class cciISurfaceDriver;
 
 /* Header file */
-class cciImageShell : public cciIImageShell,
-                      public cciIImageContainer
+class cciImageShell : public cciIImageShell
 {
 public:
   CCI_DECL_ISUPPORTS
   CCI_DECL_IIMAGESHELL
-  CCI_DECL_IIMAGECONTAINER
 
   cciImageShell();
-  cciImageShell(const cciImageShell* aSrc);
 
 private:
   ~cciImageShell();
@@ -61,17 +58,10 @@ private:
   void ClearOpenedResources();
   
 protected:
-  dm_bool mLock;
-  dm_bool mPreserveMetaData;
-  dm_bool mEnableAlpha;
-
-  dmLink<dmImage> mImage;
-
+  cci_Ptr<cciIImage>          mImage;
+  
   cci_Ptr<cciIImageMath>      mImageMath;
   cci_Ptr<cciIFilterContext>  mFilterContext;
-  cci_Ptr<cciISurface>        mCurrentSurface;
-  cci_Ptr<cciIColorTable>     mColorTable;
-
   cci_Ptr<cciISurfaceDriver>  mDriverCache;
 };
 

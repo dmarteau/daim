@@ -35,8 +35,7 @@
 
 #define dmUseKernelImage
 #include "cciImageList.h"
-#include "cciImageContainerUtils.h"
-#include "cciScriptableImage.h"
+#include "cciIImageContainer.h"
 #include "cciIRegionContainer.h"
 
 /* Implementation file */
@@ -484,28 +483,6 @@ CCI_IMETHODIMP cciImageList::SetBufferData(dm_uint32 index, dmImageData & data)
   return CCI_ERROR_INVALID_ARG;
 }
 
-
-/* cciImage getImage (in dm_uint32 index); */
-CCI_IMETHODIMP cciImageList::GetImage(dm_uint32 index, cciImage *_retval CCI_OUTPARAM)
-{
-  if(CHECK_SIZE(index)) 
-  {
-    // Get the image link
-    dmLink<dmImage>& _Img = mBuffers[index];
-    if(_Img.IsNull())
-      return CCI_ERROR_FAILURE;
-
-    // Create a new wrapper for this image
-    cciIImageContainer* wrapper = new cciScriptableImage(_Img);
-    if(!wrapper)
-       return CCI_ERROR_OUT_OF_MEMORY;
-    
-    CCI_ADDREF( *_retval = wrapper );
-    return CCI_OK;
-  }
-  
-  return CCI_ERROR_INVALID_ARG;
-}
 
 /* void setImage (in dm_uint32 index, in cciImage image, in cciRegion rgn, in EPixelFormat format); */
 CCI_IMETHODIMP cciImageList::SetImage(dm_uint32 index, cciImage image, cciRegion rgn, EPixelFormat format)

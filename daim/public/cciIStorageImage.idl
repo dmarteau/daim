@@ -31,62 +31,17 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#include "cciIXPCOMSupports.idl"
+#include "cciIImage.idl"
 
+[scriptable, uuid(6ce55983-e799-4a9d-bd6f-34e83b335686)]
+interface cciIStorageImage : cciIImage
+{
+  /* Methods */
+  void create( in unsigned long width, in unsigned long height, 
+               in EPixelFormat format );
+  
+  [noscript] void shareImageData( in dmImageDataRef data );
 
-%{C++
-
-#ifndef daim_h
-#include "daim.h"
-#endif
-
-
-/*
- * Start commenting out the C++ versions of the below in the output header
- */
-#if 0
-%}
-
-typedef unsigned long EPixelFormat;
-
-[ptr]   native dmKernelFamilyPtr(dmKernelFamily);
-[ref]   native dmKernelFamilyRef(dmKernelFamily);
-[ptr]   native dmImagePtr(dmImage);
-[ptr]   native dmRegionPtr(dmRegion);
-[ref]   native dmRegionRef(dmRegion);
-[ptr]   native dmImageBufferPtr(dmImageBuffer);
-[ptr]   native dmHistogramPtr(dmHistogram);
-[ref]   native dmImageDataRef(dmImageData);
-
-[ptr]   native dmRectPtr(dm_rect);
-[ref]   native dmRectRef(dm_rect);
-
-[ptr]   native dmMaskDescriptionPtr(dmMaskDescription);
-[ref]   native dmMaskDescriptionRef(dmMaskDescription);
-
-[ptr]   native intArray(dm_int32);
-[ptr]   native doubleArray(dm_real);
-[ptr]   native pointArray(dm_point);
-[ptr]   native labelArray(dm_int32);
-
-%{C++
-/*
- * End commenting out the C++ versions of the above in the output header
- */
-#endif
-%}
-
-
-interface cciIImageContainer;
-interface cciIRegionContainer;
-interface cciIKernelFamilyContainer;
-
-typedef cciISupports  cciXPCOMSupports ;
-
-typedef cciIImageContainer           cciImage;
-typedef cciIRegionContainer          cciRegion;
-typedef cciIKernelFamilyContainer    cciKernelFamily;
-
-
+};
 
 

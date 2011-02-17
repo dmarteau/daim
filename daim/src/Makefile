@@ -23,6 +23,8 @@ MODULE_FILES=daim.cpp \
              cciScriptableRegion.cpp \
              cciLoaderService.cpp \
              cciScriptableImage.cpp \
+             cciImageListImage.cpp \
+             cciStorageImage.cpp \
              RGB.cpp \
              $(NULL)
 
@@ -30,6 +32,7 @@ MODULE_LIBS = -lcci_s
 
 EXPORTS=cciImageUtils.h \
         cciDaimModule.h \
+        cciImageContainerUtils.h \
         $(NULL)
 
 REQUIRES=cci

@@ -40,35 +40,52 @@
 
 
 #include "cciCOMPtr.h"
-#include "cciIImageContainer.h"
+#include "cciImageContainerUtils.h"
 #include "cciIImage.h"
 #include "cciIColorTable.h"
 
-#include "daim_kernel.h"
+/**
+ * @startuml
+ * 
+ * interface cciIImage
+ * interface cciIImageContainer
+ * 
+ * cciIImageContainer  <|.. cciImageWrapper
+ * cciIImageContainer  <|-- cciIImage
+ * cciImageWrapper <|-- cciScriptableImage
+ * cciIImage <|.. cciScriptableImage
+ *
+ * @enduml
+ */
+
 
 /* Header file */
-class cciScriptableImage : public cciIImage,
-                           public cciIImageContainer
+class cciScriptableImage :  public cciIImage,
+                            public cciImageWrapper
+                           
 {
 public:
   CCI_DECL_ISUPPORTS
   CCI_DECL_IIMAGE
-  CCI_DECL_IIMAGECONTAINER
 
+  CCI_FORWARD_IIMAGECONTAINER(cciImageWrapper::)
+  
   cciScriptableImage();
   cciScriptableImage( dmLink<dmImage>& imglink );
   cciScriptableImage( dm_uint32 width, dm_uint32 height, EPixelFormat );
+  cciScriptableImage( dmImageData& imData );
 
-  dm_bool isValid() const { return !mImage.IsNull(); }
+  dm_bool IsValid() const { return !mImage.IsNull(); }
   
-private:
+protected:
   ~cciScriptableImage();
+  
+  cci_result Initialize( dm_uint32 width, dm_uint32 height, EPixelFormat );
+  cci_result Initialize( dmImageData& imData );
  
 protected:
   dm_bool mLock;
   dm_bool mEnableAlpha;
-
-  dmLink<dmImage> mImage;
 
   cci_Ptr<cciIColorTable> mColorTable;
 };
