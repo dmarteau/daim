@@ -57,7 +57,6 @@ private:
 protected:
   dm_uint          mScanFlags;
   dmColorHistogram mHisto;
-  dmImageBuffer    mBuffer;
 
   cci_result ScanScalarImage(dmImage&, dmRegion&, dm_uint32 index,
                              dm_real& minRange, dm_real& maxRange);
@@ -94,11 +93,7 @@ cci_result cciHistograms::ScanScalarImage(dmImage& image, dmRegion& rgn, dm_uint
   dmDensityMap _Filter(*_Histogram,minRange,maxRange,
                       (mScanFlags & AUTORANGE)!=0 || minRange >= maxRange);
 
-  // Compute histogram
-  // Buffer is mainly useless here, we just need it
-  // because the densityMap filter require it.
-  dmBufferParameters _params(mBuffer,image,rgn);
-  if(!_Filter.Apply(_params))
+  if(!_Filter.Apply(image,rgn))
      return CCI_ERROR_FAILURE;
   else {
     minRange = _Filter._MinRange;

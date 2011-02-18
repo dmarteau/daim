@@ -49,33 +49,33 @@ interface cciIDensityFilters : cciIXPCOMSupports
 {
   /**
    * @brief Apply an histogram extension to the pixel values
-   *
-   *  The extension is performed from the range set by the SetRange()
-   *  method to the range specified by the \a min and the \a max parameters.
    */
   void extend( in cciImage image, in cciRegion roi, in dm_real rmin, in dm_real rmax,
-               in cciIFilterContext filterCtxt );
+               [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Apply an 8 bits histogram transformation to the pixels
    *  values of the image parameter.
+   *  
+   *  If you need to apply histogram transformation on non-8bits images
+   *  then a filter context is required
    */
   void transform( in cciImage image, in cciRegion roi,
                   [array,size_is(count)] in unsigned long data, in unsigned long count,
-                  in cciIFilterContext filterCtxt );
+                  [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Apply an equalization to the pixels values of the image
    *  parameter.
    */
   void equalize( in cciImage image, in cciRegion roi,
-                 in cciIFilterContext filterCtxt );
+                 [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Apply gamma correction to image
    */
   void gammaCorrection( in cciImage image, in cciRegion roi, in dm_real  gamma,
-                        in cciIFilterContext filterCtxt );
+                        [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Apply brightness-contrast correction to image
@@ -83,23 +83,24 @@ interface cciIDensityFilters : cciIXPCOMSupports
    *  @param image            an image to apply correction on
    *  @param brightness       the brightness parameter, between 0 et 1
    *  @param contrast         the contrast parameter, between 0 et 1
-   *  @param useContextBuffer if true, use the context buffer as input data
+   *  @param filterCtxt       if not null,  the filter context buffer will be used as input data
    */
   void brightnessContrast( in cciImage image, in cciRegion roi, in dm_real brightness, in dm_real contrast,
-                           in boolean useContextBuffer, in cciIFilterContext filterCtxt );
+                           [optional] in cciIFilterContext filterCtxt );
 
   /**
    * @brief Scale pixels values between minval and maxval
+   * 
+   * @note Apply only to scalar pixel image type (does not work on RGB)
    */
-  void scale( in cciImage image, in cciRegion roi, in dm_real minval, in dm_real maxval,
-              in cciIFilterContext filterCtxt );
+  void scale( in cciImage image, in cciRegion roi, in dm_real minval, in dm_real maxval );
 
   /**
    *  @brief Apply an histogram specification using a stored histogram
    *  @param index the histogram index
    */
   void specify(in cciImage image, in cciRegion roi, in cciIHistograms histograms,  in dm_uint32 index,
-               in cciIFilterContext filterCtxt );
+               [optional] in cciIFilterContext filterCtxt );
 
 };
 

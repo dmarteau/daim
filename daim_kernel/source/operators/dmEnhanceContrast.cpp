@@ -167,25 +167,25 @@ using namespace daim;
 //------------------------------------------------------------------------
 struct __dm_impl_constrast
 {
-  dmBufferParameters& Params;
-  dm_real             MinRange;
-  dm_real             MaxRange;
-  dm_real             Brightness;
-  dm_real             Contrast;
-  dm_bool             UseBuffer;
+  const dmRegion&     mRegion;
+  dm_real             mMinRange;
+  dm_real             mMaxRange;
+  dm_real             mBrightness;
+  dm_real             mContrast;
+  dmImageBuffer*      mBuffer;
 
-  __dm_impl_constrast(dmBufferParameters& _Params,
+  __dm_impl_constrast( const dmRegion& _Region,
                   dm_real _MinRange,
                   dm_real _MaxRange,
                   dm_real _Brightness,
                   dm_real _Contrast,
-                  dm_bool _UseBuffer)
-  :Params(_Params)
-  ,MinRange(_MinRange)
-  ,MaxRange(_MaxRange)
-  ,Brightness(_Brightness)
-  ,Contrast(_Contrast)
-  ,UseBuffer(_UseBuffer)
+                  dmImageBuffer* _Buffer)
+  :mRegion(_Region)
+  ,mMinRange(_MinRange)
+  ,mMaxRange(_MaxRange)
+  ,mBrightness(_Brightness)
+  ,mContrast(_Contrast)
+  ,mBuffer(_Buffer)
   {}
 
   //-------------------------------------------------------
@@ -201,8 +201,8 @@ struct __dm_impl_constrast
     typedef typename traits_type::integer_type integer_type;
 
     gap<value_type> _range(
-       _get_range_value(MinRange,traits_type(),integer_type()),
-       _get_range_value(MaxRange,traits_type(),integer_type())
+       _get_range_value(mMinRange,traits_type(),integer_type()),
+       _get_range_value(mMaxRange,traits_type(),integer_type())
     );
 
     image_type* in;
@@ -211,27 +211,24 @@ struct __dm_impl_constrast
     const dmRegion* rgn;
     dmPoint         src;
 
-    if(UseBuffer)
+    if(mBuffer)
     {
-      dmImageBuffer& _buffer = Params.thisBuffer;
-
-      in  = &dmIImage<_PixelFormat>::Cast(_buffer.Buffer())->Gen();
-
-      rgn = &_buffer.BufferRgn();
-      src =  _buffer.BufferSrc();
+      in  = &dmIImage<_PixelFormat>::Cast(mBuffer->Buffer())->Gen();
+      rgn = &mBuffer->BufferRgn();
+      src =  mBuffer->BufferSrc();
     }
     else
     {
       in  = out;
-      rgn = &Params.thisRegion;
+      rgn = &mRegion;
       src = rgn->Rectangle().TopLeft();
     }
 
     if(_range.upper <= _range.lower)
        _range = minmax(*rgn,*in); // Get the min and the max for the region
 
-    dm_real Br = _range.upper * Brightness - _range.lower;
-    dm_real Co = 100.0 * Contrast ;
+    dm_real Br = _range.upper * mBrightness - _range.lower;
+    dm_real Co = 100.0 * mContrast ;
 
     enhance_contrast(*rgn,src,*in,*out,_range.min(),_range.max(),Br,Co);
 
@@ -242,18 +239,16 @@ struct __dm_impl_constrast
     typedef dmIImage<dmPixelFormat24bppRGB>::image_type  image_type;
     typedef dmIImage<dmPixelFormat24bppRGB>::traits_type traits_type;
 
-    dm_uint16 Br = static_cast<dm_uint16>(255.0 * Brightness + 0.5);
-    dm_uint16 Co = static_cast<dm_uint16>(100.0 * Contrast   + 0.5);
+    dm_uint16 Br = static_cast<dm_uint16>(255.0 * mBrightness + 0.5);
+    dm_uint16 Co = static_cast<dm_uint16>(100.0 * mContrast   + 0.5);
 
     dmColorIndexTable ctable;
     enhance_contrast(ctable,Br,Co);
 
-    if(UseBuffer)
+    if(mBuffer)
     {
-      dmImageBuffer& _buffer = Params.thisBuffer;
-
-      image_type& in  = dmIImage<dmPixelFormat24bppRGB>::Cast(_buffer.Buffer())->Gen();
-      daim::copy(_buffer.BufferRgn(),_buffer.BufferSrc(),in,_Image.Gen());
+      image_type& in  = dmIImage<dmPixelFormat24bppRGB>::Cast(mBuffer->Buffer())->Gen();
+      daim::copy(mBuffer->BufferRgn(),mBuffer->BufferSrc(),in,_Image.Gen());
     }
 
     // Compute a brigthness/contrast map correction
@@ -269,7 +264,7 @@ struct __dm_impl_constrast
       rgb_table[i].b = value;
     }
 
-    apply_map(_Image.Gen(),Params.thisRegion,rgb_table);
+    apply_map(_Image.Gen(),mRegion,rgb_table);
 
   }
 
@@ -278,41 +273,47 @@ struct __dm_impl_constrast
     typedef dmIImage<dmPixelFormat8bppIndexed>::image_type  image_type;
     typedef dmIImage<dmPixelFormat8bppIndexed>::traits_type traits_type;
 
-    dm_uint16 Br = static_cast<dm_uint16>(255.0 * Brightness + 0.5);
-    dm_uint16 Co = static_cast<dm_uint16>(100.0 * Contrast   + 0.5);
+    dm_uint16 Br = static_cast<dm_uint16>(255.0 * mBrightness + 0.5);
+    dm_uint16 Co = static_cast<dm_uint16>(100.0 * mContrast   + 0.5);
 
     // Compute a brigthness/contrast map correction
 
     dmColorIndexTable ctable;
     enhance_contrast(ctable,Br,Co);
 
-    if(UseBuffer)
+    if(mBuffer)
     {
-      dmImageBuffer& _buffer = Params.thisBuffer;
-
-      image_type& in  = dmIImage<dmPixelFormat8bppIndexed>::Cast(_buffer.Buffer())->Gen();
-      daim::copy(_buffer.BufferRgn(),_buffer.BufferSrc(),in,_Image.Gen());
+      image_type& in  = dmIImage<dmPixelFormat8bppIndexed>::Cast(mBuffer->Buffer())->Gen();
+      daim::copy(mBuffer->BufferRgn(),mBuffer->BufferSrc(),in,_Image.Gen());
     }
 
-    apply_map(_Image.Gen(),Params.thisRegion,ctable);
+    apply_map(_Image.Gen(),mRegion,ctable);
   }
 };
 //----------------------------------------------------------------------
 bool dmEnhanceContrast::Apply( dmBufferParameters& _Params )
 {
-  __dm_impl_constrast _filter(_Params,
+  __dm_impl_constrast _filter(_Params.thisRegion,
                           this->_MinRange,this->_MaxRange,
                           daim::range(this->_Brightness,0.0,1.0),
                           daim::range(this->_Contrast  ,0.0,1.0),
-                          _UseBuffer);
-  if(_UseBuffer)
-  {
-    // Ensure that buffer has the same type has the input image
-    if(_Params.thisBuffer.IsEmpty() ||
-       _Params.thisBuffer.Buffer()->PixelFormat()!=_Params.thisImage.PixelFormat())
-      return false;
-  }
+                          &_Params.thisBuffer);
+   // Ensure that buffer has the same type has the input image
+   if(_Params.thisBuffer.IsEmpty() ||
+      _Params.thisBuffer.Buffer()->PixelFormat()!=_Params.thisImage.PixelFormat())
+    return false;
 
   return dmImplementOperation(_filter,_Params.thisImage);
+}
+//----------------------------------------------------------------------
+bool dmEnhanceContrast::Apply( dmImage& _Image, const dmRegion& _Region )
+{
+  __dm_impl_constrast _filter(_Region,
+                          this->_MinRange,this->_MaxRange,
+                          daim::range(this->_Brightness,0.0,1.0),
+                          daim::range(this->_Contrast  ,0.0,1.0),
+                          dm_null);
+
+  return dmImplementOperation(_filter,_Image);
 }
 //------------------------------------------------------------------------

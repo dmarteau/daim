@@ -37,19 +37,19 @@ using namespace daim;
 //----------------------------------------------------------------------
 struct __dm_impl_DensityMap
 {
-  dmBufferParameters& Params;
-  dmHistogram&        Histo;
-  dm_real&            MinRange;
-  dm_real&            MaxRange;
-  bool                AutoScan;
+  const dmRegion&     mRegion;
+  dmHistogram&        mHisto;
+  dm_real&            mMinRange;
+  dm_real&            mMaxRange;
+  bool                mAutoScan;
 
-  __dm_impl_DensityMap(dmBufferParameters& _Params ,dmHistogram& _Histo,
+  __dm_impl_DensityMap(const dmRegion& _Region ,dmHistogram& _Histo,
                        dm_real& _MinRange,dm_real& _MaxRange, bool _AutoScan)
-   :Params  (_Params  )
-   ,Histo   (_Histo   )
-   ,MinRange(_MinRange)
-   ,MaxRange(_MaxRange)
-   ,AutoScan(_AutoScan)
+   :mRegion (_Region  )
+   ,mHisto   (_Histo   )
+   ,mMinRange(_MinRange)
+   ,mMaxRange(_MaxRange)
+   ,mAutoScan(_AutoScan)
    {}
 
   // Generic operation on scalar
@@ -63,43 +63,43 @@ struct __dm_impl_DensityMap
 
      gap<value_type> _g(traits_type::min(),traits_type::max());
 
-     if(AutoScan) {
-       _g = minmax(Params.thisRegion,_img.Gen());
-       MinRange = _g.min();
-       MaxRange = _g.max();
+     if(mAutoScan) {
+       _g = minmax(mRegion,_img.Gen());
+       mMinRange = _g.min();
+       mMaxRange = _g.max();
      } else {
        _g = gap<value_type>(
-          _get_range_value(MinRange,traits_type(),integer_type()),
-          _get_range_value(MaxRange,traits_type(),integer_type())
+          _get_range_value(mMinRange,traits_type(),integer_type()),
+          _get_range_value(mMaxRange,traits_type(),integer_type())
        );
      }
 
-     Histo.GetHistogram(_img.Gen(),Params.thisRegion,
+     mHisto.GetHistogram(_img.Gen(),mRegion,
           daim::_extract_range<value_type>(_g));
   }
 
   // Specialization
   void operator()( dmIImage<dmPixelFormat24bppRGB>& _img ) {
-    Histo.GetHistogram(_img.Gen(),Params.thisRegion);
-    MinRange = 0;
-    MaxRange = 255;
+    mHisto.GetHistogram(_img.Gen(),mRegion);
+    mMinRange = 0;
+    mMaxRange = 255;
   }
 
   void operator()( dmIImage<dmPixelFormat8bppIndexed>&  _img ) {
-    Histo.GetHistogram(_img.Gen(),Params.thisRegion);
-    MinRange = 0;
-    MaxRange = 255;
+    mHisto.GetHistogram(_img.Gen(),mRegion);
+    mMinRange = 0;
+    mMaxRange = 255;
   }
 
 };
 //----------------------------------------------------------------------
-bool dmDensityMap::Apply( dmBufferParameters& _Params )
+bool dmDensityMap::Apply( dmImage& _Image, const dmRegion& _Region )
 {
-  __dm_impl_DensityMap _filter(_Params,
+  __dm_impl_DensityMap _filter(_Region,
                        this->_Histogram,
                        this->_MinRange,this->_MaxRange,
                        this->_AutoScan);
 
-  return dmImplementOperation(_filter,_Params.thisImage);
+  return dmImplementOperation(_filter,_Image);
 }
 //------------------------------------------------------------------------

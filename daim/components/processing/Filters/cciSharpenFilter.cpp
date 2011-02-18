@@ -142,8 +142,9 @@ CCI_IMETHODIMP cciSharpenFilter::DoSharpen(dmImage *image, dmRegion *rgn, dm_uin
       if(!srcImage)
          return CCI_ERROR_UNEXPECTED;
 
-      if(dmApplyFilter(_Filter,*filterCtxt->NativeBuffer(),*srcImage,roi,true) &&
-         _dmDoImageMath4(*srcImage,roi,1.0/(1.0 - strength),0))
+      dmBufferParameters _Params(*filterCtxt->NativeBuffer(),*srcImage,roi);
+
+      if(_Filter.Apply(_Params) && _dmDoImageMath4(*srcImage,roi,1.0/(1.0 - strength),0))
       {
         return colorspace->Merge(native_Wrapper(image));
       }
@@ -151,8 +152,9 @@ CCI_IMETHODIMP cciSharpenFilter::DoSharpen(dmImage *image, dmRegion *rgn, dm_uin
   }
   else
   {
-    if(dmApplyFilter(_Filter,*filterCtxt->NativeBuffer(),*image,roi,true) &&
-       _dmDoImageMath4(*image,roi,1.0/(1.0 - strength),0))
+    dmBufferParameters _Params(*filterCtxt->NativeBuffer(),*image,roi);
+
+    if(_Filter.Apply(_Params) && _dmDoImageMath4(*image,roi,1.0/(1.0 - strength),0))
       return CCI_OK;
 
   }

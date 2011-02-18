@@ -15,19 +15,19 @@ using namespace daim;
 //------------------------------------------------------------------------
 struct __dm_impl_gamma
 {
-  dmBufferParameters& Params;
-  dm_real             MinRange;
-  dm_real             MaxRange;
-  dm_real             Gamma;
+  const dmRegion&     mRegion;
+  dm_real             mMinRange;
+  dm_real             mMaxRange;
+  dm_real             mGamma;
 
-  __dm_impl_gamma(dmBufferParameters& _Params,
+  __dm_impl_gamma(const dmRegion& _Region,
                   dm_real _MinRange,
                   dm_real _MaxRange,
                   dm_real _Gamma )
-  :Params(_Params)
-  ,MinRange(_MinRange)
-  ,MaxRange(_MaxRange)
-  ,Gamma(_Gamma)
+  :mRegion(_Region)
+  ,mMinRange(_MinRange)
+  ,mMaxRange(_MaxRange)
+  ,mGamma(_Gamma)
   {}
 
   //-------------------------------------------------------
@@ -43,8 +43,8 @@ struct __dm_impl_gamma
     typedef typename traits_type::integer_type integer_type;
 
      gap<value_type> _range(
-        _get_range_value(MinRange,traits_type(),integer_type()),
-        _get_range_value(MaxRange,traits_type(),integer_type())
+        _get_range_value(mMinRange,traits_type(),integer_type()),
+        _get_range_value(mMaxRange,traits_type(),integer_type())
      );
 
     image_type& _image = _img.Gen();
@@ -52,7 +52,7 @@ struct __dm_impl_gamma
     dmRegion reg;
     if(_range.upper <= _range.lower)
     {
-      reg    = Params.thisRegion; // Get the min and the max for the region
+      reg    = mRegion; // Get the min and the max for the region
       _range = minmax(_image.rect(),_image);
     }
     else if(_range.upper < traits_type::max() &&   // Don't scan if we have
@@ -60,17 +60,17 @@ struct __dm_impl_gamma
     {
       // Create pixel range region
       create_rgnroi(_image,between<value_type>(_range.min(),_range.max()),
-                    reg,Params.thisRegion);
+                    reg,mRegion);
     }
 
-    gamma_transform(reg,_image,_range.min(),_range.max(),Gamma);
+    gamma_transform(reg,_image,_range.min(),_range.max(),mGamma);
   }
 
-
+  /*
   void operator()( dmIImage<dmPixelFormat24bppRGB>&  _img )
   {
     dmColorIndexTable ctable;
-    gamma_correction(ctable,Gamma);
+    gamma_correction(ctable,mGamma);
 
     // Compute a gamma correction
 
@@ -85,25 +85,27 @@ struct __dm_impl_gamma
       rgb_table[i].b = value;
     }
 
-    apply_map(_img.Gen(),Params.thisRegion,rgb_table);
+    apply_map(_img.Gen(),mRegion,rgb_table);
   }
+  */
 
 
   void operator()( dmIImage<dmPixelFormat8bppIndexed>&  _img )
   {
     // compute a gamma map correction
     dmColorIndexTable ctable;
-    gamma_correction(ctable,Gamma);
-    apply_map(_img.Gen(),Params.thisRegion,ctable);
+    gamma_correction(ctable,mGamma);
+    apply_map(_img.Gen(),mRegion,ctable);
   }
 };
 //----------------------------------------------------------------------
-bool dmGammaCorrection::Apply( dmBufferParameters& _Params )
+bool dmGammaCorrection::Apply( dmImage& _Image, const dmRegion& _Region )
 {
-  __dm_impl_gamma _filter(_Params,
+  __dm_impl_gamma _filter(_Region,
                           this->_MinRange,this->_MaxRange,
                           this->_Gamma);
 
-  return dmImplementOperation(_filter,_Params.thisImage);
+  //return dmImplementOperation(_filter,_Image);
+  return dmImplementScalarOperation(_filter,_Image);
 }
 //------------------------------------------------------------------------

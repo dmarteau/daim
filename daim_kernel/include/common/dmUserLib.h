@@ -494,7 +494,7 @@ class dmDensityMap
    ,_AutoScan(AutoScan)
    {}
 
-   bool Apply( dmBufferParameters& );
+   bool Apply( dmImage&, const dmRegion& );
 };
 /*---------------------------------------------------------------------------------------
  functor    : dmExtendMap
@@ -517,7 +517,7 @@ class dmExtendMap
    ,_MaxRange(MaxRange)
    {}
 
-   bool Apply( dmBufferParameters& );
+   bool Apply( dmImage& , const dmRegion& );
 };
 /*---------------------------------------------------------------------------------------
  functor    : dmInvertMap
@@ -541,7 +541,7 @@ class dmInvertMap
  functor    : dmTransformMap
  description: Apply histogram mapping from 'dmColorMapArray' on pixels values
               between MinRange and MaxRange. (Note that 8bits interpolation
-              is performed on non-8bits images ion order to apply the mapping.
+              is performed on non-8bits images in order to apply the mapping.
               Range is ignored for 8 bits or rgb images.
               Interpolation method can be specified by the 'flags' parameter
               (not implemented for now).
@@ -562,7 +562,7 @@ class dmTransformMap
   ,_Flags(Flags)
   {}
 
-  bool Apply( dmBufferParameters& );
+  bool Apply( dmImage& , const dmRegion& );
 };
 /*---------------------------------------------------------------------------------------
  function   : dmCompareAndCopy
@@ -580,14 +580,14 @@ bool dmCompareAndCopy( const dmImage& src, dmImage& dst, dm_uint  predicat,
               as the pixel beeing copied.
 ---------------------------------------------------------------------------------------*/
 bool dmCompareAndCopyMask( const dmImage& src, dmImage& dst, dm_uint  predicat,
-                           dmImage& mask, dm_real  value );
+                           dmImage& mask, dm_real value );
 /*---------------------------------------------------------------------------------------
  function   : dmCopyIfMaskCondition
  description: Copy src pixels in dest if the unary predicat on the same mask pixel
               is verified.
 ---------------------------------------------------------------------------------------*/
 bool dmCopyIfMaskCondition( const dmImage& src, dmImage& dst,
-                            dmImage& mask, dm_uint  predicat, dm_real  value );
+                            dmImage& mask, dm_uint predicat, dm_real  value );
 /*---------------------------------------------------------------------------------------
  function   : dmCreateRegion
  description: Create a region correponding to the pixels that verify the
@@ -658,18 +658,17 @@ class dmEnhanceContrast
     dm_real   _MaxRange;
     dm_real   _Brightness;
     dm_real   _Contrast;
-    dm_bool   _UseBuffer;
 
     dmEnhanceContrast( dm_real MinRange,dm_real MaxRange,
-                       dm_real Brightness,dm_real Contrast, dm_bool UseBuffer)
+                       dm_real Brightness,dm_real Contrast)
     :_MinRange(MinRange)
     ,_MaxRange(MaxRange)
     ,_Brightness(Brightness)
     ,_Contrast(Contrast)
-    ,_UseBuffer(UseBuffer)
     {}
 
     bool Apply( dmBufferParameters& );
+    bool Apply( dmImage&, const dmRegion& );
 };
 /*---------------------------------------------------------------------------------------
  functor    : dmGammaCorrection
@@ -688,7 +687,7 @@ class dmGammaCorrection
     ,_Gamma(Gamma)
     {}
 
-    bool Apply( dmBufferParameters& );
+    bool Apply( dmImage&, const dmRegion& );
 };
 /*---------------------------------------------------------------------------------------
  function   : dmBlendImage
@@ -748,8 +747,8 @@ bool dmScaleImage( dmBufferParameters& _Params, dm_real _Min, dm_real _Max );
 bool dmScaleImage( const dmImage& _Src, const dmRegion& _Rgn, dm_real _Min, dm_real _Max );
 bool dmScaleImage( const dmImage& _Src, dm_real _Min, dm_real _Max );
 /*---------------------------------------------------------------------------------------
- function    : dmScaleImage
- description: Rescale pixel values between _Min and _Max;
+ function    : dmTruncateImage
+ description: Truncate image to a different format
 ---------------------------------------------------------------------------------------*/
 bool dmTruncateImage( const dmImage& _Src, dmImage& _Dst, const dmRegion& _Rgn,
                       const dmPoint& _Point );
