@@ -41,8 +41,8 @@
 //==============================
 int main( int argc, char ** argv )
 {
-  // Get the DAIM_HOME environment variable
-  const char* location = getenv("DAIM_HOME");
+  // Get the DAIM_BIN environment variable
+  const char* location = getenv("DAIM_BIN");
 
   cci_result rv;
 

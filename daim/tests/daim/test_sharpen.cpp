@@ -73,12 +73,12 @@ int main( int argc, char ** argv )
     {
       cci_result rv;
 
-      // Get the DAIM_HOME environment variable
-      const char* location = getenv("DAIM_HOME");
+      // Get the DAIM_BIN environment variable
+      const char* location = getenv("DAIM_BIN");
 
       DM_TEST_EXPECT_RESULT(location && location[0]!='\0');
 
-      printf("\n### DAIM_HOME set to %s\n",location);
+      printf("\n### DAIM_BIN set to %s\n",location);
 
       snprintf(sampleLocation,MAX_PATH-1,"%s/samples/exif/camera.jpg",location);
 

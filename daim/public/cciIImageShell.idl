@@ -94,17 +94,6 @@ interface cciIImageShell : cciIXPCOMSupports
              in dm_uint32 mode);
 
   /**
-   * Perform a blend copy a region \a roi of the given \a srcImage a location \a dstX \a dstY of
-   * the current image.
-   *
-   * @param srcImage the image source
-   * @param percent  the blend factor, must be a number between 0 and 1
-   * @param roi      the region of the image to be copied (can be null)
-   * @param format   the format of the new image (can be dmPixelFormatUndefined)
-   */
-  void blend( in cciImage srcImage, in dm_real percent, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY );
-
-  /**
    * Apply generic Filter operation to current image
    */
   void applyFilter( in cciIImageFilter filter, in cciRegion rgn );

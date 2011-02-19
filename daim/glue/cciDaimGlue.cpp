@@ -116,7 +116,7 @@ cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, d
 
     char curpath[MAX_PATH] = "\0";
 
-    snprintf(libpath,MAX_PATH-1,"%s/bin",location);
+    snprintf(libpath,MAX_PATH-1,"%s",location);
 
     #ifdef DEBUG
       fprintf(stderr,"*** Switching current dir to : %s\n",libpath);
@@ -148,7 +148,7 @@ cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, d
   #endif //DM_CONFIG_TARGET_LINUX
 
   // Bootstrap the library
-  snprintf(libpath,MAX_PATH-1,"%s" PATH_SEP "bin" PATH_SEP "%s",location,DAIM_DLL);
+  snprintf(libpath,MAX_PATH-1,"%s" PATH_SEP "%s",location,DAIM_DLL);
 
   gDaimModule = __dm_dlopen( libpath );
 

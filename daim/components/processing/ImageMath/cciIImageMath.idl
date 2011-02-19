@@ -54,7 +54,7 @@ interface cciIImageMath : cciIXPCOMSupports
    * @param rhsimage  image as rhs operand (unchanged).
    * @param roi       the region of interest
    * @param operation the operation  to be performed
-   * @param context   a filter context object (mandatory)
+   * @param context   a filter context object (mandatory if image are of different types)
    * @param x         The x destination of the region to be copied.
    * @param y         The y destination of the region to be copied.
    *
@@ -62,7 +62,7 @@ interface cciIImageMath : cciIXPCOMSupports
    */
   void doImageMath( in cciImage lhsImage, in cciImage rhsImage, in cciRegion roi,
                     in dm_int32 x, in dm_int32 y, in dm_int32 operation,
-                    [optional] in cciIFilterContext filterCtxt );
+                    in cciIFilterContext filterCtxt );
 
   /**
    * @brief Accumulate pixels values from imagelist

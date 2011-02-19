@@ -167,20 +167,6 @@ CCI_IMETHODIMP cciImageShell::Copy(cciImage srcImage, cciRegion roi, dm_int32 ds
   }
 }
 
-/* void blend (in cciImage srcImage, in dm_real percent, in cciRegion roi, in dm_int32 dstX, in dm_int32 dstY); */
-CCI_IMETHODIMP cciImageShell::Blend(cciImage srcImage, dm_real percent, cciRegion roi, dm_int32 dstX, dm_int32 dstY)
-{
-  CCI_ENSURE_TRUE(mImage,CCI_ERROR_NOT_INITIALIZED);
-  CCI_ENSURE_ARG_POINTER(srcImage);
-
-  cci_result rv = EnsureImageMath();
-  if(CCI_FAILED(rv))
-     return rv;
-
-  return mImageMath->Blend(srcImage,mImage,percent,roi,dstX,dstY);
-}
-
-
 /* void applyFilter (in cciIImageFilter filter, in cciRegion rgn); */
 CCI_IMETHODIMP cciImageShell::ApplyFilter(cciIImageFilter *filter, cciRegion rgn)
 {

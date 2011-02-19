@@ -104,21 +104,21 @@ DM_Initialize( const char** _argv, int _argc, dmLOG_FUNCTION pfnLog )
         {
           registryLocation = _argv[i+1];
         } else
-        if(_dm_strcmp(_argv[i],"--daim-home")==0 && i<(_argc-1))
+        if(_dm_strcmp(_argv[i],"--daim-bin")==0 && i<(_argc-1))
         {
-          dmPortability::SetEnv("DAIM_HOME",_argv[i+1]);
+          dmPortability::SetEnv("DAIM_BIN",_argv[i+1]);
         }
       }
     }
 
-    // Check if DAIM_HOME is defined in environment
+    // Check if DAIM_BIN is defined in environment
     // Add path to components to the CCI_COMPONENTS_PATH_ENV variables
 
-    dmCString daimLibraryPath = dmPortability::GetEnv("DAIM_HOME");
+    dmCString daimLibraryPath = dmPortability::GetEnv("DAIM_BIN");
     if(!daimLibraryPath.IsEmpty())
     {
       dmCString cciComponentPath = daimLibraryPath;
-      cciComponentPath.Append("/bin/cci");
+      cciComponentPath.Append("/cci");
 
       // Append to component paths
       dmPortability::SetEnv(CCI_COMPONENTS_PATH_ENV,
