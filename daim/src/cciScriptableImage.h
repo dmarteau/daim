@@ -52,8 +52,8 @@
  * 
  * cciIImageContainer  <|.. cciImageWrapper
  * cciIImageContainer  <|-- cciIImage
- * cciImageWrapper <|-- cciScriptableImage
- * cciIImage <|.. cciScriptableImage
+ * cciImageWrapper     <|-- cciScriptableImage
+ * cciIImage           <|.. cciScriptableImage
  *
  * @enduml
  */

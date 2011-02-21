@@ -9,14 +9,12 @@ ifdef DM_GDAL_DLL
 LIBRARY_NAME=gdaldrv
 else
 LIBRARY_NAME=gdalmindrv
-endif
 
-ifndef GDAL_HOME
-$(error GDAL_HOME not defined !!)
-endif
-
+GDAL_HOME=$(BUILD_DIR)/gdal
 GDAL_INCLUDE=$(GDAL_HOME)/include
 GDAL_LIB=$(GDAL_HOME)/lib
+
+endif
 
 MODULE_INCL=$(GDAL_INCLUDE)
 
@@ -28,26 +26,25 @@ MODULE_FILES=gdaldrv.cpp \
 
 IS_COMPONENT=1
 
-
 ifeq ($(OS_ARCH),WINNT)
 
 MODULE_LIBDIR=$(GDAL_LIB)
 
 ifdef DM_GDAL_DLL
-MODULE_LIBS=-lgdal_i
+MODULE_LIBS=-l$(GDAL_PREFIX)gdal_i
 else
 MODULE_DEFS=GDAL_MINIMAL
-MODULE_LIBS=-lgdal
+MODULE_LIBS=-l$(GDAL_PREFIX)gdal
 endif
 
 else
 
 ifdef DM_GDAL_DLL
 MODULE_LIBDIR=$(GDAL_LIB)
-MODULE_LIBS=-lgdal
+MODULE_LIBS=-l$(GDAL_PREFIX)gdal
 else
 MODULE_DEFS = GDAL_MINIMAL
-MODULE_STATIC_LIBS=$(GDAL_LIB)/libgdal.a
+MODULE_STATIC_LIBS=$(GDAL_LIB)/lib$(GDAL_PREFIX)gdal.a
 endif
 
 endif

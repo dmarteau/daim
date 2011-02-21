@@ -41,11 +41,11 @@
  * interface cciIStorageImage
  * interface cciIImage
  * 
- * cciIImageContainer <|-- cciIImage
- * cciIImage <|-- cciIStorageImage
- * cciIStorageImage  <|.. cciStorageImage
- * cciScriptableImage <|-- cciStorageImage
- * cciIImage <|.. cciScriptableImage
+ * cciIImageContainer  <|-- cciIImage
+ * cciIImage           <|-- cciIStorageImage
+ * cciIStorageImage    <|.. cciStorageImage
+ * cciScriptableImage  <|-- cciStorageImage
+ * cciIImage           <|.. cciScriptableImage
  *
  * @enduml
  */

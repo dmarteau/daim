@@ -35,7 +35,7 @@ include $(DEPTH)/config/config.mk
 
 .PHONY: build build_tiers make_tiers
 
-export DAIM_DEBUG
+#export DAIM_DEBUG
 
 TIERS= \
 	tiers \

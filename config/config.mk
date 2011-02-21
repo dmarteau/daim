@@ -56,10 +56,7 @@ BUILD_TESTS:=1
 # GDAL driver config
 
 # Use gdal driver (gdal required)
-DM_USE_GDAL:=1
-
-# Link dynamically with gdal (enable full gdal capabilities)
-#DM_GDAL_DLL=1
+DAIM_GDAL:=1
 
 #
 # Include user/app overrides
@@ -80,19 +77,6 @@ endif
 else
 BUILD_DIR=$(DAIM_OBJ_DIR)
 endif
-
-#==========================================
-# Define GDAL_HOME
-#==========================================
-
-ifdef DM_USE_GDAL
-ifndef GDAL_HOME
-# Use gdal internal build
-DAIM_GDAL:=1
-GDAL_HOME=$(BUILD_DIR)/gdal
-endif
-endif
-
 
 #=======================================
 # Build configuration
