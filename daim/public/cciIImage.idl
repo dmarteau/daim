@@ -33,6 +33,7 @@
 
 #include "cciIImageContainer.idl"
 
+interface cciIRegionContainer;
 interface cciISurface;
 interface cciIColorTable;
 interface cciIImageList;
