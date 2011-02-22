@@ -107,9 +107,11 @@ DAIM_GLUE_EXPORT
 cci_result CCI_NewImage(dm_uint32 width, dm_uint32 height, EPixelFormat format, cciIImage* *_result)
 {
   cciScriptableImage* newImage = new cciScriptableImage(width,height,format);
+  CCI_IF_ADDREF(newImage);
+  
   if(newImage && newImage->IsValid()) 
   {
-    CCI_ADDREF(*_result = newImage);
+    *_result = newImage;
     return CCI_OK;
   }
   
@@ -121,9 +123,11 @@ DAIM_GLUE_EXPORT
 cci_result CCI_NewImage(dmImageData & data, cciIImage* *_result)
 {
   cciScriptableImage* newImage = new cciScriptableImage(data);
+  CCI_IF_ADDREF(newImage);
+  
   if(newImage && newImage->IsValid()) 
   {
-    CCI_ADDREF(*_result = newImage);
+    *_result = newImage;
     return CCI_OK;
   }
   
