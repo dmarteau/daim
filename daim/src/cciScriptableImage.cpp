@@ -95,7 +95,7 @@ cciScriptableImage::~cciScriptableImage()
 
 cci_result cciScriptableImage::Initialize( dm_uint32 width, dm_uint32 height, EPixelFormat format )
 {
-  CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_ALREADY_INITIALIZED);
+  CCI_ENSURE_TRUE(mImage.IsNull(),CCI_ERROR_ALREADY_INITIALIZED);
   
   dmImageDescriptor* desc = dmGetDescriptor(format);
   if(desc) {
@@ -114,7 +114,7 @@ cci_result cciScriptableImage::Initialize( dm_uint32 width, dm_uint32 height, EP
 
 cci_result cciScriptableImage::Initialize( dmImageData& imData )
 {
-  CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_ALREADY_INITIALIZED);
+  CCI_ENSURE_TRUE(mImage.IsNull(),CCI_ERROR_ALREADY_INITIALIZED);
 
   dmImageDescriptor* desc = dmGetDescriptor(imData.PixelFormat);
   if(desc) {

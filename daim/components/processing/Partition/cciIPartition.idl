@@ -34,7 +34,7 @@
 #include "ccidaim.idl"
 
 interface cciIRegionContainer;
-interface cciImageContainer;
+interface cciIImageContainer;
 interface cciIResultColumn;
 
 /**

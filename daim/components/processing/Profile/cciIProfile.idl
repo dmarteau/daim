@@ -33,6 +33,8 @@
 
 #include "ccidaim.idl"
 
+interface cciIRegionContainer;
+interface cciIImageContainer;
 interface cciIResultSet;
 
 /**

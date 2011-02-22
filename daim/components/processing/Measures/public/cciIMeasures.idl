@@ -33,6 +33,9 @@
 
 #include "ccidaim.idl"
 
+interface cciIRegionContainer;
+interface cciIImageContainer;
+
 %{C++
 
 /**
@@ -136,12 +139,12 @@ interface cciIMeasurements : cciIXPCOMSupports
   /**
    * @brief Clear all labels in \a labels
    */
-  void removeLabels( [array,size_is(count)] in dm_int32 labels, in dm_uint32 count );
+  void removeLabels( [array,size_is(count)] in dm_int32 labels, in unsigned long count );
 
   /**
    * @brief Create the mask corresponding to all the objects in \a labels
    */
-  void selectLabels( in cciRegion mask, [array,size_is(count)] in dm_int32 labels, in dm_uint32 count );
+  void selectLabels( in cciRegion mask, [array,size_is(count)] in dm_int32 labels, in unsigned long count );
 
   /**
    * @brief Set the spatial calibration
@@ -239,7 +242,7 @@ interface cciIMeasurements : cciIXPCOMSupports
    *    - 'ImgDesc_MeanDensity'     return mean luminance value
    *
    */
-   void doMeasures( [array,size_is(count)] in string properties, in dm_uint32 count,
+   void doMeasures( [array,size_is(count)] in string properties, in unsigned long count,
                      in cciIResultSet results, 
                      in cciImage refImage );
   
@@ -261,16 +264,16 @@ interface cciIMeasurements : cciIXPCOMSupports
   readonly attribute dm_uint32 depth;
 
   /* Flags for Build method */
-  const dm_int32 CCIV_ImageMap_NoClip    = 0x01;
-  const dm_int32 CCIV_ImageMap_OffsetRoi = 0x02;
+  const long CCIV_ImageMap_NoClip    = 0x01;
+  const long CCIV_ImageMap_OffsetRoi = 0x02;
 
   /* Flags for GetProperties method */
-  const dm_int32 CCIV_ImageMap_Area  =  0x01;
-  const dm_int32 CCIV_ImageMap_Dir   =  0x02;
-  const dm_int32 CCIV_ImageMap_Rect  =  0x04;
-  const dm_int32 CCIV_ImageMap_Loc   =  0x08;
-  const dm_int32 CCIV_ImageMap_Shape =  0x10;
-  const dm_int32 CCIV_ImageMap_Euler =  0x20;
+  const long CCIV_ImageMap_Area  =  0x01;
+  const long CCIV_ImageMap_Dir   =  0x02;
+  const long CCIV_ImageMap_Rect  =  0x04;
+  const long CCIV_ImageMap_Loc   =  0x08;
+  const long CCIV_ImageMap_Shape =  0x10;
+  const long CCIV_ImageMap_Euler =  0x20;
 };
 
 

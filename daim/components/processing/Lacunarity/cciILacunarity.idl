@@ -33,9 +33,8 @@
 
 #include "ccidaim.idl"
 
-
 interface cciIRegionContainer;
-interface cciImageContainer;
+interface cciIImageContainer;
 
 /**
  *  @ingroup daim
@@ -81,7 +80,7 @@ interface cciILacunarity : cciIXPCOMSupports
    * a non linear order L-filter with first and last coefficient
    * coefficients equals to 1/2 (i.e (min+max)/2)
    */
-  const dm_uint32 CCIV_Lacunarity_Fractional = 1;
+  const long CCIV_Lacunarity_Fractional = 1;
  
   /**
    * @brief Destroy allocated resources.
