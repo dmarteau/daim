@@ -30,7 +30,12 @@
 #include "cciIMatrix.h"
 #include "cciILoaderService.h"
 #include "cciISurfaceDriver.h"
+
+#ifdef DAIM_GLUE
 #include "cciDaimglue.h"
+#else
+#define DAIM_GLUE_EXPORT __daim_export
+#endif
 
 
 DAIM_GLUE_EXPORT
