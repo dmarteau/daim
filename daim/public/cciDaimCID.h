@@ -42,11 +42,11 @@
 
 
 #define CCI_IMAGELIST_CID \
-{ /* B4FF5CD2-AF46-4DD7-BEA4-7FEBF1BC933A */       \
-  0xB3E2CD87,                                      \
-  0x5CAC,                                          \
-  0x4378,                                          \
-  {0x8A, 0x0B, 0x1A, 0x36, 0xAC, 0x33, 0xC6, 0x78} \
+{ /* 57596c21-2af2-48a2-85c2-02f99c35633a */       \
+  0x57596c21,                                      \
+  0x2af2,                                          \
+  0x48a2,                                          \
+  {0x85, 0xc2, 0x02, 0xf9, 0x9c, 0x35, 0x63, 0x3a} \
 }
 
 #define CCI_IMAGELIST_CONTRACTID "@daim.org/image/list;1"
