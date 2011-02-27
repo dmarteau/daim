@@ -69,7 +69,9 @@ native unicharPtrArray(dm_unichar * *);
 
 %{C++
 
-typedef void*              dm_ptr ;
+typedef void*        dm_ptr;
+typedef int          dm_int;
+typedef unsigned int dm_uint;
 
 // Forward declarations
 class dmImage;
