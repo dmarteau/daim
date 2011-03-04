@@ -45,7 +45,7 @@ interface cciIRemoteSurface : cciISurface
 
   readonly attribute dm_uint32 ioFlags;
 
-  void createCopy( in string newLocation, in string options );
+  [noscript] void createCopy( in string newLocation, in string options );
 
   void Close();
 };

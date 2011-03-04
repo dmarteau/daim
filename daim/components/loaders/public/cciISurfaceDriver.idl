@@ -70,9 +70,9 @@ interface cciISurfaceDriver : cciIXPCOMSupports
                                  in string options );
   
   
-  void unlink( in string location );
-  void rename( in string newLocation, in string oldLocation );
-  void copyFiles( in string newLocation, in string oldLocation );
+  [noscript] void unlink( in string location );
+  [noscript] void rename( in string newLocation, in string oldLocation );
+  [noscript] void copyFiles( in string newLocation, in string oldLocation );
 };
 
 

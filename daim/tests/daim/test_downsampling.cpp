@@ -118,7 +118,7 @@ int main( int argc, char ** argv )
       cci_Ptr<cciIImageListImage> listimage = do_CreateInstance("@daim.org/imagelist-image;1",&rv);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
       
-      rv = listimage->Init(imgList);
+      rv = listimage->Init(imgList,0);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
       
       cci_Ptr<cciISurfaceDriver> driver;
