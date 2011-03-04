@@ -40,7 +40,7 @@
 [scriptable, uuid(60e572f8-0808-452c-a595-55aa6d9568d0)]
 interface cciIImageListImage : cciIImage
 {
-  void init( in cciIImageList imagelist  );
+  void init( in cciIImageList imagelist, in unsigned long index );
   
   /**
    * Select the image at index from the underlying
@@ -48,6 +48,12 @@ interface cciIImageListImage : cciIImage
    */
   void select( in unsigned long index );
 
+  /**
+   * @return the underlying image list  
+   */
+  readonly attribute cciIImageList imageList;
+  
 };
+
 
 

@@ -47,8 +47,8 @@ cciImageListImage::~cciImageListImage()
   /* destructor code */
 }
 
-/* void init (in cciIImageList imagelist); */
-CCI_IMETHODIMP cciImageListImage::Init(cciIImageList *imagelist)
+/* void init (in cciIImageList imagelist, in unsigned long index); */
+CCI_IMETHODIMP cciImageListImage::Init(cciIImageList *imagelist, dm_uint32 index)
 {
   CCI_ENSURE_FALSE(mImageList,CCI_ERROR_ALREADY_INITIALIZED);
   CCI_ENSURE_ARG_POINTER(imagelist);
@@ -59,7 +59,7 @@ CCI_IMETHODIMP cciImageListImage::Init(cciIImageList *imagelist)
   if(CCI_FAILED(rv))
      return rv;
   
-  return Select(0);
+  return Select(index);
 }
 
 /* void select (in unsigned long index); */
@@ -70,3 +70,15 @@ CCI_IMETHODIMP cciImageListImage::Select(dm_uint32 index)
   
   return mImageList->GetImageLink(mImage,index);
 }
+
+/* readonly attribute cciIImageList imageList; */
+CCI_IMETHODIMP cciImageListImage::GetImageList(cciIImageList * *aImageList)
+{
+  cci_Ptr<cciIImageList> list = do_QueryInterface(mImageList);
+  if(!list)
+     return CCI_ERROR_FAILURE;
+  
+  list.forget(aImageList);
+  return CCI_OK;
+}
+
