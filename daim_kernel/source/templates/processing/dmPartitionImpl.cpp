@@ -43,6 +43,12 @@ basic_partition::basic_partition( const basic_partition& toCopy )
   (void)operator=(toCopy);
 }
 //-------------------------------------------------------
+basic_partition::~basic_partition()
+{ 
+  ::operator delete [] (__partition,dm_arena); 
+}
+
+//-------------------------------------------------------
 basic_partition& basic_partition::operator=( const basic_partition& toCopy)
 {
   if(&toCopy!=this) {
@@ -54,8 +60,10 @@ basic_partition& basic_partition::operator=( const basic_partition& toCopy)
 //-------------------------------------------------------
 void basic_partition::reserve( unsigned _cnt ) 
 {
-  if(__partition) delete [] __partition;
-  __partition = new dm_int[__count=_cnt]; 
+  if(__partition) 
+    ::operator delete [] (__partition,dm_arena);
+  
+  __partition = new (dm_arena) dm_int[__count=_cnt]; 
   initialize();  
 }
 //-------------------------------------------------------
@@ -282,7 +290,7 @@ unsigned create_region_partition( basic_partition& part, map_type& map,
   unsigned count = 0;
 
   //--------------------------------------------------------------
-  // Si on est en connectivité 8 le fond est en connectivité 4
+  // Si on est en connectivitï¿½ 8 le fond est en connectivitï¿½ 4
   // et vice versa
   //--------------------------------------------------------------
   connectivity _fgconnect = _connect;

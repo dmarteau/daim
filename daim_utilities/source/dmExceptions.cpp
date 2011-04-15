@@ -43,10 +43,10 @@ static void DM_STDCALL __dmDfltlogFunction(const char *_buffer,dm_int32 level)
       case DM_LOG_WARNING   : fprintf(stderr, "*** DAIM WARNING : "); break;
       case DM_LOG_ERROR     : fprintf(stderr, "*** DAIM ERROR   : "); break;
       default:
-        fprintf(stderr, "*** DAIM LOG(%d)  : ",level); break;
+        fprintf(stdout, "*** DAIM LOG(%d)  : ",level); break;
     }
-    fprintf(stderr, "%s\n",_buffer);
-    fflush(stderr);
+    fprintf(stdout, "%s\n",_buffer);
+    fflush(stdout);
   }
 }
 

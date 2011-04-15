@@ -221,6 +221,8 @@ class dmRgnHandle {
 
     bool PointInRegion( const dm_point& p ) const { return PointInRegion(p.x,p.y); }
 
+    DM_DECL_ARENA_OPERATOR_NEW(dmRegionHandle)
+    
 }; // Class dmRegionHandle
 ///
 //------------------------------------------------------------

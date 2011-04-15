@@ -64,21 +64,6 @@
 // #define DM_CONFIG_USE_PTHREAD
 
 //--------------------------------------------
-// Define DM_CONFIG_NO_CPP_NEW if you want
-// to use default operator new and delete instead
-// of using configurable
-// memory allocations functions.
-//
-// NOTE: if defined, will make many memory allocations
-//       unhandled by user defined memory
-//       management routines
-//--------------------------------------------
-
-
-// #define DM_CONFIG_NO_CPP_NEW
-
-
-//--------------------------------------------
 // Define DM_CONFIG_STLP_USE_MALLOC if you are
 // using STLport and you're tracing memory
 // this is because, STLport use a memory pool

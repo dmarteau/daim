@@ -92,7 +92,7 @@ cci_result cciAllocatorBase::InitAllocatorState()
 {
   CCI_ENSURE_FALSE(gAllocatorState,CCI_ERROR_ALREADY_INITIALIZED);
 
-  gAllocatorState = new cciAllocatorState;
+  gAllocatorState = new (dm_arena) cciAllocatorState;
   if(!gAllocatorState)
      return CCI_ERROR_OUT_OF_MEMORY;
 
@@ -107,7 +107,12 @@ void cciAllocatorBase::ReleaseAllocatorState()
 
     FreeGarbageList();
 
-    delete gAllocatorState;
+    // Need to explicitely call the destructor
+    gAllocatorState->~cciAllocatorState();
+    
+    ::operator delete [](gAllocatorState,dm_arena);
+    
+  // delete (dm_arena) gAllocatorState;
     gAllocatorState = dm_null;
   }
 }

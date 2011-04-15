@@ -90,6 +90,8 @@ class __dmKernel dmImageBuffer : public dmReferenced
 
     dmImageBuffer();
     virtual  ~dmImageBuffer();
+    
+    DM_DECL_ARENA_OPERATOR_NEW(dmImageBuffer)
 };
 //---------------------------------------------------------------------------
 class dmBufferParameters

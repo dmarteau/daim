@@ -39,39 +39,6 @@
   #define dm_memmove_handler dmMemory::Memmove
   #define dm_memset_handler  dmMemory::Memset
 
-  #ifndef DM_CONFIG_NO_CPP_NEW
-
-    #define DM_CPP_NEW_DEFINED
-
-    class dmMemoryObject {
-      public:
-       void* operator new   ( size_t n ) { return dm_malloc_handler(n); }
-       void  operator delete( void* p  ) { dm_free_handler(p);          }
-    };
-
-    // Define globally new and delete operators
-    // They should also be used as the default allocators for stl
-    // containers
-
-    #include <new>
-
-    // GCC need this:
-
-    #ifdef DM_THROW_BAD_ALLOC_SIG
-      #define __DM_THROW_BAD_ALLOC() throw (std::bad_alloc)
-      #define __DM_THROW() throw()
-    #else
-      #define __DM_THROW_BAD_ALLOC()
-      #define __DM_THROW()
-    #endif
-
-    inline void* operator new    ( size_t n  )   __DM_THROW_BAD_ALLOC() { return dm_malloc_handler(n); }
-    inline void  operator delete ( void*  p  )   __DM_THROW()           { dm_free_handler(p);   }
-    inline void* operator new    [] ( size_t n ) __DM_THROW_BAD_ALLOC() { return dm_malloc_handler(n); }
-    inline void  operator delete [] ( void*  p ) __DM_THROW()           { dm_free_handler(p);    }
-
-  #endif // DM_CONFIG_NO_CPP_NEW
-
 #else // DAIM_UTILITIES
 
   #define dm_malloc_handler  malloc
@@ -83,13 +50,32 @@
 
 #endif // DAIM_UTILITIES
 
+  #define DM_CPP_NEW_DEFINED
 
-#ifndef DM_CPP_NEW_DEFINED
+  #include <new>
 
-  class dmMemoryObject {};
+  // GCC need this:
 
-#endif // DM_CPP_NEW_DEFINED
+  #ifdef DM_THROW_BAD_ALLOC_SIG
+    #define __DM_THROW_BAD_ALLOC() throw (std::bad_alloc)
+    #define __DM_THROW() throw()
+  #else
+    #define __DM_THROW_BAD_ALLOC()
+    #define __DM_THROW()
+  #endif
 
+  enum dmAllocType { dm_arena };
+  
+  inline void* operator new    ( size_t n   , dmAllocType ) __DM_THROW_BAD_ALLOC() { return dm_malloc_handler(n); }
+  inline void  operator delete ( void*  p   , dmAllocType ) __DM_THROW()           { dm_free_handler(p);   }
+  inline void* operator new    [] ( size_t n, dmAllocType ) __DM_THROW_BAD_ALLOC() { return dm_malloc_handler(n); }
+  inline void  operator delete [] ( void*  p, dmAllocType ) __DM_THROW()           { dm_free_handler(p);    }
+
+  #define DM_DECL_ARENA_OPERATOR_NEW(_Instance) \
+    void* operator new(size_t n)     { return dm_malloc_handler(n); } \
+    void  operator delete( void* p ) { dm_free_handler(p);   }
+
+  
 // define C++ standartd allocator based on previous definition of
 // memory functions
 

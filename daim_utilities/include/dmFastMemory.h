@@ -30,7 +30,7 @@
 // Author       : David Marteau
 //--------------------------------------------------------
 
-class __dmUtilities dmMemoryManager //: public dmMemoryObject
+class __dmUtilities dmMemoryManager
 {
 private:
   struct __MemChunk  { __MemChunk*  _next; };
@@ -74,7 +74,7 @@ class dmFastMemory : public dmMemoryManager
 private:                                    \
   static dmFastMemory<_Instance> _MemPool;  \
 public:                                     \
-  void* operator new(size_t)       { return _MemPool.Allocate(blks); } \
+  void* operator new(size_t )      { return _MemPool.Allocate(blks); } \
   void  operator delete( void* p ) { _MemPool.Free(p);  }
 
 #define DM_IMPL_ALLOCATOR_NEW(_Instance,free_when_unusued)  \

@@ -71,6 +71,8 @@ class dmMatrix
 	  inline dmTransposedMatrix& t();
 	  inline dmInvertedMatrix&   i();
 	  //-----------------------------------------------------------------------
+	  
+	  DM_DECL_ARENA_OPERATOR_NEW(dmMatrix)
 };
 
 END_MATRIX()

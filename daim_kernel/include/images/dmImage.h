@@ -32,7 +32,7 @@
 
 class dmImageDescriptor;
 //-------------------------------------------------------------
-class __dmKernel dmImage : public dmMemoryObject
+class __dmKernel dmImage
 {
   private:
     dmLink<dmSpatialUnits> _Units;
@@ -87,6 +87,8 @@ class __dmKernel dmImage : public dmMemoryObject
 
     bool HasUnits() const;
     void ClearUnits();
+    
+    DM_DECL_ARENA_OPERATOR_NEW(dmImage)
 };
 //------------------------------------------------------------
 class dmImageDescriptor

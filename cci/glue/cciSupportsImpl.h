@@ -103,11 +103,11 @@ CCI_IMETHODIMP_(void) _class::DestructorCallback(void* obj)               \
   _class* ptr = reinterpret_cast<_class*>(obj);                           \
   ptr->~_class();                                                         \
 }                                                                         \
-void* _class::operator new  ( size_t n )                                  \
+void* _class::operator new  ( size_t n  )                                 \
 {                                                                         \
   return CCI_NewObject(n,&_class::DestructorCallback);                    \
 }                                                                         \
-void _class::operator delete ( void* p )                                  \
+void _class::operator delete ( void* p  )                                 \
 {                                                                         \
   CCI_RevokeObject(p,DM_TRUE);                                            \
 }                                                                         \

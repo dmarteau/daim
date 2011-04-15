@@ -81,8 +81,9 @@ extern dm_bool gCCIShuttingDown;
 
 #define FACTORY_ENTRY_BLOCKS 100
 
-struct cciFactoryEntry
+class cciFactoryEntry
 {
+public:
   cciFactoryEntry(const dmCID      &aClass,
                   const char*      aLocationKey,
                   const char*      aType) :
@@ -109,15 +110,10 @@ struct cciFactoryEntry
   cci_result CreateInstance(cciISupports *aDelegate,const dmIID &aIID,void **aResult);
   cci_result GetService(const dmIID& aIID, void* *result );
 
-  static dmFastMemory<cciFactoryEntry> _MemPool;
-
-  void* operator new(size_t)       { return _MemPool.Allocate(FACTORY_ENTRY_BLOCKS); }
-  void  operator delete( void* p ) { _MemPool.Free(p);  }
+  DM_DECL_ALLOCATOR_NEW(cciFactoryEntry,FACTORY_ENTRY_BLOCKS)
 };
 
-
-dmFastMemory<cciFactoryEntry>
-cciFactoryEntry::_MemPool("cciFactoryEntry",dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciFactoryEntry,dm_true);
 
 cci_result
 cciFactoryEntry::GetFactory( cciIFactory** aFactory )
@@ -866,7 +862,7 @@ cciComponentManagerImpl::ReadPersistentRegistry(const char * registryLocation)
      return CCI_OK; // Not really an error
   }
 
-  dm_byte* registry = new dm_byte[fileSize+1];
+  dm_byte* registry = new (dm_arena) dm_byte[fileSize+1];
   if(!registry)
      return CCI_ERROR_OUT_OF_MEMORY;
 
@@ -966,7 +962,7 @@ cciComponentManagerImpl::ReadPersistentRegistry(const char * registryLocation)
 
 out:
   if(registry)
-     delete registry;
+    ::operator delete [] (registry,dm_arena);
 
   return rv;
 }

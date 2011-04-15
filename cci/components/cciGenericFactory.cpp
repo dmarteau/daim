@@ -264,7 +264,7 @@ cciGenericModule::AddFactoryNode(cciIGenericFactory* fact)
     if (!fact)
         return CCI_ERROR_FAILURE;
 
-    FactoryNode *node = new FactoryNode(fact, mFactoriesNotToBeRegistered);
+    FactoryNode *node = new (dm_arena) FactoryNode(fact, mFactoriesNotToBeRegistered);
     if (!node)
         return CCI_ERROR_OUT_OF_MEMORY;
 
@@ -340,7 +340,10 @@ cciGenericModule::Shutdown()
     while (mFactoriesNotToBeRegistered)
     {
         node = mFactoriesNotToBeRegistered->mNext;
-        delete mFactoriesNotToBeRegistered;
+        
+        mFactoriesNotToBeRegistered->~FactoryNode();
+        ::operator delete [] (mFactoriesNotToBeRegistered,dm_arena);
+        
         mFactoriesNotToBeRegistered = node;
     }
 

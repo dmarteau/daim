@@ -79,8 +79,10 @@ void __dm_ClearEnvironmentTable()
   if(__dm_Environ)
   {
     __dm_Environ->clear();
-
-    delete __dm_Environ;
+    
+    __dm_Environ->~t_environ();
+    ::operator delete(__dm_Environ,dm_arena);
+    
     __dm_Environ = NULL;
   }
 }
@@ -88,7 +90,7 @@ void __dm_ClearEnvironmentTable()
 void __dm_InitEnvironmentTable()
 {
   DM_PRECONDITION( __dm_Environ == NULL, "Attempt to init environment twice !!");
-  __dm_Environ = new t_environ();
+  __dm_Environ = new  (dm_arena) t_environ();
 }
 //--------------------------------------------------
 #define MAX_ARGS 50

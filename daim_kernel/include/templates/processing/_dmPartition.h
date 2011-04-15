@@ -49,7 +49,7 @@ class basic_partition
 
    basic_partition( unsigned _cnt=1);
    basic_partition( const basic_partition& );
-  ~basic_partition() { delete  __partition; }
+  ~basic_partition();
 
    basic_partition& operator=( const basic_partition& );
 
@@ -133,7 +133,7 @@ typedef std::vector<dm_int> labels_array_type;
 
 //-------------------------------------------------------------------
 // partitionne une image par aggregation de points qui verifient le
-// predicat P, la partition 0 n'est pas associee à une region 
+// predicat P, la partition 0 n'est pas associee ï¿½ une region 
 //-------------------------------------------------------------------
 template<class P,class T>
 unsigned setup_regions( const image<T>& src,map_type& regions,P predicat, 
@@ -236,8 +236,8 @@ void update_partition_map(const image<T>& src,map_type& regions,unsigned count,
   part.update(); // update basic_partition
 } 
 //-------------------------------------------------------------------
-// create_map<P,T> : Cree une partition et une carte à partir du
-// predicat d'agregation de P appliqué à l'image de type T
+// create_map<P,T> : Cree une partition et une carte ï¿½ partir du
+// predicat d'agregation de P appliquï¿½ ï¿½ l'image de type T
 //-------------------------------------------------------------------
 template<class P,class T> 
 unsigned int create_map( map_type& _map, 

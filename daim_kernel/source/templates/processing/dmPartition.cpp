@@ -130,7 +130,7 @@ int region_partition::get_region_size( size_t _index )
   unsigned count = rgn_count();
   if(__build_count_table && count>0) 
   {
-    if(!__pcount) __pcount = new int[count+1];
+    if(!__pcount) __pcount = new (dm_arena) int[count+1];
     std::fill(__pcount,__pcount+count+1,0);
 
     map_type::line_type line = __regions->begin();
@@ -176,7 +176,7 @@ int region_partition::resolve_overlapping_regions( const dmRegion& rgn )
 void region_partition::__set_up( const dmRect& _r )
 {
   if(__pcount) {
-    delete __pcount; 
+    ::operator delete [] (__pcount,dm_arena); 
     __pcount = NULL; 
   }
 

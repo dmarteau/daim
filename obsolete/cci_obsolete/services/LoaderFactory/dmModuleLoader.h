@@ -54,6 +54,8 @@ class dmModuleLoader : public dmGenericLoader
 
     static dmGenericLoader* CreateInstance( dmLOADER_DESCRIPTION*, int );
 
+    DM_DECL_ALLOCATOR_NEW(dmModuleLoader,20)
+    
     void* operator new(size_t)       { return _MemPool.Allocate(20); }
     void  operator delete( void* p ) { _MemPool.Free(p);  }
 };

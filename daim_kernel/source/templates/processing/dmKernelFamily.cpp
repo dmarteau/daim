@@ -92,7 +92,7 @@ dmRect  dmMaskDescription::GetRect( const dmRect& _rect ) const
 dmKernelDescription::dmKernelDescription() : dmMaskDescription()
 {
   mNorm = 0;
-  mData = new value_type[Size()];
+  mData = new (dm_arena) value_type[Size()];
   std::fill(mData,mData + Size(),1);
 }
 //-----------------------------------------------------------------
@@ -105,7 +105,7 @@ dmKernelDescription::dmKernelDescription(
 : dmMaskDescription(_Ox,_Oy,_width,_height)
 {
 	mNorm = 0;
-  mData   = new value_type[Size()];
+  mData   = new  (dm_arena) value_type[Size()];
   std::copy(_data,_data + Size(), mData);
 }
 //-----------------------------------------------------------------
@@ -113,7 +113,7 @@ dmKernelDescription::dmKernelDescription( const dmKernelDescription& _desc )
 : dmMaskDescription(_desc)
 {
   mNorm = _desc.mNorm;;
-  mData = new value_type[Size()];
+  mData = new  (dm_arena) value_type[Size()];
   std::copy(_desc.Data(),_desc.Data() + Size(), mData);
 }
 //-----------------------------------------------------------------
@@ -125,7 +125,7 @@ dmKernelDescription& dmKernelDescription::operator=( const dmKernelDescription& 
     dmMaskDescription::operator=(_desc);
     if(sz!=Size()) {
       delete mData;
-      mData = new value_type[Size()];
+      mData = new  (dm_arena) value_type[Size()];
     }
     std::copy(_desc.Data(),_desc.Data() + Size(), mData);
     mNorm = _desc.mNorm;
@@ -135,7 +135,7 @@ dmKernelDescription& dmKernelDescription::operator=( const dmKernelDescription& 
 //-----------------------------------------------------------------
 dmKernelDescription::~dmKernelDescription()
 {
-  delete mData;
+  ::operator delete [] (mData,dm_arena);
 }
 //-----------------------------------------------------------------
 void dmKernelDescription::SetDescription( dm_int _ox, dm_int _oy,size_t _width,size_t _height,
@@ -146,7 +146,7 @@ void dmKernelDescription::SetDescription( dm_int _ox, dm_int _oy,size_t _width,s
   dmMaskDescription::Init(_ox,_oy,_width,_height);
   if(Size()!=sz) {
     delete mData;
-    mData = new value_type[Size()];
+    mData = new  (dm_arena) value_type[Size()];
   }
   if(_data) std::copy(_data,_data + Size(), mData);
   else

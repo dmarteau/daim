@@ -60,8 +60,9 @@
 /**
  * StaticModule entry
  */
-struct cciStaticModuleEntry
+class cciStaticModuleEntry
 {
+public:
   cciStaticModuleEntry( const cciStaticModuleInfo* info  )
   : mInfo(info)
   {}
@@ -69,14 +70,10 @@ struct cciStaticModuleEntry
   cci_Ptr<cciIModule>        mModule;
   const cciStaticModuleInfo *mInfo;
 
-  static dmFastMemory<cciStaticModuleEntry> _MemPool;
-
-  void* operator new(size_t)        { return _MemPool.Allocate(STATIC_MODULE_ENTRY_BLOCKS); }
-  void  operator delete( void* p )  { _MemPool.Free(p);  }
+  DM_DECL_ALLOCATOR_NEW(cciStaticModuleEntry,STATIC_MODULE_ENTRY_BLOCKS)
 };
 
-dmFastMemory<cciStaticModuleEntry>
-cciStaticModuleEntry::_MemPool("cciStaticModuleEntry",dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciStaticModuleEntry,dm_true);
 
 //======================================
 // cciStaticModuleLoader implementation

@@ -98,6 +98,8 @@ class dmHistogram
     void Extend     ( dmColorMapArray )       const; // Compute histogram extension
     void Specify    ( dmColorMapArray _output, dmColorMapArray _input   ) const; // Compute histogram specification
     void ExtendRange( dmColorMapArray _cmap, const daim::gap<dm_uint8>& ) const; 
+    
+    DM_DECL_ARENA_OPERATOR_NEW(dmHistogram)
 };
 //-------------------------------------------------------------
 inline void  dmHistogram::SetDensitySlice( const daim::gap<dm_uint8>& _range ) 

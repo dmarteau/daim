@@ -154,7 +154,7 @@ void dmTraceMem::Init( dm_int32 status )
 void dmTraceMem::Dump( dm_int32 status )
 {
   if(!__dm_TRACE_MEMORY) {
-    fprintf(stderr,"\nMemory usage is not traced...\n");
+    fprintf(stdout,"\nMemory usage is not traced...\n");
   } else
   if(status==1)
   {

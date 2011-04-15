@@ -28,10 +28,10 @@
  */
 
 #include "dmUtilitiesBase.h"
-#include "dmShared.h"
-#include "dmMutex.h"
 #include "dmMemory.h"
 #include "dmNew.h"
+#include "dmShared.h"
+#include "dmMutex.h"
 #include "dmFastMemory.h"
 
 #include "dmCrt.h"
@@ -112,7 +112,7 @@ class __dm_string_allocator
     {
        pointer p = (n<PROXY_STRING
                     ? static_cast<char_type*>(__proxy.allocate())
-                    : new char_type[n+1]);
+                    : new (dm_arena) char_type[n+1]);
 
        std::fill(p,p+(n+1),end_of_string);
        return p;
@@ -120,20 +120,20 @@ class __dm_string_allocator
 
     void deallocate(pointer p, size_type n) {
       if( n < PROXY_STRING ) __proxy.deallocate(p);
-      else delete [] p;
+      else ::operator delete [] (p,dm_arena);
     }
 
   #else  // DM_CONFIG_NOALLOCPROXY
 
     pointer allocate(size_type n, const void *hint)
     {
-       pointer p = new char_type[n+1];
+       pointer p = new (dm_arena) char_type[n+1];
        std::fill(p,p+(n+1),end_of_string);
        return p;
     }
 
     void deallocate(pointer p, size_type n) {
-      delete [] p;
+      ::operatdelete (dm_arena) [] p;
     }
 
   #endif // DM_CONFIG_NOALLOCPROXY

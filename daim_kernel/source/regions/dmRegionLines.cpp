@@ -599,13 +599,13 @@ struct XBUF
   long *xx;
   long *pos;
   XBUF( dm_size sz ) {
-    xx  = new long[sz];
-    pos = new long[sz];
+    xx  = new (dm_arena) long[sz];
+    pos = new (dm_arena) long[sz];
   }
 
   ~XBUF() {
-     delete [] xx;
-     delete [] pos;
+     ::operator delete [] (xx,dm_arena);
+     ::operator delete [] (pos,dm_arena);
    }
 
 };
@@ -1194,7 +1194,7 @@ __dmKernel dmRgnHandle* dmRgnHandle::FlipVerRgn( dmRgnHandle* destRgn,
     destRgn->FreeRegion();
   else {
     long i,h = srcRgn->Box().Height();
-    dmRgnLinePtr* lines = new dmRgnLinePtr[h];
+    dmRgnLinePtr* lines = new (dm_arena) dmRgnLinePtr[h];
     dmRgnHandle::iterator lfrom = srcRgn->Begin();
     dmRgnHandle::iterator lto   = destRgn->Reserve(srcRgn->Box(),srcRgn->Size());
     for(i=0;i<h;++i,++lfrom ) {
@@ -1206,7 +1206,7 @@ __dmKernel dmRgnHandle* dmRgnHandle::FlipVerRgn( dmRgnHandle* destRgn,
     for(i=h;--i>=0;++lto,--lptr) {
      (void)dm_memcpy_handler(*lto,*lptr,dmSizeofRgnLine(**lptr)); // Copy the buffer
     }
-    delete lines;
+    ::operator delete [] (lines,dm_arena);
   }
 
   return destRgn;

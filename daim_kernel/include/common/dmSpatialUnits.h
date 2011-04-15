@@ -30,7 +30,7 @@
 // Author       : David Marteau
 //--------------------------------------------------------
 
-class dmSpatialUnits : public dmMemoryObject
+class dmSpatialUnits
 {
   public:
     dmCString mUnitName;
@@ -46,7 +46,7 @@ class dmSpatialUnits : public dmMemoryObject
 
     __dmKernel dm_double GetLength( const dm_point&,const dm_point&  ) const;
 
-    // Retourne la taille en unité(s) pour un facteur de grossissement g 
+    // Retourne la taille en unitï¿½(s) pour un facteur de grossissement g 
     dm_double X_Units( dm_int x = 1 ) const { return mUnitsPerPixel * x; }
     dm_double Y_Units( dm_int y = 1 ) const { return mUnitsPerPixel * mAspectRatio * y; }
 

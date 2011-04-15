@@ -105,8 +105,9 @@ BaseStringEnumerator::GetNext(dmAString& _retval)
 // CategoryLeaf implementation
 //
 
-struct cciCategoryLeaf
+class cciCategoryLeaf
 {
+public:
   ~cciCategoryLeaf() {}
    cciCategoryLeaf( const char* value, dm_bool persists )
    {
@@ -125,21 +126,18 @@ struct cciCategoryLeaf
   dmCString mPersistentValue;
   dmCString mValue;
 
-  static dmFastMemory<cciCategoryLeaf> _MemPool;
-
-  void* operator new(size_t)       { return _MemPool.Allocate(CATLEAF_BLOCKS); }
-  void  operator delete( void* p ) { _MemPool.Free(p);  }
+  DM_DECL_ALLOCATOR_NEW(cciCategoryLeaf,CATLEAF_BLOCKS)
 };
 
-dmFastMemory<cciCategoryLeaf>
-cciCategoryLeaf::_MemPool("cciCategoryLeaf",dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciCategoryLeaf,dm_true);
 
 //
 // CategoryNode implementations
 //
 
-struct cciCategoryNode
+class cciCategoryNode
 {
+public:
   cciCategoryNode() {}
  ~cciCategoryNode() {
     Clear();
@@ -167,14 +165,10 @@ struct cciCategoryNode
 
   void Clear();
 
-  static dmFastMemory<cciCategoryNode> _MemPool;
-
-  void* operator new(size_t)       { return _MemPool.Allocate(CATNODE_BLOCKS); }
-  void  operator delete( void* p ) { _MemPool.Free(p);  }
+  DM_DECL_ALLOCATOR_NEW(cciCategoryNode,CATNODE_BLOCKS)
 };
 
-dmFastMemory<cciCategoryNode>
-cciCategoryNode::_MemPool("cciCategoryNode",dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciCategoryNode,dm_true);
 
 cci_result cciCategoryNode::Enumerate(cciISupports* aOwner, cciIUTF8StringEnumerator **_retval)
 {

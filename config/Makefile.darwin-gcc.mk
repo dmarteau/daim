@@ -121,6 +121,9 @@ ifdef DAIM_KERNEL
 	install_name_tool -change @loader_path/$(DLLPREFIX)daim_kernel$(DLLSFX) @loader_path/$(DYLD_FILE_PATH)/$(DLLPREFIX)daim_kernel$(DLLSFX) $@
 endif
 endif
+ifndef DAIM_DEBUG
+	strip -x $(MODULE_EXPORT)
+endif
 else
 	$(AR) $@ $(OBJECTS)
 	$(RANLIB) $@

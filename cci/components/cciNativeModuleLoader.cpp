@@ -108,8 +108,9 @@ struct cciPrivateHook __DLL_EXPORT_TAG *_CCI_Hook = &gPrivateHooks;
 /**
  * NativeModule entry
  */
-struct cciNativeModuleEntry
+class cciNativeModuleEntry
 {
+public:
   cciNativeModuleEntry( const dmCString& loc  )
   : mLocation(loc)
   , mIdle(0)
@@ -120,15 +121,10 @@ struct cciNativeModuleEntry
   dmCString              mLocation;
   long                   mIdle;
 
-  static dmFastMemory<cciNativeModuleEntry> _MemPool;
-
-  void* operator new(size_t)        { return _MemPool.Allocate(NATIVE_MODULE_ENTRY_BLOCKS); }
-  void  operator delete( void* p )  { _MemPool.Free(p);  }
+  DM_DECL_ALLOCATOR_NEW(cciNativeModuleEntry,NATIVE_MODULE_ENTRY_BLOCKS)
 };
 
-
-dmFastMemory<cciNativeModuleEntry>
-cciNativeModuleEntry::_MemPool("cciNativeModuleEntry",dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciNativeModuleEntry,dm_true);
 
 //======================================
 // cciNativeModuleLoader implementation

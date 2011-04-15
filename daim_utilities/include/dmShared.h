@@ -58,6 +58,8 @@ class dmShared : public dmReferenced
  ~dmShared() {};
 
 	int Release() { return (dmReferenced::Release()<=0 ? (delete this,0) : References()); }
+	
+	DM_DECL_ARENA_OPERATOR_NEW(dmShared)
 };
 //--------------------------------------------------------------------------
 //
@@ -239,8 +241,8 @@ class dmAutoLink : public dmLink<T>
   private:
    explicit dmAutoLink( dmLink<T>& ) {}
   public:
-    explicit dmAutoLink( T* p ) : dmLink<T>(new auto_handle(p)) {}
-    dmAutoLink()  : dmLink<T>(new auto_handle(NULL)) {}
+    explicit dmAutoLink( T* p ) : dmLink<T>(new  auto_handle(p)) {}
+    dmAutoLink()  : dmLink<T>(new  auto_handle(NULL)) {}
    ~dmAutoLink() {}
 };
 //--------------------------------------------------------------------------

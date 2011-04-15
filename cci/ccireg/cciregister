@@ -26,5 +26,6 @@ fi
 
 
 echo $CCI_COMPONENTS
+echo $MODULES
 
 ./ccireg $TARGET $MODULES

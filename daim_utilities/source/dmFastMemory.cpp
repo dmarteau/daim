@@ -58,7 +58,7 @@ void dmMemoryManager::Free()
   if(chunks!=NULL)
   {
     #ifdef _DEBUG
-     fprintf(stderr,"dmMemoryManager %lx : Freeing memory\n",this);
+     fprintf(stderr,"dmMemoryManager %lx : Freeing %ld chunk of blocks of size %ld\n",this,blocks,sizeof(__MemChunk)+chunkSize);
     #endif
 
     for(int i=blocks;--i>=0;)

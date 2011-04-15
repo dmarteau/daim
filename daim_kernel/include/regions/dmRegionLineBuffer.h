@@ -47,6 +47,7 @@ struct dmRegionBuffer
   dm_size        _size;
   dmRgnLineArray _buffer;
 
+  DM_DECL_ARENA_OPERATOR_NEW(dmRegionBuffer)
 };
 //------------------------------------------------
 class dmRegionLineBuffer

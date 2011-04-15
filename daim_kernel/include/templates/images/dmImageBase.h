@@ -190,6 +190,8 @@ class image
      copy(im); 
      return *this;
    }
+   
+   DM_DECL_ARENA_OPERATOR_NEW(image<T>)
 };
 //---------------------------------------------------------------------------
 // container image

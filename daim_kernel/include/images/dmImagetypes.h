@@ -101,7 +101,7 @@ struct dmCreateImage : public dmAutoLink<dmImage> {
    dmAutoLink<dmImage>(new dmIImage<_PixelFormat>(w,h)) {}
 
   dmCreateImage( const dmImageData& _Data ) :
-   dmAutoLink<dmImage>(new dmIImage<_PixelFormat>(_Data)) {}
+   dmAutoLink<dmImage>(new  dmIImage<_PixelFormat>(_Data)) {}
 };
 //----------------------------------------------------------
 #endif // dmImagetypes_h

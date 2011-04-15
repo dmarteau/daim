@@ -33,7 +33,7 @@ void dmMatrixArray::Initialize( const dmMatrixBase* _MatrixBase )
 {
   if(_MatrixBase)  {
      Matrix = _MatrixBase;
-     Array  = new dm_matrix_t*[Matrix->NRows()+1];
+     Array  = new (dm_arena) dm_matrix_t*[Matrix->NRows()+1];
      Array[1]= Matrix->GetData() - 1;
      for(int i=2;i<=Matrix->NRows();i++)
          Array[i] = Array[i-1] + Matrix->NCols();    
@@ -65,7 +65,8 @@ dmMatrixArray& dmMatrixArray::operator=(const dmMatrixArray& _Matrix)
 //----------------------------------------------------------------
 dmMatrixArray::~dmMatrixArray()
 {
-   if(Array) delete [] Array;
+   if(Array) 
+     ::operator delete [] (Array,dm_arena);
 }
 //----------------------------------------------------------------
 dmVectorArray::dmVectorArray(const dmRowVector& _Vector)
