@@ -133,7 +133,7 @@ class __dm_string_allocator
     }
 
     void deallocate(pointer p, size_type n) {
-      ::operatdelete (dm_arena) [] p;
+      ::operator delete [] (p,dm_arena);
     }
 
   #endif // DM_CONFIG_NOALLOCPROXY
