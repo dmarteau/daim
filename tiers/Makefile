@@ -2,7 +2,7 @@ DEPTH = ..
 
 include $(DEPTH)/config/config.mk
 
-ifdef DAIM_GDAL
+ifeq ($(DAIM_GDAL),1)
 DIRS += gdal
 endif
 
