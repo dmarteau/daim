@@ -124,7 +124,7 @@ dmKernelDescription& dmKernelDescription::operator=( const dmKernelDescription& 
     size_t sz = Size();
     dmMaskDescription::operator=(_desc);
     if(sz!=Size()) {
-      delete mData;
+      ::operator delete [] (mData,dm_arena);
       mData = new  (dm_arena) value_type[Size()];
     }
     std::copy(_desc.Data(),_desc.Data() + Size(), mData);
@@ -145,7 +145,7 @@ void dmKernelDescription::SetDescription( dm_int _ox, dm_int _oy,size_t _width,s
   size_t sz = Size();
   dmMaskDescription::Init(_ox,_oy,_width,_height);
   if(Size()!=sz) {
-    delete mData;
+    ::operator delete [] (mData,dm_arena);
     mData = new  (dm_arena) value_type[Size()];
   }
   if(_data) std::copy(_data,_data + Size(), mData);

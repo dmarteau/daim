@@ -148,6 +148,8 @@ class dmKernelFamily
     void SetMode( int mode ) { _mode = mode; }
 
     dmKernelFamily& operator=( const dmKernelFamily& );
+    
+    DM_DECL_ARENA_OPERATOR_NEW(dmKernelFamily)
 };
 //-----------------------------------------------------------------------
 // Inline members

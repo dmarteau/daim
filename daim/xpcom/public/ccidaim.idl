@@ -31,24 +31,22 @@
 # ***** END LICENSE BLOCK *****
 */
 
-#ifndef __gen_cciIXPCOMSupports_h__
 #include "cciIXPCOMSupports.idl"
-#endif
 
 /*
  * Map daim type to xpcom/nspr type
  */
 
-typedef PRBool             dm_bool   ;
-typedef PRUint8            dm_uint8  ;
-typedef PRUint8            dm_byte   ;
-typedef PRUint16           dm_uint16 ;
-typedef PRUint16           dm_unichar;
-typedef PRUint32           dm_uint32 ;
-typedef PRUint64           dm_uint64 ;
-typedef PRInt16            dm_int16  ;
-typedef PRInt32            dm_int32  ;
-typedef PRInt64            dm_int64  ;
+typedef boolean            dm_bool   ; // PRBool
+typedef octet              dm_uint8  ; // PRUint8
+typedef octet              dm_byte   ; // PRUint8
+typedef unsigned short     dm_uint16 ; // PRUint16
+typedef unsigned short     dm_unichar; // PRUnichar
+typedef unsigned long      dm_uint32 ; // PRUint32
+typedef unsigned long long dm_uint64 ; // PRUint64
+typedef short              dm_int16  ; // PRInt16
+typedef long               dm_int32  ; // PRInt32
+typedef long long          dm_int64  ; // PRInt64
 
 typedef unsigned long      cci_refcnt ;
 typedef unsigned long      cci_result ;

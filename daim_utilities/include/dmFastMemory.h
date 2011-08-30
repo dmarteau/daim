@@ -161,8 +161,8 @@ class dmFastAllocator
 
     void delete_object( pointer p ) { destroy(p); _MemPool->Free(p); }
 
-    void set_block_size( size_t N ) { _BlockCount = N;    }
-    void get_block_size()           { return _BlockCount; }
+    void   set_block_size( size_t N ) { _BlockCount = N;    }
+    size_t get_block_size()           { return _BlockCount; }
 
     mem_pool_type* get_memory_pool() const { return _MemPool; }
 };
