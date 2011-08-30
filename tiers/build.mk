@@ -4,7 +4,7 @@ include $(DEPTH)/config/config.mk
 
 .PHONY: all
 
-ifdef DAIM_GDAL
+ifeq ($(DAIM_GDAL),1)
 TIERS += gdal
 endif
 

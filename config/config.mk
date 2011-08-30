@@ -56,7 +56,9 @@ BUILD_TESTS:=1
 # GDAL driver config
 
 # Use gdal driver (gdal required)
-DAIM_GDAL:=1
+ifndef DAIM_GDAL
+DAIM_GDAL=1
+endif
 
 #
 # Include user/app overrides
