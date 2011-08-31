@@ -80,17 +80,11 @@ ifeq ($(IS_COMPONENT),1)
 LDFLAGS += -Wl,-exported_symbol,__CCI_Module
 LDFLAGS += -bundle
 
-ifeq ($(MODULE_EXPORT_NAME),)
-DYLD_FILE_PATH=..
-else
-DYLD_FILE_PATH=../..
-endif
-
 else
 # Don't export new/delete custom symbols 
 LDFLAGS += -unexported_symbols_list $(topsrcdir)/config/unexported.exp
 LDFLAGS += -dynamiclib
-LDFLAGS += -install_name @loader_path/$(MODULE_LIBRARY_NAME) 
+LDFLAGS += -install_name @executable_path/$(MODULE_LIBRARY_NAME) 
 endif
 
 MODULE_EXE:=1
@@ -114,12 +108,6 @@ $(MODULE_EXPORT): $(OBJECTS)
 ifdef MODULE_EXE
 	$(LD) $(LDFLAGS) -o $(MODULE_EXPORT) $(OBJECTS) $(MODULE_STATIC_LIBS) $(LIBS) 
 ifeq ($(IS_COMPONENT),1)
-ifdef DAIM_UTILITIES
-	install_name_tool -change @loader_path/$(DLLPREFIX)daim_utilities$(DLLSFX) @loader_path/$(DYLD_FILE_PATH)/$(DLLPREFIX)daim_utilities$(DLLSFX) $@
-endif
-ifdef DAIM_KERNEL
-	install_name_tool -change @loader_path/$(DLLPREFIX)daim_kernel$(DLLSFX) @loader_path/$(DYLD_FILE_PATH)/$(DLLPREFIX)daim_kernel$(DLLSFX) $@
-endif
 endif
 ifndef DAIM_DEBUG
 	strip -x $(MODULE_EXPORT)

@@ -55,9 +55,6 @@
 #include <unistd.h>
 #endif
 
-int uselib(const char*);
-
-
 static dm_hmodule gDaimModule  = dm_null;
 static dm_bool    gInitialized = dm_false;
 
