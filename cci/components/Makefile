@@ -8,8 +8,7 @@ VPATH = ./:../glue:../io
 include $(DEPTH)/config/config.mk
 
 #
-# This library can be linked with
-# modules that link directly with daim library 
+# cci static lib (this is cci implementation, NOT glue)
 #
 
 MODULE_NAME  = cci
