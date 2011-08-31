@@ -51,10 +51,11 @@
 
 #include "dmCrt.h"
 
-#ifdef DM_CONFIG_TARGET_UNIX
+#ifdef DM_CONFIG_TARGET_UNIX 
 #include <unistd.h>
 #endif
 
+int uselib(const char*);
 
 
 static dm_hmodule gDaimModule  = dm_null;
@@ -96,62 +97,10 @@ cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, d
      return CCI_ERROR_ALREADY_INITIALIZED;
 
   char libpath[MAX_PATH] = "\0";
-
-  #ifdef DM_CONFIG_TARGET_LINUX
-  
-    static const char* dependentLibs[] =
-    {
-      DM_DLL_PREFIX "daim_utilities" DM_DLL_SUFFIX,
-      DM_DLL_PREFIX "daim_kernel"    DM_DLL_SUFFIX,
-      dm_null
-    };
-  
-    // ====================================================
-    //
-    // Really ugly hack, chdir to the daim binaries location
-    // Because on unix we need to preload the library with the
-    // correct path as resolved by the dynamic linker
-    //
-    // ====================================================
-
-    char curpath[MAX_PATH] = "\0";
-
-    snprintf(libpath,MAX_PATH-1,"%s",location);
-
-    #ifdef DEBUG
-      fprintf(stderr,"*** Switching current dir to : %s\n",libpath);
-    #endif
-
-    getcwd(curpath,MAX_PATH-1); // Get the current dir
-    chdir(libpath);             // Jump to the library path
-
-
-    // Preload libraries
-    for( const char** libname = &dependentLibs[0];*libname;++libname)
-    {
-      //snprintf(libpath,MAX_PATH-1,"%s/bin/%s",location,*libname);
-      snprintf(libpath,MAX_PATH-1,"%s",*libname);
-      #ifdef DEBUG
-        fprintf(stderr,"*** Preloading library: %s\n",libpath);
-      #endif
-      dm_hmodule module = __dm_dlopen( libpath );
-      if(!module)
-        __dm_log_dlerror();
-    }
-
-   // Return to previous dir;
-   #ifdef DEBUG
-    fprintf(stderr,"*** Switching current dir to : %s\n",curpath);
-   #endif
-   chdir(curpath);
-
-  #endif //DM_CONFIG_TARGET_LINUX
-
   // Bootstrap the library
   snprintf(libpath,MAX_PATH-1,"%s" PATH_SEP "%s",location,DAIM_DLL);
 
   gDaimModule = __dm_dlopen( libpath );
-
 
   if(!gDaimModule)
   {

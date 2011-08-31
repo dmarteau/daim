@@ -45,9 +45,6 @@ else
  OPT += -O2
 endif
 
-
-LDFLAGS += -Xlinker -rpath -Xlinker ./
-
 # Components should only export only one symbol "__CCI_Module"  
 #ifeq ($(IS_COMPONENT),1)
 #LDFLAGS += -Xlinker -exported_symbol -Xlinker __CCI_Module
