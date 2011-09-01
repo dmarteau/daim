@@ -6,7 +6,7 @@
 
 .SUFFIXES: .idl
 
-PYIDLBIN=$(topsrcdir)/build/idl-parser/header.py
+PYIDLBIN=$(topsrcdir)/cci/idl-parser/header.py
 
 CPP_IDL_FILES = $(patsubst %.idl,$(EXPORT_DIR)/%.h,$(IDLSRC))
 IDL_REQUIRES  = cci $(MODULE_EXPORT_NAME) $(REQUIRES)

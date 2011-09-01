@@ -82,9 +82,18 @@ LDFLAGS += -bundle
 
 else
 # Don't export new/delete custom symbols 
-LDFLAGS += -unexported_symbols_list $(topsrcdir)/config/unexported.exp
-LDFLAGS += -dynamiclib
-LDFLAGS += -install_name @executable_path/$(MODULE_LIBRARY_NAME) 
+LDFLAGS += \
+ -unexported_symbols_list $(topsrcdir)/config/unexported.exp \
+ -dynamiclib \
+ -compatibility_version $(DAIM_RUNTIME_VER_MAJOR).$(DAIM_RUNTIME_VER_MINOR) \
+ -current_version $(DAIM_RUNTIME_VER_MAJOR).$(DAIM_RUNTIME_VER_MINOR).$(DAIM_RUNTIME_VER_REVISION) \
+ $(NULL)
+ 
+ifeq ($(OSX_FRAMEWORK),1)
+LDFLAGS += -install_name $(OSX_VERSION_FRAMEWORK_PREFIX)/$(MODULE_LIBRARY_NAME)
+else
+LDFLAGS += -install_name @executable_path/$(MODULE_LIBRARY_NAME)
+endif
 endif
 
 MODULE_EXE:=1
