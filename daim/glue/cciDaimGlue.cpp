@@ -69,7 +69,7 @@ __daim_export void       __daim_call( DM_Finalize   )(dm_bool force) = dm_null;
 }
 
 template<class _F>
-static inline dm_int __loadsym1( _F* _ppfn, const char* procname )
+static inline bool __loadsym1( _F* _ppfn, const char* procname )
 {
   *_ppfn = reinterpret_cast<_F>(__dm_dlsym(gDaimModule,procname));
   return *_ppfn!=NULL;
