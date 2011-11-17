@@ -85,21 +85,6 @@
 
 #if defined(DM_CONFIG_GCC_BUILD)
 
-  #if  (DM_CONFIG_GCC_BUILD <= 2)
-    #define DM_CONFIG_GCC2_BUILD DM_CONFIG_GCC_BUILD
-  #elif (DM_CONFIG_GCC_BUILD <= 3)
-
-    #define DM_CONFIG_GCC3_BUILD DM_CONFIG_GCC_BUILD
-
-    #if (__GNUC_MINOR__ >= 4)
-      #define DM_CONFIG_GCC34_BUILD DM_CONFIG_GCC_BUILD
-
-    #endif
-
-  #elif (DM_CONFIG_GCC_BUILD >= 4)
-    #define DM_CONFIG_GCC4_BUILD DM_CONFIG_GCC_BUILD
-  #endif
-
   // Has a way to represent 64 bits quantities
   #define DM_HAVE_LONG_LONG 1
 
@@ -158,19 +143,6 @@
 #endif
 
 //============================================
-// UNICODE
-//============================================
-#if defined(UNICODE) || defined(_UNICODE)
-   #ifndef DM_CONFIG_UNICODE
-   #define DM_CONFIG_UNICODE
-   #endif
-#elif defined(DM_CONFIG_UNICODE)
-   #define  UNICODE
-   #define _UNICODE
-#endif //UNICODE
-
-
-//============================================
 // DLL TAGS
 //============================================
 #if defined(DM_CONFIG_TARGET_WIN32)
@@ -186,16 +158,12 @@
 
 #elif defined(DM_CONFIG_TARGET_UNIX)
 
-   #if defined(DM_CONFIG_GCC4_BUILD)
      #define __DLL_EXPORT_TAG   __attribute__ ((visibility("default")))
      #define __DLL_IMPORT_TAG   __attribute__ ((visibility("default")))
      #define __DLL_PRIVATE_TAG  __attribute__ ((visibility("hidden")))
 
      #define __DLL_EXPORT_FORWARD_TAG
      #define __DLL_IMPORT_FORWARD_TAG
-   #else
-     #define __DLL_GLOBAL_VISIBILITY
-   #endif
 
 #else
 
@@ -205,6 +173,7 @@
   #define __DLL_PRIVATE_TAG
   #define __DLL_EXPORT_FORWARD_TAG
   #define __DLL_IMPORT_FORWARD_TAG
+
 #endif // __DLL_EXPORT_TAG
 
 
