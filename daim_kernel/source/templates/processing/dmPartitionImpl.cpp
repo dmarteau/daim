@@ -179,7 +179,7 @@ int get_overlapping_regions_labels( const dmRegion& rgn, const basic_partition& 
   {
     dmRgnHandle::iterator it  = rgn.Region().Begin();
     dmRgnHandle::iterator end = rgn.Region().End();
-    for(REGISTER dmRgnPair *p,*pend;it!=end; ++it,++_m) {
+    for(dmRgnPair *p,*pend;it!=end; ++it,++_m) {
       for(p=it.begin(),pend=it.end();p!=pend;++p) {
         prev = __push_labels( (*p).x1,(*p).x2,prev,_partition,_m,_labels );
       }
@@ -232,7 +232,7 @@ int get_overlapping_regions_labels2( const dmRegion& rgn,
   {
     dmRgnHandle::iterator it  = rgn.Region().Begin();
     dmRgnHandle::iterator end = rgn.Region().End();
-    for(REGISTER dmRgnPair *p,*pend;it!=end; ++it,++_m) {
+    for(dmRgnPair *p,*pend;it!=end; ++it,++_m) {
       for(p=it.begin(),pend=it.end();p!=pend;++p) {
         index = __push_labels2( (*p).x1,(*p).x2,index,_partition,_m,hits );
       }

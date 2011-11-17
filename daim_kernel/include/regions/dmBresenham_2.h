@@ -38,7 +38,7 @@ namespace daim {
   template<class pixel>
   inline void bresenham_line( pixel& _putpixel, long x1, long y1, long x2, long y2 ) 
   {
-    REGISTER long _d, _x, _y;
+    long _d, _x, _y;
     long _ax, _ay, _sx, _sy, _dx, _dy;
 
     _dx = x2-x1;  _ax = dm_abs(_dx)<<1;  _sx = dm_sgn(_dx);
@@ -69,8 +69,8 @@ namespace daim {
   template<class pixel_oct>
   inline void bresenham_circle(pixel_oct& _putpixel_oct, long r)
   {                          
-    REGISTER long _x,_y;                                 
-    REGISTER long _s;                                    
+    long _x,_y;                                 
+    long _s;                                    
     if(r>0) {                                               
       _x = 0; _y = r;                                    
       _s = 3-2*r;                                        
@@ -87,7 +87,7 @@ namespace daim {
   template<class pixel_quad>
   inline void bresenham_ellipse(pixel_quad& _putpixel_quad, long a, long b )
   {                                                   
-    REGISTER long x,y;                              
+    long x,y;                              
     long a2,b2,s,t;                                 
                                                       
     a2 = a*a;                                       

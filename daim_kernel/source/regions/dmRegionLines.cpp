@@ -72,8 +72,8 @@ static inline bool __CHECK_RGN_SIZE( dm_size _size , const dmRgnHandle* rgn ) {
 template<class T> static inline void EXCHANGE(T& a, T& b) { T _x = a; a = b; b = _x; }
 
 #define _DECLARE \
-   REGISTER dmRgnPair  *seg1,*seg2,*segd;  \
-   REGISTER long n1,n2,x1,x2;              \
+   dmRgnPair  *seg1,*seg2,*segd;  \
+   long n1,n2,x1,x2;              \
    long n;                                 \
 								           \
    seg1 = &l1->rl_xpair[0];                \
@@ -263,8 +263,8 @@ static inline long SubRegionLine( dmRegionLine* l1,dmRegionLine *l2,dmRegionLine
 //--------------------------------------------------------------
 static inline bool IntersectRegionLine( dmRegionLine* l1,dmRegionLine *l2 )
 {
-  REGISTER dmRgnPair  *seg1,*seg2;
-  REGISTER long n1,n2;
+  dmRgnPair  *seg1,*seg2;
+  long n1,n2;
   
   seg1 = &l1->rl_xpair[0];
   n1   = l1->rl_npair;
@@ -553,7 +553,7 @@ __dmKernel void dmRgnHandle::Construct(const dmEllipse& e)
    rgn_size = e.BoxHeight() * lsize;
    if(rgn_data.Realloc(rgn_size))
    {
-     REGISTER dmRgnPair *pair1,*pair2;
+     dmRgnPair *pair1,*pair2;
      long cx,cy,rx,ry;
 
      rgn_box =  e.BoundingBox();
@@ -616,7 +616,7 @@ static inline long _IntersectionLine(
            dmRegionLine*  line,
            long y )
 {
-  REGISTER dmRgnPair *pair;
+  dmRgnPair *pair;
   long i,ninters,np = 0;
 
   dm_int32 x1,x2;
@@ -926,8 +926,8 @@ __dmKernel bool dmRgnHandle::IsRectRgn() const
 {
   if(Empty()) return false;
   iterator l = Begin(), last = End();
-  REGISTER dmRgnPair *pair = (*l)->rl_xpair;
-  REGISTER long x1 = (*pair).x1, x2 = (*pair).x2;
+  dmRgnPair *pair = (*l)->rl_xpair;
+  long x1 = (*pair).x1, x2 = (*pair).x2;
   do {
     if( (*l)->rl_npair == 1) {
       pair = (*l)->rl_xpair;
@@ -947,7 +947,7 @@ __dmKernel dm_uint dmRgnHandle::Area() const
   {
 	iterator it = Begin(), last = End();
 	while(it!=last) {
-      REGISTER dmRgnPair *pair = (*it)->rl_xpair;
+      dmRgnPair *pair = (*it)->rl_xpair;
       for(i=(*it)->rl_npair;--i>=0;++pair) {
         count += (*pair).x2 - (*pair).x1 + 1;
       }
@@ -965,8 +965,8 @@ __dmKernel bool dmRgnHandle::Intersect( const dm_rect& r ) const
   dmGetBoxIntersection(xs,ys,xe,ye,r,rgn_box);
   if(xs<=xe && ys <= ye ) {
     iterator it = dmGetRegionLine(Begin(),(ys-rgn_box.top_left.y)), last = End();
-  	for(int i,y = ys; it!=last && y <= ye; ++it, ++y) {
-      REGISTER dmRgnPair *pair = (*it)->rl_xpair;
+  	for(long i,y = ys; it!=last && y <= ye; ++it, ++y) {
+      dmRgnPair *pair = (*it)->rl_xpair;
       for(i=(*it)->rl_npair;--i>=0;++pair) {
         if( xs <= (*pair).x2 && xe >= (*pair).x1) return true;
       }
@@ -1008,9 +1008,9 @@ __dmKernel bool dmRgnHandle::operator==(const dmRgnHandle& _rgn) const
       for(res=true;res && it1!=last;++it1,++it2) {
         if( (res = ((*it1)->rl_npair == (*it2)->rl_npair)) )
         {
-          REGISTER dmRgnPair *pair1 = (*it1)->rl_xpair;
-          REGISTER dmRgnPair *pair2 = (*it2)->rl_xpair;
-          for(int i=(*it1)->rl_npair;--i>=0;++pair1,++pair2) {
+          dmRgnPair *pair1 = (*it1)->rl_xpair;
+          dmRgnPair *pair2 = (*it2)->rl_xpair;
+          for(long i=(*it1)->rl_npair;--i>=0;++pair1,++pair2) {
             if(!PairEqual( *pair1,*pair2) ) return false;
           }
         }
@@ -1024,7 +1024,7 @@ __dmKernel bool dmRgnHandle::PointInRegion( long x, long y ) const
 {
   if( dmPointInRectangle(x,y,rgn_box) ) {
     iterator l = dmGetRegionLine(Begin(),(y-rgn_box.top_left.y));
-    REGISTER dmRgnPair *pair = (*l)->rl_xpair;
+    dmRgnPair *pair = (*l)->rl_xpair;
     for(long i=0;i<(*l)->rl_npair;++i,++pair) {
       if( (x >= (*pair).x1) && (x <= (*pair).x2) )
         return (true);
@@ -1226,8 +1226,8 @@ __dmKernel dmRgnHandle* dmRgnHandle::FlipHorRgn( dmRgnHandle* destRgn,
     dmRgnHandle::iterator last  = srcRgn->End();
     dmRgnHandle::iterator lto   = destRgn->Reserve(srcRgn->Box(),srcRgn->Size());
 
-    REGISTER dmRgnPair *pair1;
-    REGISTER dmRgnPair *pair2;
+    dmRgnPair *pair1;
+    dmRgnPair *pair2;
 	  for(;lfrom!=last;++lto,++lfrom) {
       np = (*lto)->rl_npair = (*lfrom)->rl_npair;
       pair1  = (*lfrom)->rl_xpair;

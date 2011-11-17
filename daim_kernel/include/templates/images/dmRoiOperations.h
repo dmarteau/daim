@@ -119,7 +119,7 @@ Op RoiOperation( Op _op, image<T1>& _src1,
   return _op;
 }
 //--------------------------------------------------------------
-// Cette fonction construit une region basée sur le prédicat 
+// Cette fonction construit une region basï¿½e sur le prï¿½dicat 
 // Pred( line_type, x )
 //--------------------------------------------------------------
 template<class T,class Pred> Pred _CreateRoi_If( 
@@ -204,7 +204,7 @@ template<class T,class Pred> Pred _CreateRgnRoi_If(
       dmRgnHandle::iterator it  = rgn.Region().Begin();
       dmRgnHandle::iterator end = rgn.Region().End();
       int x1,x2,xe;
-      for(REGISTER dmRgnPair *p,*pend;it!=end; ++it,++line) {
+      for(dmRgnPair *p,*pend;it!=end; ++it,++line) {
         for(p=it.begin(),pend=it.end();p!=pend;++p) {
           x1 = (*p).x1;
           xe = (*p).x2;

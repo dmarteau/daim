@@ -179,8 +179,8 @@ dmMatrixBase* dmMatrix_Add( const dmMatrix& Lhs,const dmMatrix& Rhs, dmMatrixTyp
    if(UseLhs && UseRhs && MRhs->Reuse()) UseLhs = false;
 
    dmMatrixBase* Result;
-   REGISTER dm_matrix_t *pR = MRhs->GetData()-1;
-   REGISTER dm_matrix_t *pL = MRhs->GetData()-1;
+   dm_matrix_t *pR = MRhs->GetData()-1;
+   dm_matrix_t *pL = MRhs->GetData()-1;
    if(UseLhs) {
        Result = MLhs;
        for(int i=Result->NStore();--i>=0;) *++pL += *++pR;
@@ -190,7 +190,7 @@ dmMatrixBase* dmMatrix_Add( const dmMatrix& Lhs,const dmMatrix& Rhs, dmMatrixTyp
    } else {
        Result = _Type.New(nr,nc);
        Result->SetStatus(dmMatrixBase::Temporary); // IsEval()
-       REGISTER dm_matrix_t* pRes = Result->GetData()-1;
+       dm_matrix_t* pRes = Result->GetData()-1;
        for(int i=Result->NStore();--i>=0;) *++pRes = *++pL + *++pR;
    }
    if(MRhs != Result && MRhs->IsEval()) delete MRhs;
@@ -215,8 +215,8 @@ dmMatrixBase* dmMatrix_Substract( const dmMatrix& Lhs,const dmMatrix& Rhs, dmMat
    if(UseLhs && UseRhs && MRhs->Reuse()) UseLhs = false;
 
    dmMatrixBase* Result;
-   REGISTER dm_matrix_t *pR = MRhs->GetData()-1;
-   REGISTER dm_matrix_t *pL = MLhs->GetData()-1;
+   dm_matrix_t *pR = MRhs->GetData()-1;
+   dm_matrix_t *pL = MLhs->GetData()-1;
    if(UseLhs) {
        Result = MLhs;
        for(int i=Result->NStore();--i>=0;) *++pL -= *++pR;
@@ -226,7 +226,7 @@ dmMatrixBase* dmMatrix_Substract( const dmMatrix& Lhs,const dmMatrix& Rhs, dmMat
    } else {
        Result = _Type.New(nr,nc);
        Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
-       REGISTER dm_matrix_t* pRes = Result->GetData()-1;
+       dm_matrix_t* pRes = Result->GetData()-1;
        for(int i=Result->NStore();--i>=0;) *++pRes = *++pL - *++pR;
    }
    if(MRhs != Result && MRhs->IsEval()) delete MRhs;
@@ -289,15 +289,15 @@ dmMatrixBase* dmMatrix_Shift( const dmMatrix& Op, dm_matrix_t Value, dmMatrixTyp
    int nr = MLhs->NRows(), nc = MLhs->NCols();
 
    dmMatrixBase* Result;
-   REGISTER dm_matrix_t* pL = MLhs->GetData() -1;
-   REGISTER dm_matrix_t  v = Value;
+   dm_matrix_t* pL = MLhs->GetData() -1;
+   dm_matrix_t  v = Value;
    if((MLhs->Reuse()||MLhs->IsEval())) {
        Result = MLhs;
        for(int i=Result->NStore();--i>=0;) *++pL += v;
    } else {
        Result = _Type.New(nr,nc);
        Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
-       REGISTER dm_matrix_t* pRes = Result->GetData()-1;
+       dm_matrix_t* pRes = Result->GetData()-1;
        for(int i=Result->NStore();--i>=0;) *++pRes = *++pL + v;
    }
 
@@ -315,15 +315,15 @@ dmMatrixBase* dmMatrix_Scale( const dmMatrix& Op, dm_matrix_t Value, dmMatrixTyp
    int nr = MLhs->NRows(), nc = MLhs->NCols();
 
    dmMatrixBase* Result;
-   REGISTER dm_matrix_t* pL = MLhs->GetData()-1;
-   REGISTER dm_matrix_t  v  = Value;
+   dm_matrix_t* pL = MLhs->GetData()-1;
+   dm_matrix_t  v  = Value;
    if((MLhs->Reuse()||MLhs->IsEval())) {
 	   Result = MLhs;
 	   for(int i=Result->NStore();--i>=0;) *++pL *= v;
    } else {
   	 Result = _Type.New(nr,nc); 
 	   Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()
-	   REGISTER dm_matrix_t* pRes = Result->GetData()-1;
+	   dm_matrix_t* pRes = Result->GetData()-1;
 	   for(int i=Result->NStore();--i>=0;) *++pRes = *++pL * v;
    }
 

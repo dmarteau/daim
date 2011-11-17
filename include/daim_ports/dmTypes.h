@@ -36,10 +36,6 @@
   #include <stddef.h>
 #endif
 
-
-// Define REGISTER to nothing unless we want to force register declaration
-#define REGISTER
-
 // Set the assumed value for sizeof(int)
 #ifndef DM_BYTES_PER_INT
 #define DM_BYTES_PER_INT DM_ASSUME_BYTES_PER_INT
@@ -70,7 +66,7 @@ typedef unsigned short  dm_uint16;  // unsigned 16-bit quantity
  * 32 bits signed/unsigned quantities
  */
 
-#if DM_BYTES_PER_INT == 4
+#if DM_BYTES_PER_INT >= 4
 
 typedef unsigned int dm_uint32;   // signed 32-bit quantity
 typedef int          dm_int32;    // unsigned 32-bit quantity
@@ -78,7 +74,7 @@ typedef int          dm_int32;    // unsigned 32-bit quantity
 #define DM_INT32(x)  x
 #define DM_UINT32(x) x ## U
 
-#elif DM_BYTES_PER_LONG == 4
+#elif DM_BYTES_PER_LONG >= 4
 
 typedef unsigned long dm_uint32;
 typedef long          dm_int32;
@@ -98,22 +94,35 @@ typedef long          dm_int32;
 
 #ifdef DM_HAVE_LONG_LONG
 
-#if DM_BYTES_PER_LONG == 8
+#if DM_BYTES_PER_LONG >= 8
 
 typedef long          dm_int64;
 typedef unsigned long dm_uint64;
+
+#define DM_INT64(x)  x ## L
+#define DM_UINT64(x) x ## UL
 
 #elif defined(DM_CONFIG_WIN32_WIN32) && !defined(__GNUC__)
 
 typedef          __int64 dm_int64;
 typedef unsigned __int64 dm_uint64;
 
+#define DM_INT64(x)  x ## i64
+#define DM_UINT64(x) x ## ui64
+
 #else
 
 typedef long long          dm_int64;
 typedef unsigned long long dm_uint64;
 
+#define DM_INT64(x)  x ## LL
+#define DM_UINT64(x) x ## ULL
+
 #endif // DM_BYTES_PER_LONG == 8
+
+#define DM_INT64_MAX DM_INT64(0x7fffffffffffffff)
+#define DM_INT64_MIN (-DM_INT64_MAX - 1)
+#define DM_UINT64_MAX DM_UINT64(-1)
 
 #else  // !DM_HAVE_LONG_LONG
 
@@ -125,6 +134,10 @@ typedef struct {
 #endif
 } dm_int64;
 typedef dm_int64 dm_uint64;
+
+#define DM_INT64_MAX (dm_int64){0x7fffffff, 0xffffffff}
+#define DM_INT64_MIN (dm_int64){0xffffffff, 0xffffffff}
+#define DM_UINT64_MAX (dm_uint64){0xffffffff, 0xffffffff}
 
 #endif /* !DM_HAVE_LONG_LONG */
 
@@ -143,18 +156,11 @@ typedef unsigned int dm_uint;
 /**
  *  A type for representing byte offsets from some location.
  */
-typedef dm_uint32 dm_offset32;
-typedef dm_uint64 dm_offset64;
+typedef dm_int32 dm_offset32;
+typedef dm_int64 dm_offset64;
 
-
-/**
- * floating points
- */
-
-typedef float           dm_float;   // simple (really ? precision floating point number
-typedef double          dm_double;  // double precison floating point number
-
-#define dm_float64     dm_double; // double is always 64 bits
+typedef double dm_double;
+typedef float  dm_float;
 
 /**
  * generic pointer
@@ -188,7 +194,7 @@ typedef wchar_t dm_unichar;
 
 // dm_float is semantically the type we use in floating point calculations
 // on some machine, this could affect some performances
-typedef dm_double       dm_real;
+typedef double       dm_real;
 
 // define param type as a long (dm_long_ptr) value
 #define dm_param_t( x )  dm_param(x)

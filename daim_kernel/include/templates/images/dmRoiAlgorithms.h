@@ -44,7 +44,7 @@ Op _RoiOperation(  const dmRgnHandle& rgn,line In, Op op )
   {
 	dmRgnHandle::iterator it  = rgn.Begin();
 	dmRgnHandle::iterator end = rgn.End();
-	for(REGISTER dmRgnPair *p,*pend;it!=end; ++it,++In) {
+	for(dmRgnPair *p,*pend;it!=end; ++it,++In) {
       for(p=it.begin(),pend=it.end();p!=pend;++p) {
           op( In,(*p).x1,(*p).x2 );
       }
@@ -84,7 +84,7 @@ Op _ReverseRoiOperation( const dmRgnHandle& rgn,line In, Op op )
     for(k=0;it!=end;++it,++k)  { lines[k] = *it; }
 
     std::vector<dmRgnLinePtr>::reverse_iterator l  = lines.rbegin();
-    for(REGISTER dmRgnPair *p;l!=lines.rend(); ++l,++In) {
+    for(dmRgnPair *p;l!=lines.rend(); ++l,++In) {
       p = (*l)->rl_xpair;
       n = (*l)->rl_npair;
       for(k=0;k<n;++k,++p) 

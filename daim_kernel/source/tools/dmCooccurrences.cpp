@@ -77,7 +77,7 @@ dm_double dmMatrix_Correlation( const dmRectMatrix& _data, dm_double Nc )
   if(Nc) {
     dm_double x,mx,my,mxy,mxx,myy;
     mx = my = mxy = mxx = myy = 0;
-    REGISTER dm_float* p=_data.GetData();
+    dm_float* p=_data.GetData();
     for(int sz=_data.NRows(),j,i=0;i<sz;++i) {
       for(j=0;j<sz;++j) {
         x  = *p++;

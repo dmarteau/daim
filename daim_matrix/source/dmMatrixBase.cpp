@@ -71,8 +71,8 @@ void dmMatrixBase::GetMatrix(const dmMatrix& _M)
         delete Matrix;
       } else {
         Resize(Matrix->NbRow,Matrix->NbCol);
-        REGISTER dm_matrix_t* pR = Matrix->Store-1;
-        REGISTER dm_matrix_t* pL = Store-1;
+        dm_matrix_t* pR = Matrix->Store-1;
+        dm_matrix_t* pL = Store-1;
         for(int i=Storage;--i>=0;) *++pL = *++pR;
       }
     }
@@ -81,7 +81,7 @@ void dmMatrixBase::GetMatrix(const dmMatrix& _M)
 //----------------------------------------------------------------
 dmMatrixBase& dmMatrixBase::Set(dm_matrix_t f)
 {
-  REGISTER dm_matrix_t* p = Store-1;
+  dm_matrix_t* p = Store-1;
   for(int i=Storage;--i>=0;) *++p = f;
   return *this;
 }
@@ -96,16 +96,16 @@ void dmMatrixBase::Free()
 //----------------------------------------------------------------
 dmMatrixBase& dmMatrixBase::operator>>(dm_matrix_t *_To)
 {
-  REGISTER dm_matrix_t* p = Store-1;
-  REGISTER dm_matrix_t* t = _To-1;
+  dm_matrix_t* p = Store-1;
+  dm_matrix_t* t = _To-1;
   for(int i=Storage;--i>=0;) *++t = *++p;
   return *this;
 }
 //----------------------------------------------------------------
 dmMatrixBase& dmMatrixBase::operator<<(dm_matrix_t *_From)
 {
-  REGISTER dm_matrix_t* p = Store-1;
-  REGISTER dm_matrix_t* f = _From-1;
+  dm_matrix_t* p = Store-1;
+  dm_matrix_t* f = _From-1;
   for(int i=Storage;--i>=0;) *++p = *++f;
   return *this;
 }

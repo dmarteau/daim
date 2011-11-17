@@ -33,15 +33,15 @@
 
 // y'a un bug dans le calcul de l'ellipse
 // en particulier lorsque le nombre de ligne est impair
-// la ligne du mileu n'est pas calculée
+// la ligne du mileu n'est pas calculï¿½e
 // En attendant de trouver l'erreur il faut initialiser toute
-// les lignes à la largeur de la bounding-box de l'ellipse
+// les lignes ï¿½ la largeur de la bounding-box de l'ellipse
 
 #define BUG_BRESENHAM
 
 // Bresenham's algorithm for drawing digital ellipse
 #define _DigitalEllipse(rh,rv) {                        \
-		REGISTER long _x,_y;                            \
+	  long _x,_y;                            \
 		long _s,_rv2,_rh2;                              \
 		_rv2 = rv*rv; _rh2 = rh*rh;                     \
 		_x = 0; _y = rv;                                \
