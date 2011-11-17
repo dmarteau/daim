@@ -208,4 +208,15 @@ typedef dm_uint32 cci_refcnt;
   CCI_USE_NS
 #endif
 
+// The following should is designed to  detect thread safety in
+// debug mode
+// XXX Implement me
+#define CCI_DECL_OWNINGTHREAD            /* nothing */
+#define CCI_ASSERT_OWNINGTHREAD(_class)  ((void)0)
+#define CCI_ASSERT_OWNINGTHREAD_AND_NOT_CCTHREAD(_class)  ((void)0)
+
+// For debug purpose
+// XXX Implement me
+#define CCI_LOG_ADDREF
+  
 #endif // cciCore_h
