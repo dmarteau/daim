@@ -15,7 +15,13 @@ endif
 ifeq ($(BUILD_CONFIG),)
 
 ifeq ($(shell uname),Darwin)
-  BUILD_CONFIG:=-darwin-gcc
+
+ifeq ($(DAIM_USE_CLANG),1)
+    BUILD_CONFIG:=-darwin-clang
+else
+    BUILD_CONFIG:=-darwin-gcc
+endif
+
 endif
 
 ifeq ($(shell uname),Linux)
@@ -118,7 +124,6 @@ endif
 
 ifeq ($(BUILD_CONFIG),-darwin-gcc)
 
-  OS_ARCH = DARWIN
   MAKE_TARGET=$(topsrcdir)/config/Makefile.darwin-gcc.mk
   DLLPREFIX=lib
   LIBPREFIX=lib
@@ -135,6 +140,26 @@ endif
 endif
 
 endif
+
+ifeq ($(BUILD_CONFIG),-darwin-clang)
+
+  MAKE_TARGET=$(topsrcdir)/config/Makefile.darwin-clang.mk
+  DLLPREFIX=lib
+  LIBPREFIX=lib
+  LIBSFX=.a
+  DLLSFX=.dylib
+  
+  OS_SUB_ARCH = UNIX
+
+ifeq ($(OSX_FRAMEWORK),1)
+ifndef OSX_FRAMEWORK_PREFIX
+  OSX_FRAMEWORK_PREFIX = /Library/Frameworks/DAIM.framework
+endif
+  OSX_VERSION_FRAMEWORK_PREFIX = $(OSX_FRAMEWORK_PREFIX)/Versions/$(DAIM_RUNTIME_VER_MAJOR).$(DAIM_RUNTIME_VER_MINOR)
+endif
+
+endif
+
 
 # Hu ! No make target !!
 ifeq ($(MAKE_TARGET),)
