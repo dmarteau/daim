@@ -66,7 +66,7 @@ CCI_IMETHODIMP_(double *) cciResultColumn::GetNewData(dm_uint32 desiredSize)
 }
 
 /* void setData ([array, size_is (count)] in double data, in unsigned long count); */
-CCI_IMETHODIMP cciResultColumn::SetData(dm_double *data, dm_uint32 count)
+CCI_IMETHODIMP cciResultColumn::SetData(double *data, dm_uint32 count)
 {
   CCI_ENSURE_ARG_POINTER(data);
   
@@ -79,7 +79,7 @@ CCI_IMETHODIMP cciResultColumn::SetData(dm_double *data, dm_uint32 count)
 }
 
 /* void fill (in double value); */
-CCI_IMETHODIMP cciResultColumn::Fill(dm_double value)
+CCI_IMETHODIMP cciResultColumn::Fill(double value)
 {
   std::fill(Begin(),End(),value);
   return CCI_OK;
@@ -100,7 +100,7 @@ CCI_IMETHODIMP cciResultColumn::Reserve(dm_uint32 capacity)
 }
 
 /* void resize (in unsigned long newsize, [optional] in double padding); */
-CCI_IMETHODIMP cciResultColumn::Resize(dm_uint32 newsize, dm_double padding)
+CCI_IMETHODIMP cciResultColumn::Resize(dm_uint32 newsize, double padding)
 {
   mData.Resize(newsize,padding);
   return CCI_OK;
@@ -114,7 +114,7 @@ CCI_IMETHODIMP cciResultColumn::GetLength(dm_uint32 *aLength)
 }
 
 /* double getValue (in unsigned long row); */
-CCI_IMETHODIMP cciResultColumn::GetValue(dm_uint32 row, dm_double *_retval)
+CCI_IMETHODIMP cciResultColumn::GetValue(dm_uint32 row, double *_retval)
 {
   if(row < Size()) 
   {
@@ -125,7 +125,7 @@ CCI_IMETHODIMP cciResultColumn::GetValue(dm_uint32 row, dm_double *_retval)
 }
 
 /* void setValue (in unsigned long row, in double value); */
-CCI_IMETHODIMP cciResultColumn::SetValue(dm_uint32 row, dm_double value)
+CCI_IMETHODIMP cciResultColumn::SetValue(dm_uint32 row, double value)
 {
   if(row < Size()) 
   {
@@ -136,7 +136,7 @@ CCI_IMETHODIMP cciResultColumn::SetValue(dm_uint32 row, dm_double value)
 }
 
 /* void push (in double value); */
-CCI_IMETHODIMP cciResultColumn::Push(dm_double value)
+CCI_IMETHODIMP cciResultColumn::Push(double value)
 {
   mData.Push_Back(value);
   return CCI_OK;
@@ -179,7 +179,7 @@ CCI_IMETHODIMP cciResultColumn::Copy(cciIResultColumn *from, dm_uint32 srcStart,
 }
 
 /* unsigned long getInterval (in unsigned long start, in double lower, in double upper); */
-CCI_IMETHODIMP cciResultColumn::GetInterval(dm_uint32 start, dm_double lower, dm_double upper, 
+CCI_IMETHODIMP cciResultColumn::GetInterval(dm_uint32 start, double lower, double upper, 
                                             dm_uint32 *_retval )
 {
   /** 

@@ -39,8 +39,8 @@ class dmImageMath
    dmImageMath( dmImage& _Image ) : lhsImage(_Image) {}
   ~dmImageMath() {}
 
-   bool Add( dm_float a );
-   bool Add( dm_float a, const dmRegion& );
+   bool Add( float a );
+   bool Add( float a, const dmRegion& );
 
    bool Add( const dmImage& );
    bool Add( const dmImage& , const dmRegion&, const dmPoint& );

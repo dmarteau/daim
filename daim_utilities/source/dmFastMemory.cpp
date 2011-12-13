@@ -24,7 +24,7 @@
 #include "dmFastMemory.h"
 #include "dmCrt.h"
 //---------------------------------------------------------------------------
-dmMemoryManager::dmMemoryManager( size_t _sz, const char* static_id, dm_bool _release_when_unusued )
+dmMemoryManager::dmMemoryManager( size_t _sz, const char* static_id, bool _release_when_unusued )
 :chunks(NULL)
 ,blocks(0)
 ,chunkSize(_sz)

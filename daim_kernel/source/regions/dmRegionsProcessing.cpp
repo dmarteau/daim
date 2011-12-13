@@ -118,7 +118,7 @@ size_t dmRgnComputeRotationPts( const dmPoly& _input, dmVector<size_t>& _output,
   _output.Clear();
 
   size_t v,n = _input.Size();
-  std::vector<dm_double> _ap(n+2);
+  std::vector<double> _ap(n+2);
 
   dm_point  p1,p2,p3;
 
@@ -133,7 +133,7 @@ size_t dmRgnComputeRotationPts( const dmPoly& _input, dmVector<size_t>& _output,
   _ap[0]   = _ap[n];
   _ap[n+2] = _ap[1];
  
-  dm_double a = 0;
+  double a = 0;
   for(v=1;v<_ap.size()-1;++v) 
     a = _ap[v];
     if(a > _ap[v-1] && a > _ap[v+1] ) 
@@ -156,7 +156,7 @@ size_t dmRgnContourSketch( const dmPoly& _input, dmPoly& _output,
   dmVector<size_t> _p;
   if(dmRgnComputeRotationPts(_input,_p,seglength)>0) 
   {
-    dm_double d = 0,dmax = 0;
+    double d = 0,dmax = 0;
     dm_line   l;
     bool done   = false;
     size_t k,imax,istart,iend;

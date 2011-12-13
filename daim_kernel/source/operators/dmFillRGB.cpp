@@ -65,7 +65,7 @@ bool dmFillRGB::SetValues( dmImage& _src, const dmRegion& rgn,
       if(alpha >= 1.0) {
         fill(_roi,_Im->Gen(),rgb);
       } else if(alpha >= 0) {
-        blend_fill_rgb(_roi,_Im->Gen(),rgb,static_cast<dm_float>(alpha));
+        blend_fill_rgb(_roi,_Im->Gen(),rgb,static_cast<float>(alpha));
       }
       return true;
     }

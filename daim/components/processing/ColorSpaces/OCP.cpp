@@ -5,7 +5,7 @@
 #define COLORSPACE_NUMCHANNELS 3
 #define COLORSPACE_NAMESPACE daim::colorspace::OCP
 
-#define COLORSPACE_CAN_MERGE dm_true
+#define COLORSPACE_CAN_MERGE true
 
 #include "_ColorspaceBoilerPlate.h"
 

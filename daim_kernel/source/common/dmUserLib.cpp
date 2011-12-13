@@ -103,7 +103,7 @@ bool dmCopyRGBData( const dmImage& src, dmImage& dest , dm_uint channel )
  return dmCopyRGBData(src,dest,channel,src.Rect(),dmPoint(0,0));
 }  
 //--------------------------------------------------------------------------
-bool dmCopyRGBData( dmImage& rgb, dmImage& red , dmImage& green, dmImage& blue , dm_bool toRGB )
+bool dmCopyRGBData( dmImage& rgb, dmImage& red , dmImage& green, dmImage& blue , bool toRGB )
 {
   if(toRGB) {
     if( 

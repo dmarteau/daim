@@ -38,7 +38,7 @@
 #ifdef DAIM_GLUE
 
 cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, dmLOG_FUNCTION pfnLog );
-void       DM_ReleaseDaimGlue( dm_bool force );
+void       DM_ReleaseDaimGlue( bool force );
 
 #define DAIM_GLUE_EXPORT
 

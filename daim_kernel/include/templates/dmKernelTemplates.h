@@ -96,11 +96,11 @@ template<class T> struct type_tag {
 template<> struct type_tag<dm_uint8>   : type_traits<integer_true ,unsigned_true>  {}; 
 template<> struct type_tag<dm_uint16>  : type_traits<integer_true ,unsigned_true>  {}; 
 template<> struct type_tag<dm_uint32>  : type_traits<integer_true ,unsigned_true>  {}; 
-template<> struct type_tag<dm_float>   : type_traits<integer_false,unsigned_false> {}; 
 template<> struct type_tag<dm_int8>    : type_traits<integer_true ,unsigned_false> {}; 
 template<> struct type_tag<dm_int16>   : type_traits<integer_true ,unsigned_false> {}; 
 template<> struct type_tag<dm_int32>   : type_traits<integer_true ,unsigned_false> {}; 
-template<> struct type_tag<dm_double>  : type_traits<integer_false,unsigned_false> {}; 
+template<> struct type_tag<double>     : type_traits<integer_false,unsigned_false> {}; 
+template<> struct type_tag<float>      : type_traits<integer_false,unsigned_false> {}; 
 
 
 template<class T> 

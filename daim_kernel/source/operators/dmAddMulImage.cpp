@@ -33,12 +33,12 @@
 //---------------------------------------------------------------------
 struct __dm_addmul_impl
 {
-   dm_float        a,b;
+  float            a,b;
    const dmRegion& Rgn;
 
    __dm_addmul_impl(dm_real  _a, dm_real _b, const dmRegion& _Rgn )
-  : a(static_cast<dm_float>(_a))
-   ,b(static_cast<dm_float>(_b))
+  : a(static_cast<float>(_a))
+   ,b(static_cast<float>(_b))
    ,Rgn(_Rgn) {}
 
   template<EPixelFormat _PixelFormat> 

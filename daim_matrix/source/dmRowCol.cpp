@@ -51,35 +51,35 @@ INLINE  void dmMatrixRowCol::Copy(dm_matrix_t x)
 {
   dm_matrix_t* p = Ptr;
   int s=RCSkip;
-  for(int i=RCLength;--i>=0;) { *p = x; p+=s; }
+  for(dm_int i=RCLength;--i>=0;) { *p = x; p+=s; }
 }
 //----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Copy(const dm_matrix_t* _p)
 {
   dm_matrix_t* p = Ptr;
   long s=RCSkip;
-  for(int i=RCLength;--i>=0;) { *p = *_p++; p+=s; }
+  for(dm_int i=RCLength;--i>=0;) { *p = *_p++; p+=s; }
 }
 //----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Copy(const dmMatrixRowCol& _Rhs)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls = RCSkip;
-  for(int i=RCLength;--i>=0;) { *Lp = *Rp; Lp+=Ls; Rp+=Rs; }
+  for(dm_int i=RCLength;--i>=0;) { *Lp = *Rp; Lp+=Ls; Rp+=Rs; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Copy(const dmMatrixRowCol& _Rhs, dm_matrix_t x)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls = RCSkip;
-  for(int i=RCLength;--i>=0;) { *Lp = *Rp * x; Lp+=Ls; Rp+=Rs; }
+  for(dm_int i=RCLength;--i>=0;) { *Lp = *Rp * x; Lp+=Ls; Rp+=Rs; }
 }
 //--------------------------------------------------------------------------
 INLINE  void dmMatrixRowCol::Neg(const dmMatrixRowCol& _Rhs)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp = Ptr;
   int Rs=_Rhs.RCSkip,Ls = RCSkip;
-  for(int i=RCLength;--i>=0;) { *Lp = -*Rp; Lp+=Ls; Rp+=Rs; }
+  for(dm_int i=RCLength;--i>=0;) { *Lp = -*Rp; Lp+=Ls; Rp+=Rs; }
 }
 //-----------------------------------------------------------
 INLINE  dm_matrix_t dmMatrixRowCol::operator*(const dmMatrixRowCol& _Rhs)
@@ -87,7 +87,7 @@ INLINE  dm_matrix_t dmMatrixRowCol::operator*(const dmMatrixRowCol& _Rhs)
   dm_matrix_t *Rp = _Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
   dm_matrix_t Sum = 0.0;
-  for(int i=RCLength;--i>=0;) { Sum+= *Lp * *Rp; Lp+=Ls; Rp+=Rs; }
+  for(dm_int i=RCLength;--i>=0;) { Sum+= *Lp * *Rp; Lp+=Ls; Rp+=Rs; }
   return Sum;
 }
 //-----------------------------------------------------------
@@ -95,77 +95,77 @@ INLINE  void dmMatrixRowCol::Mult(dm_matrix_t x)
 {
   dm_matrix_t* p = Ptr;
   int s = RCSkip;
-  for(int i=RCLength; --i>=0;) { *p *= x; p+=s; }
+  for(dm_int i=RCLength; --i>=0;) { *p *= x; p+=s; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Div(dm_matrix_t x)
 {
   dm_matrix_t* p = Ptr;
   int s = RCSkip;
-  for(int i=RCLength; --i>=0;) { *p /= x; p+=s; }
+  for(dm_int i=RCLength; --i>=0;) { *p /= x; p+=s; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Add(dm_matrix_t x)
 {
   dm_matrix_t* p = Ptr;
   int s = RCSkip;
-  for(int i=RCLength; --i>=0;) { *p += x; p+=s; }
+  for(dm_int i=RCLength; --i>=0;) { *p += x; p+=s; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Sub(dm_matrix_t x)
 {
   dm_matrix_t* p = Ptr;
   int s = RCSkip;
-  for(int i=RCLength; --i>=0;) { *p -= x; p+=s; }
+  for(dm_int i=RCLength; --i>=0;) { *p -= x; p+=s; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Neg()
 {
   dm_matrix_t* p = Ptr;
   int s = RCSkip;
-  for(int i=RCLength; --i>=0;) { *p = - *p; p+=s; }
+  for(dm_int i=RCLength; --i>=0;) { *p = - *p; p+=s; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Add( const dmMatrixRowCol& _Rhs )
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=_Rhs.RCLength;--i>0;) { *Lp += *Rp; Rp+=Rs; Lp+=Ls; }
+  for(dm_int i=_Rhs.RCLength;--i>0;) { *Lp += *Rp; Rp+=Rs; Lp+=Ls; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Sub( const dmMatrixRowCol& _Rhs)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp = Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=RCLength;--i>=0;) { *Lp -= *Rp; Rp+=Rs; Lp+=Ls; }
+  for(dm_int i=RCLength;--i>=0;) { *Lp -= *Rp; Rp+=Rs; Lp+=Ls; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::SubR( const dmMatrixRowCol& _Rhs)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp = Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=RCLength;--i>=0;) { *Lp = *Rp - *Lp ; Rp+=Rs; Lp+=Ls; }
+  for(dm_int i=RCLength;--i>=0;) { *Lp = *Rp - *Lp ; Rp+=Rs; Lp+=Ls; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Add( const dmMatrixRowCol& _Rhs, dm_matrix_t x)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=RCLength; --i>=0;) { *Lp += *Rp * x; Rp+=Rs; Lp+=Ls; }
+  for(dm_int i=RCLength; --i>=0;) { *Lp += *Rp * x; Rp+=Rs; Lp+=Ls; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Add(const dmMatrixRowCol& _Lhs,const dmMatrixRowCol& _Rhs)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=_Lhs.Ptr,*p=Ptr;
   int Rs=_Rhs.RCSkip,Ls=_Lhs.RCSkip,s=RCSkip;
-  for(int i=RCLength;--i>=0;) { *p = *Lp + *Rp; p+=s; Lp+=Ls; Rp+=Rs; }
+  for(dm_int i=RCLength;--i>=0;) { *p = *Lp + *Rp; p+=s; Lp+=Ls; Rp+=Rs; }
 }
 //-----------------------------------------------------------
 INLINE  void dmMatrixRowCol::Sub(const dmMatrixRowCol& _Lhs,const dmMatrixRowCol& _Rhs)
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=_Lhs.Ptr, *p=Ptr;
   int Rs=_Rhs.RCSkip, Ls=_Lhs.RCSkip, s=RCSkip;
-  for(int i=RCLength; --i>=0;) { *p = *Lp - *Rp; p+=s; Lp+=Ls; Rp+=Rs; }
+  for(dm_int i=RCLength; --i>=0;) { *p = *Lp - *Rp; p+=s; Lp+=Ls; Rp+=Rs; }
 }
 //-----------------------------------------------------------
 INLINE void dmMatrixRowCol::Swap( dmMatrixRowCol& _Rhs )
@@ -173,7 +173,7 @@ INLINE void dmMatrixRowCol::Swap( dmMatrixRowCol& _Rhs )
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
   dm_matrix_t swp;
-  for(int i=RCLength; --i>=0;) { 
+  for(dm_int i=RCLength; --i>=0;) { 
     swp = *Lp; *Rp = *Lp; *Lp = swp;
     Rp+=Rs; Lp+=Ls; 
   }
@@ -183,7 +183,7 @@ INLINE void dmMatrixRowCol::Sqr( const dmMatrixRowCol& _Rhs )
 {
   dm_matrix_t x,*Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=_Rhs.RCLength;--i>=0;) { x = *Rp; *Lp = x * x; Rp+=Rs; Lp+=Ls; }
+  for(dm_int i=_Rhs.RCLength;--i>=0;) { x = *Rp; *Lp = x * x; Rp+=Rs; Lp+=Ls; }
 }
 //--------------------------------------------------------------------------
 INLINE void dmMatrixRowCol::Log( const dmMatrixRowCol& _Rhs )
@@ -191,8 +191,8 @@ INLINE void dmMatrixRowCol::Log( const dmMatrixRowCol& _Rhs )
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
 
-  dm_double v;
-  for(int i=_Rhs.RCLength;--i>=0;) {
+  double v;
+  for(dm_int i=_Rhs.RCLength;--i>=0;) {
     if((v = *Rp) < EPS) v = EPS;
     *Lp = static_cast<dm_matrix_t>(log(v)); 
     Rp+=Rs; Lp+=Ls; 
@@ -203,7 +203,7 @@ INLINE void dmMatrixRowCol::Pow( const dmMatrixRowCol& _Rhs, dm_matrix_t y )
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=_Rhs.RCLength;--i>=0;) {
+  for(dm_int i=_Rhs.RCLength;--i>=0;) {
     *Lp = static_cast<dm_matrix_t>(pow(*Rp,y)); 
     Rp+=Rs; Lp+=Ls; 
   }
@@ -213,7 +213,7 @@ INLINE void dmMatrixRowCol::Exp( const dmMatrixRowCol& _Rhs )
 {
   dm_matrix_t *Rp=_Rhs.Ptr,*Lp=Ptr;
   int Rs=_Rhs.RCSkip,Ls=RCSkip;
-  for(int i=_Rhs.RCLength;--i>=0;) {
+  for(dm_int i=_Rhs.RCLength;--i>=0;) {
     *Lp = static_cast<dm_matrix_t>(exp(*Rp)); 
     Rp+=Rs; Lp+=Ls; 
   }

@@ -111,7 +111,7 @@ class cciComponentManagerImpl
 
     cci_result Init(cciStaticModuleInfo const *aStaticModules,
                     dm_uint32 aStaticModuleCount,
-                    dm_bool registerStaticModules);
+                    bool registerStaticModules);
 
     cci_result Shutdown(void);
     cci_result FreeServices(void);

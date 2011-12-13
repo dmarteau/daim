@@ -54,8 +54,8 @@ _DECLARE_MATH( dmTk::Math::AndPixels   , AndImage  )
 _DECLARE_MATH( dmTk::Math::DiffPixels  , AbsDiff   )
 
 
-bool dmImageMath::Add( dm_float a )                        { return _dmDoImageMath3(lhsImage,0,a);   }
-bool dmImageMath::Add( dm_float a, const dmRegion& r )     { return _dmDoImageMath4(lhsImage,r,0,a); }
+bool dmImageMath::Add( float a )                        { return _dmDoImageMath3(lhsImage,0,a);   }
+bool dmImageMath::Add( float a, const dmRegion& r )     { return _dmDoImageMath4(lhsImage,r,0,a); }
 
 bool dmImageMath::Multiply( dm_real a )                    { return _dmDoImageMath3(lhsImage,a,0);   }
 bool dmImageMath::Multiply( dm_real a, const dmRegion& r ) { return _dmDoImageMath4(lhsImage,r,a,0); }

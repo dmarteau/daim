@@ -61,7 +61,7 @@ int main( int argc, char ** argv )
   }
 
   end_test:
-   DM_ReleaseDaimGlue(dm_false);
+   DM_ReleaseDaimGlue(false);
 
   DM_EXIT_TEST
 }

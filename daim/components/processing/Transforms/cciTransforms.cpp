@@ -103,7 +103,7 @@ CCI_IMETHODIMP cciTransforms::Rotate(cciImage image, cciRegion roi, dm_real angl
 }
 
 /* void createMotif (in cciImage image, in cciRegion roi, in boolean periodic, in cciImage dest); */
-CCI_IMETHODIMP cciTransforms::CreateMotif(cciImage image, cciRegion roi, dm_bool periodic, cciImage dest)
+CCI_IMETHODIMP cciTransforms::CreateMotif(cciImage image, cciRegion roi, bool periodic, cciImage dest)
 {
   dmImage*  srcImg = CCI_IF_NATIVE(image);
   dmImage*  dstImg = CCI_IF_NATIVE(dest);
@@ -149,7 +149,7 @@ CCI_IMETHODIMP cciTransforms::Flip(cciImage image, cciRegion roi, dm_uint32 way,
 }
 
 /* void rotate90 (in cciImage image, in cciRegion roi, in boolean clockwise, in cciImage dest); */
-CCI_IMETHODIMP cciTransforms::Rotate90(cciImage image, cciRegion roi, dm_bool clockwise, cciImage dest)
+CCI_IMETHODIMP cciTransforms::Rotate90(cciImage image, cciRegion roi, bool clockwise, cciImage dest)
 {
   dmImage*  srcImg = CCI_IF_NATIVE(image);
   dmImage*  dstImg = CCI_IF_NATIVE(dest);

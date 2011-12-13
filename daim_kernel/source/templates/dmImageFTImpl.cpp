@@ -76,7 +76,7 @@ void ft_image::initialize( size_t w, size_t h )
   {
     dmFT_Construct(_ft,h,w,NULL);
     construct(&(dmFT_DATA( _ft ))[1][1],_ft.Dim2,_ft.Dim1,
-              sizeof(dm_float)*_ft.Dim2);
+              sizeof(float)*_ft.Dim2);
   }
 }
 //-------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void ft_image::copy_ft( const ft_data_t& _src , bool _is_fourier_space )
   dmFT_CopyFTData(_ft,_src);
 
   construct(&(dmFT_DATA( _ft ))[1][1],_ft.Dim2,_ft.Dim1,
-              sizeof(dm_float)*_ft.Dim2);
+              sizeof(float)*_ft.Dim2);
 
   _is_ft = _is_fourier_space;
 }

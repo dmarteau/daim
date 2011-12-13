@@ -59,7 +59,7 @@ public:
 
     CCI_IMETHOD CreateInstance(cciISupports *aOuter, DM_REFIID aIID, void **aResult);
 
-    CCI_IMETHOD LockFactory(dm_bool aLock);
+    CCI_IMETHOD LockFactory(bool aLock);
 
     static CCI_METHOD Create(cciISupports* outer, const dmIID& aIID, void* *aInstancePtr);
     
@@ -108,7 +108,7 @@ protected:
     void Shutdown();
     cci_result AddFactoryNode(cciIGenericFactory* fact);
 
-    dm_bool                       mInitialized;
+    bool                       mInitialized;
     const char*                   mModuleName;
     dm_uint32                     mComponentCount;
     const cciModuleComponentInfo* mComponents;

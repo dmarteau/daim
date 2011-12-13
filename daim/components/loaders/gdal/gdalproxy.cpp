@@ -156,8 +156,8 @@ CCI_IMETHODIMP cciGDALProxy::OpenSurface(const char * location, dm_uint32 ioFlag
 }
 
 
-/* cciISurfaceDriver getDriver (in string type, in dm_bool createCaps); */
-CCI_IMETHODIMP cciGDALProxy::GetDriver(const char * type, dm_bool createCaps,
+/* cciISurfaceDriver getDriver (in string type, in bool createCaps); */
+CCI_IMETHODIMP cciGDALProxy::GetDriver(const char * type, bool createCaps,
                                        cciISurfaceDriver * *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
@@ -214,7 +214,7 @@ static CCI_METHOD GDALProxyRegisterSelfProc(cciIComponentManager *aCompMgr,
   cci_Ptr<cciICategoryManager> catmngr = do_GetService("@daim.org/category-manager;1");
   if(catmngr)
      return catmngr->AddCategoryEntry(DRIVER_PROXY_CATEGORY,CCI_GDALPROXY_CONTRACTID,
-                                      CCI_GDALPROXY_CLASSNAME,DM_TRUE,DM_TRUE);
+                                      CCI_GDALPROXY_CLASSNAME,true,true);
 
   return CCI_ERROR_FAILURE;
 }
@@ -227,7 +227,7 @@ static CCI_METHOD GDALProxyUnRegisterSelfProc(cciIComponentManager *aCompMgr,
   // Register the proxy to the category manager
   cci_Ptr<cciICategoryManager> catmngr = do_GetService("@daim.org/category-manager;1");
   if(catmngr)
-     catmngr->DeleteCategoryEntry(DRIVER_PROXY_CATEGORY,CCI_GDALPROXY_CONTRACTID,DM_TRUE);
+     catmngr->DeleteCategoryEntry(DRIVER_PROXY_CATEGORY,CCI_GDALPROXY_CONTRACTID,true);
 
   return CCI_OK;
 }
@@ -243,7 +243,7 @@ static const cciModuleComponentInfo components[] = {
 };
 
 
-static dm_bool gInitialized = DM_FALSE;
+static bool gInitialized = false;
 
 static cci_result cciGDALProxyModuleInit(cciIModule* aSelf)
 {
@@ -261,7 +261,7 @@ static cci_result cciGDALProxyModuleInit(cciIModule* aSelf)
   // Set Error handlers
   CPLSetErrorHandler( gdalErrorHandler );
 
-  gInitialized = DM_TRUE;
+  gInitialized = true;
   return CCI_OK;
 }
 
@@ -272,7 +272,7 @@ static void cciGDALProxyModuleShutDown(cciIModule* aSelf)
   #endif
 
   GDALDestroyDriverManager();
-  gInitialized = DM_FALSE;
+  gInitialized = false;
 }
 
 

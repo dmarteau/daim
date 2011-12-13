@@ -72,14 +72,14 @@ CCI_IMETHODIMP cciSharpenFilter::SetRadius(dm_uint32 aRadius)
 }
 
 /* attribute double strength; */
-CCI_IMETHODIMP cciSharpenFilter::GetStrength(dm_double *aStrength)
+CCI_IMETHODIMP cciSharpenFilter::GetStrength(double *aStrength)
 {
   CCI_ENSURE_ARG_POINTER(aStrength);
 
   *aStrength = mStrength;
   return CCI_OK;
 }
-CCI_IMETHODIMP cciSharpenFilter::SetStrength(dm_double aStrength)
+CCI_IMETHODIMP cciSharpenFilter::SetStrength(double aStrength)
 {
   if(aStrength >= 1)
      aStrength = 0.99;
@@ -98,9 +98,9 @@ class dmSharpenOperator : public dmMFilter
 {
 public:
 
-  dm_double _Strength;
+  double _Strength;
 
-  dmSharpenOperator( dmMaskDescription& aMask, dm_double aStrength )
+  dmSharpenOperator( dmMaskDescription& aMask, double aStrength )
   : dmMFilter(aMask,dmFilterMean),_Strength(aStrength) {}
 
   bool Apply( dmBufferParameters& params ) {
@@ -113,7 +113,7 @@ public:
   }
 };
 /* [noscript] void doSharpen (in cciImage image, in cciRegion rgn, in unsigned long radius, in double strength, in cciISupports context); */
-CCI_IMETHODIMP cciSharpenFilter::DoSharpen(dmImage *image, dmRegion *rgn, dm_uint32 radius, dm_double strength,
+CCI_IMETHODIMP cciSharpenFilter::DoSharpen(dmImage *image, dmRegion *rgn, dm_uint32 radius, double strength,
                                            cciIFilterContext *filterCtxt)
 {
   CCI_ENSURE_ARG_POINTER(image);

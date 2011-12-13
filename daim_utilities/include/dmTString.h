@@ -99,8 +99,8 @@ class __dmUtilities dmTAString_CharT
     const char_type* Begin() const;
     const char_type* End()   const;
 
-    self_type& Trim( const char_type* _tokens  = NULL, dm_bool _leading  = DM_TRUE,
-                                               dm_bool _trailing = DM_TRUE );
+    self_type& Trim( const char_type* _tokens  = NULL, bool _leading  = true,
+                                               bool _trailing = true );
 
     // Parse will split a string into components separated by
     // characters from <_separators>, it returns a string for each characters

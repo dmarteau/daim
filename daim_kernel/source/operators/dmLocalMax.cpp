@@ -79,7 +79,7 @@ struct __dm_impl_localmax
 bool dmLocalMax( dmBufferParameters& _Params , dmRegion& _Result )
 {
   _Params.CreateBuffer(*dmGetDescriptor(dmPixelFormat8bppIndexed),
-                         dmMaskDescription(3),dm_false);   
+                         dmMaskDescription(3),false);   
 
   __dm_impl_localmax _filter(_Params,_Result);
   return dmImplementScalarOperation(_filter,_Params.thisImage);

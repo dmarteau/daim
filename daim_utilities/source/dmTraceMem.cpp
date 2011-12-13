@@ -130,7 +130,7 @@ static void* __dm_Debug_Realloc( void* _ptr , size_t _size )
   return _ptr;
 }
 //------------------------------------------
-dm_bool dmTraceMem::IsTracing()
+bool dmTraceMem::IsTracing()
 {
   return DM_LIKELY(__dm_TRACE_MEMORY == 1);
 }
@@ -189,9 +189,9 @@ void dmTraceMem::Dump( dm_int32 status )
   fflush(stderr);
 }
 //------------------------------------------
-dm_bool dmTraceMem::IsTracing()
+bool dmTraceMem::IsTracing()
 {
-  return DM_FALSE;
+  return false;
 }
 //------------------------------------------
 

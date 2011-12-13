@@ -23,7 +23,7 @@ extern "C" {
   __daim_export cci_result __daim_call( CCI_Init )( cciIServiceManager* *result,
                                                     cciStaticModuleInfo const *aStaticModules,
                                                     dm_uint32 aStaticModuleCount,
-                                                    dm_bool registerStaticModules);
+                                                    bool registerStaticModules);
 
   __daim_export cci_result __daim_call( CCI_Shutdown )(cciIServiceManager* cmpMgr);
 

@@ -157,9 +157,9 @@ bool dmComputeFTConvolution( const dmImage& img, dmImageFT& ft, int way,
   // Compute ft with blocks swapped
   if(dmComputeForwardFT(img,ft2,true,dmRect(p,ft.width(),ft.height())))
   {
-    ft.compute_ft(dmFT_COMPUTE_FORWARD,dm_false);
+    ft.compute_ft(dmFT_COMPUTE_FORWARD,false);
     ft.ft_convolution(ft2,way);
-    return dm_true;
+    return true;
   }
   return false;
 }
@@ -171,9 +171,9 @@ bool dmComputeFTCorrelation( const dmImage& img, dmImageFT& ft, const dmPoint& p
   dmDEBUG_ASSERT( ft.width() > 0 && ft.height() > 0);
 
   dmImageFT ft2;
-  if(dmComputeForwardFT(img,ft2,dm_false,dmRect(p,ft.width(),ft.height())))
+  if(dmComputeForwardFT(img,ft2,false,dmRect(p,ft.width(),ft.height())))
   {
-    ft.compute_ft(dmFT_COMPUTE_FORWARD,dm_false);
+    ft.compute_ft(dmFT_COMPUTE_FORWARD,false);
     ft.ft_correlation(ft2);
     return true;
   }
@@ -188,11 +188,11 @@ bool dmComputeFTPowerSpectrum( dmImage& img, dmImageFT& ft )
   {
     dmRectMatrix _Spectrum;
 
-    ft.compute_ft(dmFT_COMPUTE_FORWARD,dm_false);
+    ft.compute_ft(dmFT_COMPUTE_FORWARD,false);
     dmFT_PowerSpectrum(ft,_Spectrum );
-    dm_float* pF = _Spectrum.BlkStart();
-    dm_float* pL = _Spectrum.BlkEnd();
-    for(;pF!=pL;++pF) *pF = static_cast<dm_float>( log10(1.0 + *pF) );
+    dm_matrix_t* pF = _Spectrum.BlkStart();
+    dm_matrix_t* pL = _Spectrum.BlkEnd();
+    for(;pF!=pL;++pF) *pF = static_cast<dm_matrix_t>( log10(1.0 + *pF) );
     return dmMatrixToImage(img,dmPoint(0,0),0,0,_Spectrum);
   }
   return false;
@@ -206,7 +206,7 @@ bool dmComputeFTPhaseSpectrum( dmImage& img, dmImageFT& ft )
   {
     dmRectMatrix _Spectrum;
 
-    ft.compute_ft(dmFT_COMPUTE_FORWARD,dm_false);
+    ft.compute_ft(dmFT_COMPUTE_FORWARD,false);
     dmFT_PhaseSpectrum(ft,_Spectrum );
     return dmMatrixToImage(img,dmPoint(0,0),0,0,_Spectrum);
   }

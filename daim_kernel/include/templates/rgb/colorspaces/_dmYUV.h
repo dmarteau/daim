@@ -46,19 +46,19 @@
 
    // Y
    template<> struct getChannel<1,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return 0.256635f * tr.r + 0.503971f * tr.g + 0.098218f * tr.b +  16.0f;
      } 
    };
    // U
    template<> struct getChannel<2,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return -0.148135f * tr.r - 0.290902f * tr.g + 0.439036f * tr.b + 128.0f;
      } 
    };
    // V
    template<> struct getChannel<3,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return 0.439327f * tr.r - 0.367673f * tr.g - 0.071655f * tr.b + 128.0f;
      } 
    };
@@ -79,7 +79,7 @@
 
      // specialize for float
      void operator()( const rgb_triple& tr, 
-                      dm_float& Y, dm_float& U, dm_float& V ) 
+                      float& Y, float& U, float& V ) 
      {
        Y =  0.256635f * tr.r + 0.503971f * tr.g + 0.098218f * tr.b +  16.0f;
        U = -0.148135f * tr.r - 0.290902f * tr.g + 0.439036f * tr.b + 128.0f; 

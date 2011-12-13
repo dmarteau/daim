@@ -41,10 +41,10 @@ BEGIN_MATRIX()
 // Singular value decomposition algorithm
 // See "Numerical Recipes in C" (C),  Chapter �2.6, p 68-69
 //------------------------------------------------------------------------------
-static dm_matrix_t pythag( dm_double a, dm_double b )
+static dm_matrix_t pythag( double a, double b )
 {
-  dm_double absa = fabs(a);
-  dm_double absb = fabs(b);
+  double absa = fabs(a);
+  double absb = fabs(b);
 
   if(absa > absb)
     return static_cast<dm_matrix_t>( absa * sqrt(1.0+dm_numerical::sqr(absb/absa)) );
@@ -327,10 +327,10 @@ dmMatrix* dmMatrix_SVD( dmMatrix& _Matrix, dmRectMatrix& V, dmColumnVector& SV,
   return &V;
 }
 //------------------------------------------------------------------------------
-dm_double dmMatrix_SVD_Cond( const dmMatrixRowCol& SV, dm_double factor )
+double dmMatrix_SVD_Cond( const dmMatrixRowCol& SV, double factor )
 {
   int i,N=SV.Length();
-  dm_double wm = FZERO,wtmp,wi; // Singular values are expected to be positives
+  double wm = FZERO,wtmp,wi; // Singular values are expected to be positives
   for (i=1;i<=N;++i) {
      if( (wtmp = SV[i]) > wm)
         wm = wtmp;

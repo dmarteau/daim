@@ -9,7 +9,7 @@
 
 #include "dmCrt.h"
 
-static dm_bool gFailed = dm_false;
+static bool gFailed = false;
 static const char* mArgv[] = {
   "--enable-trace-memory",
   #if defined(DAIM_LIB) && defined(CCI_REGISTRY_LOCATION)
@@ -26,7 +26,7 @@ static const char* mArgv[] = {
 #define DM_END_TEST_BLOCK      \
   dmCATCH(_E)                  \
     dmTRACE_EXCEPTION(_E);     \
-    gFailed = dm_true;         \
+    gFailed = true;         \
   dmDONE                       \
   end_test:                    \
   dmUtilities::Finalize();
@@ -42,7 +42,7 @@ if(CCI_SUCCEEDED(rv)) {
   DM_Finalize(false);        \
 } else {                     \
   fprintf(stderr,"urggh, failed to initialize DAIM library with error %d.\n",rv); \
-  gFailed = dm_true;         \
+  gFailed = true;         \
 }
 
 #elif defined(DAIM_GLUE)
@@ -56,7 +56,7 @@ if(CCI_SUCCEEDED(rv)) {
   DM_ReleaseDaimGlue(false); \
 } else {                     \
   fprintf(stderr,"urggh, failed to initialize DAIM library with error %d.\n",rv); \
-  gFailed = dm_true;         \
+  gFailed = true;         \
 }
 
 
@@ -71,7 +71,7 @@ if(CCI_SUCCEEDED(rv)) {
     fprintf(stderr,"%s...",#_expr);                                   \
     if (!(_expr)) {                                                   \
       fprintf(stderr,"failed at %s , line %d\n",__FILE__, __LINE__);    \
-      gFailed = dm_true;                                              \
+      gFailed = true;                                              \
       goto end_test;                                                  \
     } else                                                            \
       fprintf(stderr,"passed\n");                                     \

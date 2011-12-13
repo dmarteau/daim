@@ -45,7 +45,7 @@ __daim_export void   __daim_call( CCI_DebugBreak )(dm_uint32,const char*,const c
                                                    const char*,dm_uint32);
 
 __daim_export void*       __daim_call( CCI_NewObject    )(size_t n, CCI_STATIC_DESTRUCTOR );
-__daim_export void        __daim_call( CCI_RevokeObject )(void* p ,dm_bool );
+__daim_export void        __daim_call( CCI_RevokeObject )(void* p ,bool );
 __daim_export cci_result  __daim_call( CCI_VerifyObject )(void* p);
 
 __daim_export cci_result  __daim_call( CCI_GetComponentManager  )(cciIComponentManager**);

@@ -75,10 +75,10 @@ private:
 
 CCI_IMPL_ISUPPORTS1(BaseStringEnumerator, cciIStringEnumerator)
 
-CCI_IMETHODIMP_(dm_bool)
+CCI_IMETHODIMP_(bool)
 BaseStringEnumerator::HasMore()
 {
-  return mCurrent==mEnd ? DM_FALSE : DM_TRUE;
+  return mCurrent==mEnd ? false : true;
 }
 
 CCI_IMETHODIMP
@@ -109,14 +109,14 @@ class cciCategoryLeaf
 {
 public:
   ~cciCategoryLeaf() {}
-   cciCategoryLeaf( const char* value, dm_bool persists )
+   cciCategoryLeaf( const char* value, bool persists )
    {
      mValue = value;
      if(persists)
         mPersistentValue = mValue;
    }
 
-  void SetValue(const char* value,dm_bool persists)
+  void SetValue(const char* value,bool persists)
   {
     mValue =  value;
     if(persists)
@@ -129,7 +129,7 @@ public:
   DM_DECL_ALLOCATOR_NEW(cciCategoryLeaf,CATLEAF_BLOCKS)
 };
 
-DM_IMPL_ALLOCATOR_NEW(cciCategoryLeaf,dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciCategoryLeaf,true);
 
 //
 // CategoryNode implementations
@@ -148,11 +148,11 @@ public:
 
   cci_result Enumerate(cciISupports*, cciIUTF8StringEnumerator **_retval);
   cci_result AddEntry( const char* aEntry, const char* aValue,
-                       dm_bool persist, dm_bool replace);
+                       bool persist, bool replace);
 
-  cci_result RemoveEntry(const char* aEntry, dm_bool persist);
+  cci_result RemoveEntry(const char* aEntry, bool persist);
 
-  dm_bool WritePersistentEntries(FILE* fd, const char* aCategoryName);
+  bool WritePersistentEntries(FILE* fd, const char* aCategoryName);
 
   cciCategoryLeaf* GetEntry( const dmCString& aEntry )
   {
@@ -168,7 +168,7 @@ public:
   DM_DECL_ALLOCATOR_NEW(cciCategoryNode,CATNODE_BLOCKS)
 };
 
-DM_IMPL_ALLOCATOR_NEW(cciCategoryNode,dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciCategoryNode,true);
 
 cci_result cciCategoryNode::Enumerate(cciISupports* aOwner, cciIUTF8StringEnumerator **_retval)
 {
@@ -182,7 +182,7 @@ cci_result cciCategoryNode::Enumerate(cciISupports* aOwner, cciIUTF8StringEnumer
 }
 
 cci_result cciCategoryNode::AddEntry( const char* aEntry, const char* aValue,
-                                      dm_bool persist, dm_bool replace)
+                                      bool persist, bool replace)
 {
   dmWRITE_LOCK(mLock);
 
@@ -198,7 +198,7 @@ cci_result cciCategoryNode::AddEntry( const char* aEntry, const char* aValue,
   return CCI_OK;
 }
 
-cci_result cciCategoryNode::RemoveEntry( const char* aEntry, dm_bool persist )
+cci_result cciCategoryNode::RemoveEntry( const char* aEntry, bool persist )
 {
   dmWRITE_LOCK(mLock);
 
@@ -234,7 +234,7 @@ void cciCategoryNode::Clear()
   mEntries.clear();
 }
 
-dm_bool cciCategoryNode::WritePersistentEntries(FILE* fd, const char* aCategoryName)
+bool cciCategoryNode::WritePersistentEntries(FILE* fd, const char* aCategoryName)
 {
   dmREAD_LOCK(mLock);
 
@@ -247,12 +247,12 @@ dm_bool cciCategoryNode::WritePersistentEntries(FILE* fd, const char* aCategoryN
     {
       if(fprintf(fd,"%s,%s,%s\n",aCategoryName,(*it).first.get(),
                  leaf->mPersistentValue.get()) ==  -1)
-        return DM_FALSE;
+        return false;
     }
 
     ++it;
   }
-  return DM_TRUE;
+  return true;
 }
 
 //
@@ -331,8 +331,8 @@ CCI_IMETHODIMP
 cciCategoryManager::AddCategoryEntry( const char *aCategoryName,
                                       const char *aEntryName,
                                       const char *aValue,
-                                      dm_bool aPersist,
-                                      dm_bool aReplace)
+                                      bool aPersist,
+                                      bool aReplace)
 {
   CCI_ENSURE_ARG_POINTER(aCategoryName);
   CCI_ENSURE_ARG_POINTER(aEntryName);
@@ -361,7 +361,7 @@ cciCategoryManager::AddCategoryEntry( const char *aCategoryName,
 CCI_IMETHODIMP
 cciCategoryManager::DeleteCategoryEntry( const char *aCategoryName,
                                          const char *aEntryName,
-                                         dm_bool aPersist)
+                                         bool aPersist)
 {
   CCI_ENSURE_ARG_POINTER(aCategoryName);
   CCI_ENSURE_ARG_POINTER(aEntryName);
@@ -491,7 +491,7 @@ cciCategoryManagerFactory::CreateInstance( cciISupports* aOuter, const dmIID& aI
 }
 
 CCI_IMETHODIMP
-cciCategoryManagerFactory::LockFactory( dm_bool )
+cciCategoryManagerFactory::LockFactory( bool )
 {
     // Not implemented...
   return CCI_OK;

@@ -129,7 +129,7 @@ static CCI_METHOD RegisterSelfProc(cciIComponentManager *aCompMgr,
   // Register the proxy to the category manager
   cci_Ptr<cciICategoryManager> catmngr = do_GetService("@daim.org/category-manager;1");
   if(catmngr)
-     return catmngr->AddCategoryEntry("test-category","foo",CCI_FOO_CONTRACTID,DM_TRUE,DM_TRUE);
+     return catmngr->AddCategoryEntry("test-category","foo",CCI_FOO_CONTRACTID,true,true);
   else
     printf("==> Huu ?! no category manager !!\n");
 
@@ -146,7 +146,7 @@ static CCI_METHOD UnRegisterSelfProc(cciIComponentManager *aCompMgr,
   // Register the proxy to the category manager
   cci_Ptr<cciICategoryManager> catmngr = do_GetService("@daim.org/category-manager;1");
   if(catmngr)
-     catmngr->DeleteCategoryEntry("test-category","foo",DM_TRUE);
+     catmngr->DeleteCategoryEntry("test-category","foo",true);
   else
     printf("==> Huu ?! no category manager !!\n");
 
@@ -196,13 +196,13 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       printf("### Test 1.1: Adding categories...");
-      rv = catmngr->AddCategoryEntry("cat1","entry1","value1",DM_TRUE,DM_TRUE);
+      rv = catmngr->AddCategoryEntry("cat1","entry1","value1",true,true);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
-      rv = catmngr->AddCategoryEntry("cat1","entry2","value2",DM_TRUE,DM_TRUE);
+      rv = catmngr->AddCategoryEntry("cat1","entry2","value2",true,true);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
-      rv = catmngr->AddCategoryEntry("cat2","entry1","value1",DM_TRUE,DM_TRUE);
+      rv = catmngr->AddCategoryEntry("cat2","entry1","value1",true,true);
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       {

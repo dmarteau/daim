@@ -86,12 +86,12 @@ protected:
   int         mOrder;
   int         mExtend;
   
-  dm_bool     mbProfileComputed;
+  bool     mbProfileComputed;
   
   dmCString   mMode;
   
   GRSZCompute mGRSZCompute;
-  dm_bool     mbGRSZComputed;
+  bool     mbGRSZComputed;
   int         mnGRSZReturn;
 };
 
@@ -103,8 +103,8 @@ cciProfile::cciProfile()
 , mOrder(2)
 , mExtend(0)
 {
-  mbProfileComputed = DM_FALSE;
-  mbGRSZComputed    = DM_FALSE;
+  mbProfileComputed = false;
+  mbGRSZComputed    = false;
   
   mGRSZCompute.bInvert           = false;
   mGRSZCompute.bRelThreshold     = true;
@@ -127,8 +127,8 @@ cciProfile::SetPath(dm_uint32 type, void *points, dm_uint32 count)
  
   mProfile.Clear();   
   mGRSZCompute.Clear();
-  mbGRSZComputed    = DM_FALSE;
-  mbProfileComputed = DM_FALSE;
+  mbGRSZComputed    = false;
+  mbProfileComputed = false;
 
   switch(type)
   {
@@ -200,8 +200,8 @@ cciProfile::Compute(cciImage _image)
   CCI_ENSURE_ARG_POINTER(image);
 
   mProfile.ComputeProfile(*image,false);
-  mbProfileComputed = DM_TRUE;
-  mbGRSZComputed    = DM_FALSE;
+  mbProfileComputed = true;
+  mbGRSZComputed    = false;
   
   return CCI_OK;
 }
@@ -213,8 +213,8 @@ cciProfile::Clear()
   mProfile.Clear();   
   mGRSZCompute.Clear();
   
-  mbGRSZComputed    = DM_FALSE;
-  mbProfileComputed = DM_FALSE;
+  mbGRSZComputed    = false;
+  mbProfileComputed = false;
 
   return CCI_OK;
 }
@@ -252,17 +252,17 @@ cciProfile::GetValues(dm_real **data CCI_OUTPARAM)
        
     // Left border
     for(k=1,i=extend;i>=1;++k,--i)
-        VR[i] = static_cast<dm_float>((*(it+k)).value);
+        VR[i] = static_cast<float>((*(it+k)).value);
        
     _Count += extend;
 
     // Right border
     for(i=1;i<=extend;++i)
-        VR[i+_Count] = static_cast<dm_float>((*(last-1-i)).value);
+        VR[i+_Count] = static_cast<float>((*(last-1-i)).value);
   
     // Copy Remaining of data =
     for(i=extend+1;it!=last; ++i,++it)
-        VR[i] = static_cast<dm_float>((*it).value);
+        VR[i] = static_cast<float>((*it).value);
            
     // Apply filter
     dmMatrixRow _Coeffs(&mCoeffs);
@@ -362,7 +362,7 @@ cciProfile::GetData(cciIResultSet *results, const char * label, const char * raw
 
 /* void getRange (out double upper, out double lower); */
 CCI_IMETHODIMP 
-cciProfile::GetRange(dm_double *upper CCI_OUTPARAM, dm_double *lower CCI_OUTPARAM)
+cciProfile::GetRange(double *upper CCI_OUTPARAM, double *lower CCI_OUTPARAM)
 {
   if(mProfile.Empty())
     return CCI_ERROR_NOT_AVAILABLE;
@@ -420,32 +420,32 @@ cciProfile::GetCount(dm_uint32 *aCount)
 
 /* attribute float profilThreshold; */
 CCI_IMETHODIMP 
-cciProfile::GetProfilThreshold(dm_float *aProfilThreshold)
+cciProfile::GetProfilThreshold(float *aProfilThreshold)
 {
   *aProfilThreshold = mGRSZCompute.fProfilThreshold;
   return CCI_OK;
 }
 CCI_IMETHODIMP 
-cciProfile::SetProfilThreshold(dm_float aProfilThreshold)
+cciProfile::SetProfilThreshold(float aProfilThreshold)
 {
   mGRSZCompute.fProfilThreshold = aProfilThreshold;
-  mbGRSZComputed = DM_FALSE;
+  mbGRSZComputed = false;
   
   return CCI_OK;
 }
 
 /* attribute float minSegmentSize; */
 CCI_IMETHODIMP 
-cciProfile::GetMinSegmentSize(dm_float *aMinSegmentSize)
+cciProfile::GetMinSegmentSize(float *aMinSegmentSize)
 {
   *aMinSegmentSize = mGRSZCompute.fMinGrainSize;
   return CCI_OK;
 }
 CCI_IMETHODIMP 
-cciProfile::SetMinSegmentSize(dm_float aMinSegmentSize)
+cciProfile::SetMinSegmentSize(float aMinSegmentSize)
 {
   mGRSZCompute.fMinGrainSize = aMinSegmentSize;
-  mbGRSZComputed = DM_FALSE;
+  mbGRSZComputed = false;
   
   return CCI_OK;
 }
@@ -461,39 +461,39 @@ CCI_IMETHODIMP
 cciProfile::SetMaxTestBorderLength(dm_int32 aMaxTestBorderLength)
 {
   mGRSZCompute.nMaxBorderLength = aMaxTestBorderLength;
-  mbGRSZComputed = DM_FALSE;
+  mbGRSZComputed = false;
   
   return CCI_OK;
 }
 
 /* attribute boolean relThreshold; */
 CCI_IMETHODIMP 
-cciProfile::GetRelThreshold(dm_bool *aRelThreshold)
+cciProfile::GetRelThreshold(bool *aRelThreshold)
 {
   *aRelThreshold = mGRSZCompute.bRelThreshold;
   return CCI_OK;
 }
 CCI_IMETHODIMP 
-cciProfile::SetRelThreshold(dm_bool aRelThreshold)
+cciProfile::SetRelThreshold(bool aRelThreshold)
 {
   mGRSZCompute.bRelThreshold = aRelThreshold;
-  mbGRSZComputed = DM_FALSE;
+  mbGRSZComputed = false;
   
   return CCI_OK;
 }
 
 /* attribute boolean invert; */
 CCI_IMETHODIMP 
-cciProfile::GetInvert(dm_bool *aInvert)
+cciProfile::GetInvert(bool *aInvert)
 {
   *aInvert = mGRSZCompute.bInvert;
   return CCI_OK;
 }
 CCI_IMETHODIMP 
-cciProfile::SetInvert(dm_bool aInvert)
+cciProfile::SetInvert(bool aInvert)
 {
   mGRSZCompute.bInvert = aInvert;
-  mbGRSZComputed       = DM_FALSE;
+  mbGRSZComputed       = false;
   
   return CCI_OK;
 }
@@ -512,7 +512,7 @@ cciProfile::ComputeSegments(cciImage _image, dm_int32 *_retval CCI_OUTPARAM)
 
   dmTRY
     mnGRSZReturn   = mGRSZCompute(mProfile,image);
-    mbGRSZComputed = DM_TRUE;
+    mbGRSZComputed = true;
     
     *_retval = mnGRSZReturn;
     
@@ -526,7 +526,7 @@ cciProfile::ComputeSegments(cciImage _image, dm_int32 *_retval CCI_OUTPARAM)
 
 /* readonly attribute float fSegments; */
 CCI_IMETHODIMP 
-cciProfile::GetFSegments(dm_float *aFSegments)
+cciProfile::GetFSegments(float *aFSegments)
 {
   CCI_ENSURE_TRUE(mbGRSZComputed,CCI_ERROR_NOT_AVAILABLE);
   
@@ -546,7 +546,7 @@ cciProfile::GetStartPointStatus(dm_int32 *aStartPointStatus)
 
 /* readonly attribute float fComputedThreshold; */
 CCI_IMETHODIMP 
-cciProfile::GetFComputedThreshold(dm_float *aFComputedThreshold)
+cciProfile::GetFComputedThreshold(float *aFComputedThreshold)
 {
   CCI_ENSURE_TRUE(mbGRSZComputed,CCI_ERROR_NOT_AVAILABLE);
   
@@ -557,7 +557,7 @@ cciProfile::GetFComputedThreshold(dm_float *aFComputedThreshold)
 /* void getSegmentData (in cciIResultSet results, in string name, in boolean midpoints); */
 /* unsigned long getSegmentData (in cciIResultSet results, in string name, in boolean midpoints); */
 CCI_IMETHODIMP 
-cciProfile::GetSegmentData(cciIResultSet *results, const char * label, dm_bool midpoints, 
+cciProfile::GetSegmentData(cciIResultSet *results, const char * label, bool midpoints, 
                            dm_uint32 *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_TRUE(mbGRSZComputed,CCI_ERROR_NOT_AVAILABLE);

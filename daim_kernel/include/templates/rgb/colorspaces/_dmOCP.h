@@ -48,19 +48,19 @@
    };
 
    template<> struct getChannel<1,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
-       return 0.00196078f  * (static_cast<dm_float>(tr.r) - static_cast<dm_float>(tr.g));
+     float operator()( const rgb_triple& tr ) {
+       return 0.00196078f  * (static_cast<float>(tr.r) - static_cast<float>(tr.g));
      } 
    };
 
    template<> struct getChannel<2,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
-       return -0.000980392f * (static_cast<dm_float>(tr.r) + static_cast<dm_float>(tr.g)) + 0.00196078f * tr.b;
+     float operator()( const rgb_triple& tr ) {
+       return -0.000980392f * (static_cast<float>(tr.r) + static_cast<float>(tr.g)) + 0.00196078f * tr.b;
      } 
    };
 
    template<> struct getChannel<3,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return to_rgb_channel( (static_cast<float>(tr.r)+static_cast<float>(tr.g)+static_cast<float>(tr.b)) * 0.3333333333333f);
      } 
    };
@@ -83,11 +83,11 @@
 
      // normalized values in range [-1..1]
      void operator()( const rgb_triple& tr, 
-                      dm_float& RG, dm_float& BY, dm_float& WB )
+                      float& RG, float& BY, float& WB )
      {
-       RG =  0.00196078f  * (static_cast<dm_float>(tr.r) - static_cast<dm_float>(tr.g));
-       BY = -0.000980392f * (static_cast<dm_float>(tr.r) + static_cast<dm_float>(tr.g)) + 0.00196078f * tr.b;
-       WB =  0.00130719f  * (static_cast<dm_float>(tr.r) + static_cast<dm_float>(tr.g) + static_cast<dm_float>(tr.b));
+       RG =  0.00196078f  * (static_cast<float>(tr.r) - static_cast<float>(tr.g));
+       BY = -0.000980392f * (static_cast<float>(tr.r) + static_cast<float>(tr.g)) + 0.00196078f * tr.b;
+       WB =  0.00130719f  * (static_cast<float>(tr.r) + static_cast<float>(tr.g) + static_cast<float>(tr.b));
      }
    };
 
@@ -95,7 +95,7 @@
    // Merger
    //-------------------------------------------------------
    struct merger {
-     dm_float b,fRG,fBY,fWB;
+     float b,fRG,fBY,fWB;
 
      // expecting values in range [0..255]
      void operator()( rgb_triple& tr, 
@@ -112,7 +112,7 @@
      }
 
      // expecting values in range [-1..1]
-     void operator()( rgb_triple& tr, const dm_float& RG, const dm_float& BY, const dm_float& WB ) 
+     void operator()( rgb_triple& tr, const float& RG, const float& BY, const float& WB ) 
      {
        b = BY*0.666666666667f;
        tr.r = to_rgb_channel(255.0f*(WB + RG - b));

@@ -74,7 +74,7 @@ interface cciIFactory : cciISupports
   * @return CCI_OK - If the lock operation was successful.
   *         CCI_ERROR* - Method failure.
   */
-  void lockFactory (in dm_bool lock);
+  void lockFactory (in boolean lock);
 };
 
 

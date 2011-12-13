@@ -129,11 +129,11 @@ CCI_IMETHODIMP_(dmImage *) cciImageList::GetNativeBuffer(dm_uint32 index)
 }
 
 /* boolean isEmpty (in dm_uint32 index); */
-CCI_IMETHODIMP cciImageList::IsEmpty(dm_uint32 index, dm_bool *retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciImageList::IsEmpty(dm_uint32 index, bool *retval CCI_OUTPARAM)
 {
   if( CHECK_SIZE(index) )
   {
-    *retval = RETVAL_BOOL(!mBuffers[index].IsNull());
+    *retval = mBuffers[index].IsNull();
     return CCI_OK;
   }
 

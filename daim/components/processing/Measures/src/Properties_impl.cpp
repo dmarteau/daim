@@ -36,7 +36,7 @@ struct Prop_CumulateDensity
   :_This(_Instance)
   {}
 
-  void operator()(int x, const dm_float& v ) { 
+  void operator()(int x, const float& v ) { 
     _This._PARTITION_NODE(x).ri_fvalue += v;
   }
 };
@@ -51,7 +51,7 @@ struct Prop_CumulateDensityOrder2
   :_This(_Instance)
   {}
 
-  void operator()( int x, const dm_float& v ) { 
+  void operator()( int x, const float& v ) { 
     _This._PARTITION_NODE(x).ri_fvalue += v * v;
   }
 };
@@ -67,7 +67,7 @@ struct Prop_CumulateDensityOrderN
   :_This(_Instance),n(_Order)
   {}
 
-  void operator()(int x, const dm_float& v ) { 
+  void operator()(int x, const float& v ) { 
     _This._PARTITION_NODE(x).ri_fvalue += pow(static_cast<dm_real>(v),n);
   }
 };
@@ -142,7 +142,7 @@ struct Prop_MinDensity
   :_This(_Instance)
   {}
 
-  void operator()( int x, const dm_float& v ) { 
+  void operator()( int x, const float& v ) { 
     _Node = &_This._PARTITION_NODE(x);
     _Node->ri_fvalue = dm_min(_Node->ri_fvalue,static_cast<dm_real>(v));
   }
@@ -184,7 +184,7 @@ struct Prop_MaxDensity
   :_This(_Instance)
   {}
 
-  void operator()( int x, const dm_float& v ) { 
+  void operator()( int x, const float& v ) { 
     _Node = &_This._PARTITION_NODE(x);
     _Node->ri_fvalue = dm_max(_Node->ri_fvalue,static_cast<dm_real>(v));
   }

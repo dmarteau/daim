@@ -66,7 +66,7 @@ public:                                                                     \
     /**                                                                     \
      * Returns true if this object is part of an aggregated object.         \
      */                                                                     \
-    dm_bool IsPartOfAggregated(void) { return fOuter != InnerObject(); }    \
+    bool IsPartOfAggregated(void) { return fOuter != InnerObject(); }    \
                                                                             \
 private:                                                                    \
                                                                             \

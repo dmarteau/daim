@@ -71,7 +71,7 @@ struct dmID {
    * @return <b>PR_TRUE</b> if they are the same, <b>PR_FALSE</b> if not.
    */
 
-  inline dm_bool Equals(const dmID& other) const {
+  inline bool Equals(const dmID& other) const {
     // One would think that this could be done faster with a really
     // efficient implementation of memcmp(), but evidently no
     // memcmp()'s out there are better than this code.
@@ -87,7 +87,7 @@ struct dmID {
 
   }
 
-  dm_bool Parse(const char *aIDStr);
+  bool Parse(const char *aIDStr);
 
   //@}
 };

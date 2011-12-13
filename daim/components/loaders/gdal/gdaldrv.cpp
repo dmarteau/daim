@@ -150,7 +150,7 @@ CCI_IMETHODIMP cciGDALDriver::CreateSurface(const char * location, dm_uint32 wid
 }
 
 /* boolean isCompatibleDriver (in string type); */
-CCI_IMETHODIMP cciGDALDriver::IsCompatibleDriver(const char * type, dm_bool *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciGDALDriver::IsCompatibleDriver(const char * type, bool *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_TRUE(mDriver,CCI_ERROR_NOT_INITIALIZED);
   CCI_ENSURE_ARG_POINTER(type);
@@ -164,15 +164,15 @@ CCI_IMETHODIMP cciGDALDriver::IsCompatibleDriver(const char * type, dm_bool *_re
 }
 
 /* readonly attribute boolean hasCreateCapabilities; */
-CCI_IMETHODIMP cciGDALDriver::GetHasCreateCapabilities(dm_bool *aHasCreateCapabilities)
+CCI_IMETHODIMP cciGDALDriver::GetHasCreateCapabilities(bool *aHasCreateCapabilities)
 {
   CCI_ENSURE_TRUE(mDriver,CCI_ERROR_NOT_INITIALIZED);
 
-  *aHasCreateCapabilities = DM_FALSE;
+  *aHasCreateCapabilities = false;
 
   if(GDALGetMetadataItem( mDriver, GDAL_DCAP_CREATE    , NULL ) != NULL ||
      GDALGetMetadataItem( mDriver, GDAL_DCAP_CREATECOPY, NULL ) != NULL )
-    *aHasCreateCapabilities = DM_TRUE;
+    *aHasCreateCapabilities = true;
 
   return CCI_OK;
 }
@@ -194,7 +194,7 @@ CCI_IMETHODIMP cciGDALDriver::SaveImageBits(const char * newLocation,  dmImageDa
   CCI_ENSURE_SUCCESS(rv,rv);
 
   if(options)
-     createOpts = CSLTokenizeStringComplex(options,",",DM_FALSE,DM_FALSE);
+     createOpts = CSLTokenizeStringComplex(options,",",false,false);
 
   // Clone meta data
   if(exif)
@@ -240,7 +240,7 @@ CCI_IMETHODIMP cciGDALDriver::SaveImageBits(const char * newLocation,  dmImageDa
   }
   
   //TODO set progress data from callbacks
-  GDALDatasetH newDS = GDALCreateCopy(mDriver,newLocation,hDS,DM_FALSE,createOpts,
+  GDALDatasetH newDS = GDALCreateCopy(mDriver,newLocation,hDS,false,createOpts,
                                       dm_null,dm_null);
   if(newDS)
     GDALClose(newDS);

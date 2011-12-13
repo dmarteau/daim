@@ -85,14 +85,14 @@ CCI_IMETHODIMP_(cci_refcnt) EmptyEnumeratorImpl::Release(void)
 CCI_IMPL_QUERY_INTERFACE1(EmptyEnumeratorImpl, cciISimpleEnumerator)
 
 // cciISimpleEnumerator interface
-CCI_IMETHODIMP_(dm_bool) EmptyEnumeratorImpl::HasMoreElements()
+CCI_IMETHODIMP_(bool) EmptyEnumeratorImpl::HasMoreElements()
 {
-  return DM_FALSE;
+  return false;
 }
 
-CCI_IMETHODIMP_(dm_bool)  EmptyEnumeratorImpl::HasMore()
+CCI_IMETHODIMP_(bool)  EmptyEnumeratorImpl::HasMore()
 {
-  return DM_FALSE;
+  return false;
 }
 
 CCI_IMETHODIMP EmptyEnumeratorImpl::GetNext(cciISupports** aResult)
@@ -127,7 +127,7 @@ public:
     CCI_DECL_ISUPPORTS
 
     // cciISimpleEnumerator methods
-    CCI_IMETHOD_(dm_bool) HasMoreElements();
+    CCI_IMETHOD_(bool) HasMoreElements();
     CCI_IMETHOD GetNext(cciISupports** aResult);
 
     cciSingletonEnumerator(cciISupports* aValue);
@@ -137,14 +137,14 @@ private:
 
 protected:
     cciISupports* mValue;
-    dm_bool mConsumed;
+    bool mConsumed;
 };
 
 cciSingletonEnumerator::cciSingletonEnumerator(cciISupports* aValue)
     : mValue(aValue)
 {
     CCI_IF_ADDREF(mValue);
-    mConsumed = (mValue ? DM_FALSE : DM_TRUE);
+    mConsumed = (mValue ? false : true);
 }
 
 cciSingletonEnumerator::~cciSingletonEnumerator()
@@ -154,7 +154,7 @@ cciSingletonEnumerator::~cciSingletonEnumerator()
 
 CCI_IMPL_ISUPPORTS1(cciSingletonEnumerator, cciISimpleEnumerator)
 
-CCI_IMETHODIMP_(dm_bool)
+CCI_IMETHODIMP_(bool)
 cciSingletonEnumerator::HasMoreElements()
 {
   return !mConsumed;
@@ -171,7 +171,7 @@ cciSingletonEnumerator::GetNext(cciISupports** aResult)
     if (mConsumed)
         return CCI_ERROR_UNEXPECTED;
 
-    mConsumed = DM_TRUE;
+    mConsumed = true;
 
     *aResult = mValue;
     CCI_ADDREF(*aResult);
@@ -198,7 +198,7 @@ public:
     CCI_DECL_ISUPPORTS
 
     // cciISimpleEnumerator methods
-    CCI_IMETHOD_(dm_bool) HasMoreElements();
+    CCI_IMETHOD_(bool) HasMoreElements();
     CCI_IMETHOD GetNext(cciISupports** aResult);
 
     cciUnionEnumerator(cciISimpleEnumerator* firstEnumerator,
@@ -209,15 +209,15 @@ private:
 
 protected:
     cci_Ptr<cciISimpleEnumerator> mFirstEnumerator, mSecondEnumerator;
-    dm_bool mConsumed;
-    dm_bool mAtSecond;
+    bool mConsumed;
+    bool mAtSecond;
 };
 
 cciUnionEnumerator::cciUnionEnumerator(cciISimpleEnumerator* firstEnumerator,
                                      cciISimpleEnumerator* secondEnumerator)
     : mFirstEnumerator(firstEnumerator),
       mSecondEnumerator(secondEnumerator),
-      mConsumed(DM_FALSE), mAtSecond(DM_FALSE)
+      mConsumed(false), mAtSecond(false)
 {
 }
 
@@ -227,25 +227,25 @@ cciUnionEnumerator::~cciUnionEnumerator()
 
 CCI_IMPL_ISUPPORTS1(cciUnionEnumerator, cciISimpleEnumerator)
 
-CCI_IMETHODIMP_(dm_bool)
+CCI_IMETHODIMP_(bool)
 cciUnionEnumerator::HasMoreElements()
 {
     if (mConsumed)
-        return DM_FALSE;
+        return false;
 
     if (! mAtSecond)
     {
       if(mFirstEnumerator->HasMoreElements())
-         return DM_TRUE;
+         return true;
 
-      mAtSecond = DM_TRUE;
+      mAtSecond = true;
     }
 
     if (mSecondEnumerator->HasMoreElements())
-        return DM_TRUE;
+        return true;
 
-    mConsumed = DM_TRUE;
-    return DM_FALSE;
+    mConsumed = true;
+    return false;
 }
 
 CCI_IMETHODIMP

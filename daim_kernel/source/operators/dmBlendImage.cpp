@@ -38,7 +38,7 @@
 //---------------------------------------------------------------------
 struct __dm_blend_impl
 {
-   dm_float        Percent;
+   float           Percent;
    const dmImage&  Src;
    const dmRegion& Rgn;
    const dmPoint&  Pt;
@@ -48,7 +48,7 @@ struct __dm_blend_impl
                    const dmRegion& _Rgn,
                    const dmPoint&  _Pt)
 
-   :Percent(static_cast<dm_float>(_Percent))
+   :Percent(static_cast<float>(_Percent))
    ,Src(_Src)
    ,Rgn(_Rgn)
    ,Pt(_Pt)

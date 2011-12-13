@@ -52,7 +52,7 @@ DAIM_GLUE_EXPORT
 cci_result CCI_NewImage(dmImageData & data, cciIImage* *_result);
 
 DAIM_GLUE_EXPORT
-cci_result CCI_GetLoader( cciILoaderService*, const char* type, dm_bool createCaps, 
+cci_result CCI_GetLoader( cciILoaderService*, const char* type, bool createCaps, 
                           cciISurfaceDriver** _result );
 
 DAIM_GLUE_EXPORT

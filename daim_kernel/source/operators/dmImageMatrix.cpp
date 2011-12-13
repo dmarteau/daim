@@ -92,7 +92,7 @@ struct __dm_impl_matrix_to_image
 
      if(range.diff()<=0) {
        dmRect r = dmRect(0,0,m.NCols(),m.NRows());
-       daim::tmp_image<dm_float> _tmp(m.GetData(),m.NCols(),m.NRows(),
+       daim::tmp_image<float> _tmp(m.GetData(),m.NCols(),m.NRows(),
                                       sizeof(dm_real)*m.NCols());
        
        daim::copy(r,p,_tmp,_img.Gen());

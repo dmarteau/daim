@@ -522,7 +522,7 @@ dmTAString_CharT& dmTAString_CharT::Replace(index_type p0, size_type n0, const d
   return *this;
 }
 //------------------------------------------
-dmTAString_CharT& dmTAString_CharT::Trim( const char_type* _tokens, dm_bool _leading, dm_bool _trailing )
+dmTAString_CharT& dmTAString_CharT::Trim( const char_type* _tokens, bool _leading, bool _trailing )
 {
   if(_impl)
   {

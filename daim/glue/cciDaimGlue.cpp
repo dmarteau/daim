@@ -56,7 +56,7 @@
 #endif
 
 static dm_hmodule gDaimModule  = dm_null;
-static dm_bool    gInitialized = dm_false;
+static bool    gInitialized = false;
 
 extern "C" {
 
@@ -64,7 +64,7 @@ extern "C" {
 #define __daim_export
 
 __daim_export cci_result __daim_call( DM_Initialize )(const char** argv, int argc, dmLOG_FUNCTION pfnLog) = dm_null;
-__daim_export void       __daim_call( DM_Finalize   )(dm_bool force) = dm_null;
+__daim_export void       __daim_call( DM_Finalize   )(bool force) = dm_null;
 
 }
 
@@ -121,11 +121,11 @@ cci_result DM_InitDaimGlue( const char* location, const char** argv, int argc, d
      rv = CCI_InitCOMGlue2(*ppHook);
   }
 
-  gInitialized = dm_true;
+  gInitialized = true;
   return rv;
 }
 
-void DM_ReleaseDaimGlue( dm_bool force )
+void DM_ReleaseDaimGlue( bool force )
 {
   if(gInitialized)
     CCI_ReleaseCOMGlue2();
@@ -137,5 +137,5 @@ void DM_ReleaseDaimGlue( dm_bool force )
      __dm_dlclose(gDaimModule);
 
   gDaimModule  = dm_null;
-  gInitialized = dm_false;
+  gInitialized = false;
 }

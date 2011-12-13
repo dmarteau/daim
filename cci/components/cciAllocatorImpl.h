@@ -15,10 +15,10 @@ public:
   cciAllocatorBase();
 
   void*       NewObject( size_t n, CCI_STATIC_DESTRUCTOR _dtor );
-  cci_result  RevokeObject( void* p ,dm_bool discard );
+  cci_result  RevokeObject( void* p ,bool discard );
 
   dm_uint32   NumberOfInstances();
-  dm_bool     IsObjectValid(void* p);
+  bool     IsObjectValid(void* p);
 
 protected:
   dmList    mInstances;

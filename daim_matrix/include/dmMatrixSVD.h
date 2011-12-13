@@ -43,7 +43,7 @@ BEGIN_MATRIX()
 //                       an right hand side _RowCol. 
 //------------------------------------------------------------------------
 dmMatrix* dmMatrix_SVD( dmMatrix& _Matrix, dmRectMatrix& V, dmColumnVector& SV, int _MaxIters = 30 );
-dm_double dmMatrix_SVD_Cond ( const dmMatrixRowCol& SV, dm_double factor );
+double    dmMatrix_SVD_Cond ( const dmMatrixRowCol& SV, double factor );
 void      dmMatrix_SVD_Solve( const dmMatrix& U,const dmMatrix& V,
                               const dmMatrixRowCol& SV,
                               const dmMatrixRowCol& _RowCol, 

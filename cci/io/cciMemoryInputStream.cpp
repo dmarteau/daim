@@ -216,9 +216,9 @@ CCI_IMETHODIMP cciMemoryInputStream::ReadSegments(cciWriteSegmentFun writer, voi
 }
 
 /* [notxpcom] boolean isNonBlocking (); */
-CCI_IMETHODIMP_(dm_bool) cciMemoryInputStream::IsNonBlocking()
+CCI_IMETHODIMP_(bool) cciMemoryInputStream::IsNonBlocking()
 {
-  return DM_FALSE;
+  return false;
 }
 
 /* [notxpcom] string getContentType (); */

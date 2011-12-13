@@ -74,7 +74,7 @@ class CCI_COM_GLUE cciSupportsWeakReference : public cciISupportsWeakReference
     protected:
 
       void ClearWeakReferences();
-      dm_bool HasWeakReferences() const {return mProxy != 0;}
+      bool HasWeakReferences() const {return mProxy != 0;}
   };
 
 inline

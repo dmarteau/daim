@@ -42,12 +42,12 @@ void dmHistogram::GetHistogram( const daim::image<dm_uint8>& src,const dmRegion&
   GetHistogram(src,rgn,daim::identity<dm_uint8>());
 }
 //---------------------------------------------------------
-void dmHistogram::GetHistogram( const daim::image<dm_float>& src,const dmRegion& rgn )
+void dmHistogram::GetHistogram( const daim::image<float>& src,const dmRegion& rgn )
 {
   #ifdef DM_CONFIG_MSVC_BUILD
     src.begin(); // VC6 COMPILER BUG !!!
   #endif
-  GetHistogram(src,rgn,daim::_extract_range<dm_float>(daim::minmax(rgn,src)));
+  GetHistogram(src,rgn,daim::_extract_range<float>(daim::minmax(rgn,src)));
 }
 //---------------------------------------------------------
 void dmHistogram::GetHistogram( const daim::image<dm_rgb24>& src,const dmRegion& rgn )
@@ -83,21 +83,21 @@ int dmHistogram::Sum() const
 //---------------------------------------------------------
 dm_real dmHistogram::Mean() const 
 {
-  dm_double r=0;
+  double r=0;
   for(int i=h_slice.lower;i<=h_slice.upper;++i) r+=i*h_data[i];
   return REAL(r/Sum());
 }    
 //----------------------------------------------------------
 dm_real dmHistogram::Rms() const
 {
-  dm_double r=0;
+  double r=0;
   for(int i=h_slice.lower;i<=h_slice.upper;++i) { r+=h_data[i]*i*i; }
   return REAL(sqrt(r/Sum()));
 }
 //----------------------------------------------------------
 dm_real dmHistogram::Variance() const
 {
-  dm_double r=0,t,m = Mean();
+  double r=0,t,m = Mean();
   for(int i=h_slice.lower;i<=h_slice.upper;++i) {
     t = i - m; 
     r+=h_data[i]*t*t;

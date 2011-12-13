@@ -51,7 +51,7 @@ static void* _CCI_NewObject(size_t n, CCI_STATIC_DESTRUCTOR _dtor )
   return dm_null;
 }
 
-static void _CCI_RevokeObject(void* p ,dm_bool _revoke )
+static void _CCI_RevokeObject(void* p ,bool _revoke )
 {
   if(gAllocator)
      gAllocator->RevokeObject(p,_revoke);
@@ -66,7 +66,7 @@ static cci_result _CCI_VerifyObject(void* p)
 }
 
 
-static dm_bool cci_glue_initialized = dm_false;
+static bool cci_glue_initialized = false;
 
 cci_result
 CCI_InitCOMGlue2( cciPrivateHook * pHook )
@@ -113,7 +113,7 @@ CCI_InitCOMGlue2( cciPrivateHook * pHook )
   CCI_StringAppendData       = pHook->stringAppendDataProcPtr;
   CCI_StringCopy             = pHook->stringCopyProcPtr;
 
-  cci_glue_initialized = dm_true;
+  cci_glue_initialized = true;
 
   return CCI_OK;
 }
@@ -122,7 +122,7 @@ void CCI_ReleaseCOMGlue2()
 {
   CCI_IF_RELEASE(gAllocator);
 
-  cci_glue_initialized = dm_false;
+  cci_glue_initialized = false;
 }
 
 } // Extern "C"

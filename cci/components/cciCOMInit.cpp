@@ -27,7 +27,7 @@
 #include "cciCategoryManager.h"
 #include "cciAllocatorImpl.h"
 
-dm_bool gCCIShuttingDown = DM_TRUE;
+bool gCCIShuttingDown = true;
 
 extern "C" {
 
@@ -35,7 +35,7 @@ __daim_export cci_result
 CCI_Init(cciIServiceManager* *result,
          cciStaticModuleInfo const *aStaticModules,
          dm_uint32 aStaticModuleCount,
-         dm_bool registerStaticModules)
+         bool registerStaticModules)
 {
   // Init allocators
   cci_result rv = cciAllocatorBase::InitAllocatorState();
@@ -51,7 +51,7 @@ CCI_Init(cciIServiceManager* *result,
   cciComponentManagerImpl::gComponentManager = cmpMngr;
 
   // Officially start cci
-  gCCIShuttingDown = DM_FALSE;
+  gCCIShuttingDown = false;
 
   // Register category manager
   cci_Ptr<cciIFactory> categoryManagerFactory;
@@ -84,7 +84,7 @@ __daim_export cci_result
 CCI_Shutdown(cciIServiceManager* servMgr)
 {
   // Officially stop CCI
-  gCCIShuttingDown = DM_TRUE;
+  gCCIShuttingDown = true;
 
   CCI_IF_RELEASE(servMgr);
 

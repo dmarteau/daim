@@ -96,7 +96,7 @@ struct _RegionInfo : public dmNode
   dm_real ri_Centroid_y;
   dm_real ri_Position_x;
   dm_real ri_Position_y;
-  dm_bool ri_pos;
+  bool ri_pos;
 
   dm_real ri_fvalue;   // For intermediate storage
 
@@ -200,12 +200,12 @@ protected:
   dm_int                   mNumPartitions;
   dm_int                   mDepth;
 
-  dm_bool                  mBuilt;
+  bool                  mBuilt;
   dmVector<dm_real>        mStorage;
 
   dmRegion  tmpRoi;
 
-  dm_bool  use_image_calibration;
+  bool  use_image_calibration;
   dm_real  aspect_ratio;
   dm_real  uppxls;
 

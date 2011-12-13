@@ -65,8 +65,8 @@ namespace fractal
 
   struct multiplies 
   {
-     dm_float operator()(const dm_float& w, const dm_float& r ) {
-       static dm_float _eps = std::numeric_limits<float>::epsilon();
+    float operator()(const float& w, const float& r ) {
+       static float _eps = std::numeric_limits<float>::epsilon();
        return (r>_eps ? w / r : 0.f);
      }  
   };
@@ -86,7 +86,7 @@ private:
   ~cciLacunarity();
 
 protected:
-  dm_bool                mInited;
+  bool                mInited;
   dmRegion               mSrcRoi;
   dmRegion               mDstRoi;
   cci_Ptr<cciIImageList> mBuffers;
@@ -126,7 +126,7 @@ CCI_IMETHODIMP cciLacunarity::Init(cciImage _image, cciRegion _rgn, dm_uint32 fl
     CCI_ENSURE_SUCCESS(rv,rv);
   }
 
-  mInited = dm_true;
+  mInited = true;
   
   //===============================
   // Store source image ROI in floating point format
@@ -167,7 +167,7 @@ CCI_IMETHODIMP cciLacunarity::Init(cciImage _image, cciRegion _rgn, dm_uint32 fl
 }
 
 /* double lacunarity (in unsigned long size, in dm_uint32 flags); */
-CCI_IMETHODIMP cciLacunarity::Lacunarity(dm_uint32 size, dm_uint32 flags, dm_double *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciLacunarity::Lacunarity(dm_uint32 size, dm_uint32 flags, double *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_TRUE(mInited,CCI_ERROR_NOT_INITIALIZED);
   CCI_ENSURE_ARG_MIN(size,0);
@@ -248,7 +248,7 @@ CCI_IMETHODIMP cciLacunarity::Lacunarity(dm_uint32 size, dm_uint32 flags, dm_dou
     // Compute weights
     daim::RoiOperation(
          daim::filter::getMeanFunctor(_kernel,
-           daim::filter::accumulator_base<dm_float,dm_float,dm_float>()),
+           daim::filter::accumulator_base<float,float,float>()),
            src->Gen(),res->Gen(),_Roi,_Origin);  
 
     //===============================
@@ -269,7 +269,7 @@ CCI_IMETHODIMP cciLacunarity::Lacunarity(dm_uint32 size, dm_uint32 flags, dm_dou
        // Get coefficient by computing the mean values
        daim::RoiOperation(
            daim::filter::getMeanFunctor(_kernel,
-             daim::filter::accumulator_base<dm_float,dm_float,dm_float>()),
+             daim::filter::accumulator_base<float,float,float>()),
              roi->Gen(),frc->Gen(),_Roi,_Origin);  
 
 
@@ -308,7 +308,7 @@ CCI_IMETHODIMP cciLacunarity::Clear()
   if(mBuffers)
      mBuffers->Clear(); 
     
-  mInited = dm_false;
+  mInited = false;
   
   return CCI_OK;
 }

@@ -26,9 +26,9 @@
    // H and S will be returned as a value between 0 and 1
    struct splitter 
    {
-     dm_float mini,maxi,delta,fH,fL,fS;
+     float mini,maxi,delta,fH,fL,fS;
 
-     void getHSL255( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& L ) 
+     void getHSL255( const rgb_triple& tr, float& H, float& S, float& L ) 
      {
         maxi = maximum(tr.r, tr.g, tr.b);
         mini = minimum(tr.r, tr.g, tr.b);
@@ -66,7 +66,7 @@
         }
      }
 
-      dm_float hue( const rgb_triple& tr )
+     float hue( const rgb_triple& tr )
       { 
         maxi = maximum(tr.r, tr.g, tr.b);
         mini = minimum(tr.r, tr.g, tr.b);
@@ -86,14 +86,14 @@
         return fH;
       }
 
-      dm_float luminance( const rgb_triple& tr ) 
+     float luminance( const rgb_triple& tr ) 
       {  
         maxi = maximum(tr.r, tr.g, tr.b);
         mini = minimum(tr.r, tr.g, tr.b);
         return (maxi + mini)/2.0f;
       }
 
-      dm_float saturation( const rgb_triple& tr ) 
+     float saturation( const rgb_triple& tr ) 
       { 
         maxi  = maximum(tr.r, tr.g, tr.b);
         mini  = minimum(tr.r, tr.g, tr.b);
@@ -109,7 +109,7 @@
         return fS;
       }
 
-     void operator()( const rgb_triple& tr, dm_float& H, dm_float& L, dm_float& S ) 
+     void operator()( const rgb_triple& tr, float& H, float& L, float& S ) 
      {
         getHSL255(tr,H,S,L);
         L /= 255.0f;
@@ -131,12 +131,12 @@
    struct merger 
    {
      int i; 
-     dm_float f,fH,fS,fL;
+     float f,fH,fS,fL;
 
      
 
      void setHSL255_low( rgb_triple& tr, 
-                         const dm_float& H, const dm_float& S, const dm_float& L ) 
+                         const float& H, const float& S, const float& L ) 
      {
        i = static_cast<int>(H*6.0f);
        f = (H*6.0f)-i;
@@ -195,7 +195,7 @@
 
 
      void setHSL255_high( rgb_triple& tr, 
-                          const dm_float& H, const dm_float& S, const dm_float& L ) 
+                          const float& H, const float& S, const float& L ) 
      {
        i = static_cast<int>(H*6.0f);
        f = (H*6.0f)-i;
@@ -255,7 +255,7 @@
 
      // Assume that values are between 0 and 1.0;
      void operator()( rgb_triple& tr, 
-                      const dm_float& H, const dm_float& L, const dm_float& S ) 
+                      const float& H, const float& L, const float& S ) 
      {
 		if (S==0) {
           tr.r  = tr.b = tr.g = to_rgb_channel(L);
@@ -317,14 +317,14 @@
    };
 
    template<> struct getChannel<1,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return  hue(tr); }
+     float operator()( const rgb_triple& tr ) { return  hue(tr); }
    };
    template<> struct getChannel<2,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { 
+     float operator()( const rgb_triple& tr ) { 
         return luminance(tr)/255.0f; }
    };
    template<> struct getChannel<3,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return saturation(tr); }
+     float operator()( const rgb_triple& tr ) { return saturation(tr); }
    };
 
  } // namespace HLS

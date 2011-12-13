@@ -29,7 +29,6 @@
 
 BEGIN_MATRIX()
 
-void __dm_complex_fft(dm_matrix_t* data, dm_uint nn, dm_int isign);
 void __dm_real_fft(dm_matrix_t* data, dm_uint n, dm_int isign);
 void __dm_fft_spectrum_1d(dm_matrix_t* ft,dm_matrix_t* sp, dm_uint nn);
 

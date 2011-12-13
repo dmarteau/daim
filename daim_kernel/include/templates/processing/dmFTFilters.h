@@ -50,11 +50,11 @@ OP ft_binary_operation( const dmFT_Data& _src, dmFT_Data& _dest,const OP& op )
   n2 = _src.Dim2;
   long  n2s2 = n2 >> 1,n1s2 = n1 >> 1;
 
-  dm_float** ft1   = dmFT_DATA(_src);
-  dm_float** ft2   = dmFT_DATA(_dest);
-  dm_float*  speq1 = dmFT_SPEQ(_src);
-  dm_float*  speq2 = dmFT_SPEQ(_dest);
-  dm_float* _row1,*_row2;
+  float** ft1   = dmFT_DATA(_src);
+  float** ft2   = dmFT_DATA(_dest);
+  float*  speq1 = dmFT_SPEQ(_src);
+  float*  speq2 = dmFT_SPEQ(_dest);
+  float* _row1,*_row2;
 
   for(i=1;i<=n1;++i) {
     fi = (i<=n1s2 ? i-1 : i-n1-1 );
@@ -82,9 +82,9 @@ OP ft_unary_operation( const dmFT_Data& _ft, const OP& op )
   
   long  n2s2 = n2 >> 1,n1s2 = n1 >> 1;
 
-  dm_float** ft   = dmFT_DATA(_ft);
-  dm_float*  speq = dmFT_SPEQ(_ft);
-  dm_float*  row;
+  float** ft   = dmFT_DATA(_ft);
+  float*  speq = dmFT_SPEQ(_ft);
+  float*  row;
 
   for(i=1;i<=n1;++i) {
     fi = (i<=n1s2 ? i-1 : i-n1-1 );

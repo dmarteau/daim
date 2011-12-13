@@ -153,7 +153,7 @@ dmCString dmPortability::SearchEnv(const E* _env,const E* _fileName,
     pos = envvalue.Split(buffer,pos,_separators);
     if(!buffer.IsEmpty())
     {
-      buffer.Trim("/\\",DM_FALSE,DM_TRUE);
+      buffer.Trim("/\\",false,true);
       pathname = dmCString(buffer).Append(dmPortability::PathSeparator()).Append(_fileName);
       if(dmPortability::AccessFile(pathname.get(),dmPortability::eEXISTS)) {
         #ifdef DM_CONFIG_TARGET_WIN32
@@ -179,7 +179,7 @@ dmCString dmPortability::SearchDir(const E* _dir,const E* _fileName )
   buffer.Assign(_dir);
   if(!buffer.IsEmpty())
   {
-    buffer.Trim("/\\",DM_FALSE,DM_TRUE);
+    buffer.Trim("/\\",false,true);
     pathname = dmCString(buffer).Append(dmPortability::PathSeparator()).Append(_fileName);
       if(dmPortability::AccessFile(pathname.get(),dmPortability::eEXISTS))
         return pathname;

@@ -75,7 +75,7 @@ public:
   cciScriptableImage( dm_uint32 width, dm_uint32 height, EPixelFormat );
   cciScriptableImage( dmImageData& imData );
 
-  dm_bool IsValid() const { return !mImage.IsNull(); }
+  bool IsValid() const { return !mImage.IsNull(); }
   
 protected:
   ~cciScriptableImage();
@@ -84,8 +84,8 @@ protected:
   cci_result Initialize( dmImageData& imData );
  
 protected:
-  dm_bool mLock;
-  dm_bool mEnableAlpha;
+  bool mLock;
+  bool mEnableAlpha;
 
   cci_Ptr<cciIColorTable> mColorTable;
 };

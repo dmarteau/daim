@@ -64,7 +64,7 @@ struct __dm_impl_fill_scalar
       fill(_rgn,_img,_get_range_value(_value,traits_type(),integer_type()));
     } else if(_alpha >=0) {
       blend_fill(_rgn,_img,_get_range_value(_value,traits_type(),integer_type()),
-                 static_cast<dm_float>(_alpha));
+                 static_cast<float>(_alpha));
     }
   }
 
@@ -83,7 +83,7 @@ struct __dm_impl_fill_scalar
     if(_alpha >=1) {
       fill(_rgn,_img,_rgb.value());
     } else if(_alpha >=0) {
-      blend_fill_rgb(_rgn,_img,_rgb.value(),static_cast<dm_float>(_alpha));      
+      blend_fill_rgb(_rgn,_img,_rgb.value(),static_cast<float>(_alpha));      
     }
   }
 };

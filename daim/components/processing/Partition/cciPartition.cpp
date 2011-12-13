@@ -77,10 +77,10 @@ struct diff_compare<dmPixelFormat24bppRGB>
 struct __dm_impl_partition
 {
   daim::region_partition& Partition;
-  dm_float                Distance;
   daim::connectivity      Connect;
+  float                   Distance;
     
-  __dm_impl_partition(daim::region_partition& _Partition, dm_float _Distance,
+  __dm_impl_partition(daim::region_partition& _Partition, float _Distance,
                         daim::connectivity _Connect)
    :Partition(_Partition)
    ,Distance (_Distance)
@@ -130,7 +130,7 @@ protected:
   daim::region_partition  mPartionMap;
   daim::labels_array_type mLabels;
   dmRect                  mRoiRect;
-  dm_bool                 mBuilt;
+  bool                 mBuilt;
   
   void SetZeroRegion(const dmRegion&, const dmRect& );
 
@@ -143,7 +143,7 @@ protected:
 CCI_IMPL_ISUPPORTS2(cciPartition, cciIPartition,cciIPartition2)
 
 cciPartition::cciPartition()
-: mBuilt(dm_false)
+: mBuilt(false)
 {
 }
 
@@ -164,7 +164,7 @@ void cciPartition::SetZeroRegion( const dmRegion& _Region, const dmRect& _Rect )
 }
 
 /* void buildPartition (in cciImage image, in double distance, in cciRegion rgn, in unsigned long connectivity); */
-CCI_IMETHODIMP cciPartition::BuildPartition(cciImage image, cciRegion rgn, dm_double distance, dm_uint32 connectivity)
+CCI_IMETHODIMP cciPartition::BuildPartition(cciImage image, cciRegion rgn, double distance, dm_uint32 connectivity)
 {
   CCI_ENSURE_ARG_POINTER(image);
   
@@ -182,7 +182,7 @@ CCI_IMETHODIMP cciPartition::BuildPartition(cciImage image, cciRegion rgn, dm_do
      return CCI_ERROR_FAILURE;
   
   SetZeroRegion(_Region,_Region.Rectangle());
-  mBuilt = dm_true;
+  mBuilt = true;
   
   return CCI_OK;
 }
@@ -368,7 +368,7 @@ CCI_IMETHODIMP cciPartition::MergeLabels(dm_int32 label, dm_int32 *labels, dm_ui
 /* [noscript] void getRegionBySizeLabels (in unsigned long minsize, in unsigned long maxsize, in boolean exclude, [shared] out labelArray labels, [retval] out dm_uint32 size); */
 CCI_IMETHODIMP cciPartition::GetRegionBySizeLabels(dm_uint32 minsize, 
                                                    dm_uint32 maxsize, 
-                                                   dm_bool exclude, 
+                                                   bool exclude, 
                                                    const dm_int32 **labels CCI_OUTPARAM, 
                                                    dm_uint32 *size CCI_OUTPARAM)
 {
@@ -402,7 +402,7 @@ CCI_IMETHODIMP cciPartition::GetCount(dm_uint32 *aCount)
 // cciIPArtition2
 
 /* void storeRegionsBySize (in cciIResultColumn col, in unsigned long minsize, in unsigned long maxsize, in boolean exclude); */
-CCI_IMETHODIMP cciPartition::StoreRegionsBySize(cciIResultColumn *col, dm_uint32 minsize, dm_uint32 maxsize, dm_bool exclude)
+CCI_IMETHODIMP cciPartition::StoreRegionsBySize(cciIResultColumn *col, dm_uint32 minsize, dm_uint32 maxsize, bool exclude)
 {
   CCI_ENSURE_ARG_POINTER(col);
     

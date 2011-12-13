@@ -70,7 +70,7 @@ struct __dm_impl_Mfilters
 
       case dmFilterMean  :
         RoiOperation(
-           filter::getMeanFunctor(_kernel,filter::accumulator_base<T,T,dm_float>()),
+           filter::getMeanFunctor(_kernel,filter::accumulator_base<T,T,float>()),
            in,out,_buffer.BufferRgn(),_buffer.BufferSrc());
         break;
 
@@ -103,7 +103,7 @@ struct __dm_impl_Mfilters
   void Apply( dmIImage<_PixelFormat>& _img, const integer_false& )
   {
     typedef typename dmIImage<_PixelFormat>::value_type T;
-    typedef dm_float  U;
+    typedef float  U;
 
     dmImageBuffer& _buffer = Params.thisBuffer;
 
@@ -117,7 +117,7 @@ struct __dm_impl_Mfilters
 
       case dmFilterMean  :
         RoiOperation(
-           filter::getMeanFunctor(_kernel,filter::accumulator_base<T,T,dm_float>()),
+           filter::getMeanFunctor(_kernel,filter::accumulator_base<T,T,float>()),
             in,out,_buffer.BufferRgn(),_buffer.BufferSrc());
         break;
 
@@ -320,12 +320,12 @@ struct __dm_impl_Lfilters
   void operator()( dmIImage<_PixelFormat>& _img )
   {
     typedef typename dmIImage<_PixelFormat>::value_type  T;
-    typedef dm_float U;
+    typedef float U;
 
     filter::kernel<dmKernelDescription::value_type> _kernel;
     _kernel.fromMaskDescription(Mask);
 
-    std::vector<dm_float> _vcoeffs(Mask.Size());
+    std::vector<float> _vcoeffs(Mask.Size());
     std::copy(Coeffs,Coeffs+Mask.Size(),_vcoeffs.begin());
 
     image<T>& out = _img.Gen();

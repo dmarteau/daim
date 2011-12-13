@@ -122,7 +122,7 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
       
       cci_Ptr<cciISurfaceDriver> driver;
-      rv = CCI_GetLoader(dm_null,"JPEG",DM_TRUE,getter_AddRefs(driver));
+      rv = CCI_GetLoader(dm_null,"JPEG",true,getter_AddRefs(driver));
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
       
       for(unsigned int i=0;i<size;++i)

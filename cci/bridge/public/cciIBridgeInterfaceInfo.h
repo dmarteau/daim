@@ -66,7 +66,7 @@ public:
      * Return true if this interface is compatible
      * with a script 'function' declaration
      */
-    CCI_IMETHOD_(dm_bool) isFunction() = 0;
+    CCI_IMETHOD_(bool) isFunction() = 0;
     
     /**
      * Return the number of methods

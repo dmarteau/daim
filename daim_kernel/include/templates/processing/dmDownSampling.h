@@ -59,7 +59,6 @@ void downSampling( const dmRect& rect,
   dm_int xstart,xx;
 
   xstart = rect.Left();
-  lin    = lin;
 
   // xx : location of the source pixel in row
   // i  : location  of the dest pixel in row
@@ -176,12 +175,12 @@ void _downSampling( const K& k, bool _unsigned,
                     integer_false ) 
 
 {
-  dm_float n = static_cast<dm_float>(k.norm());
+  float n = static_cast<float>(k.norm());
   if(_unsigned)
-    daim::downSampling(k,conv::unsigned_accumulator<T1,T2,dm_float>(n==0?1.0f:n),
+    daim::downSampling(k,conv::unsigned_accumulator<T1,T2,float>(n==0?1.0f:n),
                        rect,in,out,step);
   else
-    daim::downSampling(k,conv::accumulator<T1,T2,dm_float>(n==0?1.0f:n),
+    daim::downSampling(k,conv::accumulator<T1,T2,float>(n==0?1.0f:n),
                        rect,in,out,step);
 }
 

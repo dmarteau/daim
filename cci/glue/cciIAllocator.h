@@ -44,9 +44,9 @@ class CCI_NO_VTABLE cciIAllocator : public cciISupports
   CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_IALLOCATOR_IID);
 
   CCI_IMETHOD_(void*)      NewObject( size_t n, CCI_STATIC_DESTRUCTOR _dtor ) = 0;
-  CCI_IMETHOD_(cci_result) RevokeObject( void* p ,dm_bool discard ) = 0;
+  CCI_IMETHOD_(cci_result) RevokeObject( void* p ,bool discard ) = 0;
 
-  CCI_IMETHOD_(dm_bool)    IsObjectValid(void* p) = 0;
+  CCI_IMETHOD_(bool)    IsObjectValid(void* p) = 0;
   CCI_IMETHOD_(dm_uint32)  NumberOfInstances() = 0;
 
 };

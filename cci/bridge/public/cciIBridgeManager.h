@@ -38,7 +38,7 @@
 class cciIBridgeInterface;
 class cciIBridgeMethod;
 
-typedef dm_bool (* cciMethodEnumFunc)(const cciIBridgeMethod*, void *aData);
+typedef bool (* cciMethodEnumFunc)(const cciIBridgeMethod*, void *aData);
 
 // {b309dbe5-3f59-44f0-9b3b-a7fd63858c93}
 #define CCI_BRIDGEMANAGER_CID \

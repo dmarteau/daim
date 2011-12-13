@@ -35,8 +35,8 @@
 namespace dmMetrics
 {
 //----------------------------------------------------------------------
-dm_double DegreeToRadian( dm_double ); // convert degrees -> radians
-dm_double RadianToDegree( dm_double ); // convert radians -> degrees
+double DegreeToRadian( double ); // convert degrees -> radians
+double RadianToDegree( double ); // convert radians -> degrees
 //----------------------------------------------------------------------
 inline dm_int DotProduct( const dm_point& p1, const dm_point& p2) { return p1.x*p2.x + p1.y*p2.y; }
 inline dm_int VecProduct( const dm_point& p1, const dm_point& p2) { return p1.x*p2.y - p1.y*p2.x; }
@@ -44,32 +44,32 @@ inline dm_int VecProduct( const dm_point& p1, const dm_point& p2) { return p1.x*
 dm_int DotProduct( const dm_point& p1, const dm_point& p2, const dm_point& p3 );
 dm_int VecProduct( const dm_point& p1, const dm_point& p2, const dm_point& p3 );
 //----------------------------------------------------------------------
-dm_double Angle( const dm_point& );
-dm_double Angle( const dm_point& ,  const dm_point& );
-dm_double Angle( const dm_point& ,  const dm_point&, const dm_point& );
+double Angle( const dm_point& );
+double Angle( const dm_point& ,  const dm_point& );
+double Angle( const dm_point& ,  const dm_point&, const dm_point& );
 
-void Rotate( dm_point& , dm_double _a, dm_double _b );
-void Rotate( dm_point& , dm_double _theta );
-void Rotate( dm_point& , const dm_point& ref, dm_double _a, dm_double _b );
-void Rotate( dm_point& , const dm_point& ref, dm_double _theta );
+void Rotate( dm_point& , double _a, double _b );
+void Rotate( dm_point& , double _theta );
+void Rotate( dm_point& , const dm_point& ref, double _a, double _b );
+void Rotate( dm_point& , const dm_point& ref, double _theta );
 
-dm_double Euclidian_Distance( const dm_point&, const dm_line&   );
-dm_double Euclidian_Distance( const dm_point&, const dm_circle& );
-dm_double Euclidian_Distance( const dm_point&, const dm_point&  );
+double Euclidian_Distance( const dm_point&, const dm_line&   );
+double Euclidian_Distance( const dm_point&, const dm_circle& );
+double Euclidian_Distance( const dm_point&, const dm_point&  );
 
 dm_int Absolute_Distance( const dm_point&, const dm_point&  );
 // 
 void Projection( const dm_point&, const dm_line&  , dm_point& );
 void Projection( const dm_point&, const dm_circle&, dm_point& );
 //
-void Scale( dm_point& p, const dm_point& ref, dm_double s  );
-void Size ( dm_point& p, const dm_point& ref, dm_double sz );
-void Grow ( dm_point& p, const dm_point& ref, dm_double rel);
+void Scale( dm_point& p, const dm_point& ref, double s  );
+void Size ( dm_point& p, const dm_point& ref, double sz );
+void Grow ( dm_point& p, const dm_point& ref, double rel);
 //------------------------------------------------------------------------
-inline dm_double Euclidian_Distance ( const dm_line& l ) { return Euclidian_Distance(l.start,l.end);    }
+inline double    Euclidian_Distance ( const dm_line& l ) { return Euclidian_Distance(l.start,l.end);    }
 inline dm_int    Absolute_Distance  ( const dm_line& l ) { return Absolute_Distance (l.start,l.end); }
 //-------------------------------------------------------------------------
-inline void Rotate( dm_line& l, dm_double _theta ) { Rotate(l.end,l.start,_theta); }
+inline void Rotate( dm_line& l, double _theta ) { Rotate(l.end,l.start,_theta); }
 //----------------------------------------------------------------------
 
 }; // namespace dmMetrics

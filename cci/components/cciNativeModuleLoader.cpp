@@ -124,7 +124,7 @@ public:
   DM_DECL_ALLOCATOR_NEW(cciNativeModuleEntry,NATIVE_MODULE_ENTRY_BLOCKS)
 };
 
-DM_IMPL_ALLOCATOR_NEW(cciNativeModuleEntry,dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciNativeModuleEntry,true);
 
 //======================================
 // cciNativeModuleLoader implementation

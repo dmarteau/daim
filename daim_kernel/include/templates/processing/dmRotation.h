@@ -101,8 +101,8 @@ bool nn_rotate_copy( dm_real angle, const image<T>& src, const dmRect& r, image<
 
     if(create_rotate_region(rgn,angle,rs,rd))
     {
-      dm_double c = cos(-angle);
-      dm_double s = sin(-angle);
+      double c = cos(-angle);
+      double s = sin(-angle);
 
       compute_pixels _cpxls(src,dst,rs,c,s);
       dmDigitalRegion(rgn,_cpxls);

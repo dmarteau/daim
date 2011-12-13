@@ -154,7 +154,7 @@ cci_result PrintImagedata( const char* inputFile, const char* domain )
   }
   else
   {
-    dm_bool hasMore;
+    bool hasMore;
     while(CCI_SUCCEEDED(enumerator->HasMore(&hasMore)) && hasMore)
     {
       rv = enumerator->GetNext(&data);

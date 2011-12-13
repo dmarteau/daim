@@ -112,8 +112,8 @@ CCI_IMETHODIMP cciLoaderService::OpenSurface(const char * location, dm_uint32 io
   return rv;
 }
 
-/* cciISurfaceDriver getDriver (in string type, in dm_bool createCaps); */
-CCI_IMETHODIMP cciLoaderService::GetDriver(const char * type, dm_bool createCaps,
+/* cciISurfaceDriver getDriver (in string type, in bool createCaps); */
+CCI_IMETHODIMP cciLoaderService::GetDriver(const char * type, bool createCaps,
                                            cciISurfaceDriver * *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(_retval);

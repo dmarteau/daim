@@ -93,7 +93,7 @@ DM_Initialize( const char** _argv, int _argc, dmLOG_FUNCTION pfnLog )
     dmCString registryLocation;
 
     // Start the CCI/COM framework
-    rv = CCI_Init(&srvmngr,gStaticModules,DM_ARRAY_LENGTH(gStaticModules),DM_TRUE);
+    rv = CCI_Init(&srvmngr,gStaticModules,DM_ARRAY_LENGTH(gStaticModules),true);
 
     // Register native components
     if(CCI_SUCCEEDED(rv) && _argv)
@@ -152,7 +152,7 @@ DM_Initialize( const char** _argv, int _argc, dmLOG_FUNCTION pfnLog )
 }
 
 __daim_export void
-DM_Finalize( dm_bool force )
+DM_Finalize( bool force )
 {
   if(force || --gDaimRefcount<=0)
   {

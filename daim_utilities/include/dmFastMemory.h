@@ -44,11 +44,11 @@ private:
 
   dmMutex            lock;
 
-  dm_bool            release_when_unusued;
+  bool            release_when_unusued;
 
 public:
   dmMemoryManager( size_t _chunkSize, const char* id = "",
-                   dm_bool _release_when_unusued = dm_false );
+                   bool _release_when_unusued = false );
 
   virtual ~dmMemoryManager();
 
@@ -65,7 +65,7 @@ class dmFastMemory : public dmMemoryManager
 {
  public:
   ~dmFastMemory() {}
-   dmFastMemory(const char* id = "", dm_bool _release_when_unusued = dm_false)
+   dmFastMemory(const char* id = "", bool _release_when_unusued = false)
    : dmMemoryManager(sizeof(T),id,_release_when_unusued)
    {}
 };

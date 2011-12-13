@@ -1,8 +1,0 @@
-# xpidllex.py. This file automatically created by PLY (version 2.5). Don't edit!
-_lextokens    = {'TYPEDEF': None, 'INCLUDE': None, 'RSHIFT': None, 'LSHIFT': None, 'ATTRIBUTE': None, 'NATIVEID': None, 'NUMBER': None, 'NATIVE': None, 'IID': None, 'READONLY': None, 'RAISES': None, 'CDATA': None, 'IN': None, 'INTERFACE': None, 'CONST': None, 'IDENTIFIER': None, 'OUT': None, 'INOUT': None, 'HEXNUM': None}
-_lexreflags   = 0
-_lexliterals  = '"(){}[],;:=|+-*'
-_lexstateinfo = {'nativeid': 'exclusive', 'INITIAL': 'inclusive'}
-_lexstatere   = {'nativeid': [('(?P<t_nativeid_NATIVEID>[^()\\n]+(?=\\)))', [None, ('t_nativeid_NATIVEID', 'NATIVEID')])], 'INITIAL': [('(?P<t_multilinecomment>/\\*(?s).*?\\*/)|(?P<t_singlelinecomment>(?m)//.*?$)|(?P<t_IID>[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})|(?P<t_IDENTIFIER>unsigned\\ long\\ long|unsigned\\ short|unsigned\\ long|long\\ long|[A-Za-z][A-Za-z_0-9]*)|(?P<t_LCDATA>(?s)%\\{[ ]*C\\+\\+[ ]*\\n(?P<cdata>.*?\\n?)%\\}[ ]*(C\\+\\+)?)|(?P<t_INCLUDE>\\#include[ \\t]+"[^"\\n]+")|(?P<t_directive>\\#(?P<directive>[a-zA-Z]+)[^\\n]+)|(?P<t_newline>\\n+)|(?P<t_HEXNUM>0x[a-fA-F0-9]+)|(?P<t_NUMBER>-?\\d+)|(?P<t_LSHIFT><<)|(?P<t_RSHIFT>>>)', [None, ('t_multilinecomment', 'multilinecomment'), ('t_singlelinecomment', 'singlelinecomment'), ('t_IID', 'IID'), ('t_IDENTIFIER', 'IDENTIFIER'), ('t_LCDATA', 'LCDATA'), None, None, ('t_INCLUDE', 'INCLUDE'), ('t_directive', 'directive'), None, ('t_newline', 'newline'), (None, 'HEXNUM'), (None, 'NUMBER'), (None, 'LSHIFT'), (None, 'RSHIFT')])]}
-_lexstateignore = {'nativeid': '', 'INITIAL': ' \t'}
-_lexstateerrorf = {'nativeid': 't_ANY_error', 'INITIAL': 't_ANY_error'}

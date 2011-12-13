@@ -172,11 +172,11 @@ void normalized_convolution(
         const image<T1>& in,image<T2>& out,
         integer_false ) 
 {
-  dm_float n = static_cast<dm_float>(k.norm());
+  float n = static_cast<float>(k.norm());
   if(_unsigned)
-    convolve1(roi,p,in,out,k,conv::unsigned_accumulator<T1,T2,dm_float>(n==0?1.0f:n));
+    convolve1(roi,p,in,out,k,conv::unsigned_accumulator<T1,T2,float>(n==0?1.0f:n));
   else
-    convolve1(roi,p,in,out,k,conv::accumulator<T1,T2,dm_float>(n==0?1.0f:n));
+    convolve1(roi,p,in,out,k,conv::accumulator<T1,T2,float>(n==0?1.0f:n));
 }
 
 

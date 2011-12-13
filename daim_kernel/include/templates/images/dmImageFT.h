@@ -36,7 +36,7 @@ namespace daim {
 
 typedef dmFT_Data ft_data_t;
 
-class ft_image : public tmp_image<dm_float>
+class ft_image : public tmp_image<float>
 {
   private:
     ft_data_t _ft;
@@ -114,7 +114,7 @@ inline bool is_power_of_2( unsigned long x )  {
    return ((((x) - 1) & (x)) == 0);
 }
 
-inline size_t get_base_2( dm_double x ) {
+inline size_t get_base_2( double x ) {
   return (x>=2?static_cast<size_t>(log(x)/log(2.0)):0); 
 }
 

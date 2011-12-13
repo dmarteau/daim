@@ -42,7 +42,7 @@ BEGIN_MATRIX()
 #define FONE  1.0f
 //------------------------------------------------------------------------------
 // Linear least square fit
-// See "Numerical Recipes in C" (C),  Chapter §15.4, p 678-679
+// See "Numerical Recipes in C" (C),  Chapter ï¿½15.4, p 678-679
 //------------------------------------------------------------------------------
 dm_matrix_t dmMatrixSVDFit( dmMatrixRowCol& P, 
                          const dmMatrixRowCol& Y, 
@@ -175,10 +175,10 @@ dm_matrix_t dmMatrixGaussFit( dmMatrixRowCol& P,
 
   dm_matrix_t chi2 = dmMatrixPolyFit(P,lY,X,Sig,U,V,SV);
   
-  dm_double k = - P[3];
+  double k = - P[3];
   if(k>0) {
-    dm_double b = P[2] / (2.0 * k);
-    dm_double A = exp( P[1] + k * b * b );
+    double b = P[2] / (2.0 * k);
+    double A = exp( P[1] + k * b * b );
     
     P[1] = static_cast<dm_matrix_t>(A);
     P[2] = static_cast<dm_matrix_t>(k);
@@ -206,7 +206,7 @@ dm_matrix_t dmMatrixExpFit( dmMatrixRowCol& P,
 
   dm_matrix_t chi2 = dmMatrixPolyFit(P,lY,X,Sig,U,V,SV);
   
-  dm_double k = - P[2];
+  double k = - P[2];
   if(k>0) {
     P[1] = static_cast<dm_matrix_t>(exp( P[1] ));
     P[2] = static_cast<dm_matrix_t>(k);    

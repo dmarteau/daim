@@ -39,8 +39,8 @@ void image_to_matrix( const image<T>& _src, dmRectMatrix& _Matrix,
 {
   _Matrix.Resize(r.Height(),r.Width());
   _Matrix.Set(0);
-  tmp_image<dm_float> _tmp(_Matrix.GetData(),_Matrix.NCols(),_Matrix.NRows(),
-                     sizeof(dm_float)*_Matrix.NCols() );
+  tmp_image<float> _tmp(_Matrix.GetData(),_Matrix.NCols(),_Matrix.NRows(),
+                     sizeof(float)*_Matrix.NCols() );
 
   daim::copy(r,dmPoint(0,0),_src,_tmp);
 }
@@ -51,8 +51,8 @@ void matrix_to_image( image<T>& _dst, const dmRectMatrix& _Matrix,
                       const dmPoint& p = dmPoint(0,0) )
 {
   dmRect r = dmRect(0,0,_Matrix.NCols(),_Matrix.NRows());
-  tmp_image<dm_float> _tmp(_Matrix.GetData(),_Matrix.NCols(),_Matrix.NRows(),
-                           sizeof(dm_float)*_Matrix.NCols());
+  tmp_image<float> _tmp(_Matrix.GetData(),_Matrix.NCols(),_Matrix.NRows(),
+                           sizeof(float)*_Matrix.NCols());
 
   scale_convert_scalar_to_scalar(
        minmax(_tmp.rect(),_tmp),

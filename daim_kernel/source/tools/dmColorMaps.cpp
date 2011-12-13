@@ -99,8 +99,9 @@ void LogPalette( dmRGBColorArray rgb )
   dmRGBColor _rgb;
 
   dm_uint8  hmax=200;
-  dm_double fscale = hmax/log((dm_real)(hmax+1));
   dm_uint8  H=0,L,S;
+
+  double    fscale = hmax/log((dm_real)(hmax+1));
 
   for(int hue=dmLUT8_MAX_COLORS;--hue>=0;++rgb)
   {

@@ -64,22 +64,22 @@ CCI_INTERFACE_TABLE_TAIL
 
 
 cciScriptableImage::cciScriptableImage()
-: mLock(DM_FALSE)
-, mEnableAlpha(DM_FALSE)
+: mLock(false)
+, mEnableAlpha(false)
 {
 }
 
 cciScriptableImage::cciScriptableImage( dmLink<dmImage>& imglink )
-: mLock(DM_FALSE)
-, mEnableAlpha(DM_FALSE)
+: mLock(false)
+, mEnableAlpha(false)
 {
   mImage = imglink;
 }
 
 /* void init (in unsigned long width, in unsigned long height, in EPixelFormat format); */
 cciScriptableImage::cciScriptableImage(dm_uint32 width, dm_uint32 height, EPixelFormat format)
-: mLock(DM_FALSE)
-, mEnableAlpha(DM_FALSE)
+: mLock(false)
+, mEnableAlpha(false)
 {
   Initialize(width,height,format);
 }
@@ -107,7 +107,7 @@ cci_result cciScriptableImage::Initialize( dm_uint32 width, dm_uint32 height, EP
   
   // Enable alpha if argb specified
   if(format == dmPixelFormat32bppARGB)
-     mEnableAlpha = DM_TRUE;
+     mEnableAlpha = true;
   
   return CCI_OK;
 }
@@ -126,7 +126,7 @@ cci_result cciScriptableImage::Initialize( dmImageData& imData )
 
   // Enable alpha if argb specified
   if(imData.PixelFormat == dmPixelFormat32bppARGB)
-     mEnableAlpha = DM_TRUE;
+     mEnableAlpha = true;
 
   return CCI_OK;
 }
@@ -136,7 +136,7 @@ cci_result cciScriptableImage::Initialize( dmImageData& imData )
 //===============================================
 
 static inline void 
-GetImageData( dmImage* img, dmImageData& imData, dm_bool alpha )
+GetImageData( dmImage* img, dmImageData& imData, bool alpha )
 {
   img->GetImageData(imData);
   if(imData.PixelFormat == dmPixelFormat24bppRGB && alpha)
@@ -150,7 +150,7 @@ CCI_IMETHODIMP cciScriptableImage::Lock(dmImageData & imData, dm_rect *rect)
   CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_NOT_INITIALIZED);
   CCI_ENSURE_FALSE(mLock,CCI_ERROR_FAILURE);
 
-  mLock = DM_TRUE;
+  mLock = true;
   
   ::GetImageData(mImage,imData,mEnableAlpha);
 
@@ -176,7 +176,7 @@ CCI_IMETHODIMP cciScriptableImage::Unlock()
 {
   CCI_ENSURE_TRUE(mLock,CCI_ERROR_FAILURE);
 
-  mLock = DM_FALSE;
+  mLock = false;
   return CCI_OK;
 }
 
@@ -211,12 +211,12 @@ CCI_IMETHODIMP cciScriptableImage::GetPixelFormat(EPixelFormat *aPixelFormat)
 }
 
 /* attribute boolean enableAlpha; */
-CCI_IMETHODIMP cciScriptableImage::GetEnableAlpha(dm_bool *aEnableAlpha)
+CCI_IMETHODIMP cciScriptableImage::GetEnableAlpha(bool *aEnableAlpha)
 {
   *aEnableAlpha = mEnableAlpha;
   return CCI_OK;
 }
-CCI_IMETHODIMP cciScriptableImage::SetEnableAlpha(dm_bool aEnableAlpha)
+CCI_IMETHODIMP cciScriptableImage::SetEnableAlpha(bool aEnableAlpha)
 {
   mEnableAlpha = aEnableAlpha;
   return CCI_OK;
@@ -394,7 +394,7 @@ CCI_IMETHODIMP cciScriptableImage::ApplyColorTable(cciRegion rgn)
 }
 
 /* void fill (in boolean foregroundValue, [optional] in cciRegion rgn); */
-CCI_IMETHODIMP cciScriptableImage::Fill(dm_bool foregroundValue, cciRegion rgn)
+CCI_IMETHODIMP cciScriptableImage::Fill(bool foregroundValue, cciRegion rgn)
 {
   CCI_ENSURE_FALSE(mImage.IsNull(),CCI_ERROR_NOT_INITIALIZED);
   

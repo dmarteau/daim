@@ -109,7 +109,7 @@ CCI_IMETHODIMP cciGenericFactory::CreateInstance(cciISupports *aOuter,
     return CCI_ERROR_FACTORY_NOT_REGISTERED;
 }
 
-CCI_IMETHODIMP cciGenericFactory::LockFactory(dm_bool aLock)
+CCI_IMETHODIMP cciGenericFactory::LockFactory(bool aLock)
 {
     return CCI_OK;
 }
@@ -241,7 +241,7 @@ cciGenericModule::cciGenericModule(const char* moduleName, dm_uint32 componentCo
                                  const cciModuleComponentInfo* components,
                                  cciModuleConstructorProc ctor,
                                  cciModuleDestructorProc dtor)
-    : mInitialized(DM_FALSE),
+    : mInitialized(false),
       mModuleName(moduleName),
       mComponentCount(componentCount),
       mComponents(components),
@@ -327,7 +327,7 @@ cciGenericModule::Initialize(cciIComponentManager *compMgr)
         desc++;
     }
 
-    mInitialized = DM_TRUE;
+    mInitialized = true;
     return CCI_OK;
 }
 
@@ -348,7 +348,7 @@ cciGenericModule::Shutdown()
     }
 
     if (mInitialized) {
-        mInitialized = DM_FALSE;
+        mInitialized = false;
 
         if (mDtor)
             mDtor(this);
@@ -492,13 +492,13 @@ cciGenericModule::UnregisterSelf(cciIComponentManager* aCompMgr,
 }
 
 CCI_IMETHODIMP
-cciGenericModule::CanUnload(cciIComponentManager *aCompMgr, dm_bool *okToUnload)
+cciGenericModule::CanUnload(cciIComponentManager *aCompMgr, bool *okToUnload)
 {
     if(!okToUnload) {
         return CCI_ERROR_INVALID_POINTER;
     }
 
-    *okToUnload = DM_FALSE;
+    *okToUnload = false;
     return CCI_ERROR_FAILURE;
 }
 

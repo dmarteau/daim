@@ -130,13 +130,13 @@ CCI_IMETHODIMP cciImageShell::SaveImage(const char * path, const char * type, co
 
   cci_result rv;
 
-  dm_bool compat = DM_FALSE;
+  bool compat = false;
   if(mDriverCache)
      mDriverCache->IsCompatibleDriver(type,&compat);
 
   if(!compat)
   {
-    rv = CCI_GetLoader(dm_null,type,DM_TRUE,getter_AddRefs(mDriverCache));
+    rv = CCI_GetLoader(dm_null,type,true,getter_AddRefs(mDriverCache));
     if(CCI_FAILED(rv))
        return rv;
   }

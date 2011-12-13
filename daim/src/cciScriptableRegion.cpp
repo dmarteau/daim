@@ -87,9 +87,9 @@ CCI_IMETHODIMP_(void) cciScriptableRegion::GetBoundingBox(dm_rect & aRect)
 }
 
 /* [noscript,notxpcom] boolean intersect (in dmRectRef aRect); */
-CCI_IMETHODIMP_(dm_bool) cciScriptableRegion::Intersect(dm_rect & aRect)
+CCI_IMETHODIMP_(bool) cciScriptableRegion::Intersect(dm_rect & aRect)
 {
-  return mRegion.Intersect(aRect) ? DM_TRUE : DM_FALSE;
+  return mRegion.Intersect(aRect) ? true : false;
 }
 
 /* [noscript,notxpcom] void clipToRect (in dmRectRef aRect); */
@@ -123,38 +123,38 @@ CCI_IMETHODIMP cciScriptableRegion::Copy(cciIRegion *aSrc, dm_int32 mode)
 }
 
 /* boolean isEmpty (); */
-CCI_IMETHODIMP cciScriptableRegion::IsEmpty(dm_bool *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciScriptableRegion::IsEmpty(bool *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
-  *_retval = (mRegion.IsEmptyRoi()?DM_TRUE:DM_FALSE);
+  *_retval = (mRegion.IsEmptyRoi()?true:false);
 
   return CCI_OK;
 }
 
 /* boolean isRectangle (); */
-CCI_IMETHODIMP cciScriptableRegion::IsRectangle(dm_bool *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciScriptableRegion::IsRectangle(bool *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
-  *_retval = (mRegion.IsRectRoi()?DM_TRUE:DM_FALSE);
+  *_retval = (mRegion.IsRectRoi()?true:false);
 
   return CCI_OK;
 }
 
 /* boolean isValid (); */
-CCI_IMETHODIMP cciScriptableRegion::IsValid(dm_bool *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciScriptableRegion::IsValid(bool *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
-  *_retval = (mRegion.IsValidRoi()?DM_TRUE:DM_FALSE);
+  *_retval = (mRegion.IsValidRoi()?true:false);
 
   return CCI_OK;
 }
 
 /* boolean pointInRegion (in dm_int32 x, in dm_int32 y); */
-CCI_IMETHODIMP cciScriptableRegion::PointInRegion(dm_int32 x, dm_int32 y, dm_bool *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciScriptableRegion::PointInRegion(dm_int32 x, dm_int32 y, bool *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
 
-  *_retval = (mRegion.PointInRoi(x,y)?DM_TRUE:DM_FALSE);
+  *_retval = (mRegion.PointInRoi(x,y)?true:false);
 
   return CCI_OK;
 }

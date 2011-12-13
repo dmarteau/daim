@@ -38,7 +38,7 @@ int main( int argc, char ** argv )
   cci_result rv = DM_Initialize(mArgv,sizeof(mArgv)/sizeof(char*),0);
 
   DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
-  DM_Finalize(dm_false);
+  DM_Finalize(false);
 
   end_test:
 

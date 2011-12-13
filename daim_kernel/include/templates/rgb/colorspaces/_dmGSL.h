@@ -34,7 +34,7 @@
    // Extractors
    //-------------------------------------------------------
    struct _getter {
-     dm_float fr,fg,fb,fden;
+     float fr,fg,fb,fden;
      void _calc( const rgb_triple& tr ) {
        fr   = absdiff(tr.r,tr.g);
        fg   = absdiff(tr.r,tr.b);
@@ -73,19 +73,19 @@
    };
 
    template<> struct getChannel<1,integer_false> : public _getter {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        _calc(tr);
        return (fden > 0 ? fr/fden : 0.0f);
      } 
    };
    template<> struct getChannel<2,integer_false> : public _getter {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        _calc(tr);
        return (fden > 0 ? fg/fden : 0.0f);
      } 
    };
    template<> struct getChannel<3,integer_false> : public _getter {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        _calc(tr);
        return (fden > 0 ? fb/fden : 0.0f);
      } 
@@ -96,7 +96,7 @@
    //-------------------------------------------------------
    struct splitter {
 
-    dm_float fr,fg,fb,fden;
+     float fr,fg,fb,fden;
      
      // version for integer type, 
      // return normalized value from 0 -> 255 
@@ -115,7 +115,7 @@
      }
 
      // return value from [-1..1] 
-     void operator()( const rgb_triple& tr,  dm_float& L1, dm_float& L2, dm_float& L3 )
+     void operator()( const rgb_triple& tr,  float& L1, float& L2, float& L3 )
      {
        fr   = absdiff(tr.r,tr.g);
        fg   = absdiff(tr.r,tr.b);

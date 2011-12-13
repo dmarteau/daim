@@ -170,8 +170,8 @@ struct xor_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
 template<>
 struct mul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
 {
-  dm_float a;
-  mul_pixel( dm_float _a ) : a(_a) {}
+  float a;
+  mul_pixel( float _a ) : a(_a) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
     x2.r = _get_range_value( x1.r * a, pixel_traits<dm_uint8>(),integer_true());
@@ -184,8 +184,8 @@ struct mul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
 template<>
 struct addmul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
 {
-  dm_float a,b;
-  addmul_pixel( dm_float _a, dm_float _b ) : a(_a),b(_b) {}
+  float a,b;
+  addmul_pixel( float _a, float _b ) : a(_a),b(_b) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
     x2.r = _get_range_value( x1.r * a + b, pixel_traits<dm_uint8>(),integer_true());
@@ -200,8 +200,8 @@ struct addmul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
 template<>
 struct blend_pixels<dm_rgb24,dm_rgb24> : public _pixel_binfun<dmRGBColor>
 {
-  dm_float a;
-  blend_pixels( dm_float _a ) : a(_a) {}
+  float a;
+  blend_pixels( float _a ) : a(_a) {}
   dmRGBColor&  operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
     x2.r = _round_value( a * x1.r + (1.0f-a) * x2.r, pixel_traits<dm_uint8>(),integer_true());
@@ -215,8 +215,8 @@ struct blend_pixels<dm_rgb24,dm_rgb24> : public _pixel_binfun<dmRGBColor>
 struct blend_rgb24 :   public _pixel_binfun<dmRGBColor>
 {
   dmRGBColor c;
-  dm_float   a;
-  blend_rgb24( const dmRGBColor& _c,  dm_float _a ) : c(_c), a(_a) {}
+  float   a;
+  blend_rgb24( const dmRGBColor& _c,  float _a ) : c(_c), a(_a) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const {
     x2.r = _round_value( (1.0f-a) * x1.r + a * c.r, pixel_traits<dm_uint8>(),integer_true());
     x2.g = _round_value( (1.0f-a) * x1.g + a * c.g, pixel_traits<dm_uint8>(),integer_true());
@@ -255,14 +255,14 @@ struct _rgb_color_transform
 
 //-----------------------------------------------------------------
 
-inline void mul_image( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out, dm_float y )
+inline void mul_image( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out, float y )
 { combine(rgn,p,in,out,mul_pixel<dm_rgb24,dm_rgb24>(y)); }
 
-inline void div_image( const dmRegion& rgn,const dmPoint& p,const  image<dm_rgb24>& in, image<dm_rgb24>& out, dm_float y )
+inline void div_image( const dmRegion& rgn,const dmPoint& p,const  image<dm_rgb24>& in, image<dm_rgb24>& out, float y )
 { combine(rgn,p,in,out,mul_pixel<dm_rgb24,dm_rgb24>(1.0f/y)); }
 
 inline void addmul_images( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out,
-                   dm_float a, dm_float b )
+                           float a, float b )
 { combine(rgn,p,in,out,addmul_pixel<dm_rgb24,dm_rgb24>(a,b)); }
 
 template<class A>
@@ -279,16 +279,16 @@ inline void rgb_color_transform( const dmRegion& rgn,const dmPoint& p,const imag
 
 // Unary versions
 
-inline void mul_image( const dmRegion& rgn,image<dm_rgb24>& in, dm_float y )
+inline void mul_image( const dmRegion& rgn,image<dm_rgb24>& in, float y )
 { combine(rgn,rgn.Rectangle().TopLeft(),in,in,mul_pixel<dm_rgb24,dm_rgb24>(y)); }
 
-inline void div_image( const dmRegion& rgn,image<dm_rgb24>& in, dm_float y )
+inline void div_image( const dmRegion& rgn,image<dm_rgb24>& in, float y )
 { combine(rgn,rgn.Rectangle().TopLeft(),in,in,mul_pixel<dm_rgb24,dm_rgb24>(1.0f/y)); }
 
-inline void addmul_image( const dmRegion& rgn,image<dm_rgb24>& in, dm_float a, dm_float b )
+inline void addmul_image( const dmRegion& rgn,image<dm_rgb24>& in, float a, float b )
 { combine(rgn,rgn.Rectangle().TopLeft(),in,in,addmul_pixel<dm_rgb24,dm_rgb24>(a,b)); }
 
-inline void blend_fill_rgb( const dmRegion& rgn,image<dm_rgb24>& in, const dmRGBColor& c, dm_float a)
+inline void blend_fill_rgb( const dmRegion& rgn,image<dm_rgb24>& in, const dmRGBColor& c, float a)
 { combine(rgn,rgn.Rectangle().TopLeft(),in,in,blend_rgb24(c,a)); }
 
 inline void rgb_color_transform( const dmRegion& rgn, image<dm_rgb24>& in, dm_real* m )

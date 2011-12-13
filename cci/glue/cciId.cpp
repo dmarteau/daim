@@ -50,7 +50,7 @@
     if(the_char >= '0' && the_char <= '9') the_int_var -= '0'; \
     else if(the_char >= 'a' && the_char <= 'f') the_int_var -= 'a'-10; \
     else if(the_char >= 'A' && the_char <= 'F') the_int_var -= 'A'-10; \
-    else return DM_FALSE
+    else return false
 
 
 /**
@@ -76,21 +76,21 @@
  * char_pointer is advanced one step.
  */
 
- #define PARSE_HYPHEN(char_pointer)   if(*(char_pointer++) != '-') return DM_FALSE
+ #define PARSE_HYPHEN(char_pointer)   if(*(char_pointer++) != '-') return false
 
 /*
  * Turns a {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} string into
  * an dmID. It can also handle the old format without the { and }.
  */
 
-dm_bool dmID::Parse(const char *aIDStr)
+bool dmID::Parse(const char *aIDStr)
 {
   /* Optimized for speed */
   if(!aIDStr) {
-    return DM_FALSE;
+    return false;
   }
 
-  dm_bool expectFormat1 = (aIDStr[0] == '{');
+  bool expectFormat1 = (aIDStr[0] == '{');
   if(expectFormat1) aIDStr++;
 
   PARSE_CHARS_TO_NUM(aIDStr, m0, 8);
@@ -108,5 +108,5 @@ dm_bool dmID::Parse(const char *aIDStr)
     i++;
   }
 
-  return expectFormat1 ? *aIDStr == '}' : DM_TRUE;
+  return expectFormat1 ? *aIDStr == '}' : true;
 }

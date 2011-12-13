@@ -28,9 +28,9 @@
 #include <math.h>
 
 //------------------------------------------
-__dmKernel dm_double dmSpatialUnits::GetLength( const dm_point& ps,const dm_point& pe ) const
+__dmKernel double dmSpatialUnits::GetLength( const dm_point& ps,const dm_point& pe ) const
 {
-  dm_double xc,yc;
+  double xc,yc;
   xc = X_Units(pe.x-ps.x);
   yc = Y_Units(pe.y-ps.y); 
   return sqrt( xc*xc +  yc*yc );

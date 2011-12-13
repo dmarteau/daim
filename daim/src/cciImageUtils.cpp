@@ -156,7 +156,7 @@ cci_result CCI_NewColorSpace( const char* colorSpace, cciIColorSpace** _result )
 }
 
 DAIM_GLUE_EXPORT
-cci_result CCI_GetLoader( cciILoaderService* srvc, const char* type, dm_bool createCaps, cciISurfaceDriver** _result )
+cci_result CCI_GetLoader( cciILoaderService* srvc, const char* type, bool createCaps, cciISurfaceDriver** _result )
 {
   cci_result rv;
   cci_Ptr<cciILoaderService> ldrSrvc = srvc; 

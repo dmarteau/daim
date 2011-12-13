@@ -150,7 +150,7 @@ class Builtin(object):
                             calltype != 'in' and '*' or '')
 
 builtinNames = [
-    Builtin('boolean', 'dm_bool'),
+    Builtin('boolean', 'bool'),
     Builtin('void', 'void'),
     Builtin('octet', 'dm_uint8'),
     Builtin('short', 'dm_int16', True, True),
@@ -159,8 +159,8 @@ builtinNames = [
     Builtin('unsigned short', 'dm_uint16', False, True),
     Builtin('unsigned long', 'dm_uint32', False, True),
     Builtin('unsigned long long', 'dm_uint64', False, False),
-    Builtin('float', 'dm_float', True, False),
-    Builtin('double', 'dm_double', True, False),
+    Builtin('float', 'float', True, False),
+    Builtin('double', 'double', True, False),
     Builtin('char', 'char', True, False),
     Builtin('string', 'char *', False, False),
     Builtin('wchar', 'dm_unichar', False, False),

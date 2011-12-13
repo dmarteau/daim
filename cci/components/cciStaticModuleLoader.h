@@ -54,7 +54,7 @@ class cciStaticModuleLoader : public cciIModuleLoader
 
     cci_result Init(cciStaticModuleInfo const *aStaticModules,
                     dm_uint32 aStaticModuleCount,
-                    dm_bool bRegister);
+                    bool bRegister);
 
     cci_result LoadStaticModule(const dmCString& aLocation,cciIModule **_retval);
     void ReleaseModules();

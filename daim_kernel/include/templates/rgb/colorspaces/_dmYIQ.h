@@ -46,20 +46,20 @@
 
    // Y
    template<> struct getChannel<1,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return 0.299f * tr.r + 0.587f * tr.g + 0.114f * tr.b;
      } 
    };
    // I
    template<> struct getChannel<2,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return 0.500f * tr.r - 0.231f * tr.g - 0.269f * tr.b;
      } 
    };
 
    // Q
    template<> struct getChannel<3,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
+     float operator()( const rgb_triple& tr ) {
        return 0.203f * tr.r - 0.500f * tr.g + 0.297f * tr.b;
      } 
    };
@@ -82,7 +82,7 @@
 
      // unormalized values
      void operator()( const rgb_triple& tr, 
-                      dm_float& Y, dm_float& I, dm_float& Q )
+                      float& Y, float& I, float& Q )
      {
        Y = (0.299f * tr.r + 0.587f * tr.g + 0.114f * tr.b)/255.0f;
        I = (0.500f * tr.r - 0.231f * tr.g - 0.269f * tr.b)/255.0f;
@@ -95,13 +95,13 @@
    //-------------------------------------------------------
    struct merger {
 
-     dm_float fY,fI,fQ;
+     float fY,fI,fQ;
      void operator()( rgb_triple& tr, 
                       const dm_uint8& Y, const dm_uint8& I, const dm_uint8& Q ) 
      {
-       fY = static_cast<dm_float>(Y)/255.0f;
-       fI = static_cast<dm_float>(I)/255.0f - 0.5f;  
-       fQ = static_cast<dm_float>(Q)/255.0f - 0.5f;  
+       fY = static_cast<float>(Y)/255.0f;
+       fI = static_cast<float>(I)/255.0f - 0.5f;  
+       fQ = static_cast<float>(Q)/255.0f - 0.5f;  
 
        tr.r = to_rgb_channel(fY + 1.139f * fI + 0.648f * fQ);
        tr.g = to_rgb_channel(fY - 0.323f * fI - 0.677f * fQ);
@@ -109,7 +109,7 @@
      }
 
      void operator()( rgb_triple& tr, 
-                      const dm_float& Y, const dm_float& I, const dm_float& Q ) 
+                      const float& Y, const float& I, const float& Q ) 
      {
        tr.r =  to_rgb_channel((Y + 1.139f * I + 0.648f * Q) * 255.0f);
        tr.g =  to_rgb_channel((Y - 0.323f * I - 0.677f * Q) * 255.0f);

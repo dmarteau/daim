@@ -66,11 +66,11 @@ struct _Filter
     typename daim::pixel_traits<T2>::integer_type integer_type;
     typename daim::pixel_traits<T2> pixel_traits;
 
-    dm_float m=0,m1,m2,v;
-    dm_float s,smin,fsize = NAGAO_SIZE;
+    float m=0,m1,m2,v;
+    float s,smin,fsize = NAGAO_SIZE;
   
     for(int ix=x1; ix<=x2; ++ix) {
-      smin = std::numeric_limits<dm_float>::max();
+      smin = std::numeric_limits<float>::max();
       for( int k=0;k<NAGAO_COUNT;++k)
       {
          m1 = m2 = 0;
@@ -80,7 +80,7 @@ struct _Filter
          for(j=0;j<NAGAO_W;++j) {    // add value if non zero
            for(i=0;i<NAGAO_W;++i) { 
               if(*data++) {
-                 v = static_cast<dm_float>(corner[i]);
+                 v = static_cast<float>(corner[i]);
                  m1 += v; m2 +=  v*v;
               }  
            }

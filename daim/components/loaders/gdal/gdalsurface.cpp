@@ -73,7 +73,7 @@ gdalSurface::gdalSurface()
 , mAccess(GA_ReadOnly)
 , mAlphaBand(0)
 , mFormat(dmPixelFormatUndefined)
-, mRequireUserBuffer(DM_FALSE)
+, mRequireUserBuffer(false)
 , mCreateOpts(dm_null)
 , mLock(0)
 {
@@ -134,12 +134,12 @@ cci_result gdalSurface::CreateInMemorySurface( const dmImageData& imData, GDALDa
                                 "MEM:::DATAPOINTER=%ld,PIXELS=%ld,LINES=%ld,"
                                 "BANDS=1,DATATYPE=%s,PIXELOFFSET=%ld,"
                                 "LINEOFFSET=%ld,BANDOFFSET=%ld",bands[0],
-                                 imData.Width,
-                                 imData.Height,
+                                (long)imData.Width,
+                                (long)imData.Height,
                                  pszType,
-                                 PixelStride,
-                                 LineStride,
-                                 BandStride);
+                                 (long)PixelStride,
+                                 (long)LineStride,
+                                 (long)BandStride);
 
   hDS = GDALOpen(buf.get(),GA_Update);
   if(!hDS)
@@ -157,10 +157,10 @@ cci_result gdalSurface::CreateInMemorySurface( const dmImageData& imData, GDALDa
     for(int i=1;i<nBands;++i) 
     {
       char **papszOptions = dm_null;
-      papszOptions = CSLAppendPrintf(papszOptions,"DATAPOINTER=%ld",bands[i]);
-      papszOptions = CSLAppendPrintf(papszOptions,"PIXELOFFSET=%ld",PixelStride);
-      papszOptions = CSLAppendPrintf(papszOptions,"LINEOFFSET=%ld" ,LineStride);
-      papszOptions = CSLAppendPrintf(papszOptions,"BANDOFFSET=%ld" ,BandStride);
+      papszOptions = CSLAppendPrintf(papszOptions,"DATAPOINTER=%ld",(long)bands[i]);
+      papszOptions = CSLAppendPrintf(papszOptions,"PIXELOFFSET=%ld",(long)PixelStride);
+      papszOptions = CSLAppendPrintf(papszOptions,"LINEOFFSET=%ld" ,(long)LineStride);
+      papszOptions = CSLAppendPrintf(papszOptions,"BANDOFFSET=%ld" ,(long)BandStride);
   
       CPLErr err = GDALAddBand(hDS,GDT_Byte,papszOptions);
   
@@ -216,7 +216,7 @@ cci_result gdalSurface::Init(GDALDatasetH aDS, dm_uint32 ioFlags, GDALDriverH tm
   mDS                = aDS;
   mOutputDriver      = dm_null;
   mTmpDriver         = tmpDriver;
-  mRequireUserBuffer = DM_TRUE;
+  mRequireUserBuffer = true;
   mAccess            = static_cast<GDALAccess>(ioFlags);
 
   return CCI_OK;
@@ -251,14 +251,14 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location, dmImageD
 
   // Clone options
   if(options)
-     mCreateOpts = CSLTokenizeStringComplex(options,",",DM_FALSE,DM_FALSE);
+     mCreateOpts = CSLTokenizeStringComplex(options,",",false,false);
 
   mFormat            = pDesc->PixelFormat();
 
   mDS                = hDS;
   mLocation          = location;
   mOutputDriver      = aDriver;
-  mRequireUserBuffer = DM_FALSE;
+  mRequireUserBuffer = false;
   mAccess            = GA_Update;
   
   // Set alpha band
@@ -290,7 +290,7 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
   char** createOpts = dm_null;
 
   if(options)
-     createOpts = CSLTokenizeStringComplex(options,",",DM_FALSE,DM_FALSE);
+     createOpts = CSLTokenizeStringComplex(options,",",false,false);
 
   int nBands = 1;
   if(format==dmPixelFormat24bppRGB)
@@ -316,7 +316,7 @@ cci_result gdalSurface::Init(GDALDriverH aDriver,const char * location,
   mLocation          = location;
   mFormat            = format;
   mOutputDriver      = dm_null;
-  mRequireUserBuffer = DM_TRUE;
+  mRequireUserBuffer = true;
   mAccess            = GA_Update;
   mAlphaBand         = 0; 
  
@@ -357,32 +357,32 @@ CCI_IMETHODIMP_(EPixelFormat) gdalSurface::PixelFormat()
   return mFormat;
 }
 
-/* [noscript,notxpcom] dm_bool HasAlpha (); */
-CCI_IMETHODIMP_(dm_bool) gdalSurface::HasAlpha()
+/* [noscript,notxpcom] boolean HasAlpha (); */
+CCI_IMETHODIMP_(bool) gdalSurface::HasAlpha()
 {
-  return mAlphaBand!=0 ? DM_FALSE : DM_TRUE;;
+  return mAlphaBand!=0;
 }
 
-/* [noscript,notxpcom] dm_bool HasSamplingCapabilities (); */
-CCI_IMETHODIMP_(dm_bool) gdalSurface::HasSamplingCapabilities()
+/* [noscript,notxpcom] boolean HasSamplingCapabilities (); */
+CCI_IMETHODIMP_(bool) gdalSurface::HasSamplingCapabilities()
 {
-  return dm_true;
+  return true;
 }
 
-/* [noscript,notxpcom] dm_bool HasConvertCapabilities(); */
-CCI_IMETHODIMP_(dm_bool) gdalSurface::HasConvertCapabilities()
+/* [noscript,notxpcom] boolean HasConvertCapabilities(); */
+CCI_IMETHODIMP_(bool) gdalSurface::HasConvertCapabilities()
 {
-  return dm_true;
+  return true;
 }
 
 /* [noscript,notxpcom] boolean IsLocked (); */
-CCI_IMETHODIMP_(dm_bool) gdalSurface::IsLocked()
+CCI_IMETHODIMP_(bool) gdalSurface::IsLocked()
 {
   return mLock != 0;
 }
 
 /* [noscript,notxpcom] boolean IsWritable (); */
-CCI_IMETHODIMP_(dm_bool) gdalSurface::IsWritable()
+CCI_IMETHODIMP_(bool) gdalSurface::IsWritable()
 {
   return mAccess==GA_Update;
 }
@@ -419,8 +419,8 @@ CCI_IMETHODIMP gdalSurface::GetPixelFormat(EPixelFormat *aPixelFormat)
   return CCI_OK;
 }
 
-/* readonly attribute dm_bool hasAlpha; */
-CCI_IMETHODIMP gdalSurface::GetHasAlpha(dm_bool *aHasAlpha)
+/* readonly attribute bool hasAlpha; */
+CCI_IMETHODIMP gdalSurface::GetHasAlpha(bool *aHasAlpha)
 {
   *aHasAlpha = HasAlpha();
   return CCI_OK;
@@ -830,14 +830,14 @@ done:
 }
 
 /* readonly attribute boolean isLocked; */
-CCI_IMETHODIMP gdalSurface::GetIsLocked(dm_bool *aIsLocked)
+CCI_IMETHODIMP gdalSurface::GetIsLocked(bool *aIsLocked)
 {
   *aIsLocked = IsLocked();
   return CCI_OK;
 }
 
 /* readonly attribute boolean isWritable; */
-CCI_IMETHODIMP gdalSurface::GetIsWritable(dm_bool *aIsWritable)
+CCI_IMETHODIMP gdalSurface::GetIsWritable(bool *aIsWritable)
 {
   *aIsWritable = IsWritable();
   return CCI_OK;
@@ -972,7 +972,7 @@ CCI_IMETHODIMP gdalSurface::Close()
     if(mOutputDriver)
     {
        //TODO set progress data from callbacks
-       GDALDatasetH hDS = GDALCreateCopy(mOutputDriver,mLocation.get(),mDS,DM_FALSE,
+       GDALDatasetH hDS = GDALCreateCopy(mOutputDriver,mLocation.get(),mDS,false,
                                          const_cast<char**>(mCreateOpts),
                                          dm_null,dm_null);
        if(hDS)
@@ -1007,10 +1007,10 @@ CCI_IMETHODIMP gdalSurface::CreateCopy(const char * newLocation, const char * op
   char** createOpts = dm_null;
 
   if(options)
-     createOpts = CSLTokenizeStringComplex(options,",",DM_FALSE,DM_FALSE);
+     createOpts = CSLTokenizeStringComplex(options,",",false,false);
 
   //TODO set progress data from callbacks
-  GDALDatasetH newDS = GDALCreateCopy(hDriver,newLocation,mDS,DM_FALSE,createOpts,
+  GDALDatasetH newDS = GDALCreateCopy(hDriver,newLocation,mDS,false,createOpts,
                                       dm_null,dm_null);
 
   cci_result rv;
@@ -1030,7 +1030,7 @@ CCI_IMETHODIMP gdalSurface::CreateCopy(const char * newLocation, const char * op
 }
 
 /* void imageIO (in cciImage image, in long srcX, in long srcY, in unsigned long lockModes, [optional] in boolean alpha); */
-CCI_IMETHODIMP gdalSurface::ImageIO(cciImage image, dm_int32 srcX, dm_int32 srcY, dm_uint32 lockModes, dm_bool alpha)
+CCI_IMETHODIMP gdalSurface::ImageIO(cciImage image, dm_int32 srcX, dm_int32 srcY, dm_uint32 lockModes, bool alpha)
 {
   dmImage* img = CCI_IF_NATIVE(image);
   CCI_ENSURE_ARG_POINTER(img);  
@@ -1072,7 +1072,7 @@ public:
   CCI_IMETHOD GetNext(dmAString& );
   CCI_IMETHOD GetNext(dmACString&);
   
-  CCI_IMETHOD_(dm_bool) HasMore(void);
+  CCI_IMETHOD_(bool) HasMore(void);
   
   cciMetaDataIterator(char **papszMetadata, cciISupports* owner)
   : mCurrent(papszMetadata)
@@ -1091,7 +1091,7 @@ CCI_IMPL_ISUPPORTS3(cciMetaDataIterator,
                     cciIUTF8StringEnumerator,
                     cciIStringEnumerator)
 
-CCI_IMETHODIMP_(dm_bool)
+CCI_IMETHODIMP_(bool)
 cciMetaDataIterator::HasMore()
 {
   return (*mCurrent != dm_null);
@@ -1099,7 +1099,7 @@ cciMetaDataIterator::HasMore()
 
 /* boolean hasMore (); */
 CCI_IMETHODIMP 
-cciMetaDataIterator::HasMore(dm_bool *_retval CCI_OUTPARAM)
+cciMetaDataIterator::HasMore(bool *_retval CCI_OUTPARAM)
 {
   *_retval = HasMore();
   return CCI_OK;

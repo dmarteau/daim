@@ -68,21 +68,21 @@
    };
 
    template<> struct getChannel<1,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
-       static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
-       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.r),daim::max(tr.g,tr.b)));
+     float operator()( const rgb_triple& tr ) {
+       static const float factor =  static_cast<float>(get_factor(integer_false()));
+       return factor*static_cast<float>(atan2(static_cast<dm_real>(tr.r),daim::max(tr.g,tr.b)));
      } 
    };
    template<> struct getChannel<2,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
-       static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
-       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.g),daim::max(tr.r,tr.b)));
+     float operator()( const rgb_triple& tr ) {
+       static const float factor =  static_cast<float>(get_factor(integer_false()));
+       return factor*static_cast<float>(atan2(static_cast<dm_real>(tr.g),daim::max(tr.r,tr.b)));
      } 
    };
    template<> struct getChannel<3,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) {
-       static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
-       return factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.b),daim::max(tr.r,tr.g)));
+     float operator()( const rgb_triple& tr ) {
+       static const float factor =  static_cast<float>(get_factor(integer_false()));
+       return factor*static_cast<float>(atan2(static_cast<dm_real>(tr.b),daim::max(tr.r,tr.g)));
      } 
    };
 
@@ -103,13 +103,13 @@
      }
 
      // return value from [-1..1] 
-     void operator()( const rgb_triple& tr,  dm_float& C1, dm_float& C2, dm_float& C3 )
+     void operator()( const rgb_triple& tr,  float& C1, float& C2, float& C3 )
      {
-       static const dm_float factor =  static_cast<dm_float>(get_factor(integer_false()));
+       static const float factor =  static_cast<float>(get_factor(integer_false()));
 
-       C1 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.r),daim::max(tr.g,tr.b)));
-       C2 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.g),daim::max(tr.r,tr.b)));
-       C3 = factor*static_cast<dm_float>(atan2(static_cast<dm_real>(tr.b),daim::max(tr.r,tr.g)));
+       C1 = factor*static_cast<float>(atan2(static_cast<dm_real>(tr.r),daim::max(tr.g,tr.b)));
+       C2 = factor*static_cast<float>(atan2(static_cast<dm_real>(tr.g),daim::max(tr.r,tr.b)));
+       C3 = factor*static_cast<float>(atan2(static_cast<dm_real>(tr.b),daim::max(tr.r,tr.g)));
      }
    };
 

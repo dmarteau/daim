@@ -95,7 +95,7 @@ int main( int argc, char ** argv )
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
       dm_uint32 radius   = 5;
-      dm_double strength = 0.8;
+      double    strength = 0.8;
 
       printf("\n### Can I set parameters ?\n");
       DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(sharpen->SetRadius(radius)));

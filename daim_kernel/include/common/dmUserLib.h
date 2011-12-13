@@ -180,7 +180,7 @@ bool dmCopyRGBData( const dmImage& _src, dmImage& _dest , dm_uint channel );
 bool dmCopyRGBData( const dmImage& _src, dmImage& _dest , dm_uint channel,
                     const dmRegion&, const dmPoint& );
 
-bool dmCopyRGBData( dmImage& _rgb, dmImage& _red, dmImage& _green, dmImage& _blue , dm_bool _toRGB );
+bool dmCopyRGBData( dmImage& _rgb, dmImage& _red, dmImage& _green, dmImage& _blue , bool _toRGB );
 
 /*---------------------------------------------------------------------------------------
  function   : dmMakePeriodic
@@ -408,7 +408,7 @@ class dmHysteresisThreshold
 bool dmRGBThreshold( const dmImage&    _Src,
                      const dmRegion&   _Rgn,
                      const dmRGBColor& _Color,
-                     dm_float rv,dm_float rg, dm_float rb,
+                     float rv,float rg, float rb,
                      dmRegion& _Result );
 
 /*---------------------------------------------------------------------------------------

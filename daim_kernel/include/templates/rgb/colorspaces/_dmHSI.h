@@ -22,9 +22,9 @@
    //-------------------------------------------------------
    struct splitter
    {
-     dm_float mini,delta,fH,fS,fI;
+     float mini,delta,fH,fS,fI;
 
-     void getHSI255( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& I )
+     void getHSI255( const rgb_triple& tr, float& H, float& S, float& I )
      {
         I    = 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
         mini = minimum(tr.r,tr.g,tr.b);
@@ -51,7 +51,7 @@
         }
      }
 
-      dm_float hue( const rgb_triple& tr )
+     float hue( const rgb_triple& tr )
       {
         fI   = 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
         mini = minimum(tr.r,tr.g,tr.b);
@@ -78,7 +78,7 @@
         return fH;
       }
 
-      dm_float saturation( const rgb_triple& tr )
+     float saturation( const rgb_triple& tr )
       {
         fI   = 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
         mini = minimum(tr.r,tr.g,tr.b);
@@ -86,11 +86,11 @@
         else        return 1.0f; // undefined
       }
 
-      dm_float intensity( const rgb_triple& tr ) {
+     float intensity( const rgb_triple& tr ) {
          return 0.333333f * (static_cast<int>(tr.r)+tr.g+tr.b);
       }
 
-     void operator()( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& I )
+     void operator()( const rgb_triple& tr, float& H, float& S, float& I )
      {
         getHSI255(tr,H,S,I);
         I /= 255.0f;
@@ -113,11 +113,11 @@
    struct merger
    {
      int i;
-     dm_float f,fH,fS,fI;
+     float f,fH,fS,fI;
 
 
      void setHSI255( rgb_triple& tr,
-                     const dm_float& H, const dm_float& S, const dm_float& I )
+                     const float& H, const float& S, const float& I )
      {
        i  = static_cast<int>(H*6);
        f  = H*6-i;
@@ -176,7 +176,7 @@
 
      // Assume that values are between 0 and 1.0;
      void operator()( rgb_triple& tr,
-                      const dm_float& H, const dm_float& S, const dm_float& I )
+                      const float& H, const float& S, const float& I )
      {
 		if (S==0) {
           tr.r = tr.b = tr.g = to_rgb_channel(I);
@@ -232,14 +232,14 @@
    };
 
    template<> struct getChannel<1,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return  hue(tr); }
+     float operator()( const rgb_triple& tr ) { return  hue(tr); }
    };
    template<> struct getChannel<2,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return saturation(tr); }
+     float operator()( const rgb_triple& tr ) { return saturation(tr); }
    };
 
    template<> struct getChannel<3,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return intensity(tr)/255.0f; }
+     float operator()( const rgb_triple& tr ) { return intensity(tr)/255.0f; }
    };
 
  } // namespace HSI

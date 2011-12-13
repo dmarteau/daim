@@ -37,7 +37,6 @@
  * Map daim type to xpcom/nspr type
  */
 
-typedef boolean            dm_bool   ; // PRBool
 typedef octet              dm_uint8  ; // PRUint8
 typedef octet              dm_byte   ; // PRUint8
 typedef unsigned short     dm_uint16 ; // PRUint16
@@ -53,9 +52,7 @@ typedef unsigned long      cci_result ;
 
 //typedef unsigned long       size_t;
 
-typedef float               dm_float  ;
 typedef double              dm_real   ;
-typedef double              dm_double ;
 
 [ptr] native bytePtr(PRUint8);
 

@@ -36,24 +36,24 @@ class dmSpatialUnits
     dmCString mUnitName;
     dmCString mUnitLabel;
 
-    dm_double mUnitsPerPixel;
-    dm_double mAspectRatio;  // y/x pixel aspect ratio;
+    double mUnitsPerPixel;
+    double mAspectRatio;  // y/x pixel aspect ratio;
 
-    dmSpatialUnits( dm_double _ppu = 1.0, dm_double _ar = 1.0  )
+    dmSpatialUnits( double _ppu = 1.0, double _ar = 1.0  )
     :mUnitsPerPixel( 1.0/_ppu )
     ,mAspectRatio( _ar )
     {}
 
-    __dmKernel dm_double GetLength( const dm_point&,const dm_point&  ) const;
+    __dmKernel double GetLength( const dm_point&,const dm_point&  ) const;
 
-    // Retourne la taille en unit�(s) pour un facteur de grossissement g 
-    dm_double X_Units( dm_int x = 1 ) const { return mUnitsPerPixel * x; }
-    dm_double Y_Units( dm_int y = 1 ) const { return mUnitsPerPixel * mAspectRatio * y; }
+    // Retourne la taille en unité(s) pour un facteur de grossissement g 
+    double X_Units( dm_int x = 1 ) const { return mUnitsPerPixel * x; }
+    double Y_Units( dm_int y = 1 ) const { return mUnitsPerPixel * mAspectRatio * y; }
 
-    dm_double X_Pixels( dm_real x = 1 ) const { return static_cast<int>(x/mUnitsPerPixel + 0.5); }
-    dm_double Y_Pixels( dm_real y = 1 ) const { return static_cast<int>(y/(mUnitsPerPixel * mAspectRatio) + 0.5); }
+    double X_Pixels( dm_real x = 1 ) const { return static_cast<int>(x/mUnitsPerPixel + 0.5); }
+    double Y_Pixels( dm_real y = 1 ) const { return static_cast<int>(y/(mUnitsPerPixel * mAspectRatio) + 0.5); }
   
-    dm_double GetLength( const dm_line& l ) const { return GetLength(l.start,l.end); }
+    double GetLength( const dm_line& l ) const { return GetLength(l.start,l.end); }
 };
 
 #endif // dmSpatialUnits_h

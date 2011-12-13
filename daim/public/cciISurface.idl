@@ -48,7 +48,7 @@ interface cciISurface : cciIXPCOMSupports
   [noscript,notxpcom] dm_uint32 Bands();
 
   [noscript,notxpcom] EPixelFormat PixelFormat();
-  [noscript,notxpcom] dm_bool      HasAlpha();
+  [noscript,notxpcom] boolean      HasAlpha();
   
   /**
    * Return true if the surface has sampling capabilities 
@@ -56,7 +56,7 @@ interface cciISurface : cciIXPCOMSupports
    * 
    * Some block based reader can implement this
    */
-  [noscript,notxpcom] dm_bool HasSamplingCapabilities();
+  [noscript,notxpcom] boolean HasSamplingCapabilities();
 
   /**
    * Return true if the surface can convert data on the fly 
@@ -65,7 +65,7 @@ interface cciISurface : cciIXPCOMSupports
    * 
    * Some block based reader can implement this
    */
-  [noscript,notxpcom] dm_bool HasConvertCapabilities();
+  [noscript,notxpcom] boolean HasConvertCapabilities();
   
   [noscript,notxpcom] boolean IsLocked();
   [noscript,notxpcom] boolean IsWritable();
@@ -98,7 +98,7 @@ interface cciIScriptableSurface : cciIXPCOMSupports
 
   readonly attribute  EPixelFormat pixelFormat;
 
-  readonly attribute  dm_bool hasAlpha;
+  readonly attribute  boolean hasAlpha;
 
   readonly attribute  boolean isLocked;
   readonly attribute  boolean isWritable;

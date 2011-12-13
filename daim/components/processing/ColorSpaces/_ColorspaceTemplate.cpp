@@ -277,7 +277,7 @@ CCI_IMETHODIMP COLORSPACE_CLASSNAME::SetChannelFmt(EPixelFormat aChannelFmt)
 }
 
 /* readonly attribute boolean canMerge; */
-CCI_IMETHODIMP COLORSPACE_CLASSNAME::GetCanMerge(dm_bool *aCanMerge)
+CCI_IMETHODIMP COLORSPACE_CLASSNAME::GetCanMerge(bool *aCanMerge)
 {
   *aCanMerge = COLORSPACE_CAN_MERGE;
   return CCI_OK;

@@ -389,7 +389,8 @@ int GRSZCompute::operator()( const dmIntensityProfile& _profil, dmImage* im )
         case JOINT_JOINT:
         case JOINT_GRAIN:
           m_Points.push_back(*it++);        // we start in a joint
-          if(resvalue!=JOINT_JOINT) break;
+          if(resvalue!=JOINT_JOINT) 
+            break;
         case GRAIN_JOINT:                   // we end in a joint
           m_Points.push_back(*--last);
       }

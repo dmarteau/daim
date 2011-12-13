@@ -42,14 +42,14 @@ typedef enum {
   CO_BIN8   = 5
 } EBinType;
 //-------------------------------------------------------------
-dm_double dmMatrix_Homogeneity      ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_Contrast         ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_Entropy          ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_Correlation      ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_LocalHomogeneity ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_Directivity      ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_Uniformity       ( const dmRectMatrix&, dm_double );
-dm_double dmMatrix_Clustering       ( const dmRectMatrix&, dm_double );
+double dmMatrix_Homogeneity      ( const dmRectMatrix&, double );
+double dmMatrix_Contrast         ( const dmRectMatrix&, double );
+double dmMatrix_Entropy          ( const dmRectMatrix&, double );
+double dmMatrix_Correlation      ( const dmRectMatrix&, double );
+double dmMatrix_LocalHomogeneity ( const dmRectMatrix&, double );
+double dmMatrix_Directivity      ( const dmRectMatrix&, double );
+double dmMatrix_Uniformity       ( const dmRectMatrix&, double );
+double dmMatrix_Clustering       ( const dmRectMatrix&, double );
 //-------------------------------------------------------------
 class dmCooccurrence
 {
@@ -61,7 +61,7 @@ class dmCooccurrence
     dmRectMatrix  c_data; 
     points_list   c_pattern; // definition of the pattern
     EBinType      c_nbin;
-    dm_double     Nc;
+    double        Nc;
 
   public:
     dmCooccurrence( const points_list& , EBinType nbin = CO_BIN256 );
@@ -84,14 +84,14 @@ class dmCooccurrence
     size_t Size()  const { return c_data.NRows(); }
 
     // results 
-    dm_double Sum()               const { return Nc; }
-    dm_double Homogeneity()       const { return dmMatrix_Homogeneity      (c_data,Nc); }
-    dm_double Contrast()          const { return dmMatrix_Contrast         (c_data,Nc); }
-    dm_double Entropy()           const { return dmMatrix_Entropy          (c_data,Nc); }
-    dm_double Correlation()       const { return dmMatrix_Correlation      (c_data,Nc); }
-    dm_double Local_homogeneity() const { return dmMatrix_LocalHomogeneity (c_data,Nc); }
-    dm_double Directivity()       const { return dmMatrix_Directivity      (c_data,Nc); }
-    dm_double Uniformity()        const { return dmMatrix_Uniformity       (c_data,Nc); } 
+    double Sum()               const { return Nc; }
+    double Homogeneity()       const { return dmMatrix_Homogeneity      (c_data,Nc); }
+    double Contrast()          const { return dmMatrix_Contrast         (c_data,Nc); }
+    double Entropy()           const { return dmMatrix_Entropy          (c_data,Nc); }
+    double Correlation()       const { return dmMatrix_Correlation      (c_data,Nc); }
+    double Local_homogeneity() const { return dmMatrix_LocalHomogeneity (c_data,Nc); }
+    double Directivity()       const { return dmMatrix_Directivity      (c_data,Nc); }
+    double Uniformity()        const { return dmMatrix_Uniformity       (c_data,Nc); } 
 };
 //-------------------------------------------------------------
 

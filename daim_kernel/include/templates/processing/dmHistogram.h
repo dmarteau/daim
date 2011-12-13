@@ -65,7 +65,7 @@ class dmHistogram
 
     void GetHistogram( const daim::image<dm_uint8>&,const dmRegion& );
     void GetHistogram( const daim::image<dm_rgb24>&,const dmRegion& );
-    void GetHistogram( const daim::image<dm_float>&,const dmRegion& );
+    void GetHistogram( const daim::image<float>&   ,const dmRegion& );
 
     daim::histogram_type& Data() { return h_data; }
     void                  ClearData();

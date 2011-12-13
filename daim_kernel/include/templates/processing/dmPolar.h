@@ -63,9 +63,9 @@ namespace polar
 
      // return a value in [-1,1]
      template<>
-     struct _promoted<integer_false> : std::binary_function<T,T,dm_float> {
-       dm_float operator()( const T& x, const T& y ) {
-         return static_cast<dm_float>(atan2(y,x) * 0.318309886);
+     struct _promoted<integer_false> : std::binary_function<T,T,float> {
+       float operator()( const T& x, const T& y ) {
+         return static_cast<float>(atan2(y,x) * 0.318309886);
        }
      };
 
@@ -78,11 +78,11 @@ namespace polar
     template<class integer_type> struct _promoted {};
 
     template<>
-    struct _promoted<integer_false> : std::binary_function<T,T,dm_float> {
-      dm_float operator()( const T& x, const T& y ) {
-        return static_cast<dm_float>(
-                 sqrt(static_cast<dm_float>(x)*x +
-                      static_cast<dm_float>(y)*y ));
+    struct _promoted<integer_false> : std::binary_function<T,T,float> {
+      float operator()( const T& x, const T& y ) {
+        return static_cast<float>(
+                 sqrt(static_cast<float>(x)*x +
+                      static_cast<float>(y)*y ));
       }
     };
 
@@ -114,12 +114,12 @@ namespace polar
 
   // return a value in [-1,1]
   template<class T>
-  struct phase<T,integer_false> : std::binary_function<T,T,dm_float>
+  struct phase<T,integer_false> : std::binary_function<T,T,float>
   {
     typedef phase<T,integer_false> functor;
 
-    dm_float operator()( const T& x, const T& y ) {
-      return static_cast<dm_float>(atan2(y,x) * 0.318309886);
+    float operator()( const T& x, const T& y ) {
+      return static_cast<float>(atan2(y,x) * 0.318309886);
     }
   };
 
@@ -128,14 +128,14 @@ namespace polar
   struct norm {};
 
   template<class T>
-  struct norm<T,integer_false> : std::binary_function<T,T,dm_float>
+  struct norm<T,integer_false> : std::binary_function<T,T,float>
   {
     typedef phase<T,integer_false> functor;
 
-    dm_float operator()( const T& x, const T& y ) {
-      return static_cast<dm_float>(
-               sqrt(static_cast<dm_float>(x)*x +
-                    static_cast<dm_float>(y)*y ));
+    float operator()( const T& x, const T& y ) {
+      return static_cast<float>(
+               sqrt(static_cast<float>(x)*x +
+                    static_cast<float>(y)*y ));
     }
   };
 

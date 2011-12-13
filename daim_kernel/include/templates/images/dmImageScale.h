@@ -40,7 +40,7 @@ _get_range_value( V _value, const pixel_traits<T>&, const integer_true& )
   if(_value < pixel_traits<T>::min()) return pixel_traits<T>::min(); else
   if(_value > pixel_traits<T>::max()) return pixel_traits<T>::max(); else     
   return 
-    static_cast<value_type>(daim::round(static_cast<dm_float>(_value)));
+    static_cast<value_type>(daim::round(static_cast<float>(_value)));
 }
 //------------------------------------------------------------------------
 template<class V,class T>
@@ -78,14 +78,14 @@ struct scale_params : public pixel_unary_function<T1,T2>
 
   argument_type  minv,maxv,delta;    // minimum et maximum globaux
   result_type    upper,lower;        // parametre du scaling
-  dm_float       fscale;
+  float          fscale;
 
   scale_params( const gap<argument_type>& minmax, const gap<result_type>& newscale ) 
     : minv(minmax.min()),maxv(minmax.max()), 
     upper(newscale.max()),lower(newscale.min())  
     { 
       if( minv < maxv ) delta = minmax.diff(); else delta = 1;
-      fscale = static_cast<dm_float>(upper - lower)/delta;
+      fscale = static_cast<float>(upper - lower)/delta;
     }    
     
     void prout() {} 

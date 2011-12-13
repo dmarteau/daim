@@ -81,7 +81,7 @@ int main( int argc, char ** argv )
     dmUtilities::Initialize(mArgv,sizeof(mArgv)/sizeof(char*));
 
     // Start the CCI/COM framework
-    rv = CCI_Init(&srvmngr,dm_null,dm_null,DM_FALSE);
+    rv = CCI_Init(&srvmngr,dm_null,dm_null,false);
     if(CCI_SUCCEEDED(rv))
     {
       if(argc>1)

@@ -147,7 +147,7 @@ CCI_IMETHODIMP cciResultSet::RemoveCol(const char * column)
 }
 
 /* cciIResultColumn getColumn (in string column, [optional] in boolean create); */
-CCI_IMETHODIMP cciResultSet::GetColumn(const char * column, dm_bool create, cciIResultColumn * *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciResultSet::GetColumn(const char * column, bool create, cciIResultColumn * *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(column);
   
@@ -206,7 +206,7 @@ public:
   CCI_IMETHOD GetNext(dmAString& );
   CCI_IMETHOD GetNext(dmACString&);
   
-  CCI_IMETHOD_(dm_bool) HasMore(void);
+  CCI_IMETHOD_(bool) HasMore(void);
   
   cciColumnIterator(const dmStoreDict& dict, cciISupports* owner)
   : mFirst(dict.begin())
@@ -230,7 +230,7 @@ CCI_IMPL_ISUPPORTS3(cciColumnIterator,
                     cciIUTF8StringEnumerator,
                     cciIStringEnumerator)
 
-CCI_IMETHODIMP_(dm_bool)
+CCI_IMETHODIMP_(bool)
 cciColumnIterator::HasMore()
 {
   return (mFirst != mLast);
@@ -238,7 +238,7 @@ cciColumnIterator::HasMore()
 
 /* boolean hasMore (); */
 CCI_IMETHODIMP 
-cciColumnIterator::HasMore(dm_bool *_retval CCI_OUTPARAM)
+cciColumnIterator::HasMore(bool *_retval CCI_OUTPARAM)
 {
   *_retval = HasMore();
   return CCI_OK;
@@ -295,7 +295,7 @@ CCI_IMETHODIMP cciResultSet::GetNumcols(dm_uint32 *aNumcols)
 }
 
 /* void resizeCol (in string column, in unsigned long newsize, [optional] in double padding); */
-CCI_IMETHODIMP cciResultSet::ResizeCol(const char * column, dm_uint32 newsize, dm_double padding)
+CCI_IMETHODIMP cciResultSet::ResizeCol(const char * column, dm_uint32 newsize, double padding)
 {
   CCI_ENSURE_ARG_POINTER(column);
   
@@ -319,7 +319,7 @@ CCI_IMETHODIMP cciResultSet::DeleteRow(dm_uint32 row)
 }
 
 /* double getValue (in string column, in unsigned long row); */
-CCI_IMETHODIMP cciResultSet::GetValue(const char * column, dm_uint32 row, dm_double *_retval CCI_OUTPARAM)
+CCI_IMETHODIMP cciResultSet::GetValue(const char * column, dm_uint32 row, double *_retval CCI_OUTPARAM)
 {
   CCI_ENSURE_ARG_POINTER(column);
   
@@ -333,7 +333,7 @@ CCI_IMETHODIMP cciResultSet::GetValue(const char * column, dm_uint32 row, dm_dou
 }
 
 /* void setValue (in string column, in unsigned long row, in double value); */
-CCI_IMETHODIMP cciResultSet::SetValue(const char * column, dm_uint32 row, dm_double value)
+CCI_IMETHODIMP cciResultSet::SetValue(const char * column, dm_uint32 row, double value)
 {
   CCI_ENSURE_ARG_POINTER(column);
   

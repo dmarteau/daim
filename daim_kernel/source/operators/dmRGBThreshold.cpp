@@ -34,7 +34,7 @@
 bool dmRGBThreshold( const dmImage&    _Src, 
                      const dmRegion&   _Rgn, 
                      const dmRGBColor& _Color,
-                     dm_float rv,dm_float rg, dm_float rb, 
+                     float rv,float rg, float rb, 
                      dmRegion& _Result )
 {
   

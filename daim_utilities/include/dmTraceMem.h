@@ -28,7 +28,7 @@ class __dmUtilities dmTraceMem {
   public:
     static void Init( dm_int32 status );
     static void Dump( dm_int32 status );
-    static dm_bool IsTracing();
+    static bool IsTracing();
 };
 
 

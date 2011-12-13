@@ -72,24 +72,24 @@ struct abs_pixel : public _pixel_binfun<typename pixel_traits<T>::value_type> {
 //-----------------------------------------------------------------
 // specialize for float
 //-----------------------------------------------------------------
-template<> struct sub_pixel<dm_float> :_pixel_binfun<dm_float> {
-  dm_float operator()( const dm_float&  x1, const dm_float& x2 ) {
+template<> struct sub_pixel<float> :_pixel_binfun<float> {
+  float operator()( const float&  x1, const float& x2 ) {
     return x1 - x2;
   }
 };
 //-----------------------------------------------------------------
 // specialize for float
 //-----------------------------------------------------------------
-template<> struct nsub_pixel<dm_float> :_pixel_binfun<dm_float> {
-  dm_float operator()( const dm_float&  x1, const dm_float& x2 ) {
+template<> struct nsub_pixel<float> :_pixel_binfun<float> {
+  float operator()( const float&  x1, const float& x2 ) {
     return x2 - x1;
   }
 };
 //-----------------------------------------------------------------
 // specialize for float
 //-----------------------------------------------------------------
-template<> struct abs_pixel<dm_float> :_pixel_binfun<dm_float> {
-  dm_float operator()( const dm_float&  x1, const dm_float& x2 ) {
+template<> struct abs_pixel<float> :_pixel_binfun<float> {
+  float operator()( const float&  x1, const float& x2 ) {
     return daim::abs(x2) + daim::abs(x1);
   }
 };
@@ -139,7 +139,7 @@ struct multiply_pixels :
   result_type operator()( const first_argument_type&  x1,
                           const second_argument_type& x2 )
   {
-    return _get_range_value( x2 * static_cast<dm_float>(x1),
+    return _get_range_value( x2 * static_cast<float>(x1),
                              traits_type(), integer_type());
   }
 };
@@ -161,7 +161,7 @@ struct divide_pixels :
                           const second_argument_type& x2 )
   {
     if(x1)
-       return _get_range_value(x2 / static_cast<dm_float>(x1),
+       return _get_range_value(x2 / static_cast<float>(x1),
                                traits_type(),integer_type());
     else
       return pixel_traits<T2>::max();
@@ -182,8 +182,8 @@ struct mul_pixel : std::unary_function<
   typedef typename pixel_traits<T1>::value_type argument_type;
   typedef typename pixel_traits<T2>::value_type result_type;
 
-  dm_float a;
-  mul_pixel( dm_float _x ) : a(_x) {}
+  float a;
+  mul_pixel( float _x ) : a(_x) {}
   result_type operator()( const argument_type& _x ) const
   {
     return _get_range_value(_x * a, traits_type(), integer_type());
@@ -202,8 +202,8 @@ struct addmul_pixel : std::unary_function<
   typedef typename pixel_traits<T1>::value_type argument_type;
   typedef typename pixel_traits<T2>::value_type result_type;
 
-  dm_float a,b;
-  addmul_pixel( dm_float _a, dm_float _b ) : a(_a),b(_b) {}
+  float a,b;
+  addmul_pixel( float _a, float _b ) : a(_a),b(_b) {}
   result_type operator()( const argument_type& _x ) const
   {
     return _get_range_value( a * _x + b, traits_type(), integer_type());
@@ -221,11 +221,11 @@ struct sqr_pixel : std::unary_function<
   typedef typename pixel_traits<T2>::value_type result_type;
   typedef typename pixel_traits<T2>::integer_type integer_type;
 
-  mutable dm_float y;
+  mutable float y;
 
   result_type operator()( const argument_type& _x ) const
   {
-    y = static_cast<dm_float>(_x);
+    y = static_cast<float>(_x);
     return _get_range_value( y*y,pixel_traits<T2>(),integer_type() );
   }
 
@@ -282,8 +282,8 @@ struct blend_pixels :
   typedef typename pixel_traits<T2>::value_type value_type2;
   typedef typename pixel_traits<T2>::integer_type integer_type;
 
-  dm_float a;
-  blend_pixels( dm_float _a ) : a(_a) {}
+  float a;
+  blend_pixels( float _a ) : a(_a) {}
   value_type2 operator()( const value_type1& x1,
                           const value_type2& x2 ) const {
     return _round_value( (1.0f - a) * x1 + a * x2,
@@ -299,9 +299,9 @@ struct blend_color : std::unary_function<
   typedef typename pixel_traits<T>::value_type value_type;
   typedef typename pixel_traits<T>::integer_type integer_type;
 
-  dm_float   a;
+  float   a;
   value_type c;
-  blend_color( const value_type& _c,  dm_float _a ) : a(_a), c(_c) {}
+  blend_color( const value_type& _c,  float _a ) : a(_a), c(_c) {}
   value_type operator()( const value_type& x ) const {
     return _round_value( a * c + (1.0f-a) * x,
               pixel_traits<T>(),integer_type() );
@@ -422,21 +422,21 @@ template<class T> void max_images( const dmRegion& rgn,const dmPoint& p,const im
 { combine(rgn,p,in,out,max_pixel<T>()); }
 
 template<class T1,class T2>
-void mul_images( const dmRegion& rgn,const dmPoint& p,const image<T1>& in ,image<T2>& out, dm_float y )
+void mul_images( const dmRegion& rgn,const dmPoint& p,const image<T1>& in ,image<T2>& out, float y )
 { transform(rgn,p,in,out,mul_pixel<T1,T2>(y)); }
 
 template<class T1,class T2>
-void div_images( const dmRegion& rgn,const dmPoint& p,const  image<T1>& in, image<T2>& out, dm_float y )
+void div_images( const dmRegion& rgn,const dmPoint& p,const  image<T1>& in, image<T2>& out, float y )
 { transform(rgn,p,in,out,mul_pixel<T1,T2>(1.0/y)); }
 
 template<class T1,class T2>
 void addmul_images( const dmRegion& rgn,const dmPoint& p,const image<T1>& in ,image<T2>& out,
-                   dm_float a, dm_float b )
+                    float a, float b )
 { transform(rgn,p,in,out,addmul_pixel<T1,T2>(a,b)); }
 
 template<class T1,class T2>
 void blend_images( const dmRegion& rgn,const dmPoint& p,const image<T1>& in ,image<T2>& out,
-                   dm_float a)
+                   float a)
 { combine(rgn,p,in,out,blend_pixels<T1,T2>(a<0.0f?0.0f:(a>1.0f?1.0f:a))); }
 
 
@@ -472,15 +472,15 @@ void divide_images( const dmRegion& rgn,const dmPoint& p, const image<T1>& rhs ,
 // warning : no check performed on ROI
 
 template<class ROI,class T>
-void mul_image( const ROI& rgn,image<T>& in, dm_float y )
+void mul_image( const ROI& rgn,image<T>& in, float y )
 { transform(rgn,in,mul_pixel<T,T>(y)); }
 
 template<class ROI,class T>
-void div_image( const ROI& rgn,image<T>& in, dm_float y )
+void div_image( const ROI& rgn,image<T>& in, float y )
 { transform(rgn,in,mul_pixel<T,T>(1.0/y)); }
 
 template<class ROI,class T>
-void addmul_image( const ROI& rgn,image<T>& in, dm_float a, dm_float b )
+void addmul_image( const ROI& rgn,image<T>& in, float a, float b )
 { transform(rgn,in,addmul_pixel<T,T>(a,b)); }
 
 template<class ROI,class T>
@@ -496,8 +496,8 @@ void sigma_transform( const ROI& rgn,image<T>& in, dm_real a, dm_real b, dm_real
 { transform(rgn,in,_sigma_transform<T,T>(a,b,g)); }
 
 template<class ROI,class T,class X>
-void blend_fill( const ROI& rgn, image<T>& in, X c, dm_float a)
-{ transform(rgn,in,blend_color<T>(c,a)); }
+void blend_fill( const ROI& rgn, image<T>& in, X c, float a)
+{ transform(rgn,in,blend_color<T>(c,a)); }  
 
 } //namespace daim
 

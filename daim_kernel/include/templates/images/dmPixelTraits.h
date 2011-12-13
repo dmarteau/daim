@@ -66,9 +66,9 @@ struct  basic_traits {
 };
 
 //------------------------------------------------------------------
-template<> struct basic_traits<dm_float>
+template<> struct basic_traits<float>
 {
-  typedef dm_float T;
+  typedef float T;
 
   typedef std::numeric_limits<T>  limits_type;
   

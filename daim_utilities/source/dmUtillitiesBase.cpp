@@ -41,8 +41,8 @@ void dmUtilities::Initialize( const char** argv, int argc )
 {
   if(!IsInitialized)
   {
-    dm_bool _traceMem    = dm_false;
-    dm_bool _activateLog = dm_true;
+    bool _traceMem    = false;
+    bool _activateLog = true;
 
     if(argv)
     {
@@ -52,7 +52,7 @@ void dmUtilities::Initialize( const char** argv, int argc )
           _activateLog = false;
         else
         if(strcmp(argv[i],"--enable-trace-memory")==0) {
-           _traceMem = dm_true;
+           _traceMem = true;
         }
       }
     }

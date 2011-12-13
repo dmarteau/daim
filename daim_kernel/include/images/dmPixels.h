@@ -58,6 +58,6 @@ template<> struct dmPixelFormat<dmPixelFormat8bppIndexed>    : daim::pixel_imple
 template<> struct dmPixelFormat<dmPixelFormat24bppRGB>       : daim::pixel_implementation<dm_rgb24  ,1>  {};
 template<> struct dmPixelFormat<dmPixelFormat16bppGrayScale> : daim::pixel_implementation<dm_uint16 ,2>  {};
 template<> struct dmPixelFormat<dmPixelFormat32bppGrayScale> : daim::pixel_implementation<dm_int32  ,3>  {};
-template<> struct dmPixelFormat<dmPixelFormat32bppFloat>     : daim::pixel_implementation<dm_float  ,4>  {};
+template<> struct dmPixelFormat<dmPixelFormat32bppFloat>     : daim::pixel_implementation<float     ,4>  {};
 
 #endif // dmPixels_h

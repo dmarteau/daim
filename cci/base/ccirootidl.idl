@@ -54,7 +54,6 @@ class dmAString;
 #if 0
 %}
 
-typedef boolean             dm_bool   ;
 typedef octet               dm_uint8  ;
 typedef unsigned short      dm_uint16 ;
 typedef unsigned short      dm_unichar;
@@ -69,9 +68,7 @@ typedef unsigned long       cci_result ;
 
 typedef unsigned long       size_t;
 
-typedef float               dm_float  ;
 typedef double              dm_real	  ;
-typedef double              dm_double ;
 
 [ptr]         native voidPtr(void);
 [ptr]         native charPtr(char);

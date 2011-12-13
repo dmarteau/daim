@@ -237,13 +237,10 @@ inline bool operator!=(const _COMPLEX_T& __z1, const _COMPLEX_T& __z2) {
   return __z1._M_re != __z2._M_re || __z1._M_im != __z2._M_im;
 }
 
-
-template <class dm_matrix_t> 
 inline bool operator!=(const _COMPLEX_T& __z, const dm_matrix_t& __x) {
   return __z._M_re != __x || __z._M_im != 0;
 }
 
-template <class dm_matrix_t> 
 inline bool operator!=(const dm_matrix_t& __x, const _COMPLEX_T& __z) {
   return __x != __z._M_re || 0 != __z._M_im;
 }

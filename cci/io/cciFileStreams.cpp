@@ -201,9 +201,9 @@ CCI_IMETHODIMP cciFileInputStream::ReadSegments(cciWriteSegmentFun writer,
 }
 
 /* [notxpcom] boolean isNonBlocking (); */
-CCI_IMETHODIMP_(dm_bool) cciFileInputStream::IsNonBlocking()
+CCI_IMETHODIMP_(bool) cciFileInputStream::IsNonBlocking()
 {
-  return DM_FALSE;
+  return false;
 }
 
 /* [notxpcom] string getContentType (); */
@@ -341,9 +341,9 @@ CCI_IMETHODIMP cciFileOutputStream::WriteSegments(cciReadSegmentFun aReader,
 }
 
 /* [notxpcom] boolean isNonBlocking (); */
-CCI_IMETHODIMP_(dm_bool) cciFileOutputStream::IsNonBlocking()
+CCI_IMETHODIMP_(bool) cciFileOutputStream::IsNonBlocking()
 {
-  return DM_FALSE;
+  return false;
 }
 
 /* [notxpcom] string getContentType (); */

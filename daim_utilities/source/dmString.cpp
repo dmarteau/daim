@@ -58,7 +58,7 @@
 
 struct __dm_proxy_alloc : public dmMemoryManager
 {
-  __dm_proxy_alloc(size_t _chunkSize,const char* static_id) : dmMemoryManager(_chunkSize,static_id,dm_true) {}
+  __dm_proxy_alloc(size_t _chunkSize,const char* static_id) : dmMemoryManager(_chunkSize,static_id,true) {}
  ~__dm_proxy_alloc() {}
 
   void* allocate() {

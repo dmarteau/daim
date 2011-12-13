@@ -136,11 +136,11 @@ void _normalized_convolution( const kernel_type& k, bool _unsigned,
             In in, Out out,
             type_of<T1>, type_of<T2>, integer_false )
 {
-  dm_float n = static_cast<dm_float>(k.norm());
+  float n = static_cast<float>(k.norm());
   if(_unsigned)
-    _convolve1(roi,in,out,k,conv::unsigned_accumulator<T1,T2,dm_float>(n==0?1.0f:n));
+    _convolve1(roi,in,out,k,conv::unsigned_accumulator<T1,T2,float>(n==0?1.0f:n));
   else
-    _convolve1(roi,in,out,k,conv::accumulator<T1,T2,dm_float>(n==0?1.0f:n));
+    _convolve1(roi,in,out,k,conv::accumulator<T1,T2,float>(n==0?1.0f:n));
 }
 
 

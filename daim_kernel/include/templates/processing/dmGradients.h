@@ -100,11 +100,11 @@ inline BinOp _gradient( const ROI& roi, In in, Out out, BinOp& op ) {
 //----------------------------------------------------------
 // half norm operator
 //----------------------------------------------------------
-inline dm_double half_norm_( dm_double x, dm_double y, integer_true ) {
+inline double half_norm_( double x, double y, integer_true ) {
   return sqrt(x*x+y*y)/2.0 + 0.5;
 }
 
-inline dm_double half_norm_( dm_double x, dm_double y, integer_false ) {
+inline double half_norm_( double x, double y, integer_false ) {
   return  sqrt(x*x+y*y)/2.0;
 }
 
@@ -244,7 +244,7 @@ inline void canny_filter(const dmRect& _rect, image<T>& in, bool inner, integer_
 template<class T1,class T2> 
 void gradient_filter( const dmRegion& rgn,const dmPoint& p,const image<T1>& in,image<T2>& out )
 { 
-  RoiOperation(_LinearGradient< half_norm<dm_double,T2> >(half_norm<dm_double,T2>()),
+  RoiOperation(_LinearGradient< half_norm<double,T2> >(half_norm<double,T2>()),
                in,out,rgn,p);
 }
 

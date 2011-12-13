@@ -49,7 +49,7 @@ void dmInitRandomSequence( dm_random* _random, dm_int32 _seed )
   _random->iset = 0;
 }
 //------------------------------------------------------------------------------
-// From "Numerical Recipes in C, 2nd Edition" (C),  Chapter §7.1, p 280
+// From "Numerical Recipes in C, 2nd Edition" (C),  Chapter ï¿½7.1, p 280
 //------------------------------------------------------------------------------
 dm_matrix_t dmUniformDeviate( dm_random* _random )
 {
@@ -99,7 +99,7 @@ dm_matrix_t dmExponentialDeviate( dm_random* _random )
 dm_matrix_t dmGaussianDeviate( dm_random* _random )
 {
   dm_matrix_t  fac,v1,v2;
-  dm_double rsq;
+  double rsq;
   
   if(_random->iset == 0) 
   {

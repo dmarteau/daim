@@ -73,7 +73,7 @@ public:
   DM_DECL_ALLOCATOR_NEW(cciStaticModuleEntry,STATIC_MODULE_ENTRY_BLOCKS)
 };
 
-DM_IMPL_ALLOCATOR_NEW(cciStaticModuleEntry,dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciStaticModuleEntry,true);
 
 //======================================
 // cciStaticModuleLoader implementation
@@ -88,7 +88,7 @@ CCI_IMPL_RELEASE_USING_AGGREGATOR(cciStaticModuleLoader,cciComponentManagerImpl:
 cci_result
 cciStaticModuleLoader::Init(cciStaticModuleInfo const *aStaticModules,
                             dm_uint32 aStaticModuleCount,
-                            dm_bool bRegister)
+                            bool bRegister)
 {
   dmCString name;
 

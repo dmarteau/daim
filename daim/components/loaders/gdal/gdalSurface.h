@@ -85,7 +85,7 @@ protected:
 
   int          mAlphaBand;
   EPixelFormat mFormat;
-  dm_bool      mRequireUserBuffer;
+  bool      mRequireUserBuffer;
 
 
   char* *mCreateOpts;

@@ -34,10 +34,10 @@ namespace daim {
 
   struct rgb_threshold : public std::unary_function<dmRGBColor,bool>
   {
-    dm_float   rr,rg,rb;
+    float   rr,rg,rb;
     dmRGBColor color;
 
-    rgb_threshold( const dmRGBColor& _color, dm_float _rr, dm_float _rg, dm_float _rb ) 
+    rgb_threshold( const dmRGBColor& _color, float _rr, float _rg, float _rb ) 
     : rr(_rr)
     , rg(_rg)
     , rb(_rb)
@@ -52,9 +52,9 @@ namespace daim {
 */
 
     bool operator()( const dmRGBColor& val ) {
-      return  (static_cast<dm_float>(daim::absdiff(val.r,color.r))/rr +
-               static_cast<dm_float>(daim::absdiff(val.g,color.g))/rg +
-               static_cast<dm_float>(daim::absdiff(val.b,color.b))/rb) <= 1.0f;
+      return  (static_cast<float>(daim::absdiff(val.r,color.r))/rr +
+               static_cast<float>(daim::absdiff(val.g,color.g))/rg +
+               static_cast<float>(daim::absdiff(val.b,color.b))/rb) <= 1.0f;
     }
 
   };

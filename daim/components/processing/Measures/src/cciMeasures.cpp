@@ -50,8 +50,8 @@ cciMeasurements::cciMeasurements()
 :mUpdate(0)
 ,mNumPartitions(0)
 ,mDepth(0)
-,mBuilt(dm_false)
-,use_image_calibration(dm_false)
+,mBuilt(false)
+,use_image_calibration(false)
 ,aspect_ratio(1.0)
 ,uppxls(1.0)
 {  
@@ -80,7 +80,7 @@ CCI_IMETHODIMP cciMeasurements::Build(cciImage image, cciRegion rgn, dm_uint32 c
   mUpdate        = 0;
   mNumPartitions = 0;
   mDepth         = 0;
-  mBuilt         = dm_false;
+  mBuilt         = false;
 
   dmRect rect;
 
@@ -157,7 +157,7 @@ CCI_IMETHODIMP cciMeasurements::Build(cciImage image, cciRegion rgn, dm_uint32 c
     mNodeTable.Clear();
     mNodeTable.Resize( nPartitions );
     if(CreateNodes()) {
-      mBuilt = dm_true;
+      mBuilt = true;
       return CCI_OK;
     }
   }
@@ -175,7 +175,7 @@ CCI_IMETHODIMP cciMeasurements::Build(cciImage image, cciRegion rgn, dm_uint32 c
 
 /* void createRegion (in cciRegion mask, in dm_int32 label, in boolean include_holes); */
 CCI_IMETHODIMP 
-cciMeasurements::CreateRegion(cciRegion mask, dm_int32 label, dm_bool include_holes)
+cciMeasurements::CreateRegion(cciRegion mask, dm_int32 label, bool include_holes)
 {
   CCI_ENSURE_ARG_POINTER(mask);
 
@@ -266,7 +266,7 @@ CCI_IMETHODIMP cciMeasurements::Clear(dm_int32 label)
     mPartition.reserve(1);
     mNodePartition.reserve(1);
     
-    mBuilt = dm_false;
+    mBuilt = false;
   }
   return CCI_OK;
 }
@@ -816,6 +816,7 @@ cciMeasurements::StoreIndexTable(cciIResultColumn *col)
   return CCI_OK;
 }
 
+/*
 static cci_result CopyLabelArray( cciIResultColumn *col,
                                   daim::labels_array_type& labels, 
                                   daim::basic_partition& part,
@@ -845,7 +846,7 @@ static cci_result CopyLabelArray( cciIResultColumn *col,
   
   return CCI_OK;
 }
-
+*/
 ///////////////////////////////////////////////////////////////////
 
 

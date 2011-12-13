@@ -103,9 +103,9 @@ CCI_IMETHODIMP cciThreshold::RGBThreshold(cciImage image, cciRegion roi, cciRegi
   _Color.g = static_cast<dm_uint8>(green);
   _Color.b = static_cast<dm_uint8>(blue);
 
-  dm_float rr = static_cast<dm_float>(daim::max(rradius,0.5));
-  dm_float rg = static_cast<dm_float>(daim::max(gradius,0.5));
-  dm_float rb = static_cast<dm_float>(daim::max(bradius,0.5));
+  float rr = static_cast<float>(daim::max(rradius,0.5));
+  float rg = static_cast<float>(daim::max(gradius,0.5));
+  float rb = static_cast<float>(daim::max(bradius,0.5));
 
   dmRegion _Result;
 

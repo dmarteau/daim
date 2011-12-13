@@ -49,7 +49,7 @@ typedef CCI_CALLBACK_(void,dmLOG_FUNCTION)( const char*, dm_int32 );
 extern "C" {
 
 __daim_export cci_result __daim_call( DM_Initialize )( const char** argv, int argc, dmLOG_FUNCTION pfnLog );
-__daim_export void       __daim_call( DM_Finalize   )( dm_bool force );
+__daim_export void       __daim_call( DM_Finalize   )( bool force );
 
 }
 

@@ -73,7 +73,7 @@ void __dm_complex_fft(dm_matrix_t* data, dm_uint nn, dm_int isign)
 {
   dm_uint n,mmax,m,j,istep,i;
   
-  dm_double wtemp,wr,wpr,wpi,wi,theta;
+  double       wtemp,wr,wpr,wpi,wi,theta;
   dm_matrix_t  tempr,tempi;
 
   n=nn << 1;
@@ -122,11 +122,11 @@ void __dm_complex_fft(dm_matrix_t* data, dm_uint nn, dm_int isign)
 //-----------------------------------------------------------------------------
 void __dm_real_fft(dm_matrix_t* data, dm_uint n, dm_int isign)
 {
-  dm_uint i,i1,i2,i3,i4,np3;
+  dm_uint      i,i1,i2,i3,i4,np3;
   dm_matrix_t  c1=0.5,c2,h1r,h1i,h2r,h2i;
-  dm_double wr,wi,wpr,wpi,wtemp,theta;
+  double       wr,wi,wpr,wpi,wtemp,theta;
 
-  theta=3.141592653589793/static_cast<dm_double>(n>>1);
+  theta=3.141592653589793/static_cast<double>(n>>1);
   if (isign == 1)
   {
     c2 = -0.5;
@@ -197,7 +197,7 @@ void __dm_compute_fft_n(dm_matrix_t* data, dm_uint nn[], dm_int ndim, dm_int isi
   dm_uint   i1,i2,i3,i2rev,i3rev,ip1,ip2,ip3,ifp1,ifp2;
   dm_uint   ibit,k1,k2,n,nprev,nrem,ntot;
   dm_matrix_t  tempi,tempr;
-  dm_double theta,wi,wpi,wpr,wr,wtemp;
+  double    theta,wi,wpi,wpr,wr,wtemp;
   
   for(ntot=1,idim=1;idim<=ndim;idim++)
   	 ntot *= nn[idim];
@@ -270,9 +270,9 @@ void __dm_compute_fft( dm_matrix_t ***data, dm_matrix_t **speq,
                        dm_int  isign
                      )
 {
-  dm_uint   i1,i2,i3,j1,j2,j3,nn[4],ii3;
-  dm_double theta,wi,wpi,wpr,wr,wtemp;
-  dm_matrix_t  c1,c2,h1r,h1i,h2r,h2i;
+  dm_uint     i1,i2,i3,j1,j2,j3,nn[4],ii3;
+  dm_matrix_t c1,c2,h1r,h1i,h2r,h2i;
+  double      theta,wi,wpi,wpr,wr,wtemp;
 
   if(1+static_cast<dm_uint>(&data[nn1][nn2][nn3]-&data[1][1][1]) != nn1*nn2*nn3)
      MatrixError( "Problem with dimensions or contiguity of data array" );

@@ -168,7 +168,7 @@ void cciAllocatorBase::FreeAllObjects()
     void* obj = CCI_HANDLE_TO_OBJECT(impl);
 
     // !!IMPORTANT Revoke the object first
-    RevokeObject( obj, DM_FALSE );
+    RevokeObject( obj, false );
 
     // Force call to destructor
     if(impl->o_Destructor)
@@ -218,7 +218,7 @@ cciAllocatorBase::NewObject(  size_t n, CCI_STATIC_DESTRUCTOR _dtor )
 }
 
 cci_result
-cciAllocatorBase::RevokeObject( void* object ,dm_bool discard )
+cciAllocatorBase::RevokeObject( void* object ,bool discard )
 {
   CCI_ENSURE_ARG_POINTER(object);
 
@@ -264,7 +264,7 @@ cciAllocatorBase::NumberOfInstances()
    return mNuminsts;
 };
 
-dm_bool
+bool
 cciAllocatorBase::IsObjectValid(void* p)
 {
   return (p !=dm_null &&  CCI_ENSURE_MAGIC(p));
@@ -287,7 +287,7 @@ class cciAllocator : public cciAllocatorBase,
       return cciAllocatorBase::NewObject(n,dtor);
     }
 
-    CCI_IMETHOD_(cci_result) RevokeObject( void* p ,dm_bool discard ) {
+    CCI_IMETHOD_(cci_result) RevokeObject( void* p ,bool discard ) {
       return cciAllocatorBase::RevokeObject(p,discard);
     }
 
@@ -295,7 +295,7 @@ class cciAllocator : public cciAllocatorBase,
       return cciAllocatorBase::NumberOfInstances();
     }
 
-    CCI_IMETHOD_(dm_bool) IsObjectValid(void* p) {
+    CCI_IMETHOD_(bool) IsObjectValid(void* p) {
       return cciAllocatorBase::IsObjectValid(p);
     }
 
@@ -336,7 +336,7 @@ CCI_NewObject(size_t n, CCI_STATIC_DESTRUCTOR _dtor)
 }
 
 __daim_export void
-CCI_RevokeObject(void* ptr ,dm_bool discard )
+CCI_RevokeObject(void* ptr ,bool discard )
 {
   CCI_PRECONDITION(gAllocatorState != dm_null,"Allocator not available !");
   if(gAllocatorState)

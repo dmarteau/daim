@@ -33,12 +33,12 @@
 #include "dmMatrixExcept.h"
 
 #ifdef DM_MATRIX_DOUBLE
-  #define dm_matrix_t dm_double
+  #define dm_matrix_t double
   #define MATRIX_PREC( x ) x
   #define BEGIN_MATRIX() namespace DP {
   #define END_MATRIX() }
 #else
-  #define dm_matrix_t dm_float
+  #define dm_matrix_t float
   #define MATRIX_PREC( x ) x##f
   #define BEGIN_MATRIX() //
   #define END_MATRIX()   //

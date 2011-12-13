@@ -22,9 +22,9 @@
    //-------------------------------------------------------
    struct splitter 
    {
-     dm_float mini,delta,fH,fS,fV;
+     float mini,delta,fH,fS,fV;
 
-     void getHSV255( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& V ) 
+     void getHSV255( const rgb_triple& tr, float& H, float& S, float& V ) 
      {
         V    = maximum(tr.r,tr.g,tr.b);
         mini = minimum(tr.r,tr.g,tr.b);
@@ -51,8 +51,8 @@
         }
      }
 
-      dm_float hue( const rgb_triple& tr )
-      { 
+     float hue( const rgb_triple& tr )
+     { 
         fV   = maximum(tr.r,tr.g,tr.b);
         mini = minimum(tr.r,tr.g,tr.b);
         if (fV!=0) {
@@ -78,7 +78,7 @@
         return fH;
       }
 
-      dm_float saturation( const rgb_triple& tr ) 
+      float saturation( const rgb_triple& tr ) 
       { 
         fV   = maximum(tr.r,tr.g,tr.b);
         mini = minimum(tr.r,tr.g,tr.b);
@@ -90,7 +90,7 @@
          return maximum(tr.r,tr.g,tr.b);
       }
 
-     void operator()( const rgb_triple& tr, dm_float& H, dm_float& S, dm_float& V ) 
+     void operator()( const rgb_triple& tr, float& H, float& S, float& V ) 
      {
         getHSV255(tr,H,S,V);
         V /= 255.0f;
@@ -113,11 +113,11 @@
    struct merger 
    {
      int i; 
-     dm_float f,fH,fS,fV;
+     float f,fH,fS,fV;
 
 
      void setHSV255( rgb_triple& tr, 
-                     const dm_float& H, const dm_float& S, const dm_float& V ) 
+                     const float& H, const float& S, const float& V ) 
      {
        i  = static_cast<int>(H*6);
        f  = H*6-i;
@@ -175,7 +175,7 @@
 
      // Assume that values are between 0 and 1.0;
      void operator()( rgb_triple& tr, 
-                      const dm_float& H, const dm_float& S, const dm_float& V ) 
+                      const float& H, const float& S, const float& V ) 
      {
 		if (S==0) {
           tr.r = tr.b = tr.g = to_rgb_channel(V);
@@ -231,15 +231,15 @@
    };
 
    template<> struct getChannel<1,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return  hue(tr); }
+     float operator()( const rgb_triple& tr ) { return  hue(tr); }
    };
    template<> struct getChannel<2,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { return saturation(tr); }
+     float operator()( const rgb_triple& tr ) { return saturation(tr); }
    };
 
    template<> struct getChannel<3,integer_false> : public splitter {
-     dm_float operator()( const rgb_triple& tr ) { 
-        return static_cast<dm_float>(value(tr))/255.0f; }
+     float operator()( const rgb_triple& tr ) { 
+        return static_cast<float>(value(tr))/255.0f; }
    };
 
  } // namespace HSV

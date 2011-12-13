@@ -109,7 +109,7 @@ void* _class::operator new  ( size_t n  )                                 \
 }                                                                         \
 void _class::operator delete ( void* p  )                                 \
 {                                                                         \
-  CCI_RevokeObject(p,DM_TRUE);                                            \
+  CCI_RevokeObject(p,true);                                            \
 }                                                                         \
 
 

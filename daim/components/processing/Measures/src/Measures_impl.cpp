@@ -85,7 +85,7 @@ struct MapCentroids
       if(!pNode->ri_pos) {
           pNode->ri_Position_x = x;
           pNode->ri_Position_y = _in-start;
-          pNode->ri_pos = dm_true;
+          pNode->ri_pos = true;
       }
     }
   }
@@ -105,7 +105,7 @@ void cciMeasurements::M_UpdateCentroids()
     for(;it != last; ++it) {
       (*it).ri_Centroid_x = 0;
       (*it).ri_Centroid_y = 0;
-      (*it).ri_pos = dm_false;
+      (*it).ri_pos = false;
     }
 
     daim::apply(mRoi,mMap,MapCentroids(*this));

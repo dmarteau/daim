@@ -44,8 +44,8 @@ void equalize_histogram( dmColorMapArray _cmap, const histogram_type& _data )
   histogram_type _H;
   cumulate_histogram(_H,_data);
 
-  dm_double _hmax = histogram_max;
-  dm_double _size = _H[histogram_max];
+  double _hmax = histogram_max;
+  double _size = _H[histogram_max];
   for(int p=0;p<histogram_size;++p) {    
     _cmap[p]= (dmColorIndex)daim::round( (_hmax*_H[p])/_size );
   }  
@@ -80,7 +80,7 @@ void extend_histogram_map( dmColorMapArray _cmap,
 {
   int _maxh = _range_from.max(), _maxr = _range_to.max();
   int _minh = _range_from.min(), _minr = _range_to.min();
-  dm_double _d = _maxh-_minh;
+  double _d = _maxh-_minh;
   for(int pp,p=0;p<histogram_size;++p) 
   {    
     pp = _minr + static_cast<int>( (_maxr-_minr) * ((p - _minh)/_d) + 0.5);
@@ -107,7 +107,7 @@ bimodal_optimal_thrindex( const histogram_type& _data, dm_uint8 _thr )
   histogram_value bgsum,fgsum;
   histogram_value i,T=_thr,Tp=0;
  
-  dm_double mbg,mfg;
+  double mbg,mfg;
 
   do {
     Tp = T;

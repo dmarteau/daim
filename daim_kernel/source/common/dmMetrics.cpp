@@ -30,8 +30,8 @@
 namespace dmMetrics {
 
 //-----------------------------------------------------------------
-dm_double DegreeToRadian( dm_double a ) { return a*3.14159265358979323846/180.0; }
-dm_double RadianToDegree( dm_double a ) { return a*180.0/3.14159265358979323846; }
+double DegreeToRadian( double a ) { return a*3.14159265358979323846/180.0; }
+double RadianToDegree( double a ) { return a*180.0/3.14159265358979323846; }
 //------------------------------------------------------------------
 dm_int DotProduct( const dm_point& p1, const dm_point& p2, const dm_point& p3 )
 {
@@ -43,27 +43,27 @@ dm_int VecProduct( const dm_point& p1, const dm_point& p2, const dm_point& p3 )
   return (p1.x-p2.x)*(p3.y-p2.y) - (p1.y-p2.y)*(p3.x-p2.x);
 }
 //------------------------------------------------------------------
-dm_double Angle( const dm_point& p )
+double Angle( const dm_point& p )
 {
-  return atan2( static_cast<dm_double>(-p.y),
-                static_cast<dm_double>( p.x));
+  return atan2( static_cast<double>(-p.y),
+                static_cast<double>( p.x));
 }
 //------------------------------------------------------------------
-dm_double Angle( const dm_point& p1 ,  const dm_point& p2 )
+double Angle( const dm_point& p1 ,  const dm_point& p2 )
 {
-  return atan2( static_cast<dm_double>(VecProduct(p1,p2)),
-                static_cast<dm_double>(DotProduct(p1,p2)) );
+  return atan2( static_cast<double>(VecProduct(p1,p2)),
+                static_cast<double>(DotProduct(p1,p2)) );
 }
 //------------------------------------------------------------------
-dm_double Angle( const dm_point& p1 , const dm_point& p2, const dm_point& p3 )
+double Angle( const dm_point& p1 , const dm_point& p2, const dm_point& p3 )
 {
   dmPoint pa = p1 - p2;
   dmPoint pb = p3 - p2;
-  return atan2( static_cast<dm_double>(- VecProduct(pa,pb)),
-                static_cast<dm_double>(  DotProduct(pa,pb)) );
+  return atan2( static_cast<double>(- VecProduct(pa,pb)),
+                static_cast<double>(  DotProduct(pa,pb)) );
 }
 //------------------------------------------------------------------
-void Rotate( dm_point& p, const dm_point& ref, dm_double _a, dm_double _b )
+void Rotate( dm_point& p, const dm_point& ref, double _a, double _b )
 {
   dm_int dx = p.x - ref.x;
   dm_int dy = p.y - ref.y;
@@ -71,35 +71,35 @@ void Rotate( dm_point& p, const dm_point& ref, dm_double _a, dm_double _b )
   p.y = ref.y + static_cast<dm_int>( daim::round(dx * _b + dy * _a) );
 }
 //------------------------------------------------------------------
-void Rotate( dm_point& p, dm_double _a, dm_double _b )
+void Rotate( dm_point& p, double _a, double _b )
 {
   dm_point ref = { 0, 0 };
   Rotate( p, ref, _a, _b );
 }
 //------------------------------------------------------------------
-void Rotate( dm_point& p, dm_double _theta )
+void Rotate( dm_point& p, double _theta )
 {
   Rotate( p, cos(_theta), sin(_theta) );
 }
 //------------------------------------------------------------------
-void Rotate( dm_point& p , const dm_point& ref, dm_double _theta )
+void Rotate( dm_point& p , const dm_point& ref, double _theta )
 {
   Rotate( p, ref, cos(_theta), sin(_theta) );
 }
 //------------------------------------------------------------------
-dm_double Euclidian_Distance( const dm_point& p1, const dm_point& p2 )
+double Euclidian_Distance( const dm_point& p1, const dm_point& p2 )
 {
-  dm_double dx = p1.x - p2.x;
-  dm_double dy = p1.y - p2.y;
+  double dx = p1.x - p2.x;
+  double dy = p1.y - p2.y;
   return sqrt( dx*dx + dy*dy );
 }
 //------------------------------------------------------------------
-dm_double Euclidian_Distance( const dm_point& p, const dm_line& l )
+double Euclidian_Distance( const dm_point& p, const dm_line& l )
 {
   return VecProduct( p,l.start,l.end )/Euclidian_Distance(l); 
 }
 //------------------------------------------------------------------
-dm_double Euclidian_Distance( const dm_point& p, const dm_circle& c )
+double Euclidian_Distance( const dm_point& p, const dm_circle& c )
 {
   return Euclidian_Distance( p, c.center ) - c.r;
 }
@@ -111,9 +111,9 @@ dm_int Absolute_Distance( const dm_point& p1, const dm_point& p2 )
 //------------------------------------------------------------------
 void Projection( const dm_point& p0, const dm_circle& c, dm_point& p )
 {
-  dm_double dx = p0.x-c.center.x;
-  dm_double dy = p0.y-c.center.y;
-  dm_double L = sqrt( dx*dx + dy*dy );
+  double dx = p0.x-c.center.x;
+  double dy = p0.y-c.center.y;
+  double L = sqrt( dx*dx + dy*dy );
   p.x = c.center.x + static_cast<dm_int>( daim::round( (dx * c.r)/L ) );
   p.y = c.center.y + static_cast<dm_int>( daim::round( (dy * c.r)/L ) );
 }
@@ -132,22 +132,22 @@ void Projection( const dm_point& p0, const dm_line& l, dm_point& p )
   p.y = ys + static_cast<dm_int>( daim::round(dy * L) );
 }
 //------------------------------------------------------------------
-void Scale( dm_point& p, const dm_point& ref , dm_double s )
+void Scale( dm_point& p, const dm_point& ref , double s )
 {
   p.x = ref.x + static_cast<dm_int>( daim::round( s * (p.x-ref.x)) );
   p.y = ref.y + static_cast<dm_int>( daim::round( s * (p.y-ref.y)) );
 }
 //------------------------------------------------------------------
-void Size( dm_point& p, const dm_point& ref, dm_double sz )
+void Size( dm_point& p, const dm_point& ref, double sz )
 {
-  dm_double d = Euclidian_Distance(p,ref);
+  double d = Euclidian_Distance(p,ref);
   if(d>0) 
    Scale( p, ref , sz/d );
 }
 //------------------------------------------------------------------
-void Grow( dm_point& p, const dm_point& ref, dm_double rel )
+void Grow( dm_point& p, const dm_point& ref, double rel )
 {
-  dm_double d = Euclidian_Distance(p,ref);
+  double d = Euclidian_Distance(p,ref);
   Scale( p, ref , (1.0f + rel)*d );
 }
 //------------------------------------------------------------------

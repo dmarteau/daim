@@ -36,13 +36,13 @@
    };
 
    template<> struct getChannel<1,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) { return tr.r/255.0f; }
+     float operator()( const rgb_triple& tr ) { return tr.r/255.0f; }
    };
    template<> struct getChannel<2,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) { return tr.g/255.0f; }
+     float operator()( const rgb_triple& tr ) { return tr.g/255.0f; }
    };
    template<> struct getChannel<3,integer_false> {
-     dm_float operator()( const rgb_triple& tr ) { return tr.b/255.0f; }
+     float operator()( const rgb_triple& tr ) { return tr.b/255.0f; }
    };
 
    //-------------------------------------------------------
@@ -56,7 +56,7 @@
        B = triple.b;
      }
 
-     void operator()( const rgb_triple& triple, dm_float& R, dm_float& G, dm_float& B ) 
+     void operator()( const rgb_triple& triple, float& R, float& G, float& B ) 
      {
        R = triple.r / 255.0f;
        G = triple.g / 255.0f;
@@ -70,7 +70,7 @@
    struct merger {
 
      void operator()( rgb_triple& triple, 
-                      const dm_float& R, const dm_float& G, const dm_float& B ) 
+                      const float& R, const float& G, const float& B ) 
      {
        triple.r = to_rgb_channel(R);
        triple.g = to_rgb_channel(G);

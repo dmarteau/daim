@@ -73,7 +73,7 @@ static dmCString GetIDString(const dmID& aCID)
 }
 
 // Set to true from CCI_Shutdown
-extern dm_bool gCCIShuttingDown;
+extern bool gCCIShuttingDown;
 
 ////////////////////////////////////////////////////////////////////////////////
 // cciFactoryEntry
@@ -113,7 +113,7 @@ public:
   DM_DECL_ALLOCATOR_NEW(cciFactoryEntry,FACTORY_ENTRY_BLOCKS)
 };
 
-DM_IMPL_ALLOCATOR_NEW(cciFactoryEntry,dm_true);
+DM_IMPL_ALLOCATOR_NEW(cciFactoryEntry,true);
 
 cci_result
 cciFactoryEntry::GetFactory( cciIFactory** aFactory )
@@ -227,7 +227,7 @@ cciComponentManagerImpl::~cciComponentManagerImpl()
 
 cci_result cciComponentManagerImpl::Init(cciStaticModuleInfo const *aStaticModules,
                                          dm_uint32 aStaticModuleCount,
-                                         dm_bool registerStaticModules)
+                                         bool registerStaticModules)
 {
   CCI_ABORT_IF_FALSE(gComponentManager != dm_null,"Ooops !!! where is gComponentManager !!!");
 
@@ -758,7 +758,7 @@ cciComponentManagerImpl::UnregisterFactoryLocation(const dmCID & aClass,
 }
 
 CCI_IMETHODIMP
-cciComponentManagerImpl::IsCIDRegistered(const dmCID & aClass, dm_bool *_retval)
+cciComponentManagerImpl::IsCIDRegistered(const dmCID & aClass, bool *_retval)
 {
   CCI_ENSURE_ARG_POINTER(_retval);
 
@@ -767,9 +767,9 @@ cciComponentManagerImpl::IsCIDRegistered(const dmCID & aClass, dm_bool *_retval)
 }
 
 CCI_IMETHODIMP
-cciComponentManagerImpl::IsContractIDRegistered(const char *aContractId,dm_bool *_retval)
+cciComponentManagerImpl::IsContractIDRegistered(const char *aContractId,bool *_retval)
 {
-  *_retval = (GetFactoryEntry(dmCString(aContractId))!=dm_null ? DM_TRUE : DM_FALSE);
+  *_retval = (GetFactoryEntry(dmCString(aContractId))!=dm_null ? true : false);
   return CCI_OK;
 }
 
@@ -811,7 +811,7 @@ cciComponentManagerImpl::ContractIDToCID(const char *aContractID,dmCID * *_retva
 #define PERSISTENT_REGISTRY_VERSION_MAJOR 0
 
 static
-dm_bool ReadSectionHeader(cciManifestLineReader& reader, const char *token)
+bool ReadSectionHeader(cciManifestLineReader& reader, const char *token)
 {
   while (1)
   {
@@ -832,13 +832,13 @@ dm_bool ReadSectionHeader(cciManifestLineReader& reader, const char *token)
       if (0 != _dm_strcmp(values[0]+1, token))
           break;
 
-      return DM_TRUE;
+      return true;
     }
 
     if (!reader.NextLine())
         break;
   }
-  return DM_FALSE;
+  return false;
 }
 
 
@@ -955,7 +955,7 @@ cciComponentManagerImpl::ReadPersistentRegistry(const char * registryLocation)
        break;
 
        categoryManager->AddCategoryEntry(values[0],values[1],values[2],
-                                         DM_TRUE,DM_TRUE);
+                                         true,true);
       }
     }
   }

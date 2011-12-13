@@ -73,7 +73,7 @@ interface cciIImageMath : cciIXPCOMSupports
    * in the internal context buffer.
    */
   void accumulate( in cciIImageList imagelist, in cciImage dstImage, in cciRegion roi,
-                   in dm_bool normalize, 
+                   in boolean normalize, 
                    [optional] in cciIFilterContext filterCtxt );
 
   /**

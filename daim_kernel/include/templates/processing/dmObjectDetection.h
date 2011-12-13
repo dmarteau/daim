@@ -115,7 +115,7 @@ int boundary_search( const dmPoint&  p,
       ++s; s = (s % 8);
     }
     __check_octant( s,si,sj,i,j );
-  } while( count <=2 || current != second && previous != first);
+  } while( count <=2 || (current != second && previous != first));
 
   return count;
 
@@ -155,7 +155,7 @@ int extract_rgn_boundary( const dmRegion& _rgn, dmPoly& _p );
 */
 
 //-----------------------------------------------------------
-// Use the _bind_ref operator to bind a réference to a predicat
+// Use the _bind_ref operator to bind a rï¿½ference to a predicat
 // for the algorithm
 //-----------------------------------------------------------
 

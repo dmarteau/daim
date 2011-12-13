@@ -30,11 +30,11 @@
 
 #include <math.h>
 //---------------------------------------------------------
-dm_double dmMatrix_Homogeneity( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Homogeneity( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
-    dm_double x= 0,a;
-    dm_float*  p=_data.GetData();
+    double x= 0,a;
+    float*  p=_data.GetData();
     for(int i=_data.NStore();--i>=0;) {
       a = *p++;
       x += a*a;
@@ -44,25 +44,25 @@ dm_double dmMatrix_Homogeneity( const dmRectMatrix& _data, dm_double Nc )
   return 0;
 }
 //---------------------------------------------------------
-dm_double dmMatrix_Contrast( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Contrast( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
     int sz,j,i;
-    dm_double x = 0;
-    dm_float* p=_data.GetData();
+    double x = 0;
+    float* p=_data.GetData();
     for(sz=_data.NRows(),i=0;i<sz;++i) {
-      for(j=0;j<sz;++j)  x += *p++ * ((dm_double)(i-j)*(i-j));
+      for(j=0;j<sz;++j)  x += *p++ * ((double)(i-j)*(i-j));
     }
-    return x/(Nc*(dm_double)(sz-1)*(sz-1));
+    return x/(Nc*(double)(sz-1)*(sz-1));
   }
   return 0;  
 }
 //---------------------------------------------------------
-dm_double dmMatrix_Entropy( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Entropy( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
-    dm_double x = 0,a;
-    dm_float*  p =_data.GetData();
+    double x = 0,a;
+    float*  p =_data.GetData();
     for(int i=_data.NStore();--i>=0;) {
       a = *p++;
       if(a) x += a * log(a);
@@ -72,12 +72,12 @@ dm_double dmMatrix_Entropy( const dmRectMatrix& _data, dm_double Nc )
   return 0;
 }
 //---------------------------------------------------------
-dm_double dmMatrix_Correlation( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Correlation( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
-    dm_double x,mx,my,mxy,mxx,myy;
+    double x,mx,my,mxy,mxx,myy;
     mx = my = mxy = mxx = myy = 0;
-    dm_float* p=_data.GetData();
+    float* p=_data.GetData();
     for(int sz=_data.NRows(),j,i=0;i<sz;++i) {
       for(j=0;j<sz;++j) {
         x  = *p++;
@@ -102,15 +102,15 @@ dm_double dmMatrix_Correlation( const dmRectMatrix& _data, dm_double Nc )
   return 0;
 }
 //---------------------------------------------------------
-dm_double dmMatrix_LocalHomogeneity( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_LocalHomogeneity( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
     int sz = _data.NRows();
-    dm_double x = 0;
-    dm_float* p=_data.GetData();
+    double x = 0;
+    float* p=_data.GetData();
     for(int j,i=0;i<sz;++i) {
       for(j=0;j<sz;++j) {
-        x += ( *p++ / (1.0 + (dm_double)(i-j)*(i-j)) );
+        x += ( *p++ / (1.0 + (double)(i-j)*(i-j)) );
       }
     }
     return x/Nc;
@@ -118,20 +118,20 @@ dm_double dmMatrix_LocalHomogeneity( const dmRectMatrix& _data, dm_double Nc )
   return 0;
 }
 //---------------------------------------------------------
-dm_double dmMatrix_Directivity( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Directivity( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
-    dm_double x = 0;
+    double x = 0;
     for(int i=_data.NRows();i>=1;--i) x += _data(i,i);
     return x/Nc;
   }
   return 0;
 }
 //---------------------------------------------------------
-dm_double dmMatrix_Uniformity( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Uniformity( const dmRectMatrix& _data, double Nc )
 {
   if(Nc) {
-    dm_double x = 0,a;
+    double x = 0,a;
     for(int i=_data.NRows();i>=1;--i) {
       a = _data(i,i);
       x += a*a;
@@ -141,24 +141,24 @@ dm_double dmMatrix_Uniformity( const dmRectMatrix& _data, dm_double Nc )
   return 0;
 }
 //---------------------------------------------------------
-dm_double dmMatrix_Clustering( const dmRectMatrix& _data, dm_double Nc )
+double dmMatrix_Clustering( const dmRectMatrix& _data, double Nc )
 {/*
   if(Nc) {
-    dm_float x = 0; int cnt = 0;
+    float x = 0; int cnt = 0;
     unsigned int sz = _data.NRows();
     for(int i=sz;i>=1;--i) {
       cnt += _data(i,i); 
       x   += _data(i,i)*(i-1);
     }
-    return x/(cnt* (dm_float)(sz-1));
+    return x/(cnt* (float)(sz-1));
   }
   return 0;
 */
  if(Nc) {
     int sz = _data.NRows();
-    dm_double x = 0;
-    dm_float* p=_data.GetData();
-    for(int j,i=0;i<sz;++i) {
+    double x = 0;
+    float* p=_data.GetData();
+    for(dm_int j,i=0;i<sz;++i) {
       for(j=0;j<sz;++j) {
         x += *p++ * daim::min(i,j);
       }

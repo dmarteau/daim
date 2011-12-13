@@ -46,7 +46,7 @@ interface cciIDriverProxy : cciIXPCOMSupports
   
   [noscript] cciISurface openSurface( in string location, in unsigned long ioFlags );
 
-  cciISurfaceDriver getDriver( in string type, in dm_bool createCaps );
+  cciISurfaceDriver getDriver( in string type, in boolean createCaps );
 
   const unsigned long IO_READONLY = 0;
   const unsigned long IO_UPDATE   = 1;

@@ -159,25 +159,12 @@ typedef unsigned int dm_uint;
 typedef dm_int32 dm_offset32;
 typedef dm_int64 dm_offset64;
 
-typedef double dm_double;
-typedef float  dm_float;
-
 /**
  * generic pointer
  */
 
 typedef void*  dm_ptr;
 
-/**
- * boolean
- */
-
-typedef dm_int dm_bool;
-
-#define DM_TRUE 1
-#define DM_FALSE 0
-
-#define RETVAL_BOOL(x) ((x)?DM_TRUE:DM_FALSE)
 
 /**
  * unicode
@@ -192,8 +179,6 @@ typedef wchar_t dm_unichar;
 #define dm_byte  dm_uint8
 #define dm_size  size_t
 
-// dm_float is semantically the type we use in floating point calculations
-// on some machine, this could affect some performances
 typedef double       dm_real;
 
 // define param type as a long (dm_long_ptr) value
@@ -244,10 +229,6 @@ typedef double       dm_real;
  */
 #define DM_BEGIN_MACRO  do {
 #define DM_END_MACRO    } while (0)
-
-
-#define dm_true   DM_TRUE
-#define dm_false  DM_FALSE
 
 #define dm_null     0
 #define dm_noindex DM_UINT32(~0)

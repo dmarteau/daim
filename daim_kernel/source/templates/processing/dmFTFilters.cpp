@@ -39,7 +39,7 @@ void _ft_roi_operation(  dmFT_Data& _ft, const dmRgnHandle& _rgn,
 
   if(!_rgn.Empty()) 
   {
-    dm_float*  _row;
+    float*  _row;
     long ky,kx,kx1,kx2,nx,ny,nxs2,nys2,j,i,y;
     
     nx =  _ft.Dim2; nxs2 = nx/2;
@@ -100,7 +100,7 @@ void _ft_roi_operation(  dmFT_Data& _ft, const dmRect& _r,
   dm_complex_t _c;
 
   dmRect r = _r;
-  dm_float*  _row;
+  float*  _row;
 
   long ky,kx,kx1,kx2,nx,ny,nxs2,nys2,j,i,y;
 
@@ -194,14 +194,14 @@ void ft_filter_region( dmFT_Data& ft, const dmRegion& rgn, int fwidth, bool fcut
 
   if(fwidth>1) 
   {
-    dm_float w,z = static_cast<dm_float>(2.0*acos(-1.0)/(fwidth-1));
+    float w,z = static_cast<float>(2.0*acos(-1.0)/(fwidth-1));
     for(int i=0;i<fwidth; ++i) 
     {
       _rgn.GetOutLine(_outline);
       _rgn.SubRoi(_outline);
       
-      if(fcut) w = static_cast<dm_float>( 0.5 * ( 1.0 - cos( z * (fwidth - i - 1))) ); 
-      else     w = static_cast<dm_float>( 0.5 * ( 1.0 - cos( z * i )) ); 
+      if(fcut) w = static_cast<float>( 0.5 * ( 1.0 - cos( z * (fwidth - i - 1))) ); 
+      else     w = static_cast<float>( 0.5 * ( 1.0 - cos( z * i )) ); 
 
       ft_mul_filter(ft,_outline,w);
       if(_rgn.IsEmptyRoi()) break;

@@ -47,9 +47,9 @@ bool create_rotate_region( dmRegion& _result,  dm_real angle,
   pts[2] = rs.BottomRight() - pcs;
   pts[3] = rs.BottomLeft()  - pcs;
  
-  dm_double x,y;
-  dm_double c = cos(angle);
-  dm_double s = sin(angle);
+  double x,y;
+  double c = cos(angle);
+  double s = sin(angle);
 
   // Direct Rotation
   for( int i=0; i < 4; ++i )  {

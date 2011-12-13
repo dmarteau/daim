@@ -138,9 +138,9 @@ CCI_IMETHODIMP cciImageMath::DoImageMath(cciImage lhsImage, cciImage rhsImage,
   return _DoImageMath(CCI_NATIVE(lhsImage),CCI_NATIVE(rhsImage),rgn,loc,operation,filterCtxt);
 }
 
-/* void accumulate (in cciIImageList imagelist, in cciImage dstImage, in cciRegion roi, in dm_bool normalize, in cciISupports context); */
+/* void accumulate (in cciIImageList imagelist, in cciImage dstImage, in cciRegion roi, in bool normalize, in cciISupports context); */
 CCI_IMETHODIMP cciImageMath::Accumulate(cciIImageList *imagelist, cciImage dstImage, cciRegion roi,
-                                        dm_bool normalize, cciIFilterContext *filterCtxt)
+                                        bool normalize, cciIFilterContext *filterCtxt)
 {
   CCI_ENSURE_ARG_POINTER(imagelist);
 
@@ -192,7 +192,7 @@ CCI_IMETHODIMP cciImageMath::Accumulate(cciIImageList *imagelist, cciImage dstIm
       accumulator.Add( rhsImage );
     }
 
-    accumulator.Finalize(normalize!=DM_FALSE);
+    accumulator.Finalize(normalize!=false);
   }
 
   // We always return OK because having no mages in list is a no-op
@@ -270,7 +270,7 @@ CCI_IMETHODIMP cciImageMath::AddMul(cciImage image, cciRegion roi, dm_real addva
 
   dmRegion rgn = roi ? *CCI_NATIVE(roi) : CCI_NATIVE(image)->Rect();
 
-  if(_dmDoImageMath4(*CCI_NATIVE(image),rgn,mulval,addval));
+  if(_dmDoImageMath4(*CCI_NATIVE(image),rgn,mulval,addval))
      return CCI_OK;
 
   return CCI_ERROR_FAILURE;
