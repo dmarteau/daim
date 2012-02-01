@@ -86,9 +86,7 @@ struct scale_params : public pixel_unary_function<T1,T2>
     { 
       if( minv < maxv ) delta = minmax.diff(); else delta = 1;
       fscale = static_cast<float>(upper - lower)/delta;
-    }    
-    
-    void prout() {} 
+    }
 };
 //------------------------------------------------------------------------
 // scaling de T1 -> T2
