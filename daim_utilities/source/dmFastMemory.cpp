@@ -34,7 +34,7 @@ dmMemoryManager::dmMemoryManager( size_t _sz, const char* static_id, bool _relea
 {
 #ifdef _DEBUG
   if(static_id)
-     fprintf(stderr,"dmMemoryManager %lx : initializing %s\n",this,static_id);
+     fprintf(stderr,"dmMemoryManager %p : initializing %s\n",this,static_id);
 #endif
 }
 //---------------------------------------------------------------------------
@@ -47,7 +47,7 @@ dmMemoryManager::~dmMemoryManager()
      Free();
 #ifdef _DEBUG
   else
-     fprintf(stderr,"dmMemoryManager %lx : Cannot release memory (%d object not free'd)!\n",this,count);
+     fprintf(stderr,"dmMemoryManager %p : Cannot release memory (%d object not free'd)!\n",this,count);
 #endif
 }
 //---------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void dmMemoryManager::Free()
   if(chunks!=NULL)
   {
     #ifdef _DEBUG
-     fprintf(stderr,"dmMemoryManager %lx : Freeing %ld chunk of blocks of size %ld\n",this,blocks,sizeof(__MemChunk)+chunkSize);
+     fprintf(stderr,"dmMemoryManager %p : Freeing %ld chunk of blocks of size %ld\n",this,blocks,sizeof(__MemChunk)+chunkSize);
     #endif
 
     for(int i=blocks;--i>=0;)
@@ -82,7 +82,7 @@ void* dmMemoryManager::Allocate( size_t _count )
     freeStore  = p = static_cast<__MemChunk*>( dmMemory::Malloc( _count*_sz ) );
 
     #ifdef _DEBUG
-     fprintf(stderr,"dmMemoryManager %lx : Allocating %ld blocks of size %ld\n",this,_count,_sz);
+     fprintf(stderr,"dmMemoryManager %p : Allocating %ld blocks of size %ld\n",this,_count,_sz);
     #endif
 
     chunks = reinterpret_cast<void**>(dmMemory::Realloc(chunks,++blocks * sizeof(void*)));

@@ -69,6 +69,8 @@ public:
 
 private:
     static const EmptyEnumeratorImpl kInstance;
+    
+    EmptyEnumeratorImpl() {}
 };
 
 // cciISupports interface

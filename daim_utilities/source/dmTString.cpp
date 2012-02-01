@@ -21,9 +21,9 @@
  *
  *  ::: END LICENSE BLOCK::: */
 
-template<> CharT  __dm_string_allocator<CharT>::end_of_string = to_CharT('\0');
-template<> CharT* __dm_string_allocator<CharT>::white_spaces  = to_CharT(" \t\n\r");
-template<> CharT* __dm_string_allocator<CharT>::empty_string  = to_CharT("");
+template<> const CharT  __dm_string_allocator<CharT>::end_of_string = to_CharT('\0');
+template<> const CharT* __dm_string_allocator<CharT>::white_spaces  = to_CharT(" \t\n\r");
+template<> const CharT* __dm_string_allocator<CharT>::empty_string  = to_CharT("");
 
 #define dm_end_of_string __dm_string_allocator<CharT>::end_of_string
 #define dm_white_spaces  __dm_string_allocator<CharT>::white_spaces
@@ -47,7 +47,7 @@ dmTAString_CharT dmTAString_CharT::FormatString( size_type n, const char_type* f
 //------------------------------------------
 dmTAString_CharT dmTAString_CharT::Null()
 {
-  static char_type* __nullstr = dm_empty_string;
+  static const char_type* __nullstr = dm_empty_string;
   return dmTAString_CharT(__nullstr);
 }
 //------------------------------------------

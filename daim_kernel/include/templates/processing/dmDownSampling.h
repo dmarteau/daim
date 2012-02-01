@@ -47,10 +47,9 @@ void downSampling( const dmRect& rect,
   typename image<T1>::const_line_type lin  = in.begin(rect);
   typename image<T2>::line_type       lout = out.begin();
 
-  int    stride = daim::line_stride(lin);
-  size_t width  = rect.Width()  / step.x;
-  size_t height = rect.Height() / step.y;
-  size_t i,j,w,h;
+  int width  = rect.Width()  / step.x;
+  int height = rect.Height() / step.y;
+  int i,j;
 
   dmDEBUG_ASSERT( in.rect()    >=  rect   );
   dmDEBUG_ASSERT( out.Width()  >=  width  );

@@ -116,7 +116,7 @@ int main( int argc, char ** argv )
         rv = surface->LockBits(dmPixelFormatUndefined,imData,cciISurface::ELockRead);
         DM_TEST_EXPECT_RESULT(CCI_SUCCEEDED(rv));
 
-        printf("\n width = %d\n height = %d\n stride = %d\n Scan0 = @%lx\n Depth = %d\n",
+        printf("\n width = %d\n height = %d\n stride = %d\n Scan0 = @%p\n Depth = %d\n",
                imData.Width,imData.Height,imData.Stride,imData.Scan0,
                dmGetPixelFormatBits(imData.PixelFormat));
 

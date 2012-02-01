@@ -123,7 +123,7 @@ slice_image<T>::slice_image( image<T>& _image,
                              const dmRect& r)
 {
   im_parent = _image;
-  construct(_image[r.Top()]+r.Left(),r.Width(),r.Height(),im_parent.stride());
+  this->construct(_image[r.Top()]+r.Left(),r.Width(),r.Height(),im_parent.stride());
 }
 //-----------------------------------------------------------
 // class cImage
@@ -140,7 +140,7 @@ cont_image<T>::reserve( size_t _width, size_t _height )
     }
     size_t _stride = dm_align32( _width * sizeof(value_type) );
     im_buffer = alloc_image_data<value_type>(_stride*_height); // allocate buffer
-    construct(im_buffer,_width,_height,_stride);
+    this->construct(im_buffer,_width,_height,_stride);
   }
   return *this;    
 }

@@ -214,7 +214,7 @@ class cont_image : public image<T>
                            typename image_type::value_type _val )
    {
      reserve(_width,_height);
-     fill(_val);
+     this->fill(_val);
      return *this;
    }
 
@@ -255,7 +255,7 @@ class slice_image : public image<T>
     
   public:    
     slice_image<T>& operator=(const image<T>& im ) { 
-      copy(im); 
+      this->copy(im); 
       return *this; 
     }
 
@@ -274,7 +274,7 @@ class tmp_image : public image<T>
   ~tmp_image() {}
    tmp_image() {}
    tmp_image(typename image_type::value_type* _scan0,size_t _w,size_t _h,int _stride) { 
-     construct(_scan0,_w,_h,_stride); 
+     this->construct(_scan0,_w,_h,_stride); 
    }
 };
 //------------------------------------------------------------------------

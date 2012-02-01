@@ -84,7 +84,6 @@ void extend_density_range( image<T>& _img, const dmRegion& _rgn,
   typedef typename pixel_traits<T>::pixel_category pixel_category;
 
   dmDEBUG_ASSERT( _img.rect() >= _rgn.Rectangle() );
-  pixel_scalar_tag _tag = pixel_category();
   scale_convert(_range_from,_range_to,_rgn,_img);
 }
 
@@ -115,6 +114,8 @@ void invert_map( image<T>& _img, const dmRegion& _rgn,
 
   typedef typename image<T>::value_type value_type;
 
+  //XXX Please check this seems wrong
+  
   // Set pixels > max range to min range
   create_rgnroi(_img,std::bind2nd(std::greater<value_type>(),_range.max()),reg,_rgn);
   fill(reg,_img,_range.min());

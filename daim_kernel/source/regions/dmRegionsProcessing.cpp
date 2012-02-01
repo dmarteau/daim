@@ -100,7 +100,7 @@ size_t dmRgnConvexHull( const dmPoly& _input, dmPoly& _output )
 
     if(x.size()>0) {
       _output.Resize(x.size());
-      for(size_t v=x.size();--v>=0;)
+      for(int v=x.size();--v>=0;)
         _output[v] = _input[v];
     }
   }

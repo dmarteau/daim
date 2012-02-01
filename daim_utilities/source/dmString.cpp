@@ -138,9 +138,9 @@ class __dm_string_allocator
 
   #endif // DM_CONFIG_NOALLOCPROXY
 
-  static char_type end_of_string;
-  static char_type* white_spaces;
-  static char_type* empty_string;
+  static const char_type end_of_string;
+  static const char_type* white_spaces;
+  static const char_type* empty_string;
 
 };
 
@@ -203,15 +203,15 @@ public:
      size_type __new_size = __fill + super::Size();
      if (super::Capacity() > __new_size) {
        if (__position == super::End())
-         super::_M_End = _M_Uninitialized_Copy(_First,_Last,__position);
+         super::_M_End = this->_M_Uninitialized_Copy(_First,_Last,__position);
        else {
-         _M_Backward_Copy(__position,super::_M_End,super::_M_End+__fill);
-         _M_Copy(_First,_Last,__position);
+         this->_M_Backward_Copy(__position,super::_M_End,super::_M_End+__fill);
+         this->_M_Copy(_First,_Last,__position);
          super::_M_End+=__fill;
        }
      }
      else
-      _M_Insert_Overflow(__position,_First,_Last);
+       this->_M_Insert_Overflow(__position,_First,_Last);
 
      return super::Begin() + __n;
    }
@@ -221,14 +221,14 @@ public:
    {
      size_type __n        = __position - super::Begin();
      size_type __new_size = __fill + super::Size();
-     Reserve(__new_size);
+     this->Reserve(__new_size);
      __position = super::Begin() + __n;
 
      if (__position == super::End())
-       super::_M_End = _M_Fill(__position,__x,__fill);
+       super::_M_End = this->_M_Fill(__position,__x,__fill);
      else {
-       _M_Backward_Copy(__position,super::_M_End-1,super::_M_End+__fill-1);
-       _M_Fill(__position,__x,__fill);
+       this->_M_Backward_Copy(__position,super::_M_End-1,super::_M_End+__fill-1);
+       this->_M_Fill(__position,__x,__fill);
        super::_M_End+=__fill;
      }
 
@@ -237,17 +237,17 @@ public:
 
    void Assign( const char_type* s, size_t n ) {
       super::Reserve(n);
-      pointer p = _M_Copy(s,s+n,super::Begin());
+      pointer p = this->_M_Copy(s,s+n,super::Begin()); // this prevent clang errors
       if(p < super::_M_End)
-        _M_Destroy(p,super::_M_End);
+        this->_M_Destroy(p,super::_M_End);
       super::_M_End = p;
    }
 
    void Assign( const char_type c, size_t n ) {
      super::Reserve(n);
-     pointer p =_M_Fill(super::Begin(),c,n);
+     pointer p = this->_M_Fill(super::Begin(),c,n);
       if(p < super::_M_End)
-        _M_Destroy(p,super::_M_End);
+        this->_M_Destroy(p,super::_M_End);
       super::_M_End = p;
    }
 
