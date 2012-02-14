@@ -27,8 +27,10 @@
 
 namespace daim {
 
+namespace core {
+
 //---------------------------------------------------------------------------------
-bool __dmKernel _AdjustRegions( dmRect& _rs, dmRect& _rd, dmRegion& _rgn, const dmPoint& p )
+bool __dmKernel AdjustRegions( dmRect& _rs, dmRect& _rd, dmRegion& _rgn, const dmPoint& p )
 {
   dmRect rs = _rgn.Rectangle();
   if( dmClipRectangle(rs,_rs) )  // clip to source image rectangle
@@ -51,5 +53,7 @@ bool __dmKernel _AdjustRegions( dmRect& _rs, dmRect& _rd, dmRegion& _rgn, const 
   return false;
 };
 //---------------------------------------------------------------------------------
+
+}; //  namespace core
 
 }; //  namespace daim

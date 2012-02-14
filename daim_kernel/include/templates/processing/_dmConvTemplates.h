@@ -55,7 +55,7 @@ namespace daim {
 
       void reset() { _result = 0; }
 
-      void accumulate(const argument_type& _data, const U& _k) {
+      void accumulate( argument_type _data, U _k) {
          _result += _data * _k;
       }
 

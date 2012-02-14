@@ -26,7 +26,7 @@
 #define dmUseKernelBuffer
 #include "daim_kernel.h"
 #include "common/dmUserLib.h"
-
+#include "templates/processing/dmArithmetics.h"
 #include "templates/processing/dmDensityMap.h"
 
 using namespace daim;
@@ -58,25 +58,25 @@ struct __dm_impl_scaleto8Bits
     typedef pixel_traits<dm_uint8> traits;
 
     gap<value_type> _minmax(
-       _get_range_value(rmin,traits_type(),integer_type()),
-       _get_range_value(rmax,traits_type(),integer_type())
+        traits_type::clamp(rmin),
+        traits_type::clamp(rmax)
     );
 
     dmIImage<dmPixelFormat8bppIndexed>* _I = dmIImage<dmPixelFormat8bppIndexed>::Cast(&dest);
-    dmASSERT( _I!=NULL);
+    dmASSERT( _I!=NULL );
 
     // construit une region correspondant au pixels compris entre rmin et rmax
     dmRegion rgn;
 
     if(_minmax.diff()<=0) {
       rgn = _I->Rect();
-      _minmax = minmax(rgn,_img);
-    } else create_roi(_img,between<value_type>(_minmax.min(),_minmax.max()),rgn);
+      _minmax = daim::minmax(rgn,_img);
+    } else daim::create_roi(_img,between<value_type>(_minmax.min(),_minmax.max()),rgn);
 
     if(integer_type()) {
-      transform(rgn,dmPoint(0,0),_img,_I->Gen(),scalerange<pixel_type,dm_uint8>(_minmax,traits::bounds()));
+      daim::transform(rgn,dmPoint(0,0),_img,_I->Gen(),scale_fn::scalerange<pixel_type,dm_uint8>(_minmax,traits::bounds()));
     } else {
-      transform(rgn,dmPoint(0,0),_img,_I->Gen(),scalerange_noround<pixel_type,dm_uint8>(_minmax,traits::bounds()));
+      daim::transform(rgn,dmPoint(0,0),_img,_I->Gen(),scale_fn::scalerange_noround<pixel_type,dm_uint8>(_minmax,traits::bounds()));
     }
 
     // set outer region to zero

@@ -86,7 +86,7 @@ struct histogram_extractor
   histogram_extractor( histogram_type& _h, const E& _e = E() )
   :extract(_e),_histogram(_h) {}
 
-  void operator()( const T& x ) {
+  void operator()( T x ) {
      ++_histogram[extract(x)];
   }
 };
@@ -96,7 +96,7 @@ void extract_histogram( const R& rgn, const image<T>& src,
                         histogram_type& histogram,
                         const E& extract )
 {
-  for_each(rgn,src,histogram_extractor<T,E>(histogram,extract));
+  daim::for_each(rgn,src,histogram_extractor<T,E>(histogram,extract));
 }
 //-----------------------------------------------------------------
 // Template for histogram extraction of rgb images
@@ -156,7 +156,7 @@ struct _extract_range
   _extract_range( const gap<value_type>& _g )
   : _xmin(_g.min()),_xmax(_g.max()) {}
 
-  dm_uint8 operator()( const value_type& x )
+  dm_uint8 operator()( value_type x )
   {
     if(x<=_xmax && x>=_xmin) {
       return static_cast<dm_uint8>( 255.0*(x-_xmin)/(_xmax - _xmin) + 0.5 );

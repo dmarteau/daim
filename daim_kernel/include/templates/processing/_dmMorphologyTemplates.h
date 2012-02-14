@@ -54,7 +54,7 @@ namespace daim {
         A2 = m2;
       }
 
-      void accumulate(const argument_type& _value, const int& _k) {
+      void accumulate( argument_type _value, int _k) {
         switch( _k ) { 
           case  1: if(A2>=_value) A2 = _value; break; // => erosion 
           case -1: if(A1<=_value) A1 = _value; break; // => dilatation
@@ -69,7 +69,7 @@ namespace daim {
     {
        typedef typename accumulator<T,R>::argument_type  argument_type;
        typedef typename accumulator<T,R>::result_type    result_type;
-       result_type result(const argument_type&) 
+       result_type result( const argument_type& ) 
        {
           return accumulator<T,R>::A2;
        }
@@ -82,7 +82,7 @@ namespace daim {
     {
        typedef typename accumulator<T,R>::argument_type  argument_type;
        typedef typename accumulator<T,R>::result_type    result_type; 
-       result_type result(const argument_type&) 
+       result_type result( const argument_type& ) 
        {
           return accumulator<T,R>::A1;
        }
@@ -95,7 +95,7 @@ namespace daim {
     { 
        typedef typename accumulator<T,R>::argument_type  argument_type;
        typedef typename accumulator<T,R>::result_type    result_type; 
-       result_type result(const argument_type& x)
+       result_type result( const argument_type& )
        {
           static const argument_type _empty  = basic_traits<argument_type>::zero();
           static const argument_type _object = basic_traits<argument_type>::object();
@@ -111,7 +111,7 @@ namespace daim {
     {
        typedef typename accumulator<T,R>::argument_type  argument_type;
        typedef typename accumulator<T,R>::result_type    result_type; 
-       result_type result(const argument_type& x)
+       result_type result( argument_type x)
        {
          return (accumulator<T,R>::A1 < x && x <= accumulator<T,R>::A2 ? accumulator<T,R>::A1 : x);
        }
@@ -124,7 +124,7 @@ namespace daim {
     {
        typedef typename accumulator<T,R>::argument_type  argument_type;
        typedef typename accumulator<T,R>::result_type    result_type; 
-       result_type result(const argument_type& x)
+       result_type result( argument_type x )
        {
          return  (accumulator<T,R>::A1 <= x && x < accumulator<T,R>::A2 ? accumulator<T,R>::A2 : x);
        }

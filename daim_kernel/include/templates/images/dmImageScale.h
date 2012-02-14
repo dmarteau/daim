@@ -31,44 +31,9 @@
 //--------------------------------------------------------
 
 namespace daim {
-//------------------------------------------------------------------------
-template<class V,class T>
-inline typename pixel_traits<T>::value_type 
-_get_range_value( V _value, const pixel_traits<T>&, const integer_true& )
-{
-  typedef typename pixel_traits<T>::value_type value_type;
-  if(_value < pixel_traits<T>::min()) return pixel_traits<T>::min(); else
-  if(_value > pixel_traits<T>::max()) return pixel_traits<T>::max(); else     
-  return 
-    static_cast<value_type>(daim::round(static_cast<float>(_value)));
-}
-//------------------------------------------------------------------------
-template<class V,class T>
-inline typename pixel_traits<T>::value_type
-_get_range_value( V _value, const pixel_traits<T>&, const integer_false& )
-{
-  typedef typename  pixel_traits<T>::value_type value_type;
-  if(_value < pixel_traits<T>::min()) return pixel_traits<T>::min(); else
-  if(_value > pixel_traits<T>::max()) return pixel_traits<T>::max(); else     
-  return 
-    static_cast<value_type>(_value);
-}
-//------------------------------------------------------------------------
-template<class T>
-inline typename pixel_traits<T>::value_type 
-_round_value( dm_real _value, const pixel_traits<T>&, const integer_true& )
-{
-  typedef typename pixel_traits<T>::value_type value_type;
-  return static_cast<value_type>(daim::round(_value));
-}
-//------------------------------------------------------------------------
-template<class T>
-inline typename pixel_traits<T>::value_type 
-_round_value( dm_real _value, const pixel_traits<T>&, const integer_false& )
-{
-  typedef typename pixel_traits<T>::value_type value_type;
-  return static_cast<value_type>(_value);
-}
+
+namespace scale_fn {
+
 //------------------------------------------------------------------------
 template<class T1,class T2>
 struct scale_params : public pixel_unary_function<T1,T2>  
@@ -78,14 +43,14 @@ struct scale_params : public pixel_unary_function<T1,T2>
 
   argument_type  minv,maxv,delta;    // minimum et maximum globaux
   result_type    upper,lower;        // parametre du scaling
-  float          fscale;
+  double         fscale;
 
   scale_params( const gap<argument_type>& minmax, const gap<result_type>& newscale ) 
     : minv(minmax.min()),maxv(minmax.max()), 
     upper(newscale.max()),lower(newscale.min())  
     { 
       if( minv < maxv ) delta = minmax.diff(); else delta = 1;
-      fscale = static_cast<float>(upper - lower)/delta;
+      fscale = static_cast<double>(upper - lower)/delta;
     }
 };
 //------------------------------------------------------------------------
@@ -130,7 +95,7 @@ struct scalerange  : public scale_params<T1,T2>
 //------------------------------------------------------------------------
 // scale conversion for integer type
 template<class T>
-void _scale_convert( 
+void fn_scale_convert( 
      integer_true,
      const gap<typename pixel_traits<T>::value_type>& _minmax,
      const gap<typename pixel_traits<T>::value_type>& _newscale,
@@ -141,7 +106,7 @@ void _scale_convert(
 
 // scale conversion for non-integer type
 template<class T>
-void _scale_convert( 
+void fn_scale_convert( 
      integer_false,
      const gap<typename pixel_traits<T>::value_type>& _minmax,
      const gap<typename pixel_traits<T>::value_type>& _newscale,
@@ -150,15 +115,6 @@ void _scale_convert(
    daim::transform(_rgn,_img,scalerange_noround<T,T>(_minmax,_newscale));
 }
 
-template<class T>
-inline void scale_convert( 
-     const gap<typename pixel_traits<T>::value_type>& _minmax,
-     const gap<typename pixel_traits<T>::value_type>& _newscale,
-     const dmRegion& _rgn, image<T>& _img ) 
-{
-    typedef typename pixel_traits<T>::integer_type integer_type;
-    _scale_convert(integer_type(),_minmax,_newscale,_rgn,_img);
-}
 
 //------------------------------------------------------------------------
 // Binary scale converters
@@ -184,7 +140,7 @@ static void scalar_to_scalar(
      const dmRegion& _rgn, 
      const dmPoint&  _p)
 {
-   daim::transform(_rgn,_p,_src,_dst,scalerange<T1,T2>(_minmax,_newscale));
+   daim::transform(_rgn,_p,_src,_dst,scale_fn::scalerange<T1,T2>(_minmax,_newscale));
 }
 
 // scale conversion for non-integer type
@@ -198,7 +154,7 @@ static void scalar_to_scalar(
      const dmRegion& _rgn, 
      const dmPoint&  _p)
 {
-   daim::transform(_rgn,_p,_src,_dst,scalerange_noround<T1,T2>(_minmax,_newscale));
+   daim::transform(_rgn,_p,_src,_dst,scale_fn::scalerange_noround<T1,T2>(_minmax,_newscale));
 }
 
 //------------------------------------------------------------------------
@@ -217,7 +173,7 @@ static void compound_to_scalar(
     daim::transform(_rgn,_p,_src,_dst,
        bind_func(
          pixel_traits<T1>::to_scalar(),
-         scalerange<T2,T2>(_minmax,_newscale)
+         scale_fn::scalerange<T2,T2>(_minmax,_newscale)
        )
     );
 }
@@ -235,7 +191,7 @@ static void compound_to_scalar(
     daim::transform(_rgn,_p,_src,_dst,
        bind_func(
          pixel_traits<T1>::to_scalar(),
-         scalerange_noround<T2,T2>(_minmax,_newscale)
+         scale_fn::scalerange_noround<T2,T2>(_minmax,_newscale)
        )
     );
 }
@@ -259,7 +215,7 @@ static void scalar_to_compound(
     typename pixel_traits<T2>::template from_scalar<src_value_type> from_scalar;
     transform(_rgn,_p,_src,_dst,
        bind_func(
-         scalerange<T1,T1>(_minmax,_newscale),
+         scale_fn::scalerange<T1,T1>(_minmax,_newscale),
          from_scalar
        )
     );
@@ -279,7 +235,7 @@ static void scalar_to_compound(
     typename  pixel_traits<T2>::template from_scalar<src_value_type> from_scalar;
     transform(_rgn,_p,_src,_dst,
        bind_func(
-         scalerange_noround<T1,T1>(_minmax,_newscale),
+         scale_fn::scalerange_noround<T1,T1>(_minmax,_newscale),
          from_scalar
        )
     );
@@ -287,6 +243,17 @@ static void scalar_to_compound(
 
 };
 
+}; // namespace scale_fn
+
+template<class T>
+inline void scale_convert( 
+     const gap<typename pixel_traits<T>::value_type>& _minmax,
+     const gap<typename pixel_traits<T>::value_type>& _newscale,
+     const dmRegion& _rgn, image<T>& _img ) 
+{
+    typedef typename pixel_traits<T>::integer_type integer_type;
+    scale_fn::fn_scale_convert(integer_type(),_minmax,_newscale,_rgn,_img);
+}
 
 template<class T1,class T2,class V1,class V2>
 void scale_convert_scalar_to_scalar( 
@@ -300,7 +267,7 @@ void scale_convert_scalar_to_scalar(
 {
    typename pixel_traits<T2>::integer_type integer_type;
 
-   binary_scale_convert<T1,T2>::scalar_to_scalar( 
+   scale_fn::binary_scale_convert<T1,T2>::scalar_to_scalar( 
      integer_type,
      _minmax,_newscale,_src,_dst,_rgn,_p);
 }
@@ -316,7 +283,7 @@ void scale_convert_compound_to_scalar(
 {
     typedef typename pixel_traits<T2>::integer_type integer_type;
 
-    binary_scale_convert<T1,T2>::compound_to_scalar(
+    scale_fn::binary_scale_convert<T1,T2>::compound_to_scalar(
       integer_type(),_minmax,_newscale,_src,_dst,_rgn,_p);
 }
 
@@ -331,11 +298,9 @@ void scale_convert_scalar_to_compound(
 {
     typedef typename pixel_traits<T1>::integer_type integer_type;
   
-    binary_scale_convert<T1,T2>::scalar_to_compound(
+    scale_fn::binary_scale_convert<T1,T2>::scalar_to_compound(
       integer_type(),_minmax,_newscale,_src,_dst,_rgn,_p);
 }
-
-
 
 }; // namespace daim
 //------------------------------------------------------------------------

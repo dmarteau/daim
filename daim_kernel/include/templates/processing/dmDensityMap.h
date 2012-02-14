@@ -62,14 +62,14 @@ struct _apply_rgb_map : public std::unary_function<dmRGBColor,dmRGBColor>
 inline void apply_map( image<dm_uint8>& _img, const dmRegion& _rgn, dmColorMapArray _cmap )
 {
   dmDEBUG_ASSERT( _img.rect() >= _rgn.Rectangle() );
-  transform(_rgn,_img,_apply_map(_cmap));
+  daim::transform(_rgn,_img,_apply_map(_cmap));
 }
 
 // RGB implementation
 inline void apply_map( image<dm_rgb24>& _img, const dmRegion& _rgn, dmRGBColorArray _cmap )
 {
   dmDEBUG_ASSERT( _img.rect() >= _rgn.Rectangle() );
-  combine(_rgn,_rgn.Rectangle().TopLeft(),_img,_img,_apply_rgb_map(_cmap));
+  daim::combine(_rgn,_rgn.Rectangle().TopLeft(),_img,_img,_apply_rgb_map(_cmap));
 }
 
 //------------------------------------------------------------------------

@@ -42,6 +42,7 @@
 #define  dmUseKernelImageTemplates
 #include "daim_kernel.h"
 #include "images/dmImageOperations.h"
+#include "templates/processing/dmArithmetics.h"
 
 using namespace daim;
 //-----------------------------------------------------------------------

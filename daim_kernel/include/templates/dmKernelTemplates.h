@@ -36,25 +36,27 @@ namespace daim {
 //-----------------------------------------------------------------
 // These are not always defined in some stl ports
 //-----------------------------------------------------------------
-template<class T> inline T max( const T& x, const T& y) { return (x >= y ? x : y); } 
-template<class T> inline T min( const T& x, const T& y) { return (x <= y ? x : y); } 
-template<class T> inline T abs( const T& x )     { return (x<0?-x:x); }
-template<class T> inline T sgn( const T& x )     { return (x >= 0 ? 1 : -1); }
-template<class T> inline T round( const T& x )   { return (x>=0 ? x+0.5f : x-0.5f); }   
+template<class T> inline T max( T x, T y) { return (x >= y ? x : y); } 
+template<class T> inline T min( T x, T y) { return (x <= y ? x : y); } 
+template<class T> inline T abs( T x )     { return (x<0?-x:x); }
+template<class T> inline T sgn( T x )     { return (x >= 0 ? 1 : -1); }
 
-template<class T> inline T absdiff( const T& x, const T& y ) {
+inline double round( double x )  { return (x>=0 ? x+0.5: x-0.5);   }   
+inline float  round( float x  )  { return (x>=0 ? x+0.5f: x-0.5f); }   
+
+template<class T> inline T absdiff( T x, T y ) {
   return ( x >= y ? x - y : y - x );   
 }   
 
-template<class T> inline T minimum( const T& x, const T& y, const T& z ) {
+template<class T> inline T minimum( T x, T y, T z ) {
   return daim::min( x , daim::min( y, z ) );
 }
 
-template<class T> inline T maximum( const T& x, const T& y, const T& z ) {
+template<class T> inline T maximum( T x, T y, T z ) {
   return daim::max( x , daim::max( y, z ) );
 }
 
-template<class T> inline T range( const T& x, const T& _min, const T& _max ) {
+template<class T> inline T clamp( T x, T _min, T _max ) {
   return (x > _max) ? _max : (x < _min ? _min : x);
 }
 
@@ -133,12 +135,12 @@ struct gap : public std::unary_function<T,T> {
 
   T diff() const { return upper - lower; }
 
-  T operator()( const T& x ) { 
+  T operator()( T x ) { 
     if(x>upper) upper=x; else if(x<lower) lower = x;
     return x;
   }
   
-  T check( const T& x ) const { 
+  T check( T x ) const { 
     return (x > upper ? upper : (x < lower ? lower : x )); 
   }
 
@@ -153,30 +155,30 @@ struct gap : public std::unary_function<T,T> {
 //-------------------------------------------------------------
 template<class T> 
 struct max_of : public std::binary_function<T,T,T> {
-	T operator()( const T& x,  const T& y ) { 
+	T operator()( T x,  T y ) { 
       return daim::max(x,y); 
     } 
 }; 
 //-------------------------------------------------------------
 template<class T> 
 struct min_of : public std::binary_function<T,T,T> {
-	T operator()( const T& x, const T& y ) { 
+	T operator()( T x, T y ) { 
       return daim::min(x,y); 
     } 
 }; 
 //-------------------------------------------------------------
 // More useful operators
 //-------------------------------------------------------------
-template<class T> inline bool in_range( const T& x, const T& a, const T& b ) { 
+template<class T> inline bool in_range( T x, T a, T b ) { 
   return (x >= a && x <= b); 
 }
-template<class T> inline bool in_range_excl( const T& x, const T& a, const T& b ) { 
+template<class T> inline bool in_range_excl( T x, T a, T b ) { 
   return (x > a && x < b);
 }
-template<class T> inline bool in_range_excl_left( const T& x, const T& a, const T& b ) { 
+template<class T> inline bool in_range_excl_left( T x, T a, T b ) { 
   return (x > a && x <= b); 
 }
-template<class T> inline bool in_range_excl_right( const T& x, const T& a, const T& b ) { 
+template<class T> inline bool in_range_excl_right( T x, T a, T b ) { 
   return (x > a && x <= b);
 }
 //--------------------------------------------------------------
@@ -187,25 +189,25 @@ template<class T> inline bool in_range_excl_right( const T& x, const T& a, const
 template<class T> struct between : public std::unary_function<T,bool> {
   T lower,upper;
   between( const T& x1, const T& x2 ) : lower(x1),upper(x2) {}
-  bool operator()( const T& x ) const { return (x >= lower && x <= upper); }
+  bool operator()( T x ) const { return (x >= lower && x <= upper); }
 };
 // Test if x is in range ]x1,x2[
 template<class T> struct between_excl : public std::unary_function<T,bool> {
   T lower,upper;
   between_excl( const T& x1, const T& x2 ) : lower(x1),upper(x2) {}
-  bool operator()( const T& x ) const { return (x > lower && x < upper); }
+  bool operator()( T x ) const { return (x > lower && x < upper); }
 };
 // Test if x is in range [x1,x2[
 template<class T> struct between_excl_right : public std::unary_function<T,bool> {
   T lower,upper;
   between_excl_right( const T& x1, const T& x2 ) : lower(x1),upper(x2) {}
-  bool operator()( const T& x ) const { return (x >= lower && x < upper); }
+  bool operator()( T x ) const { return (x >= lower && x < upper); }
 };
 // Test if x is in range ]x1,x2]
 template<class T> struct between_excl_left : public std::unary_function<T,bool> {
   T lower,upper;
   between_excl_left( const T& x1, const T& x2 ) : lower(x1),upper(x2) {}
-  bool operator()( const T& x ) const { return (x > lower && x <= upper); }
+  bool operator()( T x ) const { return (x > lower && x <= upper); }
 };
 //-------------------------------------------------------------
 // Absolute value as fonctor
@@ -213,30 +215,9 @@ template<class T> struct between_excl_left : public std::unary_function<T,bool> 
 template<class T,class R>
 struct abs_value : public std::unary_function<T,R>
 {
-  R operator()( const T& x ) { return (x >= 0 ? x : -x ); }  
+  R operator()( T x ) { return (x >= 0 ? x : -x ); }  
 };
-//-------------------------------------------------------------
-// bounded value as fonctor
-//-------------------------------------------------------------
-template<class U>
-struct limited_value : public std::unary_function<U,U>
-{
-  U _min_value;
-  U _max_value;
-  limited_value( U _minv, U _maxv )
-  : _min_value(_minv),
-    _max_value(_maxv) {}
 
-  U operator()(const U& x) { 
-       return (x<_min_value
-               ? _min_value
-               : (x>_max_value
-                  ? _max_value 
-                  :x
-                 )
-               ); 
-   }
-};
 //-------------------------------------------------------------
 // Unary function binder : apply (_fun2 o _fun1) ( argument_type ) 
 //-------------------------------------------------------------
@@ -252,7 +233,7 @@ class unary_func_binder : public std::unary_function<typename _Ufn1::argument_ty
     typedef typename _Ufn1::argument_type argument_type;
 
     unary_func_binder(const _Ufn1& f1,const _Ufn2& f2) : _fun1(f1),_fun2(f2) {}
-    result_type operator()( const argument_type& x ) { 
+    result_type operator()( argument_type x ) { 
        return _fun2( static_cast<typename _Ufn2::argument_type>(_fun1(x)) ); 
     }
 };
@@ -280,8 +261,8 @@ class binary_func_binder : public std::binary_function<typename _Bfn::first_argu
     typedef typename _Ufn::result_type           result_type;
 
     binary_func_binder(const _Bfn& f1, const _Ufn& f2) : _fun1(f1),_fun2(f2) {}
-    result_type operator()( const first_argument_type&  x,
-                            const second_argument_type& y ) {
+    result_type operator()( first_argument_type  x,
+                            second_argument_type y ) {
        return _fun2( _fun1(x,y) );
     }
 };
@@ -294,7 +275,7 @@ binary_func_binder<_Bfn,_Ufn> bind_binary_func( const _Bfn& f1,const _Ufn& f2 )
 //-------------------------------------------------------------
 template<class T>
 struct identity : public std::unary_function<T,T> { 
-  T operator()( const T& x ) { return x; }
+  T operator()( T x ) { return x; }
 };
 //-----------------------------------------------------------------------
 // Use types as arguments in templates from representatives element of

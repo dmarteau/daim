@@ -105,8 +105,8 @@ namespace daim {
 
       void reset() { _data.clear(); }
        
-      void accumulate( const argument_type& x ) { _data.push_back(x); }
-      void accumulate( const argument_type& x, const value_type& _k) { 
+      void accumulate( argument_type x ) { _data.push_back(x); }
+      void accumulate( argument_type x,  value_type _k) { 
         if(_k) _data.push_back(x);
       }
 

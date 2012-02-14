@@ -295,8 +295,8 @@ bool dmEnhanceContrast::Apply( dmBufferParameters& _Params )
 {
   __dm_impl_constrast _filter(_Params.thisRegion,
                           this->_MinRange,this->_MaxRange,
-                          daim::range(this->_Brightness,0.0,1.0),
-                          daim::range(this->_Contrast  ,0.0,1.0),
+                          daim::clamp(this->_Brightness,0.0,1.0),
+                          daim::clamp(this->_Contrast  ,0.0,1.0),
                           &_Params.thisBuffer);
    // Ensure that buffer has the same type has the input image
    if(_Params.thisBuffer.IsEmpty() ||
@@ -310,8 +310,8 @@ bool dmEnhanceContrast::Apply( dmImage& _Image, const dmRegion& _Region )
 {
   __dm_impl_constrast _filter(_Region,
                           this->_MinRange,this->_MaxRange,
-                          daim::range(this->_Brightness,0.0,1.0),
-                          daim::range(this->_Contrast  ,0.0,1.0),
+                          daim::clamp(this->_Brightness,0.0,1.0),
+                          daim::clamp(this->_Contrast  ,0.0,1.0),
                           dm_null);
 
   return dmImplementOperation(_filter,_Image);

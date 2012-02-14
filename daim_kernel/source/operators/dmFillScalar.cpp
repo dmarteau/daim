@@ -37,34 +37,34 @@ using namespace daim;
 //------------------------------------------------------------------------
 // Fill scalar 
 //----------------------------------------------------------------------
-struct __dm_impl_fill_scalar
-{
-  dm_real     _value;
-  dm_real     _alpha;
-  dmRegion    _rgn;
 
-  __dm_impl_fill_scalar( dm_real _v, dm_real alpha, const dmRegion& _roi ) 
+namespace {
+
+struct impl_fill_scalar
+{
+  double   _value;
+  double   _alpha;
+  dmRegion _rgn;
+
+  impl_fill_scalar( double _v, double alpha, const dmRegion& _roi ) 
   : _value(_v),_alpha(alpha),_rgn(_roi) {}
 
   // Generic operation on scalar
   template<EPixelFormat _PixelFormat>
-  void operator()(  dmIImage<_PixelFormat>& anImage )
-  {   
-    typedef typename dmIImage<_PixelFormat>::image_type   image_type;
-    typedef typename dmIImage<_PixelFormat>::pixel_type   pixel_type;
-    typedef typename dmIImage<_PixelFormat>::traits_type  traits_type;
-    typedef typename dmIImage<_PixelFormat>::value_type   value_type;
-
-    typedef typename traits_type::integer_type  integer_type;
+  void operator()( dmIImage<_PixelFormat>& anImage )
+  {
+    typedef typename dmIImage<_PixelFormat>::image_type  image_type;
+    typedef typename dmIImage<_PixelFormat>::pixel_type  pixel_type;
+    typedef typename dmIImage<_PixelFormat>::value_type  value_type;
+    typedef typename dmIImage<_PixelFormat>::traits_type traits_type;
 
     image_type& _img = anImage.Gen();
 
     _rgn.ClipToRect( _img.rect() );
     if(_alpha >=1) {
-      fill(_rgn,_img,_get_range_value(_value,traits_type(),integer_type()));
+      fill(_rgn,_img,traits_type::clamp(_value));
     } else if(_alpha >=0) {
-      blend_fill(_rgn,_img,_get_range_value(_value,traits_type(),integer_type()),
-                 static_cast<float>(_alpha));
+     blend_fill(_rgn,_img,traits_type::clamp(_value),_alpha);
     }
   }
 
@@ -78,25 +78,27 @@ struct __dm_impl_fill_scalar
     image_type& _img = anImage.Gen();
 
     _rgn.ClipToRect( anImage.Rect() );
-    dm_uint8 x = _get_range_value(_value,pixel_traits<dm_uint8>(),integer_true());
+    dm_uint8 x = pixel_traits<dm_uint8>::clamp(_value);
     dm_rgb24 _rgb(x);
     if(_alpha >=1) {
       fill(_rgn,_img,_rgb.value());
     } else if(_alpha >=0) {
-      blend_fill_rgb(_rgn,_img,_rgb.value(),static_cast<float>(_alpha));      
+      blend_fill_rgb(_rgn,_img,_rgb.value(),_alpha);      
     }
   }
+};
+
 };
 //--------------------------------------------------------------------------
 bool dmFillScalar::SetValue( dmImage& _Image, const dmRegion& aRgn, dm_real aValue, dm_real aAlpha )
 {
-  __dm_impl_fill_scalar _filter(aValue,aAlpha,aRgn);
+  impl_fill_scalar _filter(aValue,aAlpha,aRgn);
   return dmImplementOperation(_filter,_Image);
 }
 //--------------------------------------------------------------------------
 bool dmFillScalar::Apply( dmBufferParameters& _Params )
 {
-  __dm_impl_fill_scalar _filter(this->_Value,this->_Alpha,_Params.thisRegion);
+  impl_fill_scalar _filter(this->_Value,this->_Alpha,_Params.thisRegion);
   return dmImplementOperation(_filter,_Params.thisImage);
 } 
 //------------------------------------------------------------------------

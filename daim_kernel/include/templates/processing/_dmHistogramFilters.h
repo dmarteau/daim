@@ -53,13 +53,13 @@ namespace daim {
         dm_uint _min;
         dm_uint _max;
 
-        void insert( const argument_type& x, value_type _data[] ) {
+        void insert( argument_type x, value_type _data[] ) {
           ++_data[x];
           if(x > _max) _max = x; else
           if(x < _min) _min = x;
         }
 
-        void remove( const argument_type& x, value_type _data[] ) {
+        void remove( argument_type x, value_type _data[] ) {
           if(--_data[x] == 0) {
             if(x==_max) { while(_max>min_value && !_data[_max]) --_max; } else 
             if(x==_min) { while(_min<max_value && !_data[_min]) ++_min; }  

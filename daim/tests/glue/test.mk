@@ -11,7 +11,7 @@ MODULE_DEFS += DAIM_GLUE
 
 MODULE_FILES=$(TEST_NAME).cpp
 
-REQUIRES=cci daim contrib
+REQUIRES=cci daim
 
 MODULE_LIBS = -ldaimglue -lcciglue 
 

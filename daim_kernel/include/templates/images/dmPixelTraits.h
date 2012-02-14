@@ -66,7 +66,8 @@ struct  basic_traits {
 };
 
 //------------------------------------------------------------------
-template<> struct basic_traits<float>
+template<> 
+struct basic_traits<float>
 {
   typedef float T;
 
@@ -118,49 +119,94 @@ struct pixel_traits
 
   static value_type  scalar_value(value_type _v) { return _v; }
     
-  //-----------------------------------------------------------------
-  // pixels operations 
-  //-----------------------------------------------------------------
-  struct subpixel : public std::binary_function<value_type,value_type,value_type> {
-     value_type _min;
-     subpixel() : _min(pixel_traits<T>::min()) {} 
-     value_type operator()( const value_type& _x1, const value_type& _x2 ) const
-     { return (_x1 - _min >= _x2 ? (_x1 - _x2) : _min ); }
-  };
-  //
-  struct addpixel : public std::binary_function<value_type,value_type,value_type> {
-     value_type _max;
-     addpixel() : _max(pixel_traits<T>::max()) {} 
-     value_type operator()( const value_type& _x1, const value_type& _x2 ) const
-     { 
-       return (_x1 <= _max - _x2 ? (_x1 + _x2) : _max ); 
-     }
-  };
 
   template<class S = value_type>
   struct static_convert : public std::unary_function<T,value_type> { 
-    value_type operator()( const S& x ) {
+    value_type operator()( S x ) {
       return static_cast<value_type>(x);
     } 
   };
+  
+  /**
+   * Round value, note that for integer type, this is just
+   * a static conversion 
+   * 
+   * @param val
+   * @return rounded value
+   */
+  template<typename V>
+  value_type round_value( float val  ) {  return static_cast<value_type>(val); }
+  
+  // Specialization
+  static value_type round_value( float val  ) { return static_cast<value_type>(daim::round(val)); }
+  static value_type round_value( double val ) { return static_cast<value_type>(daim::round(val)); }
+ 
+  /**
+   * Clamp value between min and max
+   */
+  template<typename V>
+  static value_type clamp( V val ) {
+    if(val < min()) return min(); else
+    if(val > max()) return max(); else
+       return static_cast<value_type>(val);
+  }
+  
+  static value_type clamp( double val ) {
+    if(val < min()) return min(); else
+    if(val > max()) return max(); else
+       return round_value(val);
+  }
 
+  static value_type clamp( float val ) {
+    if(val < min()) return min(); else
+    if(val > max()) return max(); else
+       return round_value(val);
+  }
 }; // pixel_traits
+
+// specialize
+template<>
+inline float pixel_traits<float>::round_value( double val )
+{
+  return static_cast<float>(val);
+}
+
+template<>
+inline float pixel_traits<float>::round_value( float val )
+{
+  return val;
+}
+
+template<>
+inline float pixel_traits<float>::clamp( double val )
+{
+  if(val < min()) return min(); else
+  if(val > max()) return max(); else
+     return  static_cast<float>(val); 
+}
+
+template<>
+inline float pixel_traits<float>::clamp( float val )
+{
+  return val;
+}
+
 //-------------------------------------------------------------------
 
+
 template<class _A1,class _A2,class _R> 
-struct pixel_binary_function
-{
-  typedef typename pixel_traits<_A1>::value_type first_argument_type;
-  typedef typename pixel_traits<_A2>::value_type second_argument_type;
-  typedef typename pixel_traits<_R>::value_type  result_type;
-};
+struct pixel_binary_function : public std::binary_function<
+  typename pixel_traits<_A1>::value_type,
+  typename pixel_traits<_A2>::value_type,
+  typename  pixel_traits<_R>::value_type>
+{};
 
 template<class _A,class _R> 
-struct pixel_unary_function
-{
-  typedef typename pixel_traits<_A>::value_type argument_type;
-  typedef typename pixel_traits<_R>::value_type result_type;
-};
+struct pixel_unary_function : public std::unary_function<
+        typename pixel_traits<_A>::value_type,
+        typename pixel_traits<_R>::value_type>
+{};
+
 
 
 //-------------------------------------------------------------------

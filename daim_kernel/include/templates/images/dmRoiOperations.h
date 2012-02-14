@@ -36,7 +36,13 @@ namespace daim {
 // Binary operation on two images
 // rgn apply to first image && result is copied in <out> at P;
 //--------------------------------------------------------------
-bool __dmKernel _AdjustRegions( dmRect& _rs, dmRect& _rd, dmRegion&, const dmPoint& );
+
+namespace core {
+
+bool __dmKernel AdjustRegions( dmRect& _rs, dmRect& _rd, dmRegion&, const dmPoint& );
+
+};
+
 //--------------------------------------------------------------
 template<class T1, class T2, class Op>
 Op RoiOperation( Op _op, image<T1>& _src, image<T2>& _dest, 
@@ -47,7 +53,7 @@ Op RoiOperation( Op _op, image<T1>& _src, image<T2>& _dest,
   dmRegion rgn = _rgn;
   dmRect rs = _src.rect();
   dmRect rd = _dest.rect();
-  if(_AdjustRegions( rs,rd,rgn,p ))
+  if(core::AdjustRegions( rs,rd,rgn,p ))
   { 
     typename image<T1>::line_type inp  = _src.begin(rs);
     typename image<T2>::line_type outp = _dest.begin(rd);
@@ -55,10 +61,10 @@ Op RoiOperation( Op _op, image<T1>& _src, image<T2>& _dest,
     if(rd.Left() != rs.Left() ) 
     {
       long xoffset = rd.Left() - rs.Left();
-      return _RoiOperation(rgn,inp,_BindLineOffset(outp,xoffset,get_type_of(*outp)),_op);
+      return core::RoiOperation(rgn,inp,core::BindLineOffset(outp,xoffset,get_type_of(*outp)),_op);
     } 
     else 
-     return _RoiOperation(rgn,inp,outp,_op);
+     return core::RoiOperation(rgn,inp,outp,_op);
   }
   return _op;
 }
@@ -73,7 +79,7 @@ Op RoiOperation( Op _op,
   dmRect rs = _src.rect();
   dmRect rd = _dest.rect();
 
-  if(_AdjustRegions( rs,rd,rgn,p ))
+  if(core::AdjustRegions( rs,rd,rgn,p ))
   { 
     typename image<T1>::const_line_type inp  = _src.begin(rs);
     typename image<T2>::line_type       outp = _dest.begin(rd);
@@ -81,10 +87,10 @@ Op RoiOperation( Op _op,
     if(rd.Left() != rs.Left() ) 
     {
       long xoffset = rd.Left() - rs.Left();
-      return _RoiOperation(rgn,inp,_BindLineOffset(outp,xoffset,get_type_of(*outp)),_op);
+      return core::RoiOperation(rgn,inp,core::BindLineOffset(outp,xoffset,get_type_of(*outp)),_op);
     } 
     else 
-     return _RoiOperation(rgn,inp,outp,_op);
+     return core::RoiOperation(rgn,inp,outp,_op);
   }
   return _op;
 }
@@ -102,7 +108,7 @@ Op RoiOperation( Op _op, image<T1>& _src1,
   dmRegion rgn = _rgn;
   dmRect rs = _src1.rect();
   dmRect rd = _dest.rect();
-  if(_AdjustRegions( rs,rd,rgn,p ))
+  if(core::AdjustRegions( rs,rd,rgn,p ))
   { 
     typename image<T1>::line_type inp1 = _src1.begin(rs);
     typename image<T2>::line_type inp2 = _src2.begin(rs);
@@ -111,18 +117,18 @@ Op RoiOperation( Op _op, image<T1>& _src1,
     if(rd.Left() != rs.Left() ) 
     {
       long xoffset = rd.Left() - rs.Left();
-      return _RoiOperation(rgn,inp1,inp2,_BindLineOffset(outp,xoffset,get_type_of(*outp)),_op);
+      return core::RoiOperation(rgn,inp1,inp2,core::BindLineOffset(outp,xoffset,get_type_of(*outp)),_op);
     } 
     else 
-     return _RoiOperation(rgn,inp1,inp2,outp,_op);
+     return core::RoiOperation(rgn,inp1,inp2,outp,_op);
   }
   return _op;
 }
+
 //--------------------------------------------------------------
-// Cette fonction construit une region bas�e sur le pr�dicat 
-// Pred( line_type, x )
+// Build region based on predicate Pred( line_type, x )
 //--------------------------------------------------------------
-template<class T,class Pred> Pred _CreateRoi_If( 
+template<class T,class Pred> Pred CreateRoi_If( 
                                const image<T>& img,
                                Pred            predicat,
                                dmRegion&       region, 
@@ -148,24 +154,19 @@ template<class T,class Pred> Pred _CreateRoi_If(
 // Simple predicat 
 //--------------------------------------------------------------
 template<class Pred> 
-struct _PixelPredicat
+struct PixelPredicat
 {
   Pred p;
-  _PixelPredicat( const Pred& _p ) : p(_p) {}
+  PixelPredicat( const Pred& _p ) : p(_p) {}
   template<class line_type> 
   bool operator()( line_type l, int x ) { return p( (*l)[x] ); }
 };
-//---------------------------------------------------------------
-template<class T,class Pred> Pred create_roi( 
-   const image<T>& img,Pred predicat,dmRegion& region )
-{
-   return _CreateRoi_If( img,_PixelPredicat<Pred>(predicat), region, img.rect() ).p;
-};
+
 //--------------------------------------------------------------
 // Create a region from pixels included in rectangle r
 // THE RECTANGLE IS NOT CHECKED
 //---------------------------------------------------------------
-template<class T,class Pred> Pred _CreateRectRoi_If( 
+template<class T,class Pred> Pred CreateRectRoi_If( 
    const image<T>& img,Pred predicat,dmRegion& region, const dmRect& r )
 {
    dmRgnEditor  rgn_init(r);
@@ -188,16 +189,18 @@ template<class T,class Pred> Pred _CreateRectRoi_If(
 // Create a region from pixels included in region <rgn>
 // THE REGION IS NOT CHECKED
 //---------------------------------------------------------------
-template<class T,class Pred> Pred _CreateRgnRoi_If( 
+template<class T,class Pred> Pred CreateRgnRoi_If( 
    const image<T>& img,Pred predicat,dmRegion& region, const dmRegion& rgn )
 {
   if(!rgn.IsEmptyRoi()) 
   {
     if(rgn.IsRectRoi()) 
-      return _CreateRectRoi_If(img,predicat,region,rgn.Rectangle());
+    {
+      return CreateRectRoi_If(img,predicat,region,rgn.Rectangle());
+    }
     else
     {
-      dmRgnEditor  rgn_init(rgn.Rectangle());
+      dmRgnEditor rgn_init(rgn.Rectangle());
 
       typename image<T>::const_line_type line = img.begin(rgn.Rectangle());
 
@@ -222,26 +225,33 @@ template<class T,class Pred> Pred _CreateRgnRoi_If(
   }
   return predicat;
 }
+
+//---------------------------------------------------------------
+template<class T,class Pred> Pred create_roi( 
+   const image<T>& img,Pred predicat,dmRegion& region )
+{
+   return CreateRoi_If( img,PixelPredicat<Pred>(predicat), region, img.rect() ).p;
+};
 //---------------------------------------------------------------
 template<class T,class Pred> Pred create_rgnroi( 
    const image<T>& img,Pred predicat,dmRegion& region,const dmRegion& rgn )
 {
-   return _CreateRgnRoi_If( img,_PixelPredicat<Pred>(predicat),region,rgn).p;
+   return CreateRgnRoi_If( img,PixelPredicat<Pred>(predicat),region,rgn).p;
 };
 //--------------------------------------------------------------
 // Do a ROI Operation by passing twice on the image 
 // top to bottom the bottom to top
 //--------------------------------------------------------------
 template<class T1, class T2, class Op1,class Op2>
-void _TwoPassesRoiOperation( const dmRegion& roi, const dmPoint& p, 
-                             image<T1>& src, image<T2>& dest, 
-                             const Op1& op1, const Op2& op2 )
+void TwoPassesRoiOperation( const dmRegion& roi, const dmPoint& p, 
+                            image<T1>& src, image<T2>& dest, 
+                            const Op1& op1, const Op2& op2 )
 {
   dmRegion rgn = roi;
   dmRect rs = src.rect();
   dmRect rd = dest.rect();
 
-  if(_AdjustRegions( rs,rd,rgn,p ))
+  if(core::AdjustRegions( rs,rd,rgn,p ))
   {    
     typename image<T1>::line_type inp  = src.begin(rs);
     typename image<T2>::line_type outp = dest.begin(rd);
@@ -252,11 +262,11 @@ void _TwoPassesRoiOperation( const dmRegion& roi, const dmPoint& p,
     if(rd.Left() != rs.Left()) 
     {
       long xoffset = rd.Left() - rs.Left();
-      _RoiOperation(rgn,inp,_BindLineOffset(outp,xoffset,get_type_of(*outp)), op1);
-      _ReverseRoiOperation(rgn,rinp,_BindLineOffset(routp,xoffset,get_type_of(*routp)),op2);
+      core::RoiOperation(rgn,inp,core::BindLineOffset(outp,xoffset,get_type_of(*outp)), op1);
+      core::ReverseRoiOperation(rgn,rinp,core::BindLineOffset(routp,xoffset,get_type_of(*routp)),op2);
     } else {
-      _RoiOperation(rgn,inp,outp,op1);
-      _ReverseRoiOperation(rgn,rinp,routp,op2);
+      core::RoiOperation(rgn,inp,outp,op1);
+      core::ReverseRoiOperation(rgn,rinp,routp,op2);
     }
   }
 }

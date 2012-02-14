@@ -64,8 +64,13 @@ inline bool operator>=(const dmRGBColor& x,const dmRGBColor& y)  {
 //-----------------------------------------------------------------
 // Compare in norm
 //-----------------------------------------------------------------
+
+namespace fn {
+
+struct rgb_binary_fun : public std::binary_function<dmRGBColor,dmRGBColor,dmRGBColor> {};
+
 template<>
-struct max_pixel<dm_rgb24> : _pixel_binfun<dmRGBColor>
+struct max_pixel<dm_rgb24>  : public rgb_binary_fun
 {
   dmRGBColor& operator()( const dmRGBColor& src, dmRGBColor& dst ) {
     if(src > dst) dst = src;
@@ -74,7 +79,7 @@ struct max_pixel<dm_rgb24> : _pixel_binfun<dmRGBColor>
 };
 
 template<>
-struct min_pixel<dm_rgb24> : _pixel_binfun<dmRGBColor>
+struct min_pixel<dm_rgb24> : public rgb_binary_fun
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
     if(x1 < x2) x2 = x1;
@@ -87,7 +92,7 @@ struct min_pixel<dm_rgb24> : _pixel_binfun<dmRGBColor>
 //-----------------------------------------------------------
 
 template<>
-struct add_pixel<dm_rgb24>  : public _pixel_binfun<dmRGBColor>
+struct add_pixel<dm_rgb24>  : public rgb_binary_fun
 {
   int ir,ig,ib;
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
@@ -99,7 +104,7 @@ struct add_pixel<dm_rgb24>  : public _pixel_binfun<dmRGBColor>
 };
 
 template<>
-struct sub_pixel<dm_rgb24>  : public _pixel_binfun<dmRGBColor>
+struct sub_pixel<dm_rgb24>  : public rgb_binary_fun
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
     x2.r = (x1.r >= x2.r ? x1.r - x2.r : 0);
@@ -110,7 +115,7 @@ struct sub_pixel<dm_rgb24>  : public _pixel_binfun<dmRGBColor>
 };
 
 template<>
-struct nsub_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor>
+struct nsub_pixel<dm_rgb24> : public rgb_binary_fun
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) {
     x2.r = (x1.r <= x2.r ? x2.r - x1.r : 0);
@@ -121,7 +126,7 @@ struct nsub_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor>
 };
 //-----------------------------------------------------------------
 template<>
-struct diff_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor>
+struct diff_pixel<dm_rgb24> : public rgb_binary_fun
 {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
@@ -133,7 +138,7 @@ struct diff_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor>
 };
 //-----------------------------------------------------------------
 template<>
-struct and_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
+struct and_pixel<dm_rgb24> : public rgb_binary_fun {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
     x2.r = x1.r & x2.r;
@@ -144,7 +149,7 @@ struct and_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
 };
 //------------------------------------------------------------
 template<>
-struct or_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
+struct or_pixel<dm_rgb24> : public rgb_binary_fun {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
     x2.r = x1.r | x2.r;
@@ -155,7 +160,7 @@ struct or_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
 };
 //------------------------------------------------------------
 template<>
-struct xor_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
+struct xor_pixel<dm_rgb24> : public rgb_binary_fun {
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 )
   {
     x2.r = x1.r ^ x2.r;
@@ -168,29 +173,29 @@ struct xor_pixel<dm_rgb24> : public _pixel_binfun<dmRGBColor> {
 // Unary operations
 //-------------------------------------------------------------
 template<>
-struct mul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
+struct mul_pixel<dm_rgb24,dm_rgb24> : rgb_binary_fun
 {
-  float a;
-  mul_pixel( float _a ) : a(_a) {}
+  double a;
+  mul_pixel( double _a ) : a(_a) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
-    x2.r = _get_range_value( x1.r * a, pixel_traits<dm_uint8>(),integer_true());
-    x2.g = _get_range_value( x1.g * a, pixel_traits<dm_uint8>(),integer_true());
-    x2.b = _get_range_value( x1.b * a, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = pixel_traits<dm_uint8>::clamp( x1.r * a );
+    x2.g = pixel_traits<dm_uint8>::clamp( x1.g * a );
+    x2.b = pixel_traits<dm_uint8>::clamp( x1.b * a );
     return x2;
   }
 };
 //-------------------------------------------------------------
 template<>
-struct addmul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
+struct addmul_pixel<dm_rgb24,dm_rgb24> : rgb_binary_fun
 {
-  float a,b;
-  addmul_pixel( float _a, float _b ) : a(_a),b(_b) {}
+  double a,b;
+  addmul_pixel( double _a, double _b ) : a(_a),b(_b) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
-    x2.r = _get_range_value( x1.r * a + b, pixel_traits<dm_uint8>(),integer_true());
-    x2.g = _get_range_value( x1.g * a + b, pixel_traits<dm_uint8>(),integer_true());
-    x2.b = _get_range_value( x1.b * a + b, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = pixel_traits<dm_uint8>::clamp( x1.r * a + b);
+    x2.g = pixel_traits<dm_uint8>::clamp( x1.g * a + b);
+    x2.b = pixel_traits<dm_uint8>::clamp( x1.b * a + b);
     return x2;
   }
 };
@@ -198,101 +203,99 @@ struct addmul_pixel<dm_rgb24,dm_rgb24> : _pixel_binfun<dmRGBColor>
 // this operator expect a parameter value between 0 and 1
 //-------------------------------------------------------------
 template<>
-struct blend_pixels<dm_rgb24,dm_rgb24> : public _pixel_binfun<dmRGBColor>
+struct blend_pixels<dm_rgb24,dm_rgb24> : public rgb_binary_fun
 {
   float a;
   blend_pixels( float _a ) : a(_a) {}
   dmRGBColor&  operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const
   {
-    x2.r = _round_value( a * x1.r + (1.0f-a) * x2.r, pixel_traits<dm_uint8>(),integer_true());
-    x2.g = _round_value( a * x1.g + (1.0f-a) * x2.g, pixel_traits<dm_uint8>(),integer_true());
-    x2.b = _round_value( a * x1.b + (1.0f-a) * x2.b, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = pixel_traits<dm_uint8>::round_value( a * x1.r + (1.0f-a) * x2.r );
+    x2.g = pixel_traits<dm_uint8>::round_value( a * x1.g + (1.0f-a) * x2.g );
+    x2.b = pixel_traits<dm_uint8>::round_value( a * x1.b + (1.0f-a) * x2.b );
     return x2;
   }
 };
 
 
-struct blend_rgb24 :   public _pixel_binfun<dmRGBColor>
+struct blend_rgb24 :   public rgb_binary_fun
 {
   dmRGBColor c;
-  float   a;
-  blend_rgb24( const dmRGBColor& _c,  float _a ) : c(_c), a(_a) {}
+  double   a;
+  blend_rgb24( const dmRGBColor& _c,  double _a ) : c(_c), a(_a) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const {
-    x2.r = _round_value( (1.0f-a) * x1.r + a * c.r, pixel_traits<dm_uint8>(),integer_true());
-    x2.g = _round_value( (1.0f-a) * x1.g + a * c.g, pixel_traits<dm_uint8>(),integer_true());
-    x2.b = _round_value( (1.0f-a) * x1.b + a * c.b, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = pixel_traits<dm_uint8>::round_value( (1.0-a) * x1.r + a * c.r);
+    x2.g = pixel_traits<dm_uint8>::round_value( (1.0-a) * x1.g + a * c.g);
+    x2.b = pixel_traits<dm_uint8>::round_value( (1.0-a) * x1.b + a * c.b);
     return x2;
   }
 };
 
-template<class A>
-struct _blend_rgb_alpha
+struct blend_rgb_alpha
 {
-  typedef typename pixel_traits<A>::value_type  alpha_type;
-
-  _blend_rgb_alpha() {}
-  dmRGBColor& operator()( const dmRGBColor& x1, const alpha_type& a,
+  blend_rgb_alpha() {}
+  dmRGBColor& operator()( const dmRGBColor& x1,  dm_uint8 a,
                           dmRGBColor& x2 ) const {
-    x2.r = _round_value( (a * x1.r + (255-a) * x2.r)/255.0, pixel_traits<dm_uint8>(),integer_true());
-    x2.g = _round_value( (a * x1.g + (255-a) * x2.g)/255.0, pixel_traits<dm_uint8>(),integer_true());
-    x2.b = _round_value( (a * x1.b + (255-a) * x2.b)/255.0, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = pixel_traits<dm_uint8>::round_value( (a * x1.r + (255-a) * x2.r)/255.0 );
+    x2.g = pixel_traits<dm_uint8>::round_value( (a * x1.g + (255-a) * x2.g)/255.0 );
+    x2.b = pixel_traits<dm_uint8>::round_value( (a * x1.b + (255-a) * x2.b)/255.0 );
     return x2;
   }
 };
 
-struct _rgb_color_transform
+struct rgb_color_transform
 {
-  dm_real* m;
+  double* m;
 
-  _rgb_color_transform( dm_real* matrix ) : m(matrix) {}
+  rgb_color_transform( double* matrix ) : m(matrix) {}
   dmRGBColor& operator()( const dmRGBColor& x1, dmRGBColor& x2 ) const {
-    x2.r = _round_value( m[0] * x1.r + m[1] * x1.g + m[2] * x1.b, pixel_traits<dm_uint8>(),integer_true());
-    x2.g = _round_value( m[3] * x1.r + m[4] * x1.g + m[5] * x1.b, pixel_traits<dm_uint8>(),integer_true());
-    x2.b = _round_value( m[6] * x1.r + m[7] * x1.g + m[8] * x1.b, pixel_traits<dm_uint8>(),integer_true());
+    x2.r = pixel_traits<dm_uint8>::round_value( m[0] * x1.r + m[1] * x1.g + m[2] * x1.b);
+    x2.g = pixel_traits<dm_uint8>::round_value( m[3] * x1.r + m[4] * x1.g + m[5] * x1.b);
+    x2.b = pixel_traits<dm_uint8>::round_value( m[6] * x1.r + m[7] * x1.g + m[8] * x1.b);
     return x2;
   }
 };
+
+}; // namespace fn
 
 //-----------------------------------------------------------------
 
-inline void mul_image( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out, float y )
-{ combine(rgn,p,in,out,mul_pixel<dm_rgb24,dm_rgb24>(y)); }
+inline void mul_image( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out, double y )
+{ daim::combine(rgn,p,in,out,fn::mul_pixel<dm_rgb24,dm_rgb24>(y)); }
 
-inline void div_image( const dmRegion& rgn,const dmPoint& p,const  image<dm_rgb24>& in, image<dm_rgb24>& out, float y )
-{ combine(rgn,p,in,out,mul_pixel<dm_rgb24,dm_rgb24>(1.0f/y)); }
+inline void div_image( const dmRegion& rgn,const dmPoint& p,const  image<dm_rgb24>& in, image<dm_rgb24>& out, double y )
+{ daim::combine(rgn,p,in,out,fn::mul_pixel<dm_rgb24,dm_rgb24>(1.0/y)); }
 
 inline void addmul_images( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out,
-                           float a, float b )
-{ combine(rgn,p,in,out,addmul_pixel<dm_rgb24,dm_rgb24>(a,b)); }
+                           double a, double b )
+{ daim::combine(rgn,p,in,out,fn::addmul_pixel<dm_rgb24,dm_rgb24>(a,b)); }
 
-template<class A>
-void blend_rgb_alpha( const dmRegion& rgn,const dmPoint& p,
-                  const image<dm_rgb24>& in ,image<dm_rgb24>& out,
-                  const image<A>& alpha )
+inline void blend_rgb_alpha( const dmRegion& rgn,const dmPoint& p,
+                             const image<dm_rgb24>& in ,image<dm_rgb24>& out,
+                             const image<dm_uint8>& alpha )
 {
-  combine(rgn,p,in,alpha,out,alpha,_blend_rgb_alpha<A>());
+  daim::combine(rgn,p,in,alpha,out,fn::blend_rgb_alpha());
 }
 
 inline void rgb_color_transform( const dmRegion& rgn,const dmPoint& p,const image<dm_rgb24>& in ,image<dm_rgb24>& out, dm_real* m )
-{ combine(rgn,p,in,out,_rgb_color_transform(m)); }
+{ daim::combine(rgn,p,in,out,fn::rgb_color_transform(m)); }
 
 
 // Unary versions
 
 inline void mul_image( const dmRegion& rgn,image<dm_rgb24>& in, float y )
-{ combine(rgn,rgn.Rectangle().TopLeft(),in,in,mul_pixel<dm_rgb24,dm_rgb24>(y)); }
+{ daim::combine(rgn,rgn.Rectangle().TopLeft(),in,in,fn::mul_pixel<dm_rgb24,dm_rgb24>(y)); }
 
 inline void div_image( const dmRegion& rgn,image<dm_rgb24>& in, float y )
-{ combine(rgn,rgn.Rectangle().TopLeft(),in,in,mul_pixel<dm_rgb24,dm_rgb24>(1.0f/y)); }
+{ daim::combine(rgn,rgn.Rectangle().TopLeft(),in,in,fn::mul_pixel<dm_rgb24,dm_rgb24>(1.0f/y)); }
 
 inline void addmul_image( const dmRegion& rgn,image<dm_rgb24>& in, float a, float b )
-{ combine(rgn,rgn.Rectangle().TopLeft(),in,in,addmul_pixel<dm_rgb24,dm_rgb24>(a,b)); }
+{ daim::combine(rgn,rgn.Rectangle().TopLeft(),in,in,fn::addmul_pixel<dm_rgb24,dm_rgb24>(a,b)); }
 
 inline void blend_fill_rgb( const dmRegion& rgn,image<dm_rgb24>& in, const dmRGBColor& c, float a)
-{ combine(rgn,rgn.Rectangle().TopLeft(),in,in,blend_rgb24(c,a)); }
+{ daim::combine(rgn,rgn.Rectangle().TopLeft(),in,in,fn::blend_rgb24(c,a)); }
 
 inline void rgb_color_transform( const dmRegion& rgn, image<dm_rgb24>& in, dm_real* m )
-{ combine(rgn,rgn.Rectangle().TopLeft(),in,in,_rgb_color_transform(m)); }
+{ daim::combine(rgn,rgn.Rectangle().TopLeft(),in,in,fn::rgb_color_transform(m)); }
 
 //-----------------------------------------------------------------
 

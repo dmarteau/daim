@@ -49,7 +49,7 @@ struct __dm_addmul_impl
 
     if(a==0.0) 
       daim::transform(Rgn,_Rhs.Gen(),
-            std::bind2nd(daim::add_pixel<value_type>(),b));
+            std::bind2nd(daim::fn::add_pixel<value_type>(),b));
     else if(b==0.0)
       daim::mul_image(Rgn,_Rhs.Gen(),a);
     else

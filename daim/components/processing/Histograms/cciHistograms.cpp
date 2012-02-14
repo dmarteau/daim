@@ -253,7 +253,7 @@ CCI_IMETHODIMP cciHistograms::GetBimodalThreshold(dm_uint32 index, dm_real backg
       thr = static_cast<dm_uint8>( hmax*(background-minRange)/(maxRange - minRange) + 0.5 );
   }
   else
-    thr = daim::range(background,0.,hmax);
+    thr = daim::clamp(background,0.,hmax);
 
   daim::histogram_value val = daim::bimodal_optimal_thrindex(_Histogram->Data(),thr);
 

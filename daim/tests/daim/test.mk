@@ -10,7 +10,7 @@ MODULE_EXT   = exe
 
 MODULE_FILES=$(TEST_NAME).cpp
 
-REQUIRES=cci daim contrib
+REQUIRES=cci daim
 
 MODULE_LIBS = -lcciglue_s
 

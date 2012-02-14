@@ -72,14 +72,17 @@ static bool arithmetics_code( int nWhat, const dmRegion& rgn, const dmPoint& p,
   return false;
 }
 //---------------------------------------------------------------------
-struct __dm_arithmetics_impl
+
+namespace {
+
+struct arithmetics_filter_impl
 {
    dm_int          Operation;
    const dmImage&  Lhs;
    const dmRegion& Rgn;
    const dmPoint&  Pt; 
 
-   __dm_arithmetics_impl(dm_int          _Operation, 
+   arithmetics_filter_impl(dm_int          _Operation, 
                          const dmImage&  _Lhs, 
                          const dmRegion& _Rgn, 
                          const dmPoint&  _Pt )
@@ -114,14 +117,16 @@ struct __dm_arithmetics_impl
   }
 
 };
+
+}; // 
 //---------------------------------------------------------------------
 bool dmArithmetics( dm_int _Operation, 
                     const dmImage& _Lhs, dmImage& _Rhs, 
                     const dmRegion& _Rgn, const dmPoint& _Pt )
 {
  if(_Lhs.PixelFormat() == _Rhs.PixelFormat()) {
-   __dm_arithmetics_impl _filter(_Operation,_Lhs,_Rgn,_Pt);
-   return dmImplementOperation(_filter,_Rhs);
+   arithmetics_filter_impl filter(_Operation,_Lhs,_Rgn,_Pt);
+   return dmImplementOperation(filter,_Rhs);
   }
   return false;    
 }
@@ -145,8 +150,8 @@ bool dmArithmetics( dmBufferParameters& _Params, dm_int _Operation )
        const dmPoint&  _Pt   =  _Params.thisBuffer.BufferSrc();
        const dmImage&  _Lhs  = *_Params.thisBuffer.Buffer();
 
-       __dm_arithmetics_impl _filter(_Operation,_Lhs,_Rgn,_Pt);
-       return dmImplementOperation(_filter,_Params.thisImage);   
+       arithmetics_filter_impl filter(_Operation,_Lhs,_Rgn,_Pt);
+       return dmImplementOperation(filter,_Params.thisImage);   
     }
   }
   return false;   
@@ -154,15 +159,18 @@ bool dmArithmetics( dmBufferParameters& _Params, dm_int _Operation )
 //---------------------------------------------------------------------
 // Multiply images
 //---------------------------------------------------------------------
-struct __dm_multiply_impl
+
+namespace {
+
+struct multiply_filter_impl
 {
    const dmImage&  Rhs;
    const dmRegion& Rgn;
    const dmPoint&  Pt; 
 
-   __dm_multiply_impl(const dmImage&  _Rhs, 
-                      const dmRegion& _Rgn, 
-                      const dmPoint&  _Pt )
+   multiply_filter_impl(const dmImage&  _Rhs, 
+                        const dmRegion& _Rgn, 
+                        const dmPoint&  _Pt )
    :Rhs(_Rhs)
    ,Rgn(_Rgn)
    ,Pt(_Pt) {}
@@ -181,25 +189,30 @@ struct __dm_multiply_impl
     }
   }
 };
+
+};
 //---------------------------------------------------------------------
 bool dmMultiplyImage( dmImage& _Lhs, const dmImage& _Rhs, 
                       const dmRegion& _Rgn, const dmPoint& _Pt  )
 {
-   __dm_multiply_impl _filter(_Lhs,_Rgn,_Pt);
-   return dmImplementScalarOperation(_filter,_Rhs);
+   multiply_filter_impl filter(_Lhs,_Rgn,_Pt);
+   return dmImplementScalarOperation(filter,_Rhs);
 }
 //---------------------------------------------------------------------
 // Divide images
 //---------------------------------------------------------------------
-struct __dm_divide_impl
+
+namespace {
+
+struct divide_filter_impl
 {
    const dmImage&  Rhs;
    const dmRegion& Rgn;
    const dmPoint&  Pt; 
 
-   __dm_divide_impl(const dmImage&  _Rhs, 
-                    const dmRegion& _Rgn, 
-                    const dmPoint&  _Pt )
+   divide_filter_impl(const dmImage&  _Rhs, 
+                      const dmRegion& _Rgn, 
+                      const dmPoint&  _Pt )
    :Rhs(_Rhs)
    ,Rgn(_Rgn)
    ,Pt(_Pt) {}
@@ -218,25 +231,30 @@ struct __dm_divide_impl
     }
   }
 };
+
+};
 //---------------------------------------------------------------------
 bool dmDivideImage( dmImage& _Lhs, const dmImage& _Rhs, 
                     const dmRegion& _Rgn, const dmPoint& _Pt  )
 {  
-   __dm_divide_impl _filter(_Rhs,_Rgn,_Pt);
-   return dmImplementScalarOperation(_filter,_Lhs);
+   divide_filter_impl filter(_Rhs,_Rgn,_Pt);
+   return dmImplementScalarOperation(filter,_Lhs);
 }
 //---------------------------------------------------------------------
 // Truncate images
 //---------------------------------------------------------------------
-struct __dm_truncate_impl
+
+namespace {
+
+struct truncate_filter_impl
 {
    const dmImage&  Dst;
    const dmRegion& Rgn;
    const dmPoint&  Pt; 
 
-   __dm_truncate_impl(const dmImage&  _Dst, 
-                      const dmRegion& _Rgn, 
-                      const dmPoint&  _Pt )
+   truncate_filter_impl(const dmImage&  _Dst, 
+                        const dmRegion& _Rgn, 
+                        const dmPoint&  _Pt )
    :Dst(_Dst)
    ,Rgn(_Rgn)
    ,Pt(_Pt) {}
@@ -261,12 +279,14 @@ struct __dm_truncate_impl
     }
   }
 };
+
+};
 //---------------------------------------------------------------------
 bool dmTruncateImage( const dmImage& _Src, dmImage& _Dst, const dmRegion& _Rgn,
                       const dmPoint& _Point )
 {
-   __dm_truncate_impl _filter(_Dst,_Rgn,_Point);
-   return dmImplementScalarOperation(_filter,_Src);
+   truncate_filter_impl filter(_Dst,_Rgn,_Point);
+   return dmImplementScalarOperation(filter,_Src);
 }
 //---------------------------------------------------------------------
 

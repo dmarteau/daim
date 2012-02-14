@@ -44,7 +44,7 @@ namespace daim {
       U _result;
 
       void reset() { _result = pixel_traits<value_type>::min(); }
-      void accumulate( const argument_type& x ) { 
+      void accumulate( argument_type x ) { 
         if( x >  _result ) _result = x;
       }
 
@@ -63,7 +63,7 @@ namespace daim {
       U _result;
 
       void reset() { _result = pixel_traits<value_type>::max(); }
-      void accumulate( const argument_type& x ) { 
+      void accumulate( argument_type x ) { 
         if( x <  _result ) _result = x;
       }
 
@@ -87,7 +87,7 @@ namespace daim {
          _max = pixel_traits<value_type>::min(); 
       }
 
-      void accumulate( const argument_type& x ) { 
+      void accumulate( argument_type x ) { 
         if( x < _min ) _min = x; else
         if( x > _max ) _max = x; 
       }

@@ -40,6 +40,10 @@
 
 namespace daim {
 
+namespace core {
+
+namespace functional {
+
 template<class In,class F>
 inline void __for_each(In __first, In __last, F& __f) {
   for ( ; __first != __last; ++__first)
@@ -49,9 +53,9 @@ inline void __for_each(In __first, In __last, F& __f) {
 //---------------------------------------------------------
 // For_Each ->  UnOp : x |-> UnOp(x) ; x E In;
 //---------------------------------------------------------
-template<class UnOp> struct _For_Each {
+template<class UnOp> struct For_Each {
   UnOp op;
-  _For_Each( const UnOp& _op ) : op(_op) {}
+  For_Each( const UnOp& _op ) : op(_op) {}
   
   template<class In> void operator()( In l, long x1, long x2 ) { 
      __for_each( *l+x1,*l+x2+1,op ); 
@@ -62,10 +66,10 @@ template<class UnOp> struct _For_Each {
 //---------------------------------------------------------
 // Count ->  cnt = Card { x E In / x==value }
 //---------------------------------------------------------
-template<class T,class Size> struct _Count {
+template<class T,class Size> struct Count {
   Size cnt;
   T    value;
-  _Count(const T& v) : value(v), cnt(0) {}
+  Count(const T& v) : value(v), cnt(0) {}
   
   template<class In> 
   Size operator()( In l, long x1, long x2 ) { return (cnt += STD(count)(*l+x1,*l+x2+1,value)); }
@@ -75,10 +79,10 @@ template<class T,class Size> struct _Count {
 //---------------------------------------------------------
 // Count_If -> cnt = Card { x E In / p(x)==true }
 //---------------------------------------------------------
-template<class Pred,class Size> struct _Count_If {
+template<class Pred,class Size> struct Count_If {
   Pred p;
   Size cnt;
-  _Count_If( const Pred& _p ) : p(_p), cnt(0) {}
+  Count_If( const Pred& _p ) : p(_p), cnt(0) {}
 
   template<class In> 
   Size operator()( In l, long x1, long x2 ) { return (cnt += STD(count_if)(*l+x1,*l+x2+1,p)); }
@@ -89,7 +93,7 @@ template<class Pred,class Size> struct _Count_If {
 //---------------------------------------------------------
 // Copy  -> {Out} = {In}
 //---------------------------------------------------------
-struct _Copy {
+struct Copy {
   template<class In,class Out> 
   void operator()( In l, Out r, long x1, long x2 ) { 
     STD(copy)(*l+x1,*l+x2+1,*r+x1); 
@@ -104,9 +108,9 @@ inline Out __copy_if( In first,In last,Out res, Pred& p) {
   return res;
 }
 //
-template<class Pred> struct _Copy_If {
+template<class Pred> struct Copy_If {
   Pred p;
-  _Copy_If( const Pred& _p ) : p(_p) {}
+  Copy_If( const Pred& _p ) : p(_p) {}
   
   template<class In,class Out> 
   void operator()( In l, Out r,long x1,long x2 ) { 
@@ -118,9 +122,9 @@ template<class Pred> struct _Copy_If {
 //---------------------------------------------------------
 // Transform   -> {Out} = { UnOp(x) ; x E In }
 //---------------------------------------------------------
-template<class UnOp> struct _UnaryTransform {
+template<class UnOp> struct UnaryTransform {
   UnOp op;
-  _UnaryTransform( const UnOp& _op ) : op(_op) {}
+  UnaryTransform( const UnOp& _op ) : op(_op) {}
 
   template<class In,class Out> 
   void operator()( In l,Out r, long x1, long x2 ) { 
@@ -132,9 +136,9 @@ template<class UnOp> struct _UnaryTransform {
 //---------------------------------------------------------
 // Binary Transform ->  {Out} = { BinOp(x1,x2) ; x E In, x E In2 }
 //---------------------------------------------------------
-template<class BinOp> struct _BinaryTransform {
+template<class BinOp> struct BinaryTransform {
   BinOp op;
-  _BinaryTransform( const BinOp& _op ) : op(_op) {}
+  BinaryTransform( const BinOp& _op ) : op(_op) {}
   
   template<class In,class In2,class Out>
   void operator()( In l,In2 l2,Out r,long x1,long x2 )
@@ -145,9 +149,9 @@ template<class BinOp> struct _BinaryTransform {
 //---------------------------------------------------------
 // Replace -> x |-> new_val if x==val, x otherwise; x E In
 //---------------------------------------------------------
-template<class T> struct _Replace {
+template<class T> struct Replace {
   T val, new_val;
-  _Replace( const T& v, const T& new_v ) : val(v), new_val(new_v) {}
+  Replace( const T& v, const T& new_v ) : val(v), new_val(new_v) {}
   
   template<class In>  void operator()( In l,long x1,long x2 ) { 
     STD(replace)( *l+x1,*l+x2+1,val,new_val ); 
@@ -156,10 +160,10 @@ template<class T> struct _Replace {
 //---------------------------------------------------------
 // Replace_if  x |-> new_val if Pred(x)==true, x otherwise; x E In
 //---------------------------------------------------------
-template<class Pred,class T> struct _Replace_If {
+template<class Pred,class T> struct Replace_If {
   Pred p;
   T    val;
-  _Replace_If( const T& v, const Pred& _p) : p(_p), val(v) {}
+  Replace_If( const T& v, const Pred& _p) : p(_p), val(v) {}
   
   template<class In> void operator()( In l,long x1,long x2 ) {
      STD(replace_if)( *l+x1,*l+x2+1,p,val ); 
@@ -176,10 +180,10 @@ inline Pred __make_binary( In first,In last,Out res,const T& t_val,const T& f_va
   return p;
 }
 //
-template<class Pred,class T> struct _Binarize {
+template<class Pred,class T> struct Binarize {
   Pred p;
   T    t_val, f_val;
-  _Binarize( const T& _t,const T& _f, const Pred& _p) : p(_p), t_val(_t),f_val(_f) {}
+  Binarize( const T& _t,const T& _f, const Pred& _p) : p(_p), t_val(_t),f_val(_f) {}
   
   template<class In,class Out>
   void operator()( In l,Out r,long x1,long x2 ) { 
@@ -191,9 +195,9 @@ template<class Pred,class T> struct _Binarize {
 //---------------------------------------------------------
 // Replace_Copy  {Out} = { new_val if x==val, x otherwise; x E In }
 //---------------------------------------------------------
-template<class T> struct _Replace_Copy {
+template<class T> struct Replace_Copy {
   T  val, new_val;
-  _Replace_Copy( const T& v, const T& new_v) : val(v), new_val(new_v) {}
+  Replace_Copy( const T& v, const T& new_v) : val(v), new_val(new_v) {}
   
   template<class In,class Out>
   void operator()( In l,Out r,long x1,long x2 ) {
@@ -203,10 +207,10 @@ template<class T> struct _Replace_Copy {
 //---------------------------------------------------------
 // Replace_Copy_If {Out} = { val if Pred(x)==true, x otherwise; x E In }
 //---------------------------------------------------------
-template<class Pred,class T> struct _Replace_Copy_If {
+template<class Pred,class T> struct Replace_Copy_If {
   Pred p;
   T    val;
-  _Replace_Copy_If( const T& v, const Pred& _p) : p(_p), val(v) {}
+  Replace_Copy_If( const T& v, const Pred& _p) : p(_p), val(v) {}
   
   template<class In,class Out>
   void operator()( In l,Out r,long x1,long x2 ) { 
@@ -218,9 +222,9 @@ template<class Pred,class T> struct _Replace_Copy_If {
 //---------------------------------------------------------
 // Fill  -> x |-> val; x E In
 //---------------------------------------------------------
-template<class T> struct _Fill {
+template<class T> struct Fill {
   T    val;
-  _Fill( const T& v ) : val(v) {}
+  Fill( const T& v ) : val(v) {}
 
   template<class In>
   void operator()( In l,long x1,long x2 ) { 
@@ -230,9 +234,9 @@ template<class T> struct _Fill {
 //---------------------------------------------------------
 // Generate -> x |-> Gen(); x E In
 //---------------------------------------------------------
-template<class Gen> struct _Generate {
+template<class Gen> struct Generate {
   Gen g;
-  _Generate( const Gen& _g ) : g(_g) {}
+  Generate( const Gen& _g ) : g(_g) {}
 
   template<class In>  void operator()( In l,long x1,long x2 ) { 
     g = STD(generate)( *l+x1,*l+x2+1,g ); 
@@ -246,9 +250,9 @@ void __combine( In first,In last, Out res, BinaryFun& f) {
   while(first!=last) { *res = f(*first,*res); res++; first++; }
 }
 //----------------------------------------------------------
-template<class BinaryFun> struct _Combine {
+template<class BinaryFun> struct Combine {
   BinaryFun f;
-  _Combine( const BinaryFun& _f) : f(_f) {}
+  Combine( const BinaryFun& _f) : f(_f) {}
   
   template<class In,class Out> void operator()( In l,Out r,long x1,long x2 ) { 
     __combine( *l+x1,*l+x2+1,*r+x1, f); 
@@ -261,9 +265,9 @@ void __combine3( In first,In last,In2 second,Out res, TernaryFun& f) {
   while(first!=last) { *res = f(*first,*second,*res); ++res; ++second; ++first; }
 }
 //----------------------------------------------------------
-template<class TernaryFun> struct _Combine3 {
+template<class TernaryFun> struct Combine3 {
   TernaryFun f;
-  _Combine3( const TernaryFun& _f) : f(_f) {}
+  Combine3( const TernaryFun& _f) : f(_f) {}
   
   template<class In,class In2,class Out> 
   void operator()( In l,In2 l2,Out r,long x1,long x2 ) { 
@@ -274,9 +278,9 @@ template<class TernaryFun> struct _Combine3 {
 //---------------------------------------------------------
 // Accumulate Sum( x ); x E In
 //---------------------------------------------------------
-template<class T> struct _Accumulate {
+template<class T> struct Accumulate {
   T val;
-  _Accumulate( T v) : val(v) {}
+  Accumulate( T v) : val(v) {}
   
   template<class In> T operator()( In l,long x1,long x2 ) { 
     return (val = STD(accumulate)( *l+x1,*l+x2+1,val )); 
@@ -285,10 +289,10 @@ template<class T> struct _Accumulate {
   T value() const { return val; }
 };
 //---------------------------------------------------------
-template<class T,class Pred> struct _Accumulate_If {
+template<class T,class Pred> struct Accumulate_If {
   T    val;
   Pred p;
-  _Accumulate_If( const Pred& _p,const T& v) : val(v),p(_p) {}
+  Accumulate_If( const Pred& _p,const T& v) : val(v),p(_p) {}
   
   template<class In> T operator()( In l,long x1,long x2 ) { 
     return (val = STD(accumulate)( *l+x1,*l+x2+1,val,p )); 
@@ -300,7 +304,7 @@ template<class T,class Pred> struct _Accumulate_If {
 //---------------------------------------------------------
 // Swap : swap( {In}, {Out} )
 //---------------------------------------------------------
-struct _Swap {
+struct Swap {
   template<class In,class Out> 
   void operator()( In l, Out r, long x1, long x2 ) { STD(swap_ranges)(*l+x1,*l+x2+1,*r+x1); }
 };
@@ -313,9 +317,9 @@ void __evaluate( In first,In2 last, Out second, BinaryFun& f) {
 }
 //---------------------------------------------------------
 template<class BinaryFun>
-struct _Evaluate {
+struct Evaluate {
   BinaryFun f;
-  _Evaluate( const BinaryFun& _f ) : f(_f) {}
+  Evaluate( const BinaryFun& _f ) : f(_f) {}
   
   template<class In,class Out> void operator()( In l, Out r, long x1, long x2 ) { 
      __evaluate( *l+x1,*l+x2+1,*r+x1,f ); 
@@ -325,6 +329,11 @@ struct _Evaluate {
 };
 
 //---------------------------------------------------------
+
+}; // namespace functional
+
+}; // namespace core
+
 
 }; // namespace daim
 

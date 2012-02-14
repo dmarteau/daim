@@ -25,6 +25,7 @@
 #define dmUserIncludes
 #define dmUseKernelImageTemplates
 #include "daim_kernel.h"
+#include "templates/processing/dmArithmetics.h"
 #include "templates/processing/dmHistogram.h"
 
 #include <numeric>
