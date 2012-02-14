@@ -166,10 +166,6 @@ ifeq ($(MAKE_TARGET),)
 $(error Invalid target $(BUILD_CONFIG))
 endif
 
-# Special contrib directory
-CONTRIB=$(topsrcdir)/contrib
-
-
 ifeq ($(OS_ARCH),WINNT)
 ifdef CYGWIN_WRAPPER
 normalizepath = $(foreach p,$(1),$(shell cygpath -w $(p)))

@@ -49,9 +49,6 @@ ifdef DAIM_DEBUG
  MODULE_DEFS += DEBUG
 endif
 
-# Add contrib directory for libs path
-MODULE_LIBDIR += $(BUILD_DIR)/contrib/lib
-
 # Set EXPORTS directory
 
 ifndef MODULE_EXPORT_NAME
