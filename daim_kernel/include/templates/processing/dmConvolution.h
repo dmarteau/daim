@@ -82,7 +82,7 @@ void convolution( const dmRegion& rgn,
    // Because of the swap we need 
    // to restore result in <in>                   
    if(lin!=lsave) 
-     _copy(rgn,lin,lsave);
+     core::copy(rgn,lin,lsave);
 }
 //---------------------------------------------------------------------------
 // Convolve with a set of kernels and perform 

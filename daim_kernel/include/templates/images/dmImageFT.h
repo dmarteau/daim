@@ -32,6 +32,8 @@
 
 #include <math.h>
 
+#include "templates/processing/dmArithmetics.h"
+
 namespace daim {
 
 typedef dmFT_Data ft_data_t;

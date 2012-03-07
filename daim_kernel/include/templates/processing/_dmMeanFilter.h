@@ -45,7 +45,6 @@ namespace daim {
      typedef typename A::result_type   result_type;
 
      typedef pixel_traits<result_type>           traits_type;
-     typedef typename traits_type::integer_type  integer_type;
 
      const K& _k;
      A        _a;
@@ -89,8 +88,7 @@ namespace daim {
 
        for(long x=x1;x<x2;++x) 
        {
-         (*_out)[x] =  _round_value(static_cast<dm_real>(_result)/_norm,
-                         traits_type(),integer_type() );
+         (*_out)[x] =  traits_type::round_value(static_cast<dm_real>(_result)/_norm);
 
          _corner = *_in + (x-_k.x());
 
@@ -101,8 +99,7 @@ namespace daim {
          }
 	   } 
        // Add last value 
-       (*_out)[x2] = _round_value(static_cast<dm_real>(_result)/_norm,
-                         traits_type(),integer_type() );
+       (*_out)[x2] = traits_type::round_value(static_cast<dm_real>(_result)/_norm);
 
      }  
 

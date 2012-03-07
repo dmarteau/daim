@@ -30,6 +30,8 @@
 // Author       : David Marteau
 //--------------------------------------------------------
 
+#include "templates/processing/dmArithmetics.h"
+
 namespace daim {
 
 //-------------------------------------------------------

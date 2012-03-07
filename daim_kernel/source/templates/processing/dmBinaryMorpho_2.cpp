@@ -221,7 +221,7 @@ int separate_particules( const dmRegion& _rgn, dmRegion& _dest,
        R.SubRoi(S);
        R.AndRoi(X[k]);
        if(R.IsEmptyRoi()) { S.AddRoi(Q); break; }
-       _RoiOperation(R,_dist.begin(R.Rectangle()),_assign_label());
+       core::RoiOperation(R,_dist.begin(R.Rectangle()),_assign_label());
        create_rgnroi(_dist,std::bind2nd(std::equal_to<int>(),-1),E,R);
        R.SubRoi(E);
        if(R.IsEmptyRoi()) break;
@@ -298,7 +298,7 @@ int ultimate_dilation( const dmRegion& _rgn, dmRegion& _dest,
       Q.SubRoi(S);
       Q.AndRoi(X);
       if(Q.IsEmptyRoi()) break;
-      _RoiOperation(Q,_map.begin(Q.Rectangle()),_assign_label());
+      core::RoiOperation(Q,_map.begin(Q.Rectangle()),_assign_label());
       create_rgnroi(_map,std::bind2nd(std::equal_to<int>(),-1),Z,Q);
       Q.SubRoi(Z);
       if(Q.IsEmptyRoi()) break;
@@ -456,7 +456,7 @@ int watershed_simple( const image<dm_uint8>& _image, dmRegion& _dest,
        R.SubRoi(S);
        R.AndRoi(X);
        if(R.IsEmptyRoi()) { S.AddRoi(Q); break; }
-       _RoiOperation(R,_dist.begin(R.Rectangle()),_assign_label());
+       core::RoiOperation(R,_dist.begin(R.Rectangle()),_assign_label());
        create_rgnroi(_dist,std::bind2nd(std::equal_to<int>(),-1),E,R);
        R.SubRoi(E);
        if(R.IsEmptyRoi()) break;

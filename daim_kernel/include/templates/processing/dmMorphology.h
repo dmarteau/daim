@@ -85,7 +85,7 @@ void erosion( image<T>& in, image<T>& tmp,
    // Because of the swap we need
    // to restore result in <in>
    if(lin!=lsave)
-     _copy(rgn,lin,lsave);
+     core::copy(rgn,lin,lsave);
 }
 //---------------------------------------------------------------------------
 // Dilation
@@ -122,7 +122,7 @@ void dilation( image<T>& in, image<T>& tmp,
    _family.Complement();
 
    if(lin!=lsave)
-     _copy(rgn,lin,lsave);
+     core::copy(rgn,lin,lsave);
 }
 //---------------------------------------------------------------------------
 // Thinning
@@ -152,7 +152,7 @@ void thinning( image<T>& in, image<T>& tmp,
    }
 
    if(lin!=lsave)
-     _copy(rgn,lin,lsave);
+     core::copy(rgn,lin,lsave);
 }
 //---------------------------------------------------------------------------
 // Thickening
@@ -186,7 +186,7 @@ void thickening( image<T>& in, image<T>& tmp,
   _family.Complement();
 
   if(lin!=lsave)
-    _copy(rgn,lin,lsave);
+    core::copy(rgn,lin,lsave);
 }
 //---------------------------------------------------------------------------
 // Opening )
@@ -231,7 +231,7 @@ void opening( image<T>& in, image<T>& tmp,
    _family.Transpose();
 
    if(lin!=lsave)
-      _copy(rgn,lin,lsave);
+     core::copy(rgn,lin,lsave);
 }
 //---------------------------------------------------------------------------
 // Closing
@@ -275,7 +275,7 @@ void closing( image<T>& in, image<T>& tmp,
    _family.Transpose();
 
    if(lin!=lsave)
-     _copy(rgn,lin,lsave);
+     core::copy(rgn,lin,lsave);
 }
 
 //---------------------------------------------------------------------------
@@ -331,7 +331,7 @@ void hitormiss( image<T>& in, image<T>& out, image<T>& tmp,
   for(size_t k=0;k<_family.Size();++k) {
     _kernel.fromDescription(_family[k]);
     morphology::apply(rgn,lin,lout,_kernel,morphology::hitormiss<T,T>());
-    RoiOperation( _Combine< max_of<value_type> >( max_of<value_type>() ),
+    RoiOperation( core::functional::Combine< max_of<value_type> >( max_of<value_type>() ),
                   tmp,out,rgn,_src);
   }
 }

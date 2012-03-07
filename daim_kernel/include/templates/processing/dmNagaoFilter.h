@@ -89,8 +89,7 @@ struct _Filter
          s = m2 - (m1*m1)/fsize;
          if(s<smin) { smin = s; m = m1; }
       }
-      (*_out)[ix] = daim::_get_range_value( m/fsize,
-                pixel_traits, integer_type );
+      (*_out)[ix] = daim::pixel_traits<T2>::clamp( m/fsize);
 	}
   }   
 };

@@ -119,8 +119,6 @@ namespace daim {
       typedef typename vector_accumulator<T,R,U>::argument_type argument_type;
       typedef typename vector_accumulator<T,R,U>::value_type    value_type;
       
-      typedef typename pixel_traits<result_type>::integer_type  integer_type;
-
       const std::vector<value_type>& _coeffs;
 
       L_filter( const std::vector<value_type>& _c, dm_uint _size ) 
@@ -140,7 +138,7 @@ namespace daim {
         _result = 0;
         std::sort(accumulator_type::_data.begin(),accumulator_type::_data.end());
         for(int i=_coeffs.size();--i>=0;) _result += _coeffs[i]*accumulator_type::_data[i];
-        return _get_range_value(_result,pixel_traits<result_type>(),integer_type());
+        return pixel_traits<result_type>::clamp(_result);
       }
    };
 

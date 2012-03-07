@@ -38,7 +38,7 @@ namespace daim {
 
    template<class K,class A,class ROI,class In,class Out>
    void apply(  const ROI& roi,In in, Out out,const K& _k, const A& a ) {
-    _RoiOperation(roi,in,out,morphology::getFunctor(_k,a)); 
+     core::RoiOperation(roi,in,out,morphology::getFunctor(_k,a)); 
    }
 
  } // namespace morphology

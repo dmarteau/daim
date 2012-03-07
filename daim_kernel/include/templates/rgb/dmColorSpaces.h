@@ -37,7 +37,7 @@ namespace daim {
    typedef image<dm_rgb24>::value_type rgb_triple;
 
    inline dm_uint8 to_rgb_channel( dm_real x ) {
-     return _get_range_value(x,pixel_traits<dm_uint8>(),integer_true());
+     return pixel_traits<dm_uint8>::clamp(x);
    }
 
    #include "colorspaces/_dmRGB.h"

@@ -55,9 +55,7 @@ namespace polar
      template<>
      struct _promoted<integer_true> : std::binary_function<T,T,dm_uint8> {
        dm_uint8 operator()( const T& x, const T& y ) {
-         return _get_range_value(
-                   atan2(y,x) * 40.58451048 + 127.5,
-                   pixel_traits<dm_uint8>(),integer_true()); // 1/Pi
+         return pixel_traits<dm_uint8>()::clamp( atan2(y,x) * 40.58451048 + 127.5 ); // 1/Pi
        }
      };
 
@@ -106,9 +104,7 @@ namespace polar
     typedef phase<T,integer_true> functor;
 
     dm_uint8 operator()( const T& x, const T& y ) {
-      return _get_range_value(
-                atan2(y,x) * 40.58451048 + 127.5,
-                pixel_traits<dm_uint8>(),integer_true()); // 1/Pi
+      return pixel_traits<dm_uint8>::clamp( atan2(y,x) * 40.58451048 + 127.5 ); // 1/Pi
     }
   };
 

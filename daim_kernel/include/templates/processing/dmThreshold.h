@@ -238,11 +238,11 @@ void hysteresis_threshold( const dmRegion& _roi, const dmPoint p,
 {
    if(connect <= connect4)
    {
-    _TwoPassesRoiOperation( _roi,p,_src,_dest,
+     TwoPassesRoiOperation( _roi,p,_src,_dest,
                             _hysteresis4_pass1<T1,T2>(s1,s2),
                             _hysteresis4_pass2<T1,T2>(s1,s2));
    } else {
-    _TwoPassesRoiOperation( _roi,p,_src,_dest,
+     TwoPassesRoiOperation( _roi,p,_src,_dest,
                             _hysteresis8_pass1<T1,T2>(s1,s2),
                             _hysteresis8_pass2<T1,T2>(s1,s2));   
    }

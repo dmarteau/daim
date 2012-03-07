@@ -89,7 +89,7 @@ template<class ROI,class In,class Out,class K,class A>
 inline A _convolve1( const ROI& roi,In in, Out out,
                      const K& k, const A& a)
 {
-  return _RoiOperation(roi,in,out,conv::getFunctor(k,a)).a();
+  return core::RoiOperation(roi,in,out,conv::getFunctor(k,a)).a();
 }
 
 // Apply convolution operation on integer pixel type

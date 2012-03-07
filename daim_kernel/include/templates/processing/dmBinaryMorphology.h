@@ -156,7 +156,7 @@ void local_maxima8( const dmRegion& _roi, const dmPoint p,
                     image<T1>& _src, 
                     image<T2>& _dest )
 {
-    _TwoPassesRoiOperation( _roi,p,_src,_dest,
+    TwoPassesRoiOperation( _roi,p,_src,_dest,
                            local_max8_pass1<T1,T2>(),
                            local_max8_pass2<T1,T2>());
 }

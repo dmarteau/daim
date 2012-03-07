@@ -83,17 +83,17 @@ struct _LinearGradient
 
 template<class ROI,class In,class Out>
 inline void _gradient_x( const ROI& roi, In in, Out out ) {
-  _RoiOperation(roi,in,out,_LinearGradientX());
+  core::RoiOperation(roi,in,out,_LinearGradientX());
 } 
 
 template<class ROI,class In,class Out>
 inline void _gradient_y( const ROI& roi, In in, Out out ) {
-  _RoiOperation(roi,in,out,_LinearGradientY());
+  core::RoiOperation(roi,in,out,_LinearGradientY());
 }
 
 template<class ROI,class In,class Out,class BinOp>
 inline BinOp _gradient( const ROI& roi, In in, Out out, BinOp& op ) {
-  _RoiOperation(roi,in,out,_LinearGradient<BinOp>(op)).Op();
+  core::RoiOperation(roi,in,out,_LinearGradient<BinOp>(op)).Op();
 }
 
 
@@ -217,15 +217,15 @@ struct _CannyFilter
    _gradient_x(r,in.begin(r),_out1.begin(r));
    _gradient_y(r,in.begin(r),_out2.begin(r));
 
-   _transform(r,_out1.begin(r),_out2.begin(r),in.begin(r),half_norm<_I,T>());
+   core::transform(r,_out1.begin(r),_out2.begin(r),in.begin(r),half_norm<_I,T>());
   
    r.Resize(-1);
-   _RoiOperation(r,_out1.begin(r),_out2.begin(r),in.begin(r),_GradientDetection<_I>());
+   core::RoiOperation(r,_out1.begin(r),_out2.begin(r),in.begin(r),_GradientDetection<_I>());
 
    if(inner)
-     _RoiOperation(r,_out1.begin(r),in.begin(r),_InnerNonMaximalSuppression<T>());  
+     core::RoiOperation(r,_out1.begin(r),in.begin(r),_InnerNonMaximalSuppression<T>());  
    else
-     _RoiOperation(r,_out1.begin(r),in.begin(r),_OuterNonMaximalSuppression<T>());
+     core::RoiOperation(r,_out1.begin(r),in.begin(r),_OuterNonMaximalSuppression<T>());
  }
 };
 

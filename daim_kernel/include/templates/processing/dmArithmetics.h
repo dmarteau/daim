@@ -324,13 +324,12 @@ struct truncate : public pixel_unary_function<T1,T2>
 };
 
 //-----------------------------------------------------------------
-// Truncate image values to the output format
+// Clamp value between two given values
 //-----------------------------------------------------------------
 template<class T1,class T2>
 struct clamp : public pixel_unary_function<T1,T2>
 {
   typedef pixel_traits<T2>  traits_type;
-  typedef typename pixel_traits<T2>::integer_type integer_type;
 
   typedef typename pixel_traits<T1>::value_type argument_type;
   typedef typename pixel_traits<T2>::value_type result_type;
@@ -339,7 +338,6 @@ struct clamp : public pixel_unary_function<T1,T2>
 
   clamp( double _a, double _b )
   {
-    typedef typename pixel_traits<T1>::integer_type int_type;
     a = pixel_traits<T1>::clamp(_a);
     b = pixel_traits<T1>::clamp(_b);
   }

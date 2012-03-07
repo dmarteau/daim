@@ -209,7 +209,7 @@ struct _histogram_moment
 template<class ROI,class Op,class T>
 dm_real histogram_moment( const ROI& rgn, const image<T>& im, int n  )
 {
-  return _RoiOperation(rgn,im.begin(rgn.Rectangle()),
+  return core::RoiOperation(rgn,im.begin(rgn.Rectangle()),
                        _histogram_moment(n))._acc;
 }
 
