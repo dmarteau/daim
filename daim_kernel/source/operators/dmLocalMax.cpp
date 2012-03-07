@@ -31,11 +31,14 @@
 //--------------------------------------------------------------------
 // Local max code
 //--------------------------------------------------------------------
-struct __dm_impl_localmax
+
+namespace {
+
+struct localmax_impl
 {
   dmBufferParameters& params;
   dmRegion&           rgn;
-  __dm_impl_localmax(dmBufferParameters& _params,dmRegion& _rgn) 
+  localmax_impl(dmBufferParameters& _params,dmRegion& _rgn) 
   : params(_params),rgn(_rgn) {}
 
   template<class ImageType> 
@@ -75,13 +78,15 @@ struct __dm_impl_localmax
 
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmLocalMax( dmBufferParameters& _Params , dmRegion& _Result )
 {
   _Params.CreateBuffer(*dmGetDescriptor(dmPixelFormat8bppIndexed),
                          dmMaskDescription(3),false);   
 
-  __dm_impl_localmax _filter(_Params,_Result);
+  localmax_impl _filter(_Params,_Result);
   return dmImplementScalarOperation(_filter,_Params.thisImage);
 }
 //--------------------------------------------------------------------

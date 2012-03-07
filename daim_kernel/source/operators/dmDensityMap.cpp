@@ -28,6 +28,7 @@
 #include "common/dmUserLib.h"
 
 #include "templates/processing/dmDensityMap.h"
+#include "templates/processing/dmArithmetics.h"
 
 using namespace daim;
 
@@ -59,7 +60,6 @@ struct __dm_impl_DensityMap
      typedef typename dmIImage<_PixelFormat>::traits_type  traits_type;
 
      typedef typename traits_type::value_type   value_type;
-     typedef typename traits_type::integer_type integer_type;
 
      gap<value_type> _g(traits_type::min(),traits_type::max());
 
@@ -69,8 +69,8 @@ struct __dm_impl_DensityMap
        mMaxRange = _g.max();
      } else {
        _g = gap<value_type>(
-          _get_range_value(mMinRange,traits_type(),integer_type()),
-          _get_range_value(mMaxRange,traits_type(),integer_type())
+           traits_type::clamp(mMinRange),
+           traits_type::clamp(mMaxRange)
        );
      }
 

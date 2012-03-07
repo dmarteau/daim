@@ -36,15 +36,18 @@ using namespace daim;
 //----------------------------------------------------------------------
 // dmCompareAndCopy
 //----------------------------------------------------------------------
-struct __dm_copy_predicat
+
+namespace {
+
+struct copy_predicat
 {
   const dmImage&  src;
   const dmRegion& rgn;
   const dmPoint&  p;
   dm_uint  predicat;
 
-  __dm_copy_predicat(const dmImage&  _src, dm_uint _predicat,
-                     const dmRegion& _rgn ,const dmPoint& _p)
+  copy_predicat(const dmImage&  _src, dm_uint _predicat,
+                const dmRegion& _rgn ,const dmPoint& _p)
    :src(_src)
    ,rgn(_rgn) 
    ,p(_p)
@@ -71,6 +74,8 @@ struct __dm_copy_predicat
     }
   }
 };
+
+}; // namespace
 //---------------------------------------------------------------------
 // Source is lhs operand
 //---------------------------------------------------------------------
@@ -79,7 +84,7 @@ bool dmCompareAndCopy( const dmImage&  src, dmImage& dst, dm_uint  predicat,
 {
   if(src.PixelFormat()==dst.PixelFormat())
   {
-    __dm_copy_predicat _filter(src,predicat,rgn,p);
+    copy_predicat _filter(src,predicat,rgn,p);
 
     return dmImplementScalarOperation(_filter,dst);
   }

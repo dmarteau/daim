@@ -30,13 +30,16 @@
 #include "templates/processing/dmLinearStretch.h"
 
 //---------------------------------------------------------------------
-struct __dm_nn_stretch_impl
+
+namespace {
+
+struct nn_stretch_impl
 {
    const dmImage&  Src;
    const dmRect&   Rect;
 
-   __dm_nn_stretch_impl(const dmImage&  _Src,
-                        const dmRect&   _Rect )
+   nn_stretch_impl(const dmImage&  _Src,
+                   const dmRect&   _Rect )
    :Src(_Src)
    ,Rect(_Rect)
    {}
@@ -53,13 +56,13 @@ struct __dm_nn_stretch_impl
    }
 };
 //---------------------------------------------------------------------
-struct __dm_bilinear_stretch_impl
+struct bilinear_stretch_impl
 {
    const dmImage&  Src;
    const dmRect&   Rect;
 
-   __dm_bilinear_stretch_impl(const dmImage&  _Src,
-                              const dmRect&   _Rect )
+   bilinear_stretch_impl(const dmImage&  _Src,
+                         const dmRect&   _Rect )
    :Src(_Src)
    ,Rect(_Rect)
    {}
@@ -75,6 +78,8 @@ struct __dm_bilinear_stretch_impl
      daim::bilinear_stretch(src->Gen(),Rect,_Dest.Gen());
    }
 };
+
+}; // namespace
 //---------------------------------------------------------------------
 bool dmLinearStretch( dmInterpolationType mode,
                       const  dmImage& _Src, const  dmRect& _Rect,
@@ -85,12 +90,12 @@ bool dmLinearStretch( dmInterpolationType mode,
     switch(mode)
     {
       case dmDecimation : {
-        __dm_nn_stretch_impl _filter(_Src,_Rect);
+        nn_stretch_impl _filter(_Src,_Rect);
         return dmImplementOperation(_filter,_Dest);
       } break;
 
       case dmBilinear : {
-        __dm_bilinear_stretch_impl _filter(_Src,_Rect);
+        bilinear_stretch_impl _filter(_Src,_Rect);
         return dmImplementOperation(_filter,_Dest);
       } break;
 
@@ -122,12 +127,12 @@ bool dmLinearStretch( dmBufferParameters& _Params, dmInterpolationType mode )
        switch(mode)
        {
          case dmDecimation : {
-           __dm_nn_stretch_impl _filter(_Src,_Rgn.Rectangle());
+           nn_stretch_impl _filter(_Src,_Rgn.Rectangle());
            return dmImplementOperation(_filter,_Params.thisImage);
          } break;
 
          case dmBilinear : {
-           __dm_bilinear_stretch_impl _filter(_Src,_Rgn.Rectangle());
+           bilinear_stretch_impl _filter(_Src,_Rgn.Rectangle());
            return dmImplementOperation(_filter,_Params.thisImage);
          } break;
 

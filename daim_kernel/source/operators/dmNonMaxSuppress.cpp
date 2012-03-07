@@ -30,12 +30,15 @@
 #include "common/dmUserLib.h"
 
 //--------------------------------------------------------------------
-struct __dm_impl_nonmaxsuppress
+
+namespace {
+
+struct nonmaxsuppress_impl
 {
    dmBufferParameters& params;
    bool                inner;
 
-   __dm_impl_nonmaxsuppress(dmBufferParameters& _params, bool _inner)
+   nonmaxsuppress_impl(dmBufferParameters& _params, bool _inner)
    : params(_params),inner(_inner) {}
 
   template<EPixelFormat _PixelFormat> 
@@ -56,11 +59,13 @@ struct __dm_impl_nonmaxsuppress
                                   _imgbuf->Gen(),_Image.Gen(),inner);
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmNonMaxSuppress::Apply( dmBufferParameters& _params )
 {
    _params.CreateBuffer(dmMaskDescription(1,1,3,3));
-   __dm_impl_nonmaxsuppress _filter(_params,this->_Inner);
+   nonmaxsuppress_impl _filter(_params,this->_Inner);
    return dmImplementScalarOperation(_filter,_params.thisImage);
 } 
 //--------------------------------------------------------------------

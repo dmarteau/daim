@@ -52,28 +52,28 @@ void convolve_mode_(int _mode,
     //            (optimisation purpose)
     case dmTk::Math::AbsPixels :
     case dmTk::Math::AddPixels :
-      daim::convolution(daim::add_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::add_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::SubPixels :
-      daim::convolution(daim::sub_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::sub_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::OrPixels  :
-      daim::convolution(daim::or_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::or_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::XorPixels :
-      daim::convolution(daim::xor_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::xor_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::AndPixels :
-      daim::convolution(daim::and_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::and_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::MinPixels :
-      daim::convolution(daim::min_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::min_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::MaxPixels :
-      daim::convolution(daim::max_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::max_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
     case dmTk::Math::NSubPixels :
-      daim::convolution(daim::nsub_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+      daim::convolution(daim::fn::nsub_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
       break;
    }
 }
@@ -89,22 +89,22 @@ void convolve_mode_(int _mode,
    switch(_mode)
    {
      case dmTk::Math::AddPixels :
-       daim::convolution(daim::add_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+       daim::convolution(daim::fn::add_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
        break;
      case dmTk::Math::AbsPixels :
-      daim::convolution(daim::add_pixel<T>(),in,out,tmp,rgn,src,_family,true,iter);
+      daim::convolution(daim::fn::add_pixel<T>(),in,out,tmp,rgn,src,_family,true,iter);
       break;
      case dmTk::Math::SubPixels :
-       daim::convolution(daim::add_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+       daim::convolution(daim::fn::add_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
        break;
      case dmTk::Math::MinPixels :
-       daim::convolution(daim::min_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+       daim::convolution(daim::fn::min_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
        break;
      case dmTk::Math::MaxPixels :
-       daim::convolution(daim::max_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+       daim::convolution(daim::fn::max_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
        break;
      case dmTk::Math::NSubPixels :
-       daim::convolution(daim::nsub_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
+       daim::convolution(daim::fn::nsub_pixel<T>(),in,out,tmp,rgn,src,_family,_unsigned,iter);
        break;
      default:
        daim::convolution(rgn,in,tmp,_family,_unsigned,iter);

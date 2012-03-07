@@ -30,15 +30,17 @@
 #include "operators/dmAccumulator.h"
 #include "templates/processing/dmArithmetics.h"
 
+namespace {
+
 //--------------------------------------------------
-struct __dm_impl_Accumulate
+struct accumulate_impl
 {
   dmAccumulator&  This;
   bool            bFinalize;
   const dmRegion& SrcRgn;
   dmPoint         To;
 
-  __dm_impl_Accumulate(dmAccumulator& _This,const dmRegion& _SrcRgn,
+  accumulate_impl(dmAccumulator& _This,const dmRegion& _SrcRgn,
                                             const dmPoint& _To )
   :This(_This)
   ,bFinalize(false) 
@@ -46,7 +48,7 @@ struct __dm_impl_Accumulate
   ,To(_To)
   {}   
 
-  __dm_impl_Accumulate(dmAccumulator& _This)
+  accumulate_impl(dmAccumulator& _This)
   :This(_This)
   ,bFinalize(true) 
   ,SrcRgn(_This.thisRegion)
@@ -69,7 +71,7 @@ struct __dm_impl_Accumulate
 
       typedef typename dmIImage<_PixelFormat>::value_type result_type;
       daim::transform(SrcRgn,To,_ThisImage->Gen(),_Src.Gen(),
-                       daim::truncate_value<value_type,result_type>());
+                       daim::fn::truncate<value_type,result_type>());
 
       // restore back the region
       This.thisRegion.Translate(To.x,To.y);
@@ -84,6 +86,8 @@ struct __dm_impl_Accumulate
     }
   }
 };
+
+}; //namespace
 //--------------------------------------------------
 dmAccumulator::dmAccumulator()
 :thisDest(NULL)
@@ -125,7 +129,7 @@ bool dmAccumulator::Add( const dmImage*  _SrcImage,
   if(_SrcImage!=NULL && 
      _SrcImage->PixelFormat()==thisFormat)
   {
-    __dm_impl_Accumulate _filter(*this,_SrcRegion,_To);
+    accumulate_impl _filter(*this,_SrcRegion,_To);
     return dmImplementScalarOperation(_filter,*_SrcImage);
   }
   return false;
@@ -137,7 +141,7 @@ bool dmAccumulator::Add( const dmImage* _SrcImage )
      _SrcImage->PixelFormat()==thisFormat)
   {
     dmPoint _To(0,0);
-    __dm_impl_Accumulate _filter(*this,_SrcImage->Rect(),_To);
+    accumulate_impl _filter(*this,_SrcImage->Rect(),_To);
     return dmImplementScalarOperation(_filter,*_SrcImage);
   }
   return false;
@@ -156,7 +160,7 @@ bool dmAccumulator::Finalize( bool _Normalize )
          std::bind2nd(std::divides<value_type>(),value_type(thisCount)));
 
     if(thisDest) {
-       __dm_impl_Accumulate _filter(*this);
+      accumulate_impl _filter(*this);
       return dmImplementScalarOperation(_filter,*thisDest);
     }
     return true;

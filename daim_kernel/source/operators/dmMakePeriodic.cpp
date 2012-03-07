@@ -34,12 +34,15 @@ using namespace daim;
 //--------------------------------------------------------------------------
 // Make periodic transformation
 //--------------------------------------------------------------------------
-struct __dm_impl_makeperiodic
+
+namespace {
+
+struct makeperiodic_impl
 {
   const dmRect& r;
   const dmRect& rdest;
   bool& res; 
-  __dm_impl_makeperiodic( const dmRect& _r, const dmRect& _rdest, bool& result ) 
+  makeperiodic_impl( const dmRect& _r, const dmRect& _rdest, bool& result ) 
   : r(_r),rdest(_rdest),res(result) {} 
 
   template<EPixelFormat _PixelFormat>
@@ -48,11 +51,13 @@ struct __dm_impl_makeperiodic
     res = make_periodic(_im.Gen(),r,rdest);
   }
 };
+
+}; // namespace
 //------------------------------------------------------
 bool dmMakePeriodic( dmImage& img, const dmRect& r, const dmRect rdest )
 {
   bool res = false;
-  __dm_impl_makeperiodic _filter(r,rdest,res);
+  makeperiodic_impl _filter(r,rdest,res);
   if(dmImplementOperation(_filter,img))
      return res;
 

@@ -32,15 +32,18 @@
 #include "templates/processing/dmRotation.h"
 
 //---------------------------------------------------------------------
-struct __dm_rotate_impl
+
+namespace {
+
+struct rotate_impl
 {
    const dmImage&  Rhs;
    const dmRect&   Rect;
    dm_real         Angle;
 
-   __dm_rotate_impl(dm_real _Angle,
-                    const dmImage&  _Rhs,
-                    const dmRect&   _Rect )
+   rotate_impl(dm_real _Angle,
+               const dmImage&  _Rhs,
+               const dmRect&   _Rect )
    :Rhs(_Rhs)
    ,Rect(_Rect)
    ,Angle(_Angle)
@@ -57,13 +60,15 @@ struct __dm_rotate_impl
      daim::nn_rotate_copy(Angle,rhs->Gen(),Rect,_Lhs.Gen());
    }
 };
+
+}; // namespace
 //---------------------------------------------------------------------
 bool dmRotateImage( dm_real _Angle, const  dmImage& _Rhs, const  dmRect& _Rect,
                     dmImage& _Lhs )
 {
   if(_Lhs.PixelFormat() == _Rhs.PixelFormat()) 
   {
-     __dm_rotate_impl _filter(_Angle,_Rhs,_Rect);
+    rotate_impl _filter(_Angle,_Rhs,_Rect);
      return dmImplementOperation(_filter,_Lhs);
   }
   return false;    
@@ -87,7 +92,7 @@ bool dmRotateImage( dmBufferParameters& _Params, dm_real _Angle )
        const dmRegion& _Rgn  =  _Params.thisBuffer.BufferRgn();
        const dmImage&  _Rhs  = *_Params.thisBuffer.Buffer();
 
-       __dm_rotate_impl _filter(_Angle,_Rhs,_Rgn.Rectangle());
+       rotate_impl _filter(_Angle,_Rhs,_Rgn.Rectangle());
        return dmImplementOperation(_filter,_Params.thisImage);
     }
   }

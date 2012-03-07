@@ -36,7 +36,9 @@ using namespace daim;
  * Changed hysteresis to take account for new hysteresis algorithm
  */ 
 
-struct __dm_impl_hysteresis_thr
+namespace {
+
+struct hysteresis_thr_impl
 {
   dmBufferParameters& Params;
   dmRegion&           Result;
@@ -44,7 +46,7 @@ struct __dm_impl_hysteresis_thr
   dm_real             HighThr; 
   dm_uint             Connect;
 
-  __dm_impl_hysteresis_thr( 
+  hysteresis_thr_impl( 
     dmBufferParameters& _Params, 
     dmRegion&           _Result,
     dm_real             _LowThr,
@@ -65,8 +67,6 @@ struct __dm_impl_hysteresis_thr
     typedef typename image<T>::value_type  value_type;
     typedef typename image<T>::traits_type traits_type;
 
-    typedef typename traits_type::integer_type integer_type;
-
     dmImageBuffer&  buffer  = Params.thisBuffer;
     dmRegion&       dst_rgn = Result;       
 
@@ -84,8 +84,8 @@ struct __dm_impl_hysteresis_thr
       m = pixel_traits<value_type>::max();
 
       gap<value_type> thr(
-          _get_range_value(LowThr ,traits_type(),integer_type()),
-          _get_range_value(HighThr,traits_type(),integer_type()));
+          traits_type::clamp(LowThr ),
+          traits_type::clamp(HighThr));
   
       hysteresis_threshold(rgn,pDest,im,dest,thr.max(),thr.min(),Connect);
     } 
@@ -94,8 +94,8 @@ struct __dm_impl_hysteresis_thr
       m = pixel_traits<value_type>::min();
 
       gap<value_type> thr(
-          _get_range_value(HighThr,traits_type(),integer_type()),
-          _get_range_value(LowThr ,traits_type(),integer_type()));
+          traits_type::clamp(HighThr),
+          traits_type::clamp(LowThr ));
   
       hysteresis_threshold(rgn,pDest,im,dest,thr.min(),thr.max(),Connect);    
     }    
@@ -139,6 +139,8 @@ struct __dm_impl_hysteresis_thr
      _Apply( _tmp, dest->Gen() ); 
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmHysteresisThreshold::Apply( dmBufferParameters& _Params )
 {
@@ -149,23 +151,26 @@ bool dmHysteresisThreshold::Apply( dmBufferParameters& _Params )
      
   _Params.CreateBuffer(*pDescriptor,dmMaskDescription(3),false);
 
-  __dm_impl_hysteresis_thr _filter(_Params,
-                           this->_Result,
-                           this->_LowThreshold,
-                           this->_HighThreshold,
-                           this->_Connect);
+  hysteresis_thr_impl _filter(_Params,
+                               this->_Result,
+                               this->_LowThreshold,
+                               this->_HighThreshold,
+                               this->_Connect);
 
   return dmImplementOperation(_filter,_Params.thisImage);
 }
 //---------------------------------------------------------------------
-struct __dm_impl_region_thr
+
+namespace {
+
+struct region_thr_impl
 {
   const dmRegion&  Region;
   dmRegion&        Result;
   dm_real          LowThr;
   dm_real          HighThr; 
   
-  __dm_impl_region_thr(
+  region_thr_impl(
     const dmRegion& _Region, 
     dmRegion&       _Result,
     dm_real         _LowThr,
@@ -181,11 +186,9 @@ struct __dm_impl_region_thr
     typedef typename dmIImage<_PixelFormat>::value_type  value_type;
     typedef typename dmIImage<_PixelFormat>::traits_type traits_type;
 
-    typedef typename traits_type::integer_type integer_type;
-
     gap<value_type> thr(
-        _get_range_value(LowThr ,traits_type(),integer_type()),
-        _get_range_value(HighThr,traits_type(),integer_type())
+        traits_type::clamp(LowThr),
+        traits_type::clamp(HighThr)
     );
     create_rgnroi(_Image.Gen(),between<value_type>(thr.min(),thr.max()),
                   Result,Region);
@@ -198,8 +201,8 @@ struct __dm_impl_region_thr
     typedef traits_type::value_type  value_type;
 
     gap<value_type> thr(
-        _get_range_value(LowThr ,traits_type(),traits_type::integer_type()),
-        _get_range_value(HighThr,traits_type(),traits_type::integer_type())
+        traits_type::clamp(LowThr),
+        traits_type::clamp(HighThr)
     );
 
     between<value_type> pred(thr.min(),thr.max());
@@ -207,13 +210,15 @@ struct __dm_impl_region_thr
     create_rgnroi(_Image.Gen(),bind_func(rgb_traits::to_scalar(),pred),Result,Region);
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmThreshold::Apply( const dmImage& image, const dmRegion& region )
 {
-  __dm_impl_region_thr _filter(region,
-                       this->_Result,
-                       this->_LowThreshold,
-                       this->_HighThreshold);
+  region_thr_impl _filter(region,
+                          this->_Result,
+                          this->_LowThreshold,
+                          this->_HighThreshold);
 
   return dmImplementOperation(_filter,image);   
 }

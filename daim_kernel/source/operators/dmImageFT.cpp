@@ -34,12 +34,15 @@
 //------------------------------------------------------------------
 // Image to FT
 //------------------------------------------------------------------
-struct __dm_impl_image_to_ft
+
+namespace {
+
+struct image_to_ft_impl
 {
   const dmRect& r;
   dmImageFT&    ft;
 
-  __dm_impl_image_to_ft( const dmRect& _r, dmImageFT& _ft )
+  image_to_ft_impl( const dmRect& _r, dmImageFT& _ft )
   : r(_r),ft(_ft) {}
 
   template<EPixelFormat _PixelFormat>
@@ -58,7 +61,7 @@ struct __dm_impl_image_to_ft
 //------------------------------------------------------------------
 // FT to Image
 //------------------------------------------------------------------
-struct __dm_impl_ft_to_image
+struct ft_to_image_impl
 {
   const dmPoint& p;
   dmImageFT&     ft;
@@ -66,7 +69,7 @@ struct __dm_impl_ft_to_image
   dm_real        rmin;
   dm_real        rmax;
 
-  __dm_impl_ft_to_image( const dmPoint& _p, dmImageFT& _ft, bool _sw,
+  ft_to_image_impl( const dmPoint& _p, dmImageFT& _ft, bool _sw,
                          dm_real _rmin, dm_real _rmax )
   : p(_p),ft(_ft),sw(_sw),rmin(_rmin),rmax(_rmax) {}
 
@@ -75,11 +78,10 @@ struct __dm_impl_ft_to_image
   {
      typedef typename dmIImage<_PixelFormat>::traits_type  traits_type; 
      typedef typename traits_type::value_type   value_type; 
-     typedef typename traits_type::integer_type integer_type; 
 
      daim::gap<value_type> range(
-        daim::_get_range_value(rmin,traits_type(),integer_type()),
-        daim::_get_range_value(rmax,traits_type(),integer_type())
+        traits_type::clamp(rmin),
+        traits_type::clamp(rmax)
      );
 
      if(range.diff() <= 0) 
@@ -95,13 +97,15 @@ struct __dm_impl_ft_to_image
      typedef traits_type::value_type value_type; 
 
      daim::gap<value_type> range(
-        daim::_get_range_value(rmin,traits_type(),traits_type::integer_type()),
-        daim::_get_range_value(rmax,traits_type(),traits_type::integer_type())
+        traits_type::clamp(rmin),
+        traits_type::clamp(rmax)
      );
 
      ft.ft_to_image(_img.Gen(),p,range,sw);
    }
 };
+
+}; // namespace
 //------------------------------------------------------------------
 bool dmCopyImageDataFT( const dmImage& img, dmImageFT& ft, const dmRect& r )
 {
@@ -112,7 +116,7 @@ bool dmCopyImageDataFT( const dmImage& img, dmImageFT& ft, const dmRect& r )
   {
     ft.initialize(w,h);
 
-    __dm_impl_image_to_ft _filter(ftrect,ft);
+    image_to_ft_impl _filter(ftrect,ft);
     return dmImplementOperation(_filter,img);
   }
   return false; 
@@ -128,7 +132,7 @@ bool dmComputeForwardFT( const dmImage& img, dmImageFT& ft, bool swblk,
   {
     ft.initialize(w,h);
 
-    __dm_impl_image_to_ft _filter(ftrect,ft);
+    image_to_ft_impl _filter(ftrect,ft);
     if(dmImplementScalarOperation(_filter,img)) 
     {
       ft.compute_ft(dmFT_COMPUTE_FORWARD,swblk);
@@ -142,7 +146,7 @@ bool dmComputeInverseFT( dmImage& img, dmImageFT& ft,
                          dm_real range_min, dm_real range_max,
                          bool swblk, const dmPoint& p ) 
 {
-  __dm_impl_ft_to_image _filter(p,ft,swblk,range_min,range_max);
+  ft_to_image_impl _filter(p,ft,swblk,range_min,range_max);
   return dmImplementScalarOperation(_filter,img);
 }
 //------------------------------------------------------------------

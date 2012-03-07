@@ -36,17 +36,20 @@ using namespace daim;
 //--------------------------------------------------------------------------
 // Image stat(s)
 //--------------------------------------------------------------------------
-struct __dm_impl_imagestat
+
+namespace {
+
+struct imagestat_impl
 {
   const dmRegion& _Rgn;
   dm_uint         _Order;
   dm_real         _Central;
   dm_real&        _Value;
 
-  __dm_impl_imagestat( const dmRegion& Rgn, 
-                       dm_uint  Order,
-                       dm_real  Central, 
-                       dm_real& Value ) 
+  imagestat_impl( const dmRegion& Rgn, 
+                  dm_uint  Order,
+                  dm_real  Central, 
+                  dm_real& Value ) 
   : _Rgn(Rgn)
    ,_Order(Order)
    ,_Central(Central)
@@ -64,6 +67,8 @@ struct __dm_impl_imagestat
     }
   }
 };
+
+}; // namespace
 //----------------------------------------------------------
 bool dmImageStat( const dmImage& _Src, const dmRegion& _Rgn, 
                   dm_uint  _Order,
@@ -79,7 +84,7 @@ bool dmImageStat( const dmImage& _Src, const dmRegion& _Rgn,
        _Value = Rgn.Area(); 
        return true;
     } else {
-      __dm_impl_imagestat _filter(Rgn,_Order,_Central,_Value);
+      imagestat_impl _filter(Rgn,_Order,_Central,_Value);
       return dmImplementScalarOperation(_filter,_Src);
     }
   }
@@ -88,17 +93,20 @@ bool dmImageStat( const dmImage& _Src, const dmRegion& _Rgn,
 //----------------------------------------------------------
 // Comput an array of moments
 //----------------------------------------------------------
-struct __dm_impl_imagestats
+
+namespace {
+
+struct imagestats_impl
 {
   const dmRegion& _Rgn;
   dm_uint         _Order;
   dm_real         _Central;
   dm_real*        _Values;
 
-  __dm_impl_imagestats( const dmRegion& Rgn, 
-                        dm_uint  Order,
-                        dm_real  Central, 
-                        dm_real* Values ) 
+  imagestats_impl( const dmRegion& Rgn, 
+                   dm_uint  Order,
+                   dm_real  Central, 
+                   dm_real* Values ) 
   : _Rgn(Rgn)
    ,_Order(Order)
    ,_Central(Central)
@@ -111,6 +119,8 @@ struct __dm_impl_imagestats
     daim::imagestats(_Rgn,_Img.Gen(),_Values,_Order,_Central);
   }
 };
+
+}; // namespace
 //----------------------------------------------------------
 bool dmImageStats( const dmImage& _Src, const dmRegion& _Rgn, 
                    dm_uint  _Order,
@@ -123,7 +133,7 @@ bool dmImageStats( const dmImage& _Src, const dmRegion& _Rgn,
     Rgn.ClipToRect(_Src.Rect());
     if(!Rgn.IsEmptyRoi())
     {
-      __dm_impl_imagestats _filter(Rgn,_Order,_Central,_Values);
+      imagestats_impl _filter(Rgn,_Order,_Central,_Values);
       return dmImplementScalarOperation(_filter,_Src);
     }
   }

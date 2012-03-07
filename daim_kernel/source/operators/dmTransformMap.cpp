@@ -28,6 +28,7 @@
 #include "common/dmUserLib.h"
 
 #include "templates/processing/dmDensityMap.h"
+#include "templates/processing/dmArithmetics.h"
 
 using namespace daim;
 
@@ -37,17 +38,20 @@ using namespace daim;
 //----------------------------------------------------------------------
 // Transform Map
 //------------------------------------------------------------------------
+
+namespace {
+
 #define __invert1 std::bind1st(std::minus<value_type>(),traits_type::max())
 //
-struct __dm_impl_transformmap
+struct transform_map_impl
 {
   const dmRegion&     mRegion;
   dmColorMapArray     mMap;
   dm_real             mMinRange;
   dm_real             mMaxRange;   
 
-  __dm_impl_transformmap(const dmRegion& _Region, dmColorMapArray _Map,
-                         dm_real _MinRange, dm_real _MaxRange )
+  transform_map_impl(const dmRegion& _Region, dmColorMapArray _Map,
+                     dm_real _MinRange, dm_real _MaxRange )
   :mRegion(_Region)
   ,mMap(_Map)
   ,mMinRange(_MinRange)
@@ -63,11 +67,10 @@ struct __dm_impl_transformmap
     typedef typename dmIImage<_PixelFormat>::image_type  image_type;
 
     typedef typename traits_type::value_type   value_type;
-    typedef typename traits_type::integer_type integer_type;
 
      gap<value_type> _range(
-        _get_range_value(mMinRange,traits_type(),integer_type()),
-        _get_range_value(mMaxRange,traits_type(),integer_type())
+         traits_type::clamp(mMinRange),
+         traits_type::clamp(mMaxRange)
      );
 
     image_type& _image = _img.Gen();
@@ -90,10 +93,12 @@ struct __dm_impl_transformmap
      apply_map( _img.Gen(),mRegion,mMap); 
   }
 };
+
+}; // namespace
 //----------------------------------------------------------------------
 bool dmTransformMap::Apply( dmImage& _Image, const dmRegion& _Region )
 {
-  __dm_impl_transformmap _filter(_Region,this->_Map,this->_MinRange,this->_MaxRange);
+  transform_map_impl _filter(_Region,this->_Map,this->_MinRange,this->_MaxRange);
   return dmImplementScalarOperation(_filter,_Image);
 }
 //------------------------------------------------------------------------

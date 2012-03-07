@@ -30,11 +30,15 @@
 #include "common/dmUserLib.h"
 
 //--------------------------------------------------------------------
-struct __dm_impl_nagao
+
+
+namespace {
+
+struct nagao_impl
 {
    dmBufferParameters& params;
 
-   __dm_impl_nagao(dmBufferParameters& _params)
+   nagao_impl(dmBufferParameters& _params)
    : params(_params) {}
 
   template<EPixelFormat _PixelFormat> 
@@ -53,6 +57,8 @@ struct __dm_impl_nagao
                         _imgbuf->Gen(),_Image.Gen()); 
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmNagaoFilter::Apply( dmBufferParameters& _Params )
 {
@@ -60,7 +66,7 @@ bool dmNagaoFilter::Apply( dmBufferParameters& _Params )
           daim_nagao_impl::NAGAO_NATURAL_SIZE,
           daim_nagao_impl::NAGAO_NATURAL_SIZE));
 
-  __dm_impl_nagao _filter(_Params);
+  nagao_impl _filter(_Params);
   return dmImplementScalarOperation(_filter,_Params.thisImage);
 } 
 //--------------------------------------------------------------------

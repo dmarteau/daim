@@ -31,12 +31,15 @@
 #include "templates/rgb/dmRGBArithmetics.h"
 
 //---------------------------------------------------------------------
-struct __dm_addmul_impl
+
+namespace {
+
+struct addmul_impl
 {
   float            a,b;
    const dmRegion& Rgn;
 
-   __dm_addmul_impl(dm_real  _a, dm_real _b, const dmRegion& _Rgn )
+   addmul_impl(dm_real  _a, dm_real _b, const dmRegion& _Rgn )
   : a(static_cast<float>(_a))
    ,b(static_cast<float>(_b))
    ,Rgn(_Rgn) {}
@@ -67,6 +70,8 @@ struct __dm_addmul_impl
   }
 
 };
+
+}; // namespace
 //---------------------------------------------------------------------
 // Perform the x |-> a * x + b transformation
 //---------------------------------------------------------------------
@@ -76,7 +81,7 @@ bool dmAddMulImage( dmImage& _Image, const dmRegion& _Rgn,
   dmRegion Rgn(_Rgn);
   Rgn.ClipToRect(_Image.Rect());
   if(!Rgn.IsEmptyRoi()) {
-     __dm_addmul_impl _filter(a,b,Rgn); 
+    addmul_impl _filter(a,b,Rgn); 
     return dmImplementOperation(_filter,_Image);
   }
   return false;    
@@ -84,7 +89,7 @@ bool dmAddMulImage( dmImage& _Image, const dmRegion& _Rgn,
 //---------------------------------------------------------------------
 bool dmAddMulImage( dmImage& _Image, dm_real a, dm_real b )
 {
-  __dm_addmul_impl _filter(a,b,_Image.Rect());
+  addmul_impl _filter(a,b,_Image.Rect());
   return dmImplementOperation(_filter,_Image);
 }
 //---------------------------------------------------------------------

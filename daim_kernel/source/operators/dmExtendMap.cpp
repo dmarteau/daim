@@ -34,15 +34,18 @@ using namespace daim;
 //------------------------------------------------------------------------
 // Extend Map
 //------------------------------------------------------------------------
-struct __dm_impl_extend
+
+namespace {
+
+struct extend_impl
 {
   const dmRegion& mRegion;
   dm_real mMinExt  ,mMaxExt;
   dm_real mMinRange,mMaxRange;
   
-  __dm_impl_extend( const dmRegion& _Region,
-                    dm_real _MinExt  , dm_real _MaxExt,
-                    dm_real _MinRange, dm_real _MaxRange )
+  extend_impl( const dmRegion& _Region,
+               dm_real _MinExt  , dm_real _MaxExt,
+               dm_real _MinRange, dm_real _MaxRange )
 
   : mRegion(_Region)
    ,mMinExt(_MinExt),mMaxExt(_MaxExt)
@@ -57,16 +60,15 @@ struct __dm_impl_extend
      typedef typename dmIImage<_PixelFormat>::traits_type  traits_type;
 
      typedef typename traits_type::value_type   value_type;
-     typedef typename traits_type::integer_type integer_type;
 
      gap<value_type> range_from(
-        _get_range_value(mMinExt,traits_type(),integer_type()),
-        _get_range_value(mMaxExt,traits_type(),integer_type())
+         traits_type::clamp(mMinExt),
+         traits_type::clamp(mMaxExt)
      );
 
     gap<value_type> range_to(
-       _get_range_value(mMinRange,traits_type(),integer_type()),
-       _get_range_value(mMaxRange,traits_type(),integer_type())
+        traits_type::clamp(mMinRange),
+        traits_type::clamp(mMaxRange)
     );
 
     extend_density_range( _img.Gen(),mRegion,range_from,range_to );
@@ -78,27 +80,28 @@ struct __dm_impl_extend
     typedef pixel_traits<dm_uint8> traits_type; 
 
     typedef traits_type::value_type  value_type;
-    typedef traits_type::integer_type integer_type;
 
      gap<value_type> range_from( 
-        _get_range_value(mMinExt,traits_type(),integer_type()),
-        _get_range_value(mMaxExt,traits_type(),integer_type())
+         traits_type::clamp(mMinExt),
+         traits_type::clamp(mMaxExt)
      );
 
      gap<value_type> range_to(
-       _get_range_value(mMinRange,traits_type(),integer_type()),
-       _get_range_value(mMaxRange,traits_type(),integer_type())
+         traits_type::clamp(mMinRange),
+         traits_type::clamp(mMaxRange)
      );
 
      extend_density_range( _img.Gen(),mRegion,range_from,range_to );
   }
 };
+
+}; // namespace
 //----------------------------------------------------------------------
 bool dmExtendMap::Apply( dmImage& _Image, const dmRegion&  _Region )
 {
-  __dm_impl_extend _filter(_Region,
-                           this->_MinExt,this->_MaxExt,
-                           this->_MinRange,this->_MaxRange);
+  extend_impl _filter(_Region,
+                      this->_MinExt,this->_MaxExt,
+                      this->_MinRange,this->_MaxRange);
 
   return dmImplementScalarOperation(_filter,_Image);
 }

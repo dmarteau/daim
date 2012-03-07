@@ -51,28 +51,28 @@ static void downSamplingMode_(int _mode,
   switch(_mode)
   {
     case dmTk::Math::SubPixels :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::sub_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::sub_pixel<T>());
       break;
     case dmTk::Math::OrPixels  :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::or_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::or_pixel<T>());
       break;
     case dmTk::Math::XorPixels :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::xor_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::xor_pixel<T>());
       break;
     case dmTk::Math::AndPixels :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::and_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::and_pixel<T>());
       break;
     case dmTk::Math::MinPixels :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::min_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::min_pixel<T>());
       break;
     case dmTk::Math::MaxPixels :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::max_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::max_pixel<T>());
       break;
     case dmTk::Math::NSubPixels :
-      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::nsub_pixel<T>());
+      daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::nsub_pixel<T>());
       break;
     default : // dmTk::Math::AddPixels
-     daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::add_pixel<T>());
+     daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::add_pixel<T>());
      break;
    }
 }
@@ -88,19 +88,19 @@ static void downSamplingMode_(int _mode,
    switch(_mode)
    {
      case dmTk::Math::SubPixels :
-       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::sub_pixel<T>());
+       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::sub_pixel<T>());
        break;
      case dmTk::Math::MinPixels :
-       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::min_pixel<T>());
+       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::min_pixel<T>());
        break;
      case dmTk::Math::MaxPixels :
-       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::max_pixel<T>());
+       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::max_pixel<T>());
        break;
      case dmTk::Math::NSubPixels :
-       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::nsub_pixel<T>());
+       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::nsub_pixel<T>());
        break;
      default : // dmTk::Math::AddPixels
-       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::add_pixel<T>());
+       daim::conv::downSampling(_family,_unsigned,rect,in,out,_step,daim::fn::add_pixel<T>());
        break;
      }
 }

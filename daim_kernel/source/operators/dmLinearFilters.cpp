@@ -39,14 +39,17 @@ using namespace daim;
 //--------------------------------------------------------------------
 // M-Filters
 //--------------------------------------------------------------------
-struct __dm_impl_Mfilters
+
+namespace {
+
+struct Mfilters_impl
 {
   dmBufferParameters&        Params;
   const dmMaskDescription&   Mask;
   dmFilterType               Ftype;
 
-  __dm_impl_Mfilters( dmBufferParameters& _Params, const dmMaskDescription& _Mask,
-                      dmFilterType _Ftype )
+  Mfilters_impl( dmBufferParameters& _Params, const dmMaskDescription& _Mask,
+                 dmFilterType _Ftype )
   :Params(_Params)
   ,Mask(_Mask)
   ,Ftype(_Ftype) {}
@@ -241,27 +244,31 @@ struct __dm_impl_Mfilters
 
 };
 
+}; // namespace
 //--------------------------------------------------------------------
 bool dmMFilter::Apply( dmBufferParameters& _Params )
 {
    _Params.CreateBuffer(this->_Mask);
    _Params.thisBuffer.SetBufferLimit(_Params.thisImage.Rect(),dmPERIODIC_BOUNDARY );
 
-   __dm_impl_Mfilters _filter(_Params,this->_Mask,this->_Type);
+   Mfilters_impl _filter(_Params,this->_Mask,this->_Type);
    return dmImplementScalarOperation(_filter,_Params.thisImage);
 }
 
 //--------------------------------------------------------------------
 // R-Filters
 //--------------------------------------------------------------------
-struct __dm_impl_Rfilters
+
+namespace {
+
+struct Rfilters_impl
 {
   dmBufferParameters&        Params;
   const dmMaskDescription&   Mask;
   dm_uint                    Rank;
 
-  __dm_impl_Rfilters( dmBufferParameters& _Params, const dmMaskDescription& _Mask,
-                      dm_uint _Rank )
+  Rfilters_impl( dmBufferParameters& _Params, const dmMaskDescription& _Mask,
+                 dm_uint _Rank )
   :Params(_Params)
   ,Mask(_Mask)
   ,Rank(_Rank) {}
@@ -284,6 +291,8 @@ struct __dm_impl_Rfilters
 
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmRFilter::Apply( dmBufferParameters& _Params )
 {
@@ -295,7 +304,7 @@ bool dmRFilter::Apply( dmBufferParameters& _Params )
    _Params.CreateBuffer(this->_Mask);
    _Params.thisBuffer.SetBufferLimit( _Params.thisImage.Rect(),dmPERIODIC_BOUNDARY);
 
-   __dm_impl_Rfilters  _filter(_Params,this->_Mask,this->_Rank);
+   Rfilters_impl  _filter(_Params,this->_Mask,this->_Rank);
    return dmImplementScalarOperation(_filter,_Params.thisImage);
 
    return true;
@@ -303,14 +312,17 @@ bool dmRFilter::Apply( dmBufferParameters& _Params )
 //--------------------------------------------------------------------
 // L-Filters
 //--------------------------------------------------------------------
-struct __dm_impl_Lfilters
+
+namespace {
+
+struct Lfilters_impl
 {
   dmBufferParameters&        Params;
   const dmMaskDescription&   Mask;
   dm_real*                   Coeffs;
 
-  __dm_impl_Lfilters(dmBufferParameters& _Params, const dmMaskDescription& _Mask,
-                     dm_real* _Coeffs )
+  Lfilters_impl(dmBufferParameters& _Params, const dmMaskDescription& _Mask,
+                dm_real* _Coeffs )
   :Params(_Params)
   ,Mask(_Mask)
   ,Coeffs(_Coeffs) {}
@@ -337,13 +349,15 @@ struct __dm_impl_Lfilters
 
   }
 };
+
+}; //namespace
 //--------------------------------------------------------------------
 bool dmLFilter::Apply( dmBufferParameters& _Params )
 {
    _Params.CreateBuffer(this->_Mask);
    _Params.thisBuffer.SetBufferLimit(_Params.thisImage.Rect(),dmPERIODIC_BOUNDARY);
 
-   __dm_impl_Lfilters _filter(_Params,this->_Mask,this->_Coeffs);
+   Lfilters_impl _filter(_Params,this->_Mask,this->_Coeffs);
    return dmImplementScalarOperation(_filter,_Params.thisImage);
 }
 //--------------------------------------------------------------------

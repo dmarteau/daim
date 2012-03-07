@@ -36,17 +36,20 @@
 #include "templates/rgb/dmRGBArithmetics.h"
 
 //---------------------------------------------------------------------
-struct __dm_blend_impl
+
+namespace {
+
+struct blend_impl
 {
    float           Percent;
    const dmImage&  Src;
    const dmRegion& Rgn;
    const dmPoint&  Pt;
 
-   __dm_blend_impl(dm_real _Percent,
-                   const dmImage&  _Src,
-                   const dmRegion& _Rgn,
-                   const dmPoint&  _Pt)
+   blend_impl(dm_real _Percent,
+              const dmImage&  _Src,
+              const dmRegion& _Rgn,
+              const dmPoint&  _Pt)
 
    :Percent(static_cast<float>(_Percent))
    ,Src(_Src)
@@ -65,13 +68,15 @@ struct __dm_blend_impl
     daim::blend_images(Rgn,Pt,lhs->Gen(),_Dst.Gen(),Percent);
   }
 };
+
+}; // namespace
 //---------------------------------------------------------------------
 bool dmBlendImage( dm_real _Percent,
                    const dmImage& _Src, dmImage& _Dest,
                    const dmRegion& _Rgn, const dmPoint& _Pt )
 {
   if(_Src.PixelFormat() == _Dest.PixelFormat()) {
-   __dm_blend_impl _filter(_Percent,_Src,_Rgn,_Pt);
+   blend_impl _filter(_Percent,_Src,_Rgn,_Pt);
    return dmImplementOperation(_filter,_Dest);
   }
   return false;
@@ -96,7 +101,7 @@ bool dmBlendImage( dmBufferParameters& _Params, dm_real _Percent )
        const dmPoint&  _Pt   =  _Params.thisBuffer.BufferSrc();
        const dmImage&  _Src  = *_Params.thisBuffer.Buffer();
 
-       __dm_blend_impl _filter(_Percent,_Src,_Rgn,_Pt);
+       blend_impl _filter(_Percent,_Src,_Rgn,_Pt);
        return dmImplementOperation(_filter,_Params.thisImage);
     }
   }

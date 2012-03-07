@@ -13,14 +13,17 @@ using namespace daim;
 //----------------------------------------------------------------------
 // Gamma Correction Mapping
 //------------------------------------------------------------------------
-struct __dm_impl_gamma
+
+namespace {
+
+struct gamma_impl
 {
   const dmRegion&     mRegion;
   dm_real             mMinRange;
   dm_real             mMaxRange;
   dm_real             mGamma;
 
-  __dm_impl_gamma(const dmRegion& _Region,
+  gamma_impl(const dmRegion& _Region,
                   dm_real _MinRange,
                   dm_real _MaxRange,
                   dm_real _Gamma )
@@ -40,11 +43,10 @@ struct __dm_impl_gamma
     typedef typename dmIImage<_PixelFormat>::image_type  image_type;
 
     typedef typename traits_type::value_type   value_type;
-    typedef typename traits_type::integer_type integer_type;
 
      gap<value_type> _range(
-        _get_range_value(mMinRange,traits_type(),integer_type()),
-        _get_range_value(mMaxRange,traits_type(),integer_type())
+         traits_type::clamp(mMinRange),
+         traits_type::clamp(mMaxRange)
      );
 
     image_type& _image = _img.Gen();
@@ -98,12 +100,15 @@ struct __dm_impl_gamma
     apply_map(_img.Gen(),mRegion,ctable);
   }
 };
+
+}; // namespace
 //----------------------------------------------------------------------
 bool dmGammaCorrection::Apply( dmImage& _Image, const dmRegion& _Region )
 {
-  __dm_impl_gamma _filter(_Region,
-                          this->_MinRange,this->_MaxRange,
-                          this->_Gamma);
+  gamma_impl _filter(_Region,
+                      this->_MinRange,
+                      this->_MaxRange,
+                      this->_Gamma);
 
   //return dmImplementOperation(_filter,_Image);
   return dmImplementScalarOperation(_filter,_Image);

@@ -32,16 +32,19 @@
 #include "templates/processing/dmArithmetics.h"
 
 //--------------------------------------------------------------------
-struct __dm_impl_morphology
+
+namespace {
+
+struct morphology_impl
 {
   dmBufferParameters& Params;
   dmKernelFamily&     Family;
   int Operation;
   int Iter;
 
-   __dm_impl_morphology( dmBufferParameters& _Params, dmKernelFamily& _Family,
-                         int _Operation,
-                         int _Iter )
+  morphology_impl( dmBufferParameters& _Params, dmKernelFamily& _Family,
+                   int _Operation,
+                   int _Iter )
   :Params(_Params)
   ,Family(_Family)
   ,Operation(_Operation)
@@ -128,6 +131,8 @@ struct __dm_impl_morphology
      }
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmMorphology::Apply( dmBufferParameters& _Params )
 {
@@ -139,7 +144,7 @@ bool dmMorphology::Apply( dmBufferParameters& _Params )
      this->_Family.GetMaskDescription(_Mask);
      _Params.CreateBuffer(_Mask);
 
-     __dm_impl_morphology _filter(_Params,this->_Family,this->_Operation,this->_Iter);
+     morphology_impl _filter(_Params,this->_Family,this->_Operation,this->_Iter);
      return  dmImplementScalarOperation(_filter,_Params.thisImage);
   }
   return false;

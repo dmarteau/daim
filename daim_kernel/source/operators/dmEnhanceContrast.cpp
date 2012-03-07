@@ -14,9 +14,8 @@ namespace daim
    template<class T>
    struct _Contrast
    {
-     typedef pixel_traits<T>           traits_type;
+     typedef pixel_traits<T> traits_type;
      typedef typename traits_type::value_type   value_type;
-     typedef typename traits_type::integer_type integer_type;
 
      dm_real rmin;
      dm_real RMAX;
@@ -47,7 +46,7 @@ namespace daim
               u = C*(u-2.0*B)+RMAX;
               if(u<=0)    u = rmin;  else
               if(u>=RMAX) u = RMAX;
-              (*_out)[x] = _round_value(u+rmin,traits_type(),integer_type());
+              (*_out)[x] = traits_type::round_value(u+rmin);
             }
          }
          else if( B >= RMAX - X )              // __F( C*(u+RMAX-2.0*B) )
@@ -57,7 +56,7 @@ namespace daim
               u = C*(u+RMAX-2.0*B);
               if(u<=0)    u = rmin;  else
               if(u>=RMAX) u = RMAX;
-              (*_out)[x] = _round_value(u+rmin,traits_type(),integer_type());
+              (*_out)[x] = traits_type::round_value(u+rmin);
             }
          }
          else                                    //  __F( C*(u-B)+ RMAX/2.0f )
@@ -67,7 +66,7 @@ namespace daim
               u = C*(u-B)+ RMAX/2.0;
               if(u<=0)    u = rmin;  else
               if(u>=RMAX) u = RMAX;
-              (*_out)[x] = _round_value(u+rmin,traits_type(),integer_type());
+              (*_out)[x] = traits_type::round_value(u+rmin);
             }
          }
        }
@@ -82,7 +81,7 @@ namespace daim
               u = C*u-RMAX+2.0*B;
               if(u<=0)    u = rmin;  else
               if(u>=RMAX) u = RMAX;
-              (*_out)[x] = _round_value(u+rmin,traits_type(),integer_type());
+              (*_out)[x] = traits_type::round_value(u+rmin);
             }
          }
          else if( B <= X )                      //  __F( C*(u-RMAX)+2.0*B )
@@ -92,7 +91,7 @@ namespace daim
               u = C*(u-RMAX)+2.0*B;
               if(u<=0)    u = rmin;  else
               if(u>=RMAX) u = RMAX;
-              (*_out)[x] = _round_value(u+rmin,traits_type(),integer_type());
+              (*_out)[x] = traits_type::round_value(u+rmin);
             }
          }
          else {                                 //   __F( C*(u-RMAX/2.0)+B )
@@ -101,7 +100,7 @@ namespace daim
               u = C*(u-RMAX/2.0)+B;
               if(u<=0)    u = rmin;  else
               if(u>=RMAX) u = RMAX;
-              (*_out)[x] = _round_value(u+rmin,traits_type(),integer_type());
+              (*_out)[x] = traits_type::round_value(u+rmin);
             }
          }
        }
@@ -198,11 +197,10 @@ struct __dm_impl_constrast
     typedef typename dmIImage<_PixelFormat>::image_type  image_type;
 
     typedef typename traits_type::value_type   value_type;
-    typedef typename traits_type::integer_type integer_type;
 
     gap<value_type> _range(
-       _get_range_value(mMinRange,traits_type(),integer_type()),
-       _get_range_value(mMaxRange,traits_type(),integer_type())
+        traits_type::clamp(mMinRange),
+        traits_type::clamp(mMaxRange)
     );
 
     image_type* in;

@@ -28,20 +28,24 @@
 #include "common/dmUserLib.h"
 
 #include "templates/processing/dmDensityMap.h"
+#include "templates/processing/dmArithmetics.h"
 
 using namespace daim;
 
 //----------------------------------------------------------------------
 // Invert Map
 //------------------------------------------------------------------------
-struct __dm_impl_invertmap
+
+namespace {
+
+struct invertmap_impl
 {
   dmBufferParameters& Params;
   dm_real             MinRange;
   dm_real             MaxRange;
 
-  __dm_impl_invertmap( dmBufferParameters& _Params,
-                       dm_real _MinRange, dm_real _MaxRange )
+  invertmap_impl( dmBufferParameters& _Params,
+                  dm_real _MinRange, dm_real _MaxRange )
   : Params(_Params)
    ,MinRange(_MinRange)
    ,MaxRange(_MaxRange) {}
@@ -54,7 +58,6 @@ struct __dm_impl_invertmap
     typedef typename dmIImage<_PixelFormat>::traits_type traits_type;
 
     typedef typename traits_type::value_type   value_type;
-    typedef typename traits_type::integer_type integer_type;
 
     dm_real aMin = MinRange,aMax = MaxRange;
 
@@ -65,8 +68,8 @@ struct __dm_impl_invertmap
     }
 
     invert_map( _img.Gen(),Params.thisRegion, gap<value_type>(
-        _get_range_value(aMin,traits_type(),integer_type()),
-        _get_range_value(aMax,traits_type(),integer_type()))
+        traits_type::clamp(aMin),
+        traits_type::clamp(aMax))
      );
   }
 
@@ -75,10 +78,12 @@ struct __dm_impl_invertmap
     invert_map(_img.Gen(),Params.thisRegion);
   }
 };
+
+}; // namespace
 //----------------------------------------------------------------------
 bool dmInvertMap::Apply( dmBufferParameters& _Params )
 {
-  __dm_impl_invertmap _filter(_Params,this->_MinRange,this->_MaxRange);
+  invertmap_impl _filter(_Params,this->_MinRange,this->_MaxRange);
   return dmImplementScalarOperation(_filter,_Params.thisImage);
 }
 //----------------------------------------------------------------------

@@ -30,12 +30,15 @@
 #include "common/dmUserLib.h"
 
 //--------------------------------------------------------------------
-struct __dm_impl_canny
+
+namespace {
+
+struct canny_impl
 {
    dmBufferParameters& params;
    bool                inner;
 
-   __dm_impl_canny(dmBufferParameters& _params, bool _inner)
+   canny_impl(dmBufferParameters& _params, bool _inner)
    : params(_params),inner(_inner) {}
 
   template<EPixelFormat _PixelFormat> 
@@ -62,20 +65,24 @@ struct __dm_impl_canny
            _imgbuf->Gen(),_Image.Gen());
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmCannyFilter::Apply( dmBufferParameters& _params )
 {
    _params.CreateBuffer(dmMaskDescription(1,1,3,3));
-   __dm_impl_canny _filter(_params,this->_Inner);
+   canny_impl _filter(_params,this->_Inner);
    return dmImplementScalarOperation(_filter,_params.thisImage);
 } 
 //--------------------------------------------------------------------
-struct __dm_impl_gradients
+namespace {
+
+struct gradients_impl
 {
    dmBufferParameters& params;
    bool                inner;
 
-   __dm_impl_gradients(dmBufferParameters& _params )
+   gradients_impl(dmBufferParameters& _params )
    : params(_params) {}
 
   template<EPixelFormat _PixelFormat> 
@@ -96,12 +103,14 @@ struct __dm_impl_gradients
      daim::gradient_filter(rgn,p,in,out);
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 bool dmGradientFilter::Apply( dmBufferParameters& _params )
 {
    _params.CreateBuffer(dmMaskDescription(1,1,3,3));
 
-   __dm_impl_gradients _filter(_params);
+   gradients_impl _filter(_params);
 
    return dmImplementScalarOperation(_filter,_params.thisImage);
 } 

@@ -34,7 +34,10 @@ using namespace daim;
 //--------------------------------------------------------------------------
 // Rotate copy transformation
 //--------------------------------------------------------------------------
-struct __dm_impl_rotatecopy
+
+namespace {
+
+struct rotatecopy_impl
 {
   const dmPoint&  p;
   const dmRect&   rsrc;
@@ -42,8 +45,8 @@ struct __dm_impl_rotatecopy
   int             flip;
   bool&           res;
 
-  __dm_impl_rotatecopy( dmImage& _dst, const dmRect& _r, const dmPoint& _p, 
-                        int _flip, bool& _res ) 
+  rotatecopy_impl( dmImage& _dst, const dmRect& _r, const dmPoint& _p, 
+                   int _flip, bool& _res ) 
 
   : p(_p),rsrc(_r),dst(_dst),flip(_flip),res(_res) {} 
 
@@ -55,6 +58,8 @@ struct __dm_impl_rotatecopy
      res = rotate_copy(_im.Gen(),_dst->Gen(),rsrc,p,flip);
   }
 };
+
+}; // namespace
 //----------------------------------------------------------
 bool dmRotateCopy( const dmImage& src, dmImage& dst, const dmRect& r, 
                    const dmPoint& p, int way )
@@ -62,7 +67,7 @@ bool dmRotateCopy( const dmImage& src, dmImage& dst, const dmRect& r,
   if(src.TypeDescriptor()==dst.TypeDescriptor()) 
   {
     bool res = false;
-    __dm_impl_rotatecopy _filter(dst,r,p,way,res);
+    rotatecopy_impl _filter(dst,r,p,way,res);
     if(dmImplementOperation(_filter,src))
       return res;
   }

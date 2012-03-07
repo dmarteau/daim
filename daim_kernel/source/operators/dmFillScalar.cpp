@@ -40,13 +40,13 @@ using namespace daim;
 
 namespace {
 
-struct impl_fill_scalar
+struct fill_scalar_impl
 {
   double   _value;
   double   _alpha;
   dmRegion _rgn;
 
-  impl_fill_scalar( double _v, double alpha, const dmRegion& _roi ) 
+  fill_scalar_impl( double _v, double alpha, const dmRegion& _roi ) 
   : _value(_v),_alpha(alpha),_rgn(_roi) {}
 
   // Generic operation on scalar
@@ -92,13 +92,13 @@ struct impl_fill_scalar
 //--------------------------------------------------------------------------
 bool dmFillScalar::SetValue( dmImage& _Image, const dmRegion& aRgn, dm_real aValue, dm_real aAlpha )
 {
-  impl_fill_scalar _filter(aValue,aAlpha,aRgn);
+  fill_scalar_impl _filter(aValue,aAlpha,aRgn);
   return dmImplementOperation(_filter,_Image);
 }
 //--------------------------------------------------------------------------
 bool dmFillScalar::Apply( dmBufferParameters& _Params )
 {
-  impl_fill_scalar _filter(this->_Value,this->_Alpha,_Params.thisRegion);
+  fill_scalar_impl _filter(this->_Value,this->_Alpha,_Params.thisRegion);
   return dmImplementOperation(_filter,_Params.thisImage);
 } 
 //------------------------------------------------------------------------

@@ -27,16 +27,21 @@
 #include "daim_kernel.h"
 #include "common/dmUserLib.h"
 
+#include "templates/processing/dmArithmetics.h"
+
 using namespace daim;
 
 //------------------------------------------------------------------------
 // Scale image between min and max value
 //----------------------------------------------------------------------
-struct __dm_impl_scale_image
+
+namespace {
+
+struct scale_image_impl
 {
   const dmRegion& Rgn;
   dm_real  Min,Max;
-  __dm_impl_scale_image(const dmRegion& _Rgn, dm_real _Min, dm_real _Max)
+  scale_image_impl(const dmRegion& _Rgn, dm_real _Min, dm_real _Max)
   : Rgn(_Rgn),Min(_Min),Max(_Max) {}
   //-------------------------------------------------------
   // Generic operation on scalar
@@ -49,13 +54,11 @@ struct __dm_impl_scale_image
     typedef typename dmIImage<_PixelFormat>::traits_type traits_type;
     typedef typename dmIImage<_PixelFormat>::value_type  value_type;
 
-    typedef typename traits_type::integer_type  integer_type;
-
     image_type& _img = anImage.Gen();
         
     gap<value_type> _range(
-       _get_range_value(Min,traits_type(),integer_type()),
-       _get_range_value(Max,traits_type(),integer_type())
+        traits_type::clamp(Min),
+        traits_type::clamp(Max)
     );
    
     daim::scale_convert_scalar_to_scalar(
@@ -63,10 +66,12 @@ struct __dm_impl_scale_image
           _img,_img,Rgn,dmPoint(0,0));
   }
 };
+
+}; // namespace
 //------------------------------------------------------------------------
 bool dmScaleImage( const dmImage& _Src, const dmRegion& _Rgn, dm_real _Min, dm_real _Max )
 {
-   __dm_impl_scale_image _filter(_Rgn,_Min,_Max);
+   scale_image_impl _filter(_Rgn,_Min,_Max);
    return dmImplementScalarOperation(_filter,_Src);
 }
 //------------------------------------------------------------------------

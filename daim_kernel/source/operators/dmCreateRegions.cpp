@@ -52,11 +52,9 @@ struct __dm_impl_create_roi
     typedef typename dmIImage<_PixelFormat>::traits_type traits_type;
     typedef typename dmIImage<_PixelFormat>::value_type  value_type;
 
-    typedef typename traits_type::integer_type  integer_type;
-
     image_type& _img = anImage.Gen();
         
-    value_type x = _get_range_value(value,traits_type(),integer_type());
+    value_type x = traits_type::clamp(value);
     switch(predicat) 
     {
       case dmTk::Math::Less         : create_roi(_img,std::bind2nd(std::less<value_type>()         ,x),result); break;
@@ -95,7 +93,7 @@ struct __dm_impl_create_rgnroi
 
     image_type& _img = anImage.Gen();
         
-    value_type x = _get_range_value(value,traits_type(),integer_type());
+    value_type x = traits_type::clamp(value);
     switch(predicat) 
     {
       case dmTk::Math::Less         : create_rgnroi(_img,std::bind2nd(std::less<value_type>()         ,x),result,roi); break;

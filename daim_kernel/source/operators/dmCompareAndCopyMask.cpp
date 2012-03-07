@@ -65,7 +65,7 @@ struct __dm_cmp_copy_mask
     image_type& _src = dmIImage<_PixelFormat>::Cast(&src)->Gen();
         
     mask_type& _mask = dmIImage<dmMaskFormat>::Cast(&mask)->Gen(); 
-    mask_value x     = daim::_get_range_value(value,mask_traits(),mask_traits::integer_type());
+    mask_value x     = mask_traits::clamp(value);
 
     dmRegion rgn;
     dmPoint  p(0,0);

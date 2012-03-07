@@ -34,14 +34,17 @@ using namespace daim;
 //--------------------------------------------------------------------------
 // Flip copy transformation
 //--------------------------------------------------------------------------
-struct __dm_impl_flipcopy
+
+namespace {
+
+struct flipcopy_impl
 {
   const dmPoint& p;
   const dmRect&  rsrc;
   dmImage&       dst;
   int            flip;
 
-  __dm_impl_flipcopy( dmImage& _dst, const dmRect& _r, const dmPoint& _p, int _flip ) 
+  flipcopy_impl( dmImage& _dst, const dmRect& _r, const dmPoint& _p, int _flip ) 
   : p(_p),rsrc(_r),dst(_dst),flip(_flip) {} 
 
   template<EPixelFormat _PixelFormat>
@@ -54,13 +57,15 @@ struct __dm_impl_flipcopy
        (flip & dmTk::FlipVer)!=0 );
   }
 };
+
+}; //namespace
 //----------------------------------------------------------
 bool dmFlipCopy( const dmImage& src, dmImage& dst, const dmRect& r, 
                  const dmPoint& p, int flip )
 {
   if(src.TypeDescriptor()==dst.TypeDescriptor())
   {
-    __dm_impl_flipcopy _filter(dst,r,p,flip);
+    flipcopy_impl _filter(dst,r,p,flip);
     return dmImplementOperation(_filter,src);
   }
   return false;

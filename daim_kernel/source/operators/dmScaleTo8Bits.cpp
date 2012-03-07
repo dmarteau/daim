@@ -34,11 +34,14 @@ using namespace daim;
 //------------------------------------------------------------------------
 // Scale to 8 bits
 //----------------------------------------------------------------------
-struct __dm_impl_scaleto8Bits
+
+namespace {
+
+struct scaleto8Bits_impl
 {
   dm_real  rmin,rmax;
   dmImage& dest;
-  __dm_impl_scaleto8Bits(dmImage& _dest,dm_real _rmin, dm_real _rmax)
+  scaleto8Bits_impl(dmImage& _dest,dm_real _rmin, dm_real _rmax)
   : rmin(_rmin),rmax(_rmax),dest(_dest) {}
   //-------------------------------------------------------
   // Generic operation on scalar
@@ -86,6 +89,8 @@ struct __dm_impl_scaleto8Bits
     }
   }
 };
+
+}; // namespace
 //------------------------------------------------------------------------
 // if rmin==rmax => the function perform a automatic rescaling
 // between the min and the max of the source image
@@ -94,7 +99,7 @@ bool dmScaleTo8Bits( const dmImage& _src, dmImage& _dest,dm_real rmin, dm_real r
 {
   if(_dest.PixelFormat()==dmPixelFormat8bppIndexed)
   {
-    __dm_impl_scaleto8Bits _filter(_dest,rmin,rmax);
+    scaleto8Bits_impl _filter(_dest,rmin,rmax);
     if(dmImplementScalarOperation(_filter,_src))
       return true;
   } 

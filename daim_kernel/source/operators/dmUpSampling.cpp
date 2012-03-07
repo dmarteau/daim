@@ -38,7 +38,10 @@ typedef std::vector<kernel_type>  kernel_list_t;
 //--------------------------------------------------------------------
 // Up Sampling
 //--------------------------------------------------------------------
-struct __dm_impl_upSampling
+
+namespace {
+
+struct upSampling_impl
 {
    dmBufferParameters& Params;
    dmKernelFamily&     Family;
@@ -46,10 +49,10 @@ struct __dm_impl_upSampling
    const dmRect&       DstRect;
    const dmPoint&      Step;
 
-   __dm_impl_upSampling( dmBufferParameters& _Params, dmKernelFamily& _Family, 
-                         const dmRect& _SrcRect,
-                         const dmRect& _DstRect,
-                         const dmPoint& _Step )
+   upSampling_impl( dmBufferParameters& _Params, dmKernelFamily& _Family, 
+              const dmRect& _SrcRect,
+              const dmRect& _DstRect,
+              const dmPoint& _Step )
    :Params(_Params)
    ,Family(_Family)
    ,SrcRect(_SrcRect)
@@ -127,6 +130,8 @@ struct __dm_impl_upSampling
      }
   }
 };
+
+}; // namespace
 //--------------------------------------------------------------------
 // perform an up sampling of the image \a _Image into buffer
 // then apply convolution from buffer to the image parameter.
@@ -163,7 +168,7 @@ bool dmUpSampling::Apply( dmBufferParameters& _Params )
        // Create a buffer of the correct size
        _Params.thisBuffer.CreateBuffer(*this->_Image.TypeDescriptor(),_DstRect,_Mask);   
 
-       __dm_impl_upSampling _filter(_Params,this->_Family,_SrcRect,_DstRect,this->_Step);
+       upSampling_impl _filter(_Params,this->_Family,_SrcRect,_DstRect,this->_Step);
        return  dmImplementScalarOperation(_filter,this->_Image);
 
      }

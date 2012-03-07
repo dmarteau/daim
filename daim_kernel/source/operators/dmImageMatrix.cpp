@@ -29,12 +29,15 @@
 #include "dmMatrixBase.h"
 #include "templates/processing/dmImageMatrix.h"
 //-------------------------------------------------------
-struct __dm_impl_image_to_matrix
+
+namespace {
+
+struct image_to_matrix_impl
 {
   dmRectMatrix& m;
   const dmRect& r;
   
-  __dm_impl_image_to_matrix( dmRectMatrix& _m, const dmRect& _r ) 
+  image_to_matrix_impl( dmRectMatrix& _m, const dmRect& _r ) 
   : m(_m),r(_r) {}
 
   template<EPixelFormat _PixelFormat>
@@ -43,22 +46,17 @@ struct __dm_impl_image_to_matrix
     daim::image_to_matrix(_img.Gen(),m,r); 
   }
 };
+
 //-------------------------------------------------------
-bool dmImageToMatrix( const dmImage& img, const dmRect& r, dmRectMatrix& m )
-{
-  __dm_impl_image_to_matrix _filter(m,r);
-  return dmImplementScalarOperation(_filter,img); 
-} 
-//-------------------------------------------------------
-struct __dm_impl_matrix_to_image
+struct matrix_to_image_impl
 {
   const dmRectMatrix&  m;
   const dmPoint& p;
   dm_real rmin;
   dm_real rmax; 
   
-  __dm_impl_matrix_to_image( const dmRectMatrix& _m, const dmPoint& _p, 
-                             dm_real _rmin, dm_real _rmax) 
+  matrix_to_image_impl( const dmRectMatrix& _m, const dmPoint& _p, 
+                        dm_real _rmin, dm_real _rmax) 
   : m(_m),p(_p),rmin(_rmin),rmax(_rmax) {}
 
   template<EPixelFormat _PixelFormat>
@@ -66,11 +64,10 @@ struct __dm_impl_matrix_to_image
   {
      typedef typename dmIImage<_PixelFormat>::traits_type  traits_type; 
      typedef typename traits_type::value_type   value_type; 
-     typedef typename traits_type::integer_type integer_type; 
 
      daim::gap<value_type> range(
-        daim::_get_range_value(rmin,traits_type(),integer_type()),
-        daim::_get_range_value(rmax,traits_type(),integer_type())
+         traits_type::clamp(rmin),
+         traits_type::clamp(rmax)
      );
 
      if(range.diff()<=0)
@@ -86,8 +83,8 @@ struct __dm_impl_matrix_to_image
      typedef traits_type::value_type value_type; 
 
      daim::gap<value_type> range(
-        daim::_get_range_value(rmin,traits_type(),traits_type::integer_type()),
-        daim::_get_range_value(rmax,traits_type(),traits_type::integer_type())
+         traits_type::clamp(rmin),
+         traits_type::clamp(rmax)
      );
 
      if(range.diff()<=0) {
@@ -101,12 +98,23 @@ struct __dm_impl_matrix_to_image
   }
 
 };
+
+
+}; // namespace
+
+//-------------------------------------------------------
+bool dmImageToMatrix( const dmImage& img, const dmRect& r, dmRectMatrix& m )
+{
+  image_to_matrix_impl _filter(m,r);
+  return dmImplementScalarOperation(_filter,img); 
+} 
+
 //-------------------------------------------------------
 bool dmMatrixToImage( dmImage& img, const dmPoint& p,  
                       dm_real minrange, dm_real maxrange,
                       const  dmRectMatrix& m )
 {
-  __dm_impl_matrix_to_image _filter(m,p,minrange,maxrange);
+  matrix_to_image_impl _filter(m,p,minrange,maxrange);
   return dmImplementScalarOperation(_filter,img); 
 }
 //-------------------------------------------------------
