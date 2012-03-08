@@ -4,7 +4,8 @@ DEPTH=../..
 include $(DEPTH)/config/config.mk
 
 MODULE_NAME=platform
-EXPORTS = dmTypes.h \
+EXPORTS = ac_daim_config.h \
+          dmTypes.h \
           dmTarget.h \
           dmCrt.h \
           dmCrt.cpp \

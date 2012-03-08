@@ -1,0 +1,128 @@
+dnl Disable configure caching ... it causes lots of hassles.
+define([AC_CACHE_LOAD], )
+define([AC_CACHE_SAVE], )
+
+AC_INIT()
+
+dnl ---------------------------------------------------------------------------
+dnl Runtime version
+dnl ---------------------------------------------------------------------------
+
+ac_daim_ver_major=3
+ac_daim_ver_minor=1
+ac_daim_ver_revision=0
+
+AC_SUBST(DAIM_RUNTIME_VER_MAJOR,$ac_daim_ver_major)
+AC_SUBST(DAIM_RUNTIME_VER_MINOR,$ac_daim_ver_minor)
+AC_SUBST(DAIM_RUNTIME_VER_REVISION,$ac_daim_ver_revision)
+
+AC_SUBST(topsrcdir,$(pwd))
+
+dnl ---------------------------------------------------------------------------
+dnl Check for --enable-debug
+dnl ---------------------------------------------------------------------------
+
+AC_MSG_CHECKING([for enable debug build])
+
+AC_ARG_ENABLE(debug,
+	      AS_HELP_STRING([--enable-debug],[enable debugging (disabled by default)]),,)
+
+if test "x$enable_debug" = "xyes" ; then
+  AC_SUBST(debug_config,[DAIM_DEBUG:=1])
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
+
+dnl ---------------------------------------------------------------------------
+dnl Check for --with-config
+dnl ---------------------------------------------------------------------------
+
+AC_MSG_CHECKING([for build configuration])
+
+AC_ARG_WITH(config,
+	      AS_HELP_STRING([--with-config=ARG],[set the build configuration (default guess)]),
+	      [], [
+			case $(uname) in
+				Darwin) with_config=darwin-gcc ;;
+				Linux)  with_config=linux-gcc ;; 
+				mingw*) with_config=win-msvc ;; 
+				*) AC_MSG_FAILURE([Unknown build configuration]) ;;
+			esac])
+
+if test "x$with_config" != "xno"; then
+   AC_MSG_RESULT([$with_config])
+else
+   AC_MSG_FAILURE([Missing build configuration])
+fi
+
+AC_SUBST(DAIM_BUILD_CONFIG,$with_config)
+
+case $with_config in
+win-msvc)
+  AC_SUBST(OS_ARCH,[WINNT])
+  AC_SUBST(LIBSFX,[.lib])
+  AC_SUBST(DLLSFX,[.dll])
+  AC_SUBST(EXESFX,[.exe])   
+;;
+linux-gcc)  
+  AC_SUBST(OS_ARCH,[Linux])
+  AC_SUBST(DLLPREFIX,[lib])
+  AC_SUBST(LIBPREFIX,[lib])
+  AC_SUBST(LIBSFX,[.a])
+  AC_SUBST(DLLSFX,[.so])
+  AC_SUBST(OS_SUB_ARCH,[UNIX])
+;;
+darwin-*)
+  AC_SUBST(OS_ARCH,[Darwin])
+  AC_SUBST(DLLPREFIX,[lib])
+  AC_SUBST(LIBPREFIX,[lib])
+  AC_SUBST(LIBSFX,[.a])
+  AC_SUBST(DLLSFX,[.dylib])
+  AC_SUBST(OS_SUB_ARCH,[UNIX])
+;;
+*)  AC_MSG_FAILURE([Invalid build configuration])
+;;
+esac
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for programs.
+dnl ---------------------------------------------------------------------------
+AC_PROG_CC
+AC_PROG_CXX
+
+dnl ---------------------------------------------------------------------------
+dnl Check for type size
+dnl ---------------------------------------------------------------------------
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(void*)
+
+AC_DEFINE_UNQUOTED([DM_BYTES_PER_INT],[$ac_cv_sizeof_int], [Define to the size of 'int'])
+AC_DEFINE_UNQUOTED([DM_BYTES_PER_LONG],[$ac_cv_sizeof_long], [Define to the size of 'long'])
+AC_DEFINE_UNQUOTED([DM_BYTES_PER_POINTER],[$ac_cv_sizeof_voidp], [Define to the size of 'void*'])
+
+AC_CONFIG_FILES([config/config.opt])
+AC_CONFIG_HEADERS([include/daim_ports/ac_daim_config.h])
+
+dnl ---------------------------------------------------------------------------
+dnl Check for --enable-tests
+dnl ---------------------------------------------------------------------------
+
+AC_MSG_CHECKING([for enable tests])
+
+AC_ARG_ENABLE(tests,
+	      AS_HELP_STRING([--enable-tests],[enable building tests (enabled by default)]),
+		  [],[enable_tests=yes])
+
+if test "x$enable_tests" = "xyes" ; then
+  AC_SUBST(ENABLE_TESTS,[1])
+  AC_MSG_RESULT([yes])
+else
+  AC_SUBST(ENABLE_TESTS,[0])
+  AC_MSG_RESULT([no])
+fi
+
+AC_OUTPUT()
+
+

@@ -6,5 +6,13 @@
 (^|/)TAGS$
 (^|/)\.DS_Store$
 
-^config/myconfig.mk$
-^config/myrules.mk$
+^myconfig.mk$
+^myrules.mk$
+
+# configure files
+\.cache$
+^config.status$
+^config.log$
+
+^config/config.opt$
+(^|/)ac_daim_config.h$

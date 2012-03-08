@@ -73,8 +73,7 @@ static char usage[] =
 
 void PrintUsage()
 {
-  printf(usage);
-
+  printf("%s",usage);
 };
 
 cci_result getOptions( int argc, char ** argv )

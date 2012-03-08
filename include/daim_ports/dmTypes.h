@@ -27,6 +27,8 @@
 //--------------------------------------------------------
 // File         : dmTypes.h
 // Date         : 4/2008
+// updated      : 03/2012 
+//                Use header file dmConfig.h
 // Author       : David Marteau
 //--------------------------------------------------------
 
@@ -35,6 +37,8 @@
 #else
   #include <stddef.h>
 #endif
+
+#include "ac_daim_config.h"
 
 // Set the assumed value for sizeof(int)
 #ifndef DM_BYTES_PER_INT
@@ -118,7 +122,7 @@ typedef unsigned long long dm_uint64;
 #define DM_INT64(x)  x ## LL
 #define DM_UINT64(x) x ## ULL
 
-#endif // DM_BYTES_PER_LONG == 8
+#endif // DM_BYTES_PER_LONG >= 8
 
 #define DM_INT64_MAX DM_INT64(0x7fffffffffffffff)
 #define DM_INT64_MIN (-DM_INT64_MAX - 1)
@@ -141,13 +145,13 @@ typedef dm_int64 dm_uint64;
 
 #endif /* !DM_HAVE_LONG_LONG */
 
-
+//XXX Remove dm_int references
 #if DM_BYTES_PER_INT >= 2
 // dm_int/dm_uint is semantically the type use for integer calculation
 // Choose here the most suitable  (or fastest) representation for an integer
 // (size is not an issue for that type)
-typedef int          dm_int;
-typedef unsigned int dm_uint;
+typedef long          dm_int;
+typedef unsigned long dm_uint;
 #else
 #error 'sizeof(int)' not sufficient for platform use
 #endif

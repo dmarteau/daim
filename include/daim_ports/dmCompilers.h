@@ -90,16 +90,6 @@
 
 #endif
 
-
-
-// STLPort specific
-#ifdef DM_CONFIG_STLP_USE_MALLOC
-
-   #define _STLP_NODE_ALLOC_USE_MALLOC
-
-#endif //  DM_CONFIG_STLP_USE_MALLOC
-
-
 //============================================
 // Specific plateform stuff
 //============================================

@@ -3,7 +3,7 @@
 
 /* ::: BEGIN LICENSE BLOCK:::
  *
- * Copyright (c) 2004-2005 David Marteau
+ * Copyright (c) 2004-2012 David Marteau
  *
  * This file is part of the DAIM Image Processing Library (DAIM library)
  *
@@ -29,6 +29,7 @@
 // Date         : 07/2004
 // Author       : David Marteau
 //--------------------------------------------------------
+
 
 // NOTE: change theses options only if you plan to
 // rebuild daim libraries and modules.
@@ -62,23 +63,6 @@
 //--------------------------------------------
 
 // #define DM_CONFIG_USE_PTHREAD
-
-//--------------------------------------------
-// Define DM_CONFIG_STLP_USE_MALLOC if you are
-// using STLport and you're tracing memory
-// this is because, STLport use a memory pool
-// of its own which release memory out of scope
-// of operator new and delete and this result in
-// memory leak alert.
-// -- Anyway, I still think that memory should be
-// released in user scope when the pool goes
-// out of existence --
-// You can have look at
-//    http://www.sgi.com/tech/stl/alloc.htm
-// for details
-//--------------------------------------------
-
-#define DM_CONFIG_STLP_USE_MALLOC
 
 //--------------------------------------------
 // undef DM_CONFIG_NO_STL_COMPLEX if you want to use
