@@ -259,9 +259,9 @@ static dm_real DoFiltering( const dmIntensityProfile& _Profil,
  * Compute intercepted segments
  */
 int GRSZComputeFromProfil(const dmIntensityProfile& _Profil, 
-                          GRSZIntercepts&        _Defs,
-                          std::vector<dm_real>&  _Result,
-                          std::vector<dm_int>&   _Indices, 
+                          GRSZIntercepts&       _Defs,
+                          std::vector<double>&  _Result,
+                          std::vector<int>&     _Indices, 
                           dmImage* img )
 {
 

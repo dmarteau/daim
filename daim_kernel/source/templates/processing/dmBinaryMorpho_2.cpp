@@ -83,13 +83,14 @@ int distance_map( const dmRegion& _rgn, const dmKernelFamily& _family,
 //--------------------------------------------------------------------
 struct _assign_label
 {
-  void operator()( image<dm_int>::line_type in, long x1, long x2 )
+  void operator()( image<label_type>::line_type in, long x1, long x2 )
   {
     // On teste si le voisinage du pixel x contient un label unique
     // si oui on lui affecte la valeurs de ce label
     // sinon on onvalide le pixel en lui affectant la valeur -1
 
-    for(dm_int c,t,lbl,x=x1;x<=x2;++x)
+    label_type c,t,lbl;
+    for(dm_int x=x1;x<=x2;++x)
     {
       if( (*in)[x] == 0 ) {  // pixel valide
          lbl=c=0;
@@ -149,7 +150,7 @@ int separate_particules( const dmRegion& _rgn, dmRegion& _dest,
 
   r.Resize(1);
 
-  cont_image<dm_int> _dist( r );
+  cont_image<label_type> _dist( r );
 
   S = R;
   _dist.fill(0);
@@ -258,7 +259,7 @@ int ultimate_dilation( const dmRegion& _rgn, dmRegion& _dest,
   R.Translate(1-r.Left(),1-r.Top());
   r.Resize(1);
 
-  cont_image<dm_int>        _map ( r, 0 );
+  cont_image<label_type>    _map ( r, 0 );
   cont_image<unsigned char> _dist( r, 0 );
 
 
@@ -267,7 +268,7 @@ int ultimate_dilation( const dmRegion& _rgn, dmRegion& _dest,
   // On effectue une partition des regions
   // qui correspondent aux germes
   basic_partition __partition;
-  create_map(_map,__partition,_dist,std::equal_to<dm_int>(),connect4);
+  create_map(_map,__partition,_dist,std::equal_to<label_type>(),connect4);
   relabel_image_map(__partition,_map);
 
   S = R;
@@ -362,16 +363,16 @@ int reconstruct( const dmRegion& _rgn, dmRegion& _dst,
   _dst.Translate(-r.Left(),-r.Top()) ;
 
   // Build map
-  cont_image<dm_int>   __map ( R.Rectangle(), 0 );
-  cont_image<dm_uint8> __buff( R.Rectangle(), 0 );
+  cont_image<label_type> __map ( R.Rectangle(), 0 );
+  cont_image<dm_uint8>   __buff( R.Rectangle(), 0 );
   fill(R,__buff,1);
   basic_partition __partition;
-  create_map(__map,__partition,__buff,std::equal_to<dm_int>(),_connect);
+  create_map(__map,__partition,__buff,std::equal_to<label_type>(),_connect);
 
   R.XorCoordinates(__map.rect());
   fill(R,__map,0);
 
-  int index;
+  label_type index;
   // collect labels
   _dst.ClipToRect(R.Rectangle());
   labels_array_type labels;
@@ -408,8 +409,8 @@ int watershed_simple( const image<dm_uint8>& _image, dmRegion& _dest,
 
   r.Resize(1);
 
-  cont_image<dm_int> _dist( r );
-  cont_image<dm_int> _map ( r );
+  cont_image<label_type> _dist( r );
+  cont_image<label_type> _map ( r );
 
   S = R;
   daim::copy(_image.rect(),dmPoint(1,1),_image,_dist);

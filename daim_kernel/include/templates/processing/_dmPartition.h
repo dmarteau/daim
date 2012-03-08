@@ -36,16 +36,20 @@
 
 namespace daim {
 
+typedef dm_int32 label_type;
+typedef image<label_type>::image_type map_type;
+typedef std::vector<label_type> size_table_type;
+typedef std::vector<label_type> labels_array_type;
 
 class basic_partition 
 {
  private:
-   dm_int  __count;
-   dm_int* __partition;
+   long        __count;
+   label_type* __partition;
 
  public:
-   typedef std::vector<dm_int> index_table;
-   typedef const dm_int* iterator;
+   typedef std::vector<label_type> index_table;
+   typedef const label_type* iterator;
 
    basic_partition( unsigned _cnt=1);
    basic_partition( const basic_partition& );
@@ -56,7 +60,7 @@ class basic_partition
  public:
    // Reset partition elements
    void initialize() { 
-     for(dm_int j=0;j<__count;++j) 
+     for(label_type j=0;j<__count;++j) 
       __partition[j] = j; 
    }
 
@@ -75,7 +79,7 @@ class basic_partition
    int number_of_partitions() const; 
 
    // Assign k and j index  to the same partition partition
-   int resolve(dm_int k,dm_int j);
+   label_type resolve(label_type k,label_type j);
 
    // Update partition
    // This function has to be called after
@@ -89,9 +93,9 @@ class basic_partition
    // Assign conditionnaly the partition elements
    // to the element partition k
    template<class P> 
-   P& resolve_if( P& pred, dm_int k ) 
+   P& resolve_if( P& pred, label_type k ) 
    { 
-     for(dm_int j=0;j<__count;++j) { 
+     for(label_type j=0;j<__count;++j) { 
        if(pred(__partition[j])) resolve(__partition[j],k); 
      }
      update(); return pred;
@@ -126,11 +130,6 @@ class basic_partition
 };
 
 
-
-typedef image<dm_int>::image_type map_type;
-typedef std::vector<dm_int> size_table_type;
-typedef std::vector<dm_int> labels_array_type;
-
 //-------------------------------------------------------------------
 // partitionne une image par aggregation de points qui verifient le
 // predicat P, la partition 0 n'est pas associee � une region 
@@ -147,7 +146,9 @@ unsigned setup_regions( const image<T>& src,map_type& regions,P predicat,
   regions.fill(0);
   unsigned count = 0;
 
-  int i,j,r;
+  int i,j;
+  
+  label_type r;
 
   typename image<T>::value_type c;
 
@@ -203,8 +204,10 @@ void update_partition_map(const image<T>& src,map_type& regions,unsigned count,
   right  = src.width()-1;  // end pixel
   bottom = src.height()-1;
 
-  int i,j,r;
+  int i,j;
 
+  label_type r;
+  
   typename image<T>::value_type c;
 
   part.reserve(++count);
@@ -258,7 +261,7 @@ P get_labels( const map_type& _map, basic_partition& _partition, const image<T>&
   typedef typename image<T>::const_line_type const_line_type;
   dmASSERT( _mask==_map );
 
-  dm_int v;
+  label_type v;
 
   const_line_type line = _mask.begin();
   const_line_type lend = _mask.end();
@@ -275,15 +278,15 @@ P get_labels( const map_type& _map, basic_partition& _partition, const image<T>&
   return pred;
 }
 //--------------------------------------------------------
-unsigned create_region_partition( basic_partition& _part, map_type& _map, const dmRegion& _rgn, connectivity );
-void     assign_map_borders( basic_partition& _part, const map_type& _map, dm_int _index );
-void     create_roi( dmRegion& , basic_partition& , const map_type& , dm_int _index );
-int      get_overlapping_regions_labels( const dmRegion& rgn, const basic_partition& _part, const map_type&, labels_array_type& _labels );
-int      get_border_regions_labels     ( const dmRegion& rgn, const basic_partition& _part, const map_type&, labels_array_type& _labels );
-int      merge_labels( basic_partition& , labels_array_type&, dm_int k );
-int      merge_regions( basic_partition&, const map_type&, const dmRegion& );
-void     relabel_image_map( basic_partition& , map_type& );
-int      compact_partition_map( basic_partition& , map_type&, basic_partition::index_table& );
+unsigned   create_region_partition( basic_partition& _part, map_type& _map, const dmRegion& _rgn, connectivity );
+void       assign_map_borders( basic_partition& _part, const map_type& _map, dm_int _index );
+void       create_roi( dmRegion& , basic_partition& , const map_type& , dm_int _index );
+label_type get_overlapping_regions_labels( const dmRegion& rgn, const basic_partition& _part, const map_type&, labels_array_type& _labels );
+label_type get_border_regions_labels     ( const dmRegion& rgn, const basic_partition& _part, const map_type&, labels_array_type& _labels );
+label_type merge_labels( basic_partition& , labels_array_type&, label_type k );
+label_type merge_regions( basic_partition&, const map_type&, const dmRegion& );
+void       relabel_image_map( basic_partition& , map_type& );
+label_type compact_partition_map( basic_partition& , map_type&, basic_partition::index_table& );
 
 labels_array_type::iterator  compact_labels( labels_array_type& );
 

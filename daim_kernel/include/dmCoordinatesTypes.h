@@ -30,10 +30,10 @@
 // Author       : David Marteau
 //--------------------------------------------------------
 
-struct dm_point   { dm_int32 x; dm_int32 y;                        };
+struct dm_point   { long x; long y;                        };
 struct dm_rect    { dm_point top_left; dm_point bottom_right;      };
-struct dm_ellipse { dm_point center;   dm_uint32 rx; dm_uint32 ry; };
-struct dm_circle  { dm_point center;   dm_uint32 r;                };
+struct dm_ellipse { dm_point center;   long rx; long ry; };
+struct dm_circle  { dm_point center;   long r;                };
 struct dm_line    { dm_point start;    dm_point end;               };
 
 

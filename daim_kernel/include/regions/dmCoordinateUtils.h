@@ -70,7 +70,7 @@ inline int dmRectCmp( const dm_rect& r1, const dm_rect& r2 )
 inline bool operator>=(const dm_rect& r1, const dm_rect& r2) { return dmRectCmp(r1,r2)>0; }
 inline bool operator< (const dm_rect& r1, const dm_rect& r2) { return dmRectCmp(r1,r2)<0; }
 //------------------------------------------------------------
-inline bool dmClipRectangle( dm_rect& box, dm_int x1, dm_int y1, dm_int x2, dm_int y2)
+inline bool dmClipRectangle( dm_rect& box, long x1, long y1, long x2, long y2)
 {
   box.top_left.x  = dm_max( x1, box.top_left.x);
   box.top_left.y  = dm_max( y1, box.top_left.y);
@@ -90,7 +90,7 @@ inline bool dmClipRectangle( dm_rect& box, const dm_rect& clip)
 #include "dmBresenham.h"
 //------------------------------------------------------------
 template<class Op> 
-inline Op& dmDigitalLine( int x1,int y1,int x2,int y2, Op& op )
+inline Op& dmDigitalLine( long x1,long y1,long x2,long y2, Op& op )
 {
   daim::bresenham_line(op,x1,y1,x2,y2);
   return op;

@@ -63,11 +63,11 @@ void basic_partition::reserve( unsigned _cnt )
   if(__partition) 
     ::operator delete [] (__partition,dm_arena);
   
-  __partition = new (dm_arena) dm_int[__count=_cnt]; 
+  __partition = new (dm_arena) label_type[__count=_cnt]; 
   initialize();  
 }
 //-------------------------------------------------------
-int basic_partition::resolve(dm_int k,dm_int j) 
+label_type basic_partition::resolve(label_type k,label_type j) 
 {
    while(__partition[j]!=j) j=__partition[j];
    while(__partition[k]!=k) k=__partition[k];
@@ -161,10 +161,10 @@ static int __push_labels( int x1, int x2, dm_int prev,
   return prev;
 }
 //--------------------------------------------------------------
-int get_overlapping_regions_labels( const dmRegion& rgn, const basic_partition& _partition, const map_type& _map, labels_array_type& _labels )
+label_type get_overlapping_regions_labels( const dmRegion& rgn, const basic_partition& _partition, const map_type& _map, labels_array_type& _labels )
 {
   map_type::const_line_type _m = _map.begin(rgn.Rectangle());
-  int prev = 0; // 0 == background
+  label_type prev = 0; // 0 == background
   long x1,x2;
   if(rgn.IsRectRoi())
   {
@@ -191,10 +191,10 @@ int get_overlapping_regions_labels( const dmRegion& rgn, const basic_partition& 
 // get_overlapping_regions_labels2 : Same as get_overlapping_regions_labels
 // but preserve order of region hits.
 //--------------------------------------------------------------------------
-static int __push_labels2( int x1, int x2, dm_int index, 
-                           const basic_partition& _partition, 
-                           map_type::const_line_type _m, 
-                           labels_array_type& _hits )
+static label_type __push_labels2( int x1, int x2, label_type index, 
+                                  const basic_partition& _partition, 
+                                  map_type::const_line_type _m, 
+                                  labels_array_type& _hits )
 {
   dm_int v,prev=0;
   for(int i=x1;i<=x2;++i) 
@@ -208,15 +208,15 @@ static int __push_labels2( int x1, int x2, dm_int index,
   return index;
 }
 //--------------------------------------------------------------
-int get_overlapping_regions_labels2( const dmRegion& rgn, 
-                                      const basic_partition& _partition, 
-                                      const map_type& _map, 
-                                      labels_array_type& _labels )
+label_type get_overlapping_regions_labels2( const dmRegion& rgn, 
+                                            const basic_partition& _partition, 
+                                            const map_type& _map, 
+                                            labels_array_type& _labels )
 {
   labels_array_type hits(_partition.size(),0);
 
   map_type::const_line_type _m = _map.begin(rgn.Rectangle());
-  int index = 0;
+  label_type index = 0;
 
   long x1,x2;
   if(rgn.IsRectRoi())
@@ -249,14 +249,14 @@ int get_overlapping_regions_labels2( const dmRegion& rgn,
   return _labels[0];
 }
 //--------------------------------------------------------------
-int get_border_regions_labels( const dmRegion& _rgn, const basic_partition& _partition, const map_type& _map, labels_array_type& _labels )
+label_type get_border_regions_labels( const dmRegion& _rgn, const basic_partition& _partition, const map_type& _map, labels_array_type& _labels )
 {
   dmRegion rgn_outline;
   _rgn.GetOutLine(rgn_outline);
   return get_overlapping_regions_labels(_rgn,_partition,_map,_labels);
 }
 //--------------------------------------------------------------
-int merge_labels( basic_partition& _partition , labels_array_type& _labels, dm_int k )
+label_type merge_labels( basic_partition& _partition , labels_array_type& _labels, label_type k )
 {
   labels_array_type::iterator it   = _labels.begin();
   labels_array_type::iterator last = _labels.end();
@@ -296,7 +296,9 @@ unsigned create_region_partition( basic_partition& part, map_type& map,
   connectivity _fgconnect = _connect;
   connectivity _bgconnect = (_connect==connect8 ? connect4 : connect8);
 
-  int i,j,c,r;
+  int i,j;
+  label_type c,r;
+  
   for( j=top;j<bottom;++j) 
   {
     lj = src[j]; ljp1 = src[j+1];
@@ -379,10 +381,10 @@ unsigned create_region_partition( basic_partition& _part, map_type& _map,
   return create_region_partition(_part,_map,_mask,pixel_traits<dm_uint8>::zero(),_connect);
 }
 //--------------------------------------------------------------
-int merge_regions( basic_partition& _partition, const map_type& _map, const dmRegion& _region )
+label_type merge_regions( basic_partition& _partition, const map_type& _map, const dmRegion& _region )
 {
   labels_array_type _labels;
-  int k = get_overlapping_regions_labels( _region,_partition,_map,_labels );
+  label_type k = get_overlapping_regions_labels( _region,_partition,_map,_labels );
   return merge_labels( _partition , _labels, k ); 
 }
 //--------------------------------------------------------------
@@ -396,7 +398,7 @@ void relabel_image_map( basic_partition& _part, map_type& __regions )
   }
 }
 //--------------------------------------------------------------
-int compact_partition_map(  basic_partition& _part, map_type& __regions, basic_partition::index_table& itable )
+label_type compact_partition_map(  basic_partition& _part, map_type& __regions, basic_partition::index_table& itable )
 {
   int sz = _part.get_index_table( itable );
   map_type::line_type line = __regions.begin();

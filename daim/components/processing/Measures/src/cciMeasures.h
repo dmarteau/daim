@@ -183,25 +183,25 @@ private:
   ~cciMeasurements();
 
 protected:
-  daim::cont_image<dm_int> mMap;
-  dmRegion                 mRoi;           // Roi representing all connexe regions elements
-  info_table_type          mNodeTable;     // Indexed table of nodes
-  index_table_type         mNodeIndexTable;
-  daim::basic_partition    mNodePartition;
-  daim::connectivity       mConnect;
-  info_list_type           mNodeList;    // List of active nodes
+  daim::cont_image<dm_int32> mMap;
+  dmRegion                   mRoi;           // Roi representing all connexe regions elements
+  info_table_type            mNodeTable;     // Indexed table of nodes
+  index_table_type           mNodeIndexTable;
+  daim::basic_partition      mNodePartition;
+  daim::connectivity         mConnect;
+  info_list_type             mNodeList;    // List of active nodes
 
-  dmRegion                 mPartRoi;     // Roi for regions elements map (holes+regions)
-  index_table_type         mIndexTable;  //
-  daim::basic_partition    mPartition;
-  daim::labels_array_type  mLabels;
-  dmPoint                  mOffset;
-  dm_uint                  mUpdate;
-  dm_int                   mNumPartitions;
-  dm_int                   mDepth;
+  dmRegion                   mPartRoi;     // Roi for regions elements map (holes+regions)
+  index_table_type           mIndexTable;  //
+  daim::basic_partition      mPartition;
+  daim::labels_array_type    mLabels;
+  dmPoint                    mOffset;
+  dm_uint                    mUpdate;
+  dm_int                     mNumPartitions;
+  dm_int                     mDepth;
 
-  bool                  mBuilt;
-  dmVector<dm_real>        mStorage;
+  bool                       mBuilt;
+  dmVector<dm_real>          mStorage;
 
   dmRegion  tmpRoi;
 

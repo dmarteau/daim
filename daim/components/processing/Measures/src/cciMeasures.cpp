@@ -186,7 +186,7 @@ cciMeasurements::CreateRegion(cciRegion mask, dm_int32 label, bool include_holes
   if(label==-1)
   {
     // Get background region
-    daim::create_roi(mMap,mNodePartition.bind(std::bind2nd(std::equal_to<dm_int>(),0)),
+    daim::create_roi(mMap,mNodePartition.bind(std::bind2nd(std::equal_to<dm_int32>(),0)),
                      tmpRoi);
   }
   else
@@ -218,14 +218,14 @@ cciMeasurements::CreateRegion(cciRegion mask, dm_int32 label, bool include_holes
         daim::basic_partition _part = mPartition;
         int lbl = daim::merge_labels(_part,mLabels,label);
         daim::create_roi(
-          mMap,_part.bind(std::bind2nd(std::equal_to<dm_int>(),lbl)),
+          mMap,_part.bind(std::bind2nd(std::equal_to<dm_int32>(),lbl)),
           tmpRoi);
       }
       else
       {
         daim::create_roi(
           mMap,
-          mPartition.bind(std::bind2nd(std::equal_to<dm_int>(),label)),
+          mPartition.bind(std::bind2nd(std::equal_to<dm_int32>(),label)),
           tmpRoi);
       }
     }
@@ -378,7 +378,7 @@ CCI_IMETHODIMP cciMeasurements::SelectLabels(cciRegion _mask, dm_int32 *labels, 
   daim::basic_partition _part = mPartition;
   int lbl = daim::merge_labels(_part,mLabels,mLabels[0]);
 
-  daim::create_roi(mMap,_part.bind(std::bind2nd(std::equal_to<dm_int>(),lbl)),tmpRoi);
+  daim::create_roi(mMap,_part.bind(std::bind2nd(std::equal_to<dm_int32>(),lbl)),tmpRoi);
 
   *mask = tmpRoi;
 
@@ -576,7 +576,7 @@ CCI_IMETHODIMP cciMeasurements::Reconstruct(cciRegion mask)
   daim::basic_partition _part = mPartition;
 
   int lbl = daim::merge_labels(_part,mLabels,index);
-  daim::create_roi(mMap,_part.bind(std::bind2nd(std::equal_to<dm_int>(),lbl)),tmpRoi);
+  daim::create_roi(mMap,_part.bind(std::bind2nd(std::equal_to<dm_int32>(),lbl)),tmpRoi);
 
   *rgn = tmpRoi;
 
@@ -837,7 +837,7 @@ static cci_result CopyLabelArray( cciIResultColumn *col,
   
   for(dm_int lbl;it!=last;++it,++dst)
   {
-    lbl = static_cast<dm_int>( *it );
+    lbl = static_cast<dm_int32>( *it );
     if(lbl >= max) 
        return CCI_ERROR_OUT_OF_RANGE;
     

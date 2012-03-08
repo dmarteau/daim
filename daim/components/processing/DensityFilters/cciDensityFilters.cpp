@@ -123,7 +123,7 @@ CCI_IMETHODIMP cciDensityFilters::Transform(cciImage image, cciRegion roi, dm_ui
 
   dmColorIndexTable ctable;
   unsigned short imap;
-  dm_uint*        values = data;
+  dm_uint32*        values = data;
   
   for(int i=0;i<dmLUT8_MAX_COLORS;++i) 
   {

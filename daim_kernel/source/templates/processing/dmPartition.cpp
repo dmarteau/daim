@@ -185,7 +185,7 @@ void region_partition::__set_up( const dmRect& _r )
 
   if( __sharedmap || __regions.IsNull() || !(_r==__regions->rect())) {
     __sharedmap = false;
-    __regions = dmAutoLink<map_type>( new cont_image<dm_int>(_r) );
+    __regions = dmAutoLink<map_type>( new cont_image<label_type>(_r) );
   }
 }
 //--------------------------------------------------------------

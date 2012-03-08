@@ -74,17 +74,20 @@ struct diff_compare<dmPixelFormat24bppRGB>
  //------------------------------------------------------------------------
 // partition operator
 //----------------------------------------------------------------------
-struct __dm_impl_partition
+
+namespace {
+
+struct partition_impl
 {
   daim::region_partition& Partition;
   daim::connectivity      Connect;
   float                   Distance;
     
-  __dm_impl_partition(daim::region_partition& _Partition, float _Distance,
-                        daim::connectivity _Connect)
+  partition_impl(daim::region_partition& _Partition, float _Distance,
+                 daim::connectivity _Connect)
    :Partition(_Partition)
-   ,Distance (_Distance)
    ,Connect  (_Connect)
+   ,Distance (_Distance)
    {}
 
   // Generic operation on scalar
@@ -107,9 +110,11 @@ struct __dm_impl_partition
 
 };
 
+};
+
 #define CCI_ENSURE_LABEL_RANGE( lbl ) \
   DM_BEGIN_MACRO \
-  if(lbl < 0 || lbl >= static_cast<dm_int>(mPartionMap.partition().size())) \
+  if(lbl < 0 || lbl >= static_cast<dm_int32>(mPartionMap.partition().size())) \
     return CCI_ERROR_OUT_OF_RANGE; \
   DM_END_MACRO
 
@@ -130,7 +135,7 @@ protected:
   daim::region_partition  mPartionMap;
   daim::labels_array_type mLabels;
   dmRect                  mRoiRect;
-  bool                 mBuilt;
+  bool                    mBuilt;
   
   void SetZeroRegion(const dmRegion&, const dmRect& );
 
@@ -176,7 +181,7 @@ CCI_IMETHODIMP cciPartition::BuildPartition(cciImage image, cciRegion rgn, doubl
 
   daim::connectivity _connect = (connectivity==8 ?daim::connect8 : daim::connect4);
   
-  __dm_impl_partition filter(mPartionMap,distance,_connect);
+  partition_impl filter(mPartionMap,distance,_connect);
   
   if(!dmImplementOperation(filter,*img))
      return CCI_ERROR_FAILURE;
@@ -344,13 +349,13 @@ CCI_IMETHODIMP cciPartition::MergeLabels(dm_int32 label, dm_int32 *labels, dm_ui
   CCI_ENSURE_ARG_POINTER(labels);
   CCI_ENSURE_LABEL_RANGE(label);
   
-  dm_int max_label = static_cast<dm_int>(mPartionMap.partition().size());
+  dm_int32 max_label = static_cast<dm_int32>(mPartionMap.partition().size());
 
   mLabels.reserve(count);
   mLabels.clear();
 
-  dm_int* it   = labels;
-  dm_int* last = labels + count;
+  dm_int32* it   = labels;
+  dm_int32* last = labels + count;
 
   for(dm_int lbl;it!=last;++it)
   {
