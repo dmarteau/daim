@@ -1,0 +1,14 @@
+
+*.pyc
+.DS_Store$
+
+myconfig.mk
+myrules.mk
+
+# configure files
+.cache
+config.status
+config.log
+
+config/config.opt
+ac_daim_config.h
