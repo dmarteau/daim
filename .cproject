@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?>
 
 <cproject>
@@ -7,12 +7,14 @@
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="converted.config.1098787376" moduleId="org.eclipse.cdt.core.settings" name="Configuration1">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.MachO" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -21,66 +23,18 @@
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactName="daim2" buildProperties="" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="converted.config.1098787376" name="Configuration1" parent="org.eclipse.cdt.build.core.prefbase.cfg">
 					<folderInfo id="converted.config.1098787376." name="/" resourcePath="">
-						<toolChain errorParsers="" id="org.eclipse.cdt.build.core.prefbase.toolchain.303012092" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
-							<targetPlatform binaryParser="org.eclipse.cdt.core.MachO" id="converted.config.1098787376..963737692" name=""/>
-							<builder appendEnvironment="true" autoBuildTarget="all" buildPath="" cleanBuildTarget="clean" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" environment="MAKEFLAGS=-w|DOXYGEN_PATH=/Applications/Doxygen.app/Contents/Resources/doxygen|" errorParsers="org.eclipse.cdt.core.MakeErrorParser" id="org.eclipse.cdt.make.core.makeBuilder.523205425" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" stopOnErr="false" superClass="org.eclipse.cdt.build.core.settings.default.builder">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
-								</outputEntries>
-							</builder>
-							<tool errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="org.eclipse.cdt.build.core.settings.holder.libs.286949028" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs">
-								<option id="org.eclipse.cdt.build.core.settings.holder.libpaths.1013225556" name="Library Paths" superClass="org.eclipse.cdt.build.core.settings.holder.libpaths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/bin}&quot;"/>
-								</option>
+						<toolChain id="cdt.managedbuild.toolchain.gnu.macosx.base.2122103639" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.base">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.MachO64" id="cdt.managedbuild.target.gnu.platform.macosx.base.383782770" name="Debug Platform" osList="macosx" superClass="cdt.managedbuild.target.gnu.platform.macosx.base"/>
+							<builder appendEnvironment="true" buildPath="${workspace_loc:/daim2/Configuration1}" environment="MAKEFLAGS=-w|DOXYGEN_PATH=/Applications/Doxygen.app/Contents/Resources/doxygen|" id="cdt.managedbuild.target.gnu.builder.macosx.base.423222740" name="Gnu Make Builder.Configuration1" stopOnErr="false" superClass="cdt.managedbuild.target.gnu.builder.macosx.base"/>
+							<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.base.1739373280" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.base"/>
+							<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.base.1768754246" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.base">
+								<inputType id="cdt.managedbuild.tool.macosx.cpp.linker.input.542463923" superClass="cdt.managedbuild.tool.macosx.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
 							</tool>
-							<tool errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="org.eclipse.cdt.build.core.settings.holder.1975438471" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1690718831" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_utilities/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
-								</option>
-								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.989893913" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
-							</tool>
-							<tool errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="org.eclipse.cdt.build.core.settings.holder.758830324" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.2063618172" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_utilities/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
-								</option>
-								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1651850709" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
-							</tool>
-							<tool errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="org.eclipse.cdt.build.core.settings.holder.1244747906" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1303677172" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
+							<tool id="cdt.managedbuild.tool.gnu.assembler.macosx.base.758714615" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.base">
+								<option id="gnu.both.asm.option.include.paths.9777405" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_utilities/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include}&quot;"/>
@@ -100,7 +54,54 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
 								</option>
-								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1968412187" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1378998818" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1279406124" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.base.1399188901" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.base">
+								<option id="gnu.cpp.compiler.option.include.paths.1502213170" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_utilities/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1394869966" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.base.797371388" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.base">
+								<option id="gnu.c.compiler.option.include.paths.866623399" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_utilities/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_matrix/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/cci/glue}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/cci}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/daim}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/include/platform}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim-dist/bin-debug/gdal/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/common}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/images}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/operators}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/regions}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/images}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates/processing}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/daim2/daim_kernel/include/templates}&quot;"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.928766446" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
@@ -930,5 +931,8 @@
 				</scannerInfoProvider>
 			</profile>
 		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/daim2"/>
 	</storageModule>
 </cproject>

@@ -32,7 +32,7 @@
 // NOTE         : This class is used as a shared buffer
 //                for regions operation, il will be shared
 //                among several instance of dmRgnHandle to store
-//                auxiliary results. This is a alternatuve to static
+//                auxiliary results. This is a alternative to static
 //                buffer and should be safe in multithreading 
 //                environment.
 //                    

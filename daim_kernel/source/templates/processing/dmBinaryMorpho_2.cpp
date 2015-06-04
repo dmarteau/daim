@@ -37,7 +37,7 @@ namespace daim {
 //--------------------------------------------------------------------
 // Principe
 // 1 - effectuer des erosion successives sur la region
-// 2 - soustraire la region obtenue de la region pr�cedente
+// 2 - soustraire la region obtenue de la region précedente
 // 2 - ajouter 1 dans la map pour cette la region
 //--------------------------------------------------------------------
 int distance_map( const dmRegion& _rgn, const dmKernelFamily& _family,

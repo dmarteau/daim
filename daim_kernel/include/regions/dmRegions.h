@@ -56,8 +56,8 @@ public:
 
    // Rectangle Roi settings
    void SetRectRoi(const dmRect& r) {
-	 RoiRect = r; RoiType = RectRoi;
-	 if(!RoiRgn.Empty()) RoiRgn.FreeRegion();
+     RoiRect = r; RoiType = RectRoi;
+     if(!RoiRgn.Empty()) RoiRgn.FreeRegion();
    }
 
    // Use a abstract representation for coordinates

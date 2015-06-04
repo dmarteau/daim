@@ -67,7 +67,7 @@ size_t dmRgnNode::ComputeSubRegions()
   return Count();
 }
 //------------------------------------------------------------------
-bool dmRgnNode::BuildConnexRoi( dmRegion& rgn )
+bool dmRgnNode::BuildConnexR0....oi( dmRegion& rgn )
 {
   rgn.KillRoi();
   if(boundary.Size()!=0) rgn.SetRoi(boundary);
