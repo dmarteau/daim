@@ -12,3 +12,8 @@ config.log
 
 config/config.opt
 ac_daim_config.h
+
+.cproject
+.settings
+.project
+
