@@ -5,18 +5,6 @@ namespace daim {
 
 template <class _Key> struct hash { };
 
-
-template<class char_type> 
-inline size_t __dflt_hash_string_charT(const char_type* __s)
-{
-  unsigned long __h = 0; 
-  for ( ; *__s; ++__s)
-    __h = 5*__h + *__s;
-  
-  return size_t(__h);
-}
-
-/*
 template<class char_type> 
 inline size_t __dflt_hash_string_charT(const char_type* __s)
 {
@@ -27,9 +15,8 @@ inline size_t __dflt_hash_string_charT(const char_type* __s)
   
   return size_t(__h);
 }
-*/
 
-template<> struct hash<char*> 
+template<> struct hash<char*>
 {
   size_t operator()(const char* __s) const { return __dflt_hash_string_charT(__s); }
 };
