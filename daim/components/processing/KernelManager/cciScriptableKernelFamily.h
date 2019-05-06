@@ -27,7 +27,7 @@
 #include "daim_kernel.h"
 #include "templates/processing/dmKernelFamily.h"
 
-class cciScriptableKernelFamily : public cciIScriptableKernelFamily
+class cciScriptableKernelFamily final : public cciIScriptableKernelFamily
 {
 public:
   CCI_DECL_ISUPPORTS

@@ -27,7 +27,7 @@
 #define dmUseKernelImageTemplates
 #include "daim_kernel.h"
 
-class cciConvolutionFilter : public cciIConvolutionFilter
+class cciConvolutionFilter final : public cciIConvolutionFilter
 {
 public:
   CCI_DECL_ISUPPORTS

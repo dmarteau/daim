@@ -21,7 +21,6 @@ DIRS = KernelManager \
        Lacunarity \
        Profile \
        Partition \
-       Flatfield \
        $(NULL)
 
 include $(topsrcdir)/config/rules.mk

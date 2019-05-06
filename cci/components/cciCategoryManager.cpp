@@ -46,13 +46,13 @@
 // BaseStringEnumerator is subclassed by EntryEnumerator and
 // CategoryEnumerator
 //
-class BaseStringEnumerator : public cciIUTF8StringEnumerator,
-                             public cciIStringEnumerator
+class BaseStringEnumerator final : public cciIUTF8StringEnumerator,
+                                   public cciIStringEnumerator
                              
 {
 public:
   CCI_DECL_ISUPPORTS
-  CCI_IMETHOD GetNext(dmAString& aResult);
+  CCI_IMETHOD GetNext(dmAString& aResult) override;
   CCI_DECL_IUTF8STRINGENUMERATOR
 
 BaseStringEnumerator(dmHashPtrDict::iterator first,dmHashPtrDict::iterator end,
@@ -456,7 +456,7 @@ cciCategoryManager::WriteCategoryManagerToRegistry(FILE* fd)
 // cciCategoryManagerFactory
 //
 
-class cciCategoryManagerFactory : public cciIFactory
+class cciCategoryManagerFactory final : public cciIFactory
    {
      public:
        cciCategoryManagerFactory() { }

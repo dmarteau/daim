@@ -69,7 +69,7 @@ CCI_DEFINE_STATIC_IID_ACCESSOR(IFoo, CCI_IFOO_IID)
  { 0xBD, 0x07, 0x6A, 0xDA, 0xF1, 0x68, 0x94, 0x0B } }
 
 
-class Foo : public IFoo
+class Foo final : public IFoo
 {
   public:
     CCI_DECL_ISUPPORTS
@@ -78,7 +78,7 @@ class Foo : public IFoo
       printf("  new Foo@%p\n", STATIC_CAST(void*, this));
     }
 
-    CCI_IMETHOD TestMe();
+    CCI_IMETHOD TestMe() override;
 
   private:
    ~Foo() {

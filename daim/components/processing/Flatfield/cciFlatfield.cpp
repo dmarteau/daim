@@ -39,7 +39,7 @@
 
 
 /* Header file */
-class cciFlatfield : public cciIFlatfield
+class cciFlatfield final : public cciIFlatfield
 {
 public:
   CCI_DECL_ISUPPORTS

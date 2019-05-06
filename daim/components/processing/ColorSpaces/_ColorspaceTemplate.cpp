@@ -67,7 +67,7 @@ cci_result inline ColorSpace_Extract( dm_uint32 channel, const dmIImage<RGB_FMT>
 
 CCI_USE_NS
 
-class COLORSPACE_CLASSNAME : public cciIColorSpace
+class COLORSPACE_CLASSNAME final : public cciIColorSpace
 {
   public:
     CCI_DECL_ISUPPORTS

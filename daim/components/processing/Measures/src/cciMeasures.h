@@ -165,7 +165,7 @@ typedef daim::basic_partition::index_table index_table_type;
 #endif
 
 /* Header file */
-class cciMeasurements : public cciIMeasures2
+class cciMeasurements final : public cciIMeasures2
 {
 
 friend class MapAdjacency;

@@ -35,7 +35,7 @@
 #include "daim_kernel.h"
 
 /* Header file */
-class cciScriptableRegion : public cciIRegion
+class cciScriptableRegion final : public cciIRegion
 {
 public:
   CCI_DECL_ISUPPORTS

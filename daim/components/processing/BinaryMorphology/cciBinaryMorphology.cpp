@@ -44,7 +44,7 @@
 #include "common/dmUserLib.h"
 #include "templates/processing/dmBinaryMorphology.h"
 
-class cciBinaryMorphology : public cciIBinaryMorphology
+class cciBinaryMorphology final : public cciIBinaryMorphology
 {
 public:
   CCI_DECL_ISUPPORTS

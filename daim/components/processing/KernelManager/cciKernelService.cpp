@@ -194,7 +194,7 @@ void cciKernelService::Shutdown()
 }
 
 
-class cciKernelFamilyImpl : public cciIKernelFamily
+class cciKernelFamilyImpl final : public cciIKernelFamily
 {
 public:
   CCI_DECL_ISUPPORTS

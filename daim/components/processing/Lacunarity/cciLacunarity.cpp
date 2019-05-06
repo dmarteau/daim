@@ -74,7 +74,7 @@ namespace fractal
 
 
 /* Header file */
-class cciLacunarity : public cciILacunarity
+class cciLacunarity final : public cciILacunarity
 {
 public:
   CCI_DECL_ISUPPORTS

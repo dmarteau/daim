@@ -63,7 +63,6 @@ struct _Filter
  
     int* data;
     typename daim::pixel_traits<T1>::const_pointer_type corner;
-    typename daim::pixel_traits<T2> pixel_traits;
 
     float m=0,m1,m2,v;
     float s,smin,fsize = NAGAO_SIZE;
@@ -88,7 +87,7 @@ struct _Filter
          s = m2 - (m1*m1)/fsize;
          if(s<smin) { smin = s; m = m1; }
       }
-      (*_out)[ix] = pixel_traits::clamp( m/fsize);
+      (*_out)[ix] = daim::pixel_traits<T2>::clamp( m/fsize);
 	}
   }   
 };

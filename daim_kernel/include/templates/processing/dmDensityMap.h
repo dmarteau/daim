@@ -81,8 +81,6 @@ void extend_density_range( image<T>& _img, const dmRegion& _rgn,
                            const gap< typename image<T>::value_type > _range_from,
                            const gap< typename image<T>::value_type > _range_to )
 {
-  typedef typename pixel_traits<T>::pixel_category pixel_category;
-
   dmDEBUG_ASSERT( _img.rect() >= _rgn.Rectangle() );
   scale_convert(_range_from,_range_to,_rgn,_img);
 }

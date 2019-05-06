@@ -32,7 +32,7 @@
 #include "cciIDaimService.h"
 
 /* Header file */
-class cciDaimService : public cciIDaimService
+class cciDaimService final : public cciIDaimService
 {
 public:
   CCI_DECL_ISUPPORTS

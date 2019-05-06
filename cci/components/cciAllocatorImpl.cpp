@@ -275,27 +275,27 @@ cciAllocatorBase::IsObjectValid(void* p)
 // Standard Allocator for use with external modules
 //===================================================
 
-class cciAllocator : public cciAllocatorBase,
-                     public cciIAllocator
+class cciAllocator final: public cciAllocatorBase,
+                          public cciIAllocator
 {
   public:
     cciAllocator() {}
 
     CCI_DECL_ISUPPORTS
 
-    CCI_IMETHOD_(void*)  NewObject( size_t n, CCI_STATIC_DESTRUCTOR dtor ) {
+    CCI_IMETHOD_(void*)  NewObject( size_t n, CCI_STATIC_DESTRUCTOR dtor ) override {
       return cciAllocatorBase::NewObject(n,dtor);
     }
 
-    CCI_IMETHOD_(cci_result) RevokeObject( void* p ,bool discard ) {
+    CCI_IMETHOD_(cci_result) RevokeObject( void* p ,bool discard ) override {
       return cciAllocatorBase::RevokeObject(p,discard);
     }
 
-    CCI_IMETHOD_(dm_uint32)  NumberOfInstances() {
+    CCI_IMETHOD_(dm_uint32)  NumberOfInstances() override {
       return cciAllocatorBase::NumberOfInstances();
     }
 
-    CCI_IMETHOD_(bool) IsObjectValid(void* p) {
+    CCI_IMETHOD_(bool) IsObjectValid(void* p) override {
       return cciAllocatorBase::IsObjectValid(p);
     }
 

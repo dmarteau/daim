@@ -40,7 +40,7 @@
 #include "common/dmUserLib.h"
 
 /* Header file */
-class cciDensityFilters : public cciIDensityFilters
+class cciDensityFilters final : public cciIDensityFilters
 {
 public:
   CCI_DECL_ISUPPORTS

@@ -38,6 +38,10 @@
   #include <stddef.h>
 #endif
 
+// Not including this at the very beginning
+// may lead to compilation errors with OSX.
+#include <math.h>
+
 #include "ac_daim_config.h"
 
 // Set the assumed value for sizeof(int)

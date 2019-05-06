@@ -50,7 +50,7 @@ typedef std::map<dmCString,cci_Ptr<cciResultColumn> > dmStoreDict;
 
 
 /* Header file */
-class cciResultSet : public cciIResultSet
+class cciResultSet final : public cciIResultSet
 {
 public:
   CCI_DECL_ISUPPORTS
@@ -192,9 +192,9 @@ CCI_IMETHODIMP cciResultSet::SetColumn(const char * name, cciIResultColumn *colu
   return CCI_OK;
 }
 
-class cciColumnIterator : public cciIUTF8StringIterator,
-                          public cciIUTF8StringEnumerator,
-                          public cciIStringEnumerator
+class cciColumnIterator final : public cciIUTF8StringIterator,
+                                public cciIUTF8StringEnumerator,
+                                public cciIStringEnumerator
 
 {
 public:
@@ -203,10 +203,10 @@ public:
 
   // have to declare cciIStringEnumerator manually, because of
   // overlapping method names
-  CCI_IMETHOD GetNext(dmAString& );
-  CCI_IMETHOD GetNext(dmACString&);
+  CCI_IMETHOD GetNext(dmAString& ) override;
+  CCI_IMETHOD GetNext(dmACString&) override;
   
-  CCI_IMETHOD_(bool) HasMore(void);
+  CCI_IMETHOD_(bool) HasMore(void) override;
   
   cciColumnIterator(const dmStoreDict& dict, cciISupports* owner)
   : mFirst(dict.begin())

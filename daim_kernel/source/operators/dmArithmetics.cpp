@@ -110,8 +110,6 @@ struct arithmetics_filter_impl
   {
     dmIImage<dmPixelFormat24bppRGB>*  lhs = dmIImage<dmPixelFormat24bppRGB>::Cast(&Lhs);
 
-    typedef dmIImage<dmPixelFormat24bppRGB>::traits_type traits_type;
-
     arithmetics_code(Operation,Rgn,Pt,lhs->Gen(),_Rhs.Gen(),
                      daim::integer_true());
   }

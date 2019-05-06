@@ -40,7 +40,7 @@
 #include "daim_kernel.h"
 #include "common/dmUserLib.h"
 
-class cciThreshold : public cciIThreshold
+class cciThreshold final : public cciIThreshold
 {
 public:
   CCI_DECL_ISUPPORTS

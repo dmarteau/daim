@@ -44,7 +44,7 @@
 
 
 /* Header file */
-class cciPyramid : public cciIPyramid
+class cciPyramid final : public cciIPyramid
 {
 public:
   CCI_DECL_ISUPPORTS

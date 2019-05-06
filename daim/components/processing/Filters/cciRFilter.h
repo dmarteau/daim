@@ -27,7 +27,7 @@
 #include "cciIColorSpace.h"
 #include "daim_kernel.h"
 
-class cciRFilter : public cciIRFilter
+class cciRFilter final : public cciIRFilter
 {
 public:
   CCI_DECL_ISUPPORTS

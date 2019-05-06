@@ -70,15 +70,14 @@ int main( int argc, char ** argv )
     {
       cci_result rv;
 
-      // Get the DAIM_HOME environment variable
-      const char* location = getenv("DAIM_BIN");
+      // Get the DAIM_SAMPLES environment variable
+      const char* location = getenv("DAIM_SAMPLES");
 
       DM_TEST_EXPECT_RESULT(location && location[0]!='\0');
+      printf("\n### DAIM_SAMPLES set to %s\n",location);
 
-      printf("\n### DAIM_BIN set to %s\n",location);
-
-      snprintf(sampleLocation,MAX_PATH-1,"%s/samples/exif/camera.jpg",location);
-      snprintf(saveLocation  ,MAX_PATH-1,"%s/samples/exif/copy_of_camera.jpg",location);
+      snprintf(sampleLocation,MAX_PATH-1,"%s/exif/camera.jpg",location);
+      snprintf(saveLocation  ,MAX_PATH-1,"%s/exif/copy_of_camera.jpg",location);
 
       printf("\n### Can I create an image shell ?\n");
       cci_Ptr<cciIImageShell> shell = do_CreateInstance("@daim.org/image-shell;1",&rv);

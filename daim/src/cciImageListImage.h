@@ -46,8 +46,8 @@
  * @enduml
  */
 
-class cciImageListImage : public cciScriptableImage,
-                          public cciIImageListImage
+class cciImageListImage final : public cciScriptableImage,
+                                public cciIImageListImage
 {
 public:
   CCI_DECL_ISUPPORTS_INHERITED

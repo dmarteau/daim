@@ -79,9 +79,9 @@ class dmAutoRefCnt {
 #define CCI_DECL_ISUPPORTS                                                   \
 public:                                                                       \
   CCI_IMETHOD QueryInterface(DM_REFIID aIID,                                  \
-                            void** aInstancePtr);                             \
-  CCI_IMETHOD_(cci_refcnt) AddRef(void);                                      \
-  CCI_IMETHOD_(cci_refcnt) Release(void);                                     \
+                            void** aInstancePtr) override;                    \
+  CCI_IMETHOD_(cci_refcnt) AddRef(void) override;                             \
+  CCI_IMETHOD_(cci_refcnt) Release(void) override;                            \
                                                                               \
   static void  CCI_STDCALL DestructorCallback( void* obj );                   \
 protected:                                                                    \
@@ -608,9 +608,9 @@ CCI_IMETHODIMP _class::QueryInterface(DM_REFIID aIID, void** aInstancePtr)    \
 #define CCI_DECL_ISUPPORTS_INHERITED                                         \
 public:                                                                       \
   CCI_IMETHOD QueryInterface(DM_REFIID aIID,                                  \
-                            void** aInstancePtr);                             \
-  CCI_IMETHOD_(cci_refcnt) AddRef(void);                                      \
-  CCI_IMETHOD_(cci_refcnt) Release(void);                                     \
+                            void** aInstancePtr) override;                    \
+  CCI_IMETHOD_(cci_refcnt) AddRef(void) override;                             \
+  CCI_IMETHOD_(cci_refcnt) Release(void) override;                            \
 
 /**
  * These macros can be used in conjunction with CCI_DECL_ISUPPORTS_INHERITED

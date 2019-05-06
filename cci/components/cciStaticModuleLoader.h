@@ -41,7 +41,7 @@
 #include "cciIModuleLoader.h"
 #endif
 
-struct cciStaticModuleEntry;
+class cciStaticModuleEntry;
 
 class cciStaticModuleLoader : public cciIModuleLoader
 {

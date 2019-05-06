@@ -43,7 +43,7 @@
 #include "common/dmUserLib.h"
 
 /* Header file */
-class cciHistograms : public cciIHistograms
+class cciHistograms final : public cciIHistograms
 {
 public:
   CCI_DECL_ISUPPORTS

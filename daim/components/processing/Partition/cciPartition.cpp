@@ -119,7 +119,7 @@ struct partition_impl
   DM_END_MACRO
 
   
-class cciPartition : public cciIPartition2
+class cciPartition final : public cciIPartition2
 {
 public:
   CCI_DECL_ISUPPORTS

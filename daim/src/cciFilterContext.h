@@ -41,8 +41,8 @@
 #include "cciIColorSpace.h"
 
 /* Header file */
-class cciFilterContext : public cciIFilterContext,
-                         public cciIInterfaceRequestor
+class cciFilterContext final : public cciIFilterContext,
+                               public cciIInterfaceRequestor
 {
 public:
   CCI_DECL_ISUPPORTS

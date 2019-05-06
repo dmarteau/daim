@@ -34,7 +34,7 @@
 #include "cciIRFilter.h"
 
 /* Header file */
-class cciSharpenFilter : public cciISharpenFilter
+class cciSharpenFilter final : public cciISharpenFilter
 {
 public:
   CCI_DECL_ISUPPORTS

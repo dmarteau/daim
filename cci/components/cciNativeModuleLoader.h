@@ -41,7 +41,7 @@
 #include "cciIModuleLoader.h"
 #endif
 
-struct cciNativeModuleEntry;
+class cciNativeModuleEntry;
 
 extern "C" {
 struct cciModuleTag;

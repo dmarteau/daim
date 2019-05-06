@@ -27,7 +27,7 @@
 #include "cciIMatrix.h"
 #include "daim_kernel.h"
 
-class cciLFilter : public cciILFilter
+class cciLFilter final : public cciILFilter
 {
 public:
   CCI_DECL_ISUPPORTS

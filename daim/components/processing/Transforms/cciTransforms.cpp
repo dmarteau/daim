@@ -41,7 +41,7 @@
 #include "math.h"
 
 /* Header file */
-class cciTransforms : public cciITransforms
+class cciTransforms final : public cciITransforms
 {
 public:
   CCI_DECL_ISUPPORTS

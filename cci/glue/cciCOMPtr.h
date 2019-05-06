@@ -1,6 +1,7 @@
 #ifndef cciCOMPtr_h
 #define cciCOMPtr_h
 
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -83,7 +84,7 @@
   #pragma warning( disable: 4514 )
 #endif
 
-#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
+#ifdef __GNUC__ 
   // Our use of cci_Ptr_base::mRawPtr violates the C++ standard's aliasing
   // rules. Mark it with the may_alias attribute so that gcc 3.3 and higher
   // don't reorder instructions based on aliasing assumptions for
@@ -117,66 +118,6 @@
   DM_END_MACRO
 #endif
 
-template <class T>
-class cciDerivedSafe : public T
-    /*
-      No client should ever see or have to type the name of this class.  It is the
-      artifact that makes it a compile-time error to call |AddRef| and |Release|
-      on a |cci_Ptr|.  DO NOT USE THIS TYPE DIRECTLY IN YOUR CODE.
-
-      See |cci_Ptr::operator->|, |cci_Ptr::operator*|, et al.
-
-      This type should be a nested class inside |cci_Ptr<T>|.
-    */
-  {
-    private:
-#ifdef DM_CPP_HAVE_USING_DECLARATION
-      using T::AddRef;
-      using T::Release;
-#else
-      cci_refcnt AddRef(void);
-      cci_refcnt Release(void);
-#endif
-
-#if !defined(AIX) && !defined(IRIX)
-      void operator delete( void*, size_t );                  // NOT TO BE IMPLEMENTED
-        // declaring |operator delete| private makes calling delete on an interface pointer a compile error
-#endif
-
-      cciDerivedSafe<T>& operator=( const T& );                // NOT TO BE IMPLEMENTED
-        // you may not call |operator=()| through a dereferenced |cci_Ptr|, because you'd get the wrong one
-
-        /*
-          Compiler warnings and errors: cciDerivedSafe operator=() hides inherited operator=().
-          If you see that, that means somebody checked in a [XP]COM interface class that declares an
-          |operator=()|, and that's _bad_.  So bad, in fact, that this declaration exists explicitly
-          to stop people from doing it.
-        */
-
-    protected:
-      cciDerivedSafe();                                        // NOT TO BE IMPLEMENTED
-        /*
-          This ctor exists to avoid compile errors and warnings about nsDeriviedSafe using the
-          default ctor but inheriting classes without an empty ctor. See bug 209667.
-        */
-  };
-
-#if !defined(DM_CPP_HAVE_USING_DECLARATION) && defined(DM_NEED_CPP_UNUSED_IMPLEMENTATIONS)
-template <class T>
-cci_refcnt
-cciDerivedSafe<T>::AddRef()
-  {
-    return 0;
-  }
-
-template <class T>
-cci_refcnt
-cciDerivedSafe<T>::Release()
-  {
-    return 0;
-  }
-
-#endif
 
 CCI_NAMESPACE_BEGIN
 
@@ -197,6 +138,8 @@ struct already_AddRefed
       implementation affords over the more general solution offered by
       |cci_Ptr_helper|.
     */
+
+
   {
     already_AddRefed( T* aRawPtr )
         : mRawPtr(aRawPtr)
@@ -212,10 +155,6 @@ struct already_AddRefed
 template <class T>
 inline const already_AddRefed<T>
 getter_AddRefs( T* aRawPtr )
-/*
-   ...makes typing easier, because it deduces the template type, e.g.,
-   you write |dont_AddRef(fooP)| instead of |already_AddRefed<IFoo>(fooP)|.
-*/
 {
   return already_AddRefed<T>(aRawPtr);
 }
@@ -235,7 +174,7 @@ dont_AddRef( T* aRawPtr )
 }
 
 template <class T>
-inline const already_AddRefed<T>
+inline const already_AddRefed<T>&&
 dont_AddRef( const already_AddRefed<T> aAlreadyAddRefedPtr )
 {
   return aAlreadyAddRefedPtr;
@@ -478,6 +417,13 @@ class cci_Ptr : private cci_Ptr_base
             CCICAP_ADDREF(this, mRawPtr);
         }
 
+      cci_Ptr( cci_Ptr<T>&& aSmartPtr )
+            : CCI_CAP_CTOR_BASE(aSmartPtr.mRawPtr)
+          // move operator
+        {
+            aSmartPtr.mRawPtr = nullptr;
+        }
+
       cci_Ptr( T* aRawPtr )
             : CCI_CAP_CTOR_BASE(aRawPtr)
           // construct from a raw pointer (of the right type)
@@ -487,6 +433,12 @@ class cci_Ptr : private cci_Ptr_base
         }
 
       cci_Ptr( const CCI_NS_(already_AddRefed)<T>& aSmartPtr )
+            : CCI_CAP_CTOR_BASE(aSmartPtr.mRawPtr)
+          // construct from |dont_AddRef(expr)|
+        {
+        }
+
+      cci_Ptr( const CCI_NS_(already_AddRefed)<T>&& aSmartPtr )
             : CCI_CAP_CTOR_BASE(aSmartPtr.mRawPtr)
           // construct from |dont_AddRef(expr)|
         {
@@ -545,80 +497,70 @@ class cci_Ptr : private cci_Ptr_base
 
         // Assignment operators
 
-      cci_Ptr<T>&
-      operator=( const cci_Ptr<T>& rhs )
+      cci_Ptr<T>& operator=( const cci_Ptr<T>& rhs )
           // copy assignment operator
         {
           assign_with_AddRef(rhs.mRawPtr);
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( T* rhs )
+      cci_Ptr<T>& operator=( T* rhs )
           // assign from a raw pointer (of the right type)
         {
           assign_with_AddRef(rhs);
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const CCI_NS_(already_AddRefed)<T>& rhs )
+      cci_Ptr<T>&  operator=( const CCI_NS_(already_AddRefed)<T>& rhs )
           // assign from |dont_AddRef(expr)|
         {
           assign_assuming_AddRef(rhs.mRawPtr);
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cciQueryInterface rhs )
+      cci_Ptr<T>& operator=( const cciQueryInterface rhs )
           // assign from |do_QueryInterface(expr)|
         {
           assign_from_qi(rhs, CCI_GET_TEMPLATE_IID(T));
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cciQueryInterfaceWithError& rhs )
+      cci_Ptr<T>& operator=( const cciQueryInterfaceWithError& rhs )
           // assign from |do_QueryInterface(expr, &rv)|
         {
           assign_from_qi_with_error(rhs, CCI_GET_TEMPLATE_IID(T));
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cciGetServiceByCID rhs )
+      cci_Ptr<T>&  operator=( const cciGetServiceByCID rhs )
           // assign from |do_GetService(cid_expr)|
         {
           assign_from_gs_cid(rhs, CCI_GET_TEMPLATE_IID(T));
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cciGetServiceByCIDWithError& rhs )
+      cci_Ptr<T>& operator=( const cciGetServiceByCIDWithError& rhs )
           // assign from |do_GetService(cid_expr, &rv)|
         {
           assign_from_gs_cid_with_error(rhs, CCI_GET_TEMPLATE_IID(T));
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cciGetServiceByContractID rhs )
+      cci_Ptr<T>&  operator=( const cciGetServiceByContractID rhs )
           // assign from |do_GetService(contractid_expr)|
         {
           assign_from_gs_contractid(rhs, CCI_GET_TEMPLATE_IID(T));
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cciGetServiceByContractIDWithError& rhs )
+      cci_Ptr<T>& operator=( const cciGetServiceByContractIDWithError& rhs )
           // assign from |do_GetService(contractid_expr, &rv)|
         {
           assign_from_gs_contractid_with_error(rhs, CCI_GET_TEMPLATE_IID(T));
           return *this;
         }
 
-      cci_Ptr<T>&
-      operator=( const cci_Ptr_helper& rhs )
+      cci_Ptr<T>& operator=( const cci_Ptr_helper& rhs )
           // ...and finally, anything else we might need to assign from
           //  can exploit the |cci_Ptr_helper| facility.
         {
@@ -626,8 +568,7 @@ class cci_Ptr : private cci_Ptr_base
           return *this;
         }
 
-      void
-      swap( cci_Ptr<T>& rhs )
+      void swap( cci_Ptr<T>& rhs )
           // ...exchange ownership with |rhs|; can save a pair of refcount operations
         {
           cciISupports* temp = rhs.mRawPtr;
@@ -635,8 +576,7 @@ class cci_Ptr : private cci_Ptr_base
           mRawPtr = temp;
         }
 
-      void
-      swap( T*& rhs )
+      void swap( T*& rhs )
           // ...exchange ownership with |rhs|; can save a pair of refcount operations
         {
           cciISupports* temp = rhs;
@@ -668,74 +608,44 @@ class cci_Ptr : private cci_Ptr_base
           swap(*rhs);
         }
 
-      T*
-      get() const
-          /*
-            Prefer the implicit conversion provided automatically by |operator cciDerivedSafe<T>*() const|.
-             Use |get()| to resolve ambiguity or to get a castable pointer.
-          */
-        {
-          return reinterpret_cast<T*>(mRawPtr);
-        }
+      // Prefer the implicit conversion provided automatically by
+      // |operator T*() const|. Use |get()| to resolve ambiguity or to get a
+      // castable pointer.
+      T* get() const { return reinterpret_cast<T*>(mRawPtr); }
 
-      operator cciDerivedSafe<T>*() const
-          /*
-            ...makes an |cci_Ptr| act like its underlying raw pointer type (except against |AddRef()|, |Release()|,
-              and |delete|) whenever it is used in a context where a raw pointer is expected.  It is this operator
-              that makes an |cci_Ptr| substitutable for a raw pointer.
+      // Makes an nsCOMPtr act like its underlying raw pointer type whenever it is
+      // used in a context where a raw pointer is expected. It is this operator
+      // that makes an nsCOMPtr substitutable for a raw pointer.
+      //
+      // Prefer the implicit use of this operator to calling |get()|, except where
+      // necessary to resolve ambiguity.
+      operator T*() const & { return get(); }
 
-            Prefer the implicit use of this operator to calling |get()|, except where necessary to resolve ambiguity.
-          */
-        {
-          return get_DerivedSafe();
-        }
+      // Don't allow implicit conversion of temporary nsCOMPtr to raw pointer,
+      // because the refcount might be one and the pointer will immediately become
+      // invalid.
+      operator T*() const && = delete;
 
-      cciDerivedSafe<T>*
-      operator->() const
-        {
-          CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator->().");
-          return get_DerivedSafe();
-        }
+      // Needed to avoid the deleted operator above
+      explicit operator bool() const { return !!mRawPtr; }
 
-#ifdef DM_CANT_RESOLVE_CPP_CONST_AMBIGUITY
-  // broken version for IRIX
+      T* operator->() const
+      {
+        CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator->().");
+        return get();
+      }
 
-      cci_Ptr<T>*
-      get_address() const
-          // This is not intended to be used by clients.  See |address_of|
-          // below.
-        {
-          return const_cast<cci_Ptr<T>*>(this);
-        }
-
-#else // DM_CANT_RESOLVE_CPP_CONST_AMBIGUITY
-
-      cci_Ptr<T>*
-      get_address()
-          // This is not intended to be used by clients.  See |address_of|
-          // below.
-        {
-          return this;
-        }
-
-      const cci_Ptr<T>*
-      get_address() const
-          // This is not intended to be used by clients.  See |address_of|
-          // below.
-        {
-          return this;
-        }
-
-#endif // DM_CANT_RESOLVE_CPP_CONST_AMBIGUITY
+      // This is not intended to be used by clients.  See |address_of|
+      // below.
+      cci_Ptr<T>* get_address() { return this; }
+      const cci_Ptr<T>*  get_address() const { return this; }
 
     public:
-      cciDerivedSafe<T>&
-      operator*() const
-        {
+      T& operator*() const 
+      {
           CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator*().");
-          return *get_DerivedSafe();
-        }
-
+          return *get();
+      }
 
       T**
       StartAssignment()
@@ -747,14 +657,6 @@ class cci_Ptr : private cci_Ptr_base
           return reinterpret_cast<T**>(&mRawPtr);
 #endif
         }
-
-    private:
-      cciDerivedSafe<T>*
-      get_DerivedSafe() const
-        {
-          return reinterpret_cast<cciDerivedSafe<T>*>(mRawPtr);
-        }
-
   };
 
 
@@ -799,6 +701,12 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
         }
 
       cci_Ptr( const CCI_NS_(already_AddRefed)<cciISupports>& aSmartPtr )
+            : cci_Ptr_base(aSmartPtr.mRawPtr)
+          // construct from |dont_AddRef(expr)|
+        {
+        }
+
+      cci_Ptr( const CCI_NS_(already_AddRefed)<cciISupports>&& aSmartPtr )
             : cci_Ptr_base(aSmartPtr.mRawPtr)
           // construct from |dont_AddRef(expr)|
         {
@@ -857,80 +765,70 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
 
         // Assignment operators
 
-      cci_Ptr<cciISupports>&
-      operator=( const cci_Ptr<cciISupports>& rhs )
+      cci_Ptr<cciISupports>& operator=( const cci_Ptr<cciISupports>& rhs )
           // copy assignment operator
         {
           assign_with_AddRef(rhs.mRawPtr);
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( cciISupports* rhs )
+      cci_Ptr<cciISupports>& operator=( cciISupports* rhs )
           // assign from a raw pointer (of the right type)
         {
           assign_with_AddRef(rhs);
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const CCI_NS_(already_AddRefed)<cciISupports>& rhs )
+      cci_Ptr<cciISupports>& operator=( const CCI_NS_(already_AddRefed)<cciISupports>& rhs )
           // assign from |dont_AddRef(expr)|
         {
           assign_assuming_AddRef(rhs.mRawPtr);
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cciQueryInterface rhs )
+      cci_Ptr<cciISupports>& operator=( const cciQueryInterface rhs )
           // assign from |do_QueryInterface(expr)|
         {
           assign_from_qi(rhs, CCI_GET_IID(cciISupports));
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cciQueryInterfaceWithError& rhs )
+      cci_Ptr<cciISupports>& operator=( const cciQueryInterfaceWithError& rhs )
           // assign from |do_QueryInterface(expr, &rv)|
         {
           assign_from_qi_with_error(rhs, CCI_GET_IID(cciISupports));
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cciGetServiceByCID rhs )
+      cci_Ptr<cciISupports>& operator=( const cciGetServiceByCID rhs )
           // assign from |do_GetService(cid_expr)|
         {
           assign_from_gs_cid(rhs, CCI_GET_IID(cciISupports));
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cciGetServiceByCIDWithError& rhs )
+      cci_Ptr<cciISupports>& operator=( const cciGetServiceByCIDWithError& rhs )
           // assign from |do_GetService(cid_expr, &rv)|
         {
           assign_from_gs_cid_with_error(rhs, CCI_GET_IID(cciISupports));
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cciGetServiceByContractID rhs )
+      cci_Ptr<cciISupports>& operator=( const cciGetServiceByContractID rhs )
           // assign from |do_GetService(contractid_expr)|
         {
           assign_from_gs_contractid(rhs, CCI_GET_IID(cciISupports));
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cciGetServiceByContractIDWithError& rhs )
+      cci_Ptr<cciISupports>& operator=( const cciGetServiceByContractIDWithError& rhs )
           // assign from |do_GetService(contractid_expr, &rv)|
         {
           assign_from_gs_contractid_with_error(rhs, CCI_GET_IID(cciISupports));
           return *this;
         }
 
-      cci_Ptr<cciISupports>&
-      operator=( const cci_Ptr_helper& rhs )
+      cci_Ptr<cciISupports>& operator=( const cci_Ptr_helper& rhs )
           // ...and finally, anything else we might need to assign from
           //  can exploit the |cci_Ptr_helper| facility.
         {
@@ -938,8 +836,7 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
           return *this;
         }
 
-      void
-      swap( cci_Ptr<cciISupports>& rhs )
+      void swap( cci_Ptr<cciISupports>& rhs )
           // ...exchange ownership with |rhs|; can save a pair of refcount operations
         {
           cciISupports* temp = rhs.mRawPtr;
@@ -947,8 +844,7 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
           mRawPtr = temp;
         }
 
-      void
-      swap( cciISupports*& rhs )
+      void swap( cciISupports*& rhs )
           // ...exchange ownership with |rhs|; can save a pair of refcount operations
         {
           cciISupports* temp = rhs;
@@ -956,8 +852,7 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
           mRawPtr = temp;
         }
 
-      void
-      forget( cciISupports** rhs )
+      void forget( cciISupports** rhs )
           // Set the target of rhs to the value of mRawPtr and null out mRawPtr.
           // Useful to avoid unnecessary AddRef/Release pairs with "out"
           // parameters.
@@ -967,79 +862,41 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
           swap(*rhs);
         }
 
-        // Other pointer operators
+      // Other pointer operators
 
-      cciISupports*
-      get() const
-          /*
-            Prefer the implicit conversion provided automatically by |operator cciDerivedSafe<cciISupports>*() const|.
-             Use |get()| to resolve ambiguity or to get a castable pointer.
-          */
-        {
-          return reinterpret_cast<cciISupports*>(mRawPtr);
-        }
+      // Prefer the implicit conversion provided automatically by
+      // |operator nsISupports*() const|. Use |get()| to resolve ambiguity or to
+      // get a castable pointer.
+      cciISupports* get() const { return reinterpret_cast<cciISupports*>(mRawPtr); }
 
-      operator cciDerivedSafe<cciISupports>*() const
-          /*
-            ...makes an |cci_Ptr| act like its underlying raw pointer type (except against |AddRef()|, |Release()|,
-              and |delete|) whenever it is used in a context where a raw pointer is expected.  It is this operator
-              that makes an |cci_Ptr| substitutable for a raw pointer.
+      // Makes an nsCOMPtr act like its underlying raw pointer type whenever it is
+      // used in a context where a raw pointer is expected. It is this operator
+      // that makes an nsCOMPtr substitutable for a raw pointer.
+      //
+      // Prefer the implicit use of this operator to calling |get()|, except where
+      // necessary to resolve ambiguity/
+      operator cciISupports* () const { return get(); }
 
-            Prefer the implicit use of this operator to calling |get()|, except where necessary to resolve ambiguity.
-          */
-        {
-          return get_DerivedSafe();
-        }
+      cciISupports* operator->() const
+      {
+        CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator->().");
+        return get();
+      }
+  
+      // These are not intended to be used by clients. See |address_of| below.
+      cci_Ptr<cciISupports>* get_address() { return this; }
+      const cci_Ptr<cciISupports>* get_address() const { return this; }
 
-      cciDerivedSafe<cciISupports>*
-      operator->() const
-        {
-          CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator->().");
-          return get_DerivedSafe();
-        }
-
-#ifdef DM_CANT_RESOLVE_CPP_CONST_AMBIGUITY
-  // broken version for IRIX
-
-      cci_Ptr<cciISupports>*
-      get_address() const
-          // This is not intended to be used by clients.  See |address_of|
-          // below.
-        {
-          return const_cast<cci_Ptr<cciISupports>*>(this);
-        }
-
-#else // DM_CANT_RESOLVE_CPP_CONST_AMBIGUITY
-
-      cci_Ptr<cciISupports>*
-      get_address()
-          // This is not intended to be used by clients.  See |address_of|
-          // below.
-        {
-          return this;
-        }
-
-      const cci_Ptr<cciISupports>*
-      get_address() const
-          // This is not intended to be used by clients.  See |address_of|
-          // below.
-        {
-          return this;
-        }
-
-#endif // DM_CANT_RESOLVE_CPP_CONST_AMBIGUITY
 
     public:
 
-      cciDerivedSafe<cciISupports>&
-      operator*() const
-        {
-          CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator*().");
-          return *get_DerivedSafe();
-        }
+      cciISupports& operator*() const
+      {
+        CCI_PRECONDITION(mRawPtr != 0, "You can't dereference a NULL cci_Ptr with operator*().");
+        return *get();
+      }
 
-      cciISupports**
-      StartAssignment()
+      cciISupports** StartAssignment()
         {
 #ifndef CCI_CAP_FEATURE_INLINE_STARTASSIGNMENT
           return reinterpret_cast<cciISupports**>(begin_assignment());
@@ -1047,13 +904,6 @@ class cci_Ptr<cciISupports> : private cci_Ptr_base
           assign_assuming_AddRef(0);
           return reinterpret_cast<cciISupports**>(&mRawPtr);
 #endif
-        }
-
-    private:
-      cciDerivedSafe<cciISupports>*
-      get_DerivedSafe() const
-        {
-          return reinterpret_cast<cciDerivedSafe<cciISupports>*>(mRawPtr);
         }
 
   };
@@ -1132,8 +982,7 @@ class cciGetterAddRefs
           return mTargetSmartPtr.StartAssignment();
         }
 
-      T*&
-      operator*()
+      T*& operator*()
         {
           return *(mTargetSmartPtr.StartAssignment());
         }

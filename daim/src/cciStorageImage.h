@@ -50,8 +50,8 @@
  * @enduml
  */
 
-class cciStorageImage : public cciScriptableImage,
-                        public cciIStorageImage
+class cciStorageImage final : public cciScriptableImage,
+                              public cciIStorageImage
 {
 public:
   CCI_DECL_ISUPPORTS_INHERITED

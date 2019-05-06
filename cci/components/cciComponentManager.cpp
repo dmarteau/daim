@@ -58,7 +58,7 @@ static const char gIDFormat[] =
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} \
 }
 
-CCI_DEFINE_CID(kEmptyCID, CCI_EMPTY_IID);
+// CCI_DEFINE_CID(kEmptyCID, CCI_EMPTY_IID);
 
 #define UID_STRING_LENGTH 39
 

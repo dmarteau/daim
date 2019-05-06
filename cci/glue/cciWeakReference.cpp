@@ -43,7 +43,7 @@
 #include "cciWeakReference.h"
 #include "cciCOMPtr.h"
 
-class cciWeakReference : public cciIWeakReference
+class cciWeakReference final : public cciIWeakReference
   {
     public:
     // cciISupports...

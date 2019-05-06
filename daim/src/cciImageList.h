@@ -39,9 +39,9 @@
 #include "cciIImageContainer.h"
 
 /* Header file */
-class cciImageList : public cciIImageList,
-                     public cciIImageListContainer,
-                     public cciIImageContainer
+class cciImageList final : public cciIImageList,
+                           public cciIImageListContainer,
+                           public cciIImageContainer
 {
 public:
   CCI_DECL_ISUPPORTS
@@ -49,8 +49,8 @@ public:
   CCI_DECL_IIMAGECONTAINER
   
   // cciIImgLinkContainer
-  CCI_IMETHOD GetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 );
-  CCI_IMETHOD SetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 );
+  CCI_IMETHOD GetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 ) override; 
+  CCI_IMETHOD SetImageLink( dmLink<dmImage>& imglink, dm_uint32 index = 0 ) override;
 
   cciImageList();
 

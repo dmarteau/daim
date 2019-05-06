@@ -44,7 +44,7 @@
 /**
  * Generic factory implementation
  */
-class cciGenericFactory : public cciIGenericFactory, public cciIClassInfo {
+class cciGenericFactory final : public cciIGenericFactory, public cciIClassInfo {
 public:
     CCI_DEFINE_STATIC_CID_ACCESSOR(CCI_GENERICFACTORY_CID)
 
@@ -54,12 +54,12 @@ public:
     CCI_DECL_ICLASSINFO
     
     /* cciIGenericFactory methods */
-    CCI_IMETHOD SetComponentInfo(const cciModuleComponentInfo *info);
-    CCI_IMETHOD GetComponentInfo(const cciModuleComponentInfo **infop);
+    CCI_IMETHOD SetComponentInfo(const cciModuleComponentInfo *info) override; 
+    CCI_IMETHOD GetComponentInfo(const cciModuleComponentInfo **infop) override;
 
-    CCI_IMETHOD CreateInstance(cciISupports *aOuter, DM_REFIID aIID, void **aResult);
+    CCI_IMETHOD CreateInstance(cciISupports *aOuter, DM_REFIID aIID, void **aResult) override;
 
-    CCI_IMETHOD LockFactory(bool aLock);
+    CCI_IMETHOD LockFactory(bool aLock) override;
 
     static CCI_METHOD Create(cciISupports* outer, const dmIID& aIID, void* *aInstancePtr);
     
@@ -73,7 +73,7 @@ private:
 
 #include "cciIModule.h"
 
-class cciGenericModule : public cciIModule
+class cciGenericModule final : public cciIModule
 {
 public:
     cciGenericModule(const char* moduleName, 

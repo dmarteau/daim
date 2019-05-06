@@ -33,10 +33,10 @@
 #include "cciIMetaDataContainer.h"
 #include "gdalMetadata.h"
 
-class gdalSurface : public cciIRemoteSurface,
-                    public cciIScriptableSurface,
-                    public cciIMetaDataContainer,
-                    public gdalMetadata
+class gdalSurface final : public cciIRemoteSurface,
+                          public cciIScriptableSurface,
+                          public cciIMetaDataContainer,
+                          public gdalMetadata
 {
 friend class cciGDALDriver;
 public:

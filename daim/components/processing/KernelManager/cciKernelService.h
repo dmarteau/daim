@@ -37,7 +37,7 @@
 
 struct kernelEntry;
 
-class cciKernelService : public cciIKernelService
+class cciKernelService final : public cciIKernelService
 {
 
 typedef daim::hashmap<dmCString,dmKernelFamily*> dmKernelDict;

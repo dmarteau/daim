@@ -1,46 +1,18 @@
 #!/usr/bin/env python
 # header.py - Generate C++ header files from IDL.
 #
-# ***** BEGIN LICENSE BLOCK *****
-# Version: MPL 1.1/GPL 2.0/LGPL 2.1
-#
-# The contents of this file are subject to the Mozilla Public License Version
-# 1.1 (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
-# http://www.mozilla.org/MPL/
-#
-# Software distributed under the License is distributed on an "AS IS" basis,
-# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
-# for the specific language governing rights and limitations under the
-# License.
-#
-# The Original Code is mozilla.org code.
-#
-# The Initial Developer of the Original Code is
-#   Mozilla Foundation.
-# Portions created by the Initial Developer are Copyright (C) 2008
-# the Initial Developer. All Rights Reserved.
-#
-# Contributor(s):
-#   Benjamin Smedberg <benjamin@smedbergs.us>
-#
-# Alternatively, the contents of this file may be used under the terms of
-# either of the GNU General Public License Version 2 or later (the "GPL"),
-# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
-# in which case the provisions of the GPL or the LGPL are applicable instead
-# of those above. If you wish to allow use of your version of this file only
-# under the terms of either the GPL or the LGPL, and not to allow others to
-# use your version of this file under the terms of the MPL, indicate your
-# decision by deleting the provisions above and replace them with the notice
-# and other provisions required by the GPL or the LGPL. If you do not delete
-# the provisions above, a recipient may use your version of this file under
-# the terms of any one of the MPL, the GPL or the LGPL.
-#
-# ***** END LICENSE BLOCK *****
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """Print a C++ header file for the IDL files specified on the command line"""
 
-import sys, os.path, re, xpidl
+import sys
+import os.path
+import re
+import itertools
+import glob
+import xpidl
 
 printdoccomments = False
 
@@ -52,11 +24,14 @@ else:
     def printComments(fd, clist, indent):
         pass
 
+
 def firstCap(str):
     return str[0].upper() + str[1:]
 
+
 def attributeParamName(a):
     return "a" + firstCap(a.name)
+
 
 def attributeParamNames(a):
     l = [attributeParamName(a)]
@@ -64,16 +39,22 @@ def attributeParamNames(a):
         l.insert(0, "cx")
     return ", ".join(l)
 
+
 def attributeNativeName(a, getter):
     binaryname = a.binaryname is not None and a.binaryname or firstCap(a.name)
     return "%s%s" % (getter and 'Get' or 'Set', binaryname)
 
+
 def attributeReturnType(a, macro):
     """macro should be CCI_IMETHOD or CCI_IMETHODIMP"""
-    if (a.nostdcall):
-        return macro == "CCI_IMETHOD" and "virtual nsresult" or "nsresult"
+    if a.nostdcall:
+        ret = macro == "CCI_IMETHOD" and "virtual cci_result" or "cci_result"
     else:
-        return macro
+        ret = macro
+    if a.must_use:
+        ret = "MOZ_MUST_USE " + ret
+    return ret
+
 
 def attributeParamlist(a, getter):
     l = ["%s%s" % (a.realtype.nativeType(getter and 'out' or 'in'),
@@ -83,38 +64,41 @@ def attributeParamlist(a, getter):
 
     return ", ".join(l)
 
-def attributeAsNative(a, getter):
-        scriptable = a.isScriptable() and "CCI_SCRIPTABLE " or ""
+
+def attributeAsNative(a, getter, declType = 'CCI_IMETHOD'):
         deprecated = a.deprecated and "CCI_DEPRECATED " or ""
-        params = {'scriptable': scriptable,
-                  'deprecated': deprecated,
-                  'returntype': attributeReturnType(a, 'CCI_IMETHOD'),
+        params = {'deprecated': deprecated,
+                  'returntype': attributeReturnType(a, declType),
                   'binaryname': attributeNativeName(a, getter),
                   'paramlist': attributeParamlist(a, getter)}
-        return "%(deprecated)s%(scriptable)s%(returntype)s %(binaryname)s(%(paramlist)s)" % params
+        return "%(deprecated)s%(returntype)s %(binaryname)s(%(paramlist)s)" % params
+
 
 def methodNativeName(m):
     return m.binaryname is not None and m.binaryname or firstCap(m.name)
 
+
 def methodReturnType(m, macro):
     """macro should be CCI_IMETHOD or CCI_IMETHODIMP"""
     if m.nostdcall and m.notxpcom:
-        return "%s%s" % (macro == "CCI_IMETHOD" and "virtual " or "",
-                         m.realtype.nativeType('in').strip())
+        ret = "%s%s" % (macro == "CCI_IMETHOD" and "virtual " or "",
+                        m.realtype.nativeType('in').strip())
     elif m.nostdcall:
-        return "%snsresult" % (macro == "CCI_IMETHOD" and "virtual " or "")
+        ret = "%scci_result" % (macro == "CCI_IMETHOD" and "virtual " or "")
     elif m.notxpcom:
-        return "%s_(%s)" % (macro, m.realtype.nativeType('in').strip())
+        ret = "%s_(%s)" % (macro, m.realtype.nativeType('in').strip())
     else:
-        return macro
+        ret = macro
+    if m.must_use:
+        ret = "MOZ_MUST_USE " + ret
+    return ret
 
-def methodAsNative(m):
-    scriptable = m.isScriptable() and "CCI_SCRIPTABLE " or ""
 
-    return "%s%s %s(%s)" % (scriptable,
-                            methodReturnType(m, 'CCI_IMETHOD'),
-                            methodNativeName(m),
-                            paramlistAsNative(m))
+def methodAsNative(m, declType = 'CCI_IMETHOD'):
+    return "%s %s(%s)" % (methodReturnType(m, declType),
+                          methodNativeName(m),
+                          paramlistAsNative(m))
+
 
 def paramlistAsNative(m, empty='void'):
     l = [paramAsNative(p) for p in m.params]
@@ -123,7 +107,7 @@ def paramlistAsNative(m, empty='void'):
         l.append("JSContext* cx")
 
     if m.optional_argc:
-        l.append('PRUint8 _argc')
+        l.append('uint8_t _argc')
 
     if not m.notxpcom and m.realtype.name != 'void':
         l.append(paramAsNative(xpidl.Param(paramtype='out',
@@ -133,20 +117,29 @@ def paramlistAsNative(m, empty='void'):
                                            location=None,
                                            realtype=m.realtype)))
 
+    # Set any optional out params to default to nullptr. Skip if we just added
+    # extra non-optional args to l.
+    if len(l) == len(m.params):
+        paramIter = len(m.params) - 1
+        while (paramIter >= 0 and m.params[paramIter].optional and
+                m.params[paramIter].paramtype == "out"):
+            t = m.params[paramIter].type
+            # Strings can't be optional, so this shouldn't happen, but let's make sure:
+            if t == "AString" or t == "ACString" or t == "DOMString" or t == "AUTF8String":
+                break
+            l[paramIter] += " = nullptr"
+            paramIter -= 1
+
     if len(l) == 0:
         return empty
 
     return ", ".join(l)
 
-def paramAsNative(p):
-    if p.paramtype == 'in':
-        typeannotate = ''
-    else:
-        typeannotate = ' CCI_%sPARAM' % p.paramtype.upper()
 
-    return "%s%s%s" % (p.nativeType(),
-                       p.name,
-                       typeannotate)
+def paramAsNative(p):
+    return "%s%s" % (p.nativeType(),
+                     p.name)
+
 
 def paramlistNames(m):
     names = [p.name for p in m.params]
@@ -178,8 +171,13 @@ include = """
 #endif
 """
 
-jspubtd_include = """
-#include "jspubtd.h"
+jsvalue_include = """
+#include "js/Value.h"
+"""
+
+infallible_includes = """
+#include "mozilla/Assertions.h"
+#include "mozilla/DebugOnly.h"
 """
 
 header_end = """/* For IDL files that don't want to include root IDL files. */
@@ -196,9 +194,11 @@ forward_decl = """class %(name)s; /* forward declaration */
 
 """
 
+
 def idl_basename(f):
     """returns the base name of a file with the last extension stripped"""
     return os.path.basename(f).rpartition('.')[0]
+
 
 def print_header(idl, fd, filename):
     fd.write(header % {'filename': filename,
@@ -212,13 +212,21 @@ def print_header(idl, fd, filename):
         fd.write(include % {'basename': idl_basename(inc.filename)})
 
     if idl.needsJSTypes():
-        fd.write(jspubtd_include)
+        fd.write(jsvalue_include)
+
+    # Include some extra files if any attributes are infallible.
+    for iface in [p for p in idl.productions if p.kind == 'interface']:
+        for attr in [m for m in iface.members if isinstance(m, xpidl.Attribute)]:
+            if attr.infallible:
+                fd.write(infallible_includes)
+                break
 
     fd.write('\n')
     fd.write(header_end)
 
     for p in idl.productions:
-        if p.kind == 'include': continue
+        if p.kind == 'include':
+            continue
         if p.kind == 'cdata':
             fd.write(p.data)
             continue
@@ -253,7 +261,7 @@ uuid_decoder = re.compile(r"""(?P<m0>[a-f0-9]{8})-
                               (?P<m4>[a-f0-9]{12})$""", re.X)
 
 iface_prolog = """ {
- public: 
+ public:
 
   CCI_DECLARE_STATIC_IID_ACCESSOR(%(defname)s_IID)
 
@@ -266,6 +274,11 @@ iface_epilog = """};
 /* Use this macro when declaring classes that implement this interface. */
 #define CCI_DECL_%(macroname)s """
 
+iface_nonvirtual = """
+
+/* Use this macro when declaring the members of this interface when the
+   class doesn't implement the interface. This is useful for forwarding. */
+#define CCI_DECL_NON_VIRTUAL_%(macroname)s """
 
 iface_forward = """
 
@@ -299,7 +312,7 @@ protected:
 };
 
 /* Implementation file */
-CCI_IMPL_ISUPPORTS1(%(implclass)s, %(name)s)
+CCI_IMPL_ISUPPORTS(%(implclass)s, %(name)s)
 
 %(implclass)s::%(implclass)s()
 {
@@ -324,33 +337,69 @@ iface_template_epilog = """/* End of implementation class template. */
 
 """
 
+attr_infallible_tmpl = """\
+  inline %(realtype)s%(nativename)s(%(args)s)
+  {
+    %(realtype)sresult;
+    mozilla::DebugOnly<cci_result> rv = %(nativename)s(%(argnames)s&result);
+    MOZ_ASSERT(CCI_SUCCEEDED(rv));
+    return result;
+  }
+"""
+
+
 def write_interface(iface, fd):
     if iface.namemap is None:
         raise Exception("Interface was not resolved.")
 
-    def write_const_decl(c):
-        printComments(fd, c.doccomments, '  ')
+    # Confirm that no names of methods will overload in this interface
+    names = set()
+    def record_name(name):
+        if name in names:
+            raise Exception("Unexpected overloaded virtual method %s in interface %s"
+                            % (name, iface.name))
+        names.add(name)
+    for m in iface.members:
+        if type(m) == xpidl.Attribute:
+            record_name(attributeNativeName(m, getter=True))
+            if not m.readonly:
+                record_name(attributeNativeName(m, getter=False))
+        elif type(m) == xpidl.Method:
+            record_name(methodNativeName(m))
 
-        basetype = c.basetype
-        value = c.getValue()
-
-        fd.write("  enum { %(name)s = %(value)s%(signed)s };\n\n" % {
-                     'name': c.name,
-                     'value': value,
-                     'signed': (not basetype.signed) and 'U' or ''})
+    def write_const_decls(g):
+        fd.write("  enum {\n")
+        enums = []
+        for c in g:
+            printComments(fd, c.doccomments, '  ')
+            basetype = c.basetype
+            value = c.getValue()
+            enums.append("    %(name)s = %(value)s%(signed)s" % {
+                         'name': c.name,
+                         'value': value,
+                         'signed': (not basetype.signed) and 'U' or ''})
+        fd.write(",\n".join(enums))
+        fd.write("\n  };\n\n")
 
     def write_method_decl(m):
         printComments(fd, m.doccomments, '  ')
 
         fd.write("  /* %s */\n" % m.toIDL())
         fd.write("  %s = 0;\n\n" % methodAsNative(m))
-                                                                           
+
     def write_attr_decl(a):
         printComments(fd, a.doccomments, '  ')
 
-        fd.write("  /* %s */\n" % a.toIDL());
+        fd.write("  /* %s */\n" % a.toIDL())
 
         fd.write("  %s = 0;\n" % attributeAsNative(a, True))
+        if a.infallible:
+            fd.write(attr_infallible_tmpl %
+                     {'realtype': a.realtype.nativeType('in'),
+                      'nativename': attributeNativeName(a, getter=True),
+                      'args': '' if not a.implicit_jscontext else 'JSContext* cx',
+                      'argnames': '' if not a.implicit_jscontext else 'cx, '})
+
         if not a.readonly:
             fd.write("  %s = 0;\n" % attributeAsNative(a, False))
         fd.write("\n")
@@ -361,17 +410,14 @@ def write_interface(iface, fd):
 
     names = uuid_decoder.match(iface.attributes.uuid).groupdict()
     m3str = names['m3'] + names['m4']
-    names['m3joined'] = ", ".join(["0x%s" % m3str[i:i+2] for i in xrange(0, 16, 2)])
+    names['m3joined'] = ", ".join(["0x%s" % m3str[i:i+2] for i in range(0, 16, 2)])
 
     if iface.name[3] == 'I':
         implclass = iface.name[:3] + iface.name[4:]
         macroname = iface.name[3:].upper()
-    elif iface.name[2] == 'I':
-        implclass = iface.name[:2] + iface.name[3:]
-        macroname = iface.name.upper()    
     else:
         implclass = '_MYCLASS_'
-        macroname = iface.name.upper()    
+        macroname = iface.name.upper()
 
     names.update({'defname': defname,
                   'macroname': macroname,
@@ -392,45 +438,58 @@ def write_interface(iface, fd):
     if not foundcdata:
         fd.write("CCI_NO_VTABLE ")
 
-    if iface.attributes.scriptable:
-        fd.write("CCI_SCRIPTABLE ")
     if iface.attributes.deprecated:
         fd.write("MOZ_DEPRECATED ")
     fd.write(iface.name)
     if iface.base:
         fd.write(" : public %s" % iface.base)
     fd.write(iface_prolog % names)
-    for member in iface.members:
-        if isinstance(member, xpidl.ConstMember):
-            write_const_decl(member)
-        elif isinstance(member, xpidl.Attribute):
-            write_attr_decl(member)
-        elif isinstance(member, xpidl.Method):
-            write_method_decl(member)
-        elif isinstance(member, xpidl.CDATA):
-            fd.write("  %s" % member.data)
+
+    for key, group in itertools.groupby(iface.members, key=type):
+        if key == xpidl.ConstMember:
+            write_const_decls(group)  # iterator of all the consts
         else:
-            raise Exception("Unexpected interface member: %s" % member)
+            for member in group:
+                if key == xpidl.Attribute:
+                    write_attr_decl(member)
+                elif key == xpidl.Method:
+                    write_method_decl(member)
+                elif key == xpidl.CDATA:
+                    fd.write(" %s" % member.data)
+                else:
+                    raise Exception("Unexpected interface member: %s" % member)
 
     fd.write(iface_epilog % names)
 
-    for member in iface.members:
-        if isinstance(member, xpidl.Attribute):
-            fd.write("\\\n  %s; " % attributeAsNative(member, True))
-            if not member.readonly:
-                fd.write("\\\n  %s; " % attributeAsNative(member, False))
-        elif isinstance(member, xpidl.Method):
-            fd.write("\\\n  %s; " % methodAsNative(member))
-    if len(iface.members) == 0:
-        fd.write('\\\n  /* no methods! */')
-    elif not member.kind in ('attribute', 'method'):
-       fd.write('\\')
-
-    fd.write(iface_forward % names)
-
-    def emitTemplate(tmpl):
+    def writeDeclaration(fd, iface, virtual):
+        declType = "CCI_IMETHOD" if virtual else "CCI_METHOD"
+        suffix = " override" if virtual else ""
         for member in iface.members:
             if isinstance(member, xpidl.Attribute):
+                if member.infallible:
+                    fd.write("\\\n  using %s::%s; " % (iface.name, attributeNativeName(member, True)))
+                fd.write("\\\n  %s%s; " % (attributeAsNative(member, True, declType), suffix))
+                if not member.readonly:
+                    fd.write("\\\n  %s%s; " % (attributeAsNative(member, False, declType), suffix))
+            elif isinstance(member, xpidl.Method):
+                fd.write("\\\n  %s%s; " % (methodAsNative(member, declType), suffix))
+        if len(iface.members) == 0:
+            fd.write('\\\n  /* no methods! */')
+        elif not member.kind in ('attribute', 'method'):
+            fd.write('\\')
+
+    writeDeclaration(fd, iface, True);
+    fd.write(iface_nonvirtual % names)
+    writeDeclaration(fd, iface, False);
+    fd.write(iface_forward % names)
+
+    def emitTemplate(forward_infallible, tmpl, tmpl_notxpcom=None):
+        if tmpl_notxpcom is None:
+            tmpl_notxpcom = tmpl
+        for member in iface.members:
+            if isinstance(member, xpidl.Attribute):
+                if forward_infallible and member.infallible:
+                    fd.write("\\\n  using %s::%s; " % (iface.name, attributeNativeName(member, True)))
                 fd.write(tmpl % {'asNative': attributeAsNative(member, True),
                                  'nativeName': attributeNativeName(member, True),
                                  'paramList': attributeParamNames(member)})
@@ -439,24 +498,36 @@ def write_interface(iface, fd):
                                      'nativeName': attributeNativeName(member, False),
                                      'paramList': attributeParamNames(member)})
             elif isinstance(member, xpidl.Method):
-                fd.write(tmpl % {'asNative': methodAsNative(member),
-                                 'nativeName': methodNativeName(member),
-                                 'paramList': paramlistNames(member)})
+                if member.notxpcom:
+                    fd.write(tmpl_notxpcom % {'asNative': methodAsNative(member),
+                                              'nativeName': methodNativeName(member),
+                                              'paramList': paramlistNames(member)})
+                else:
+                    fd.write(tmpl % {'asNative': methodAsNative(member),
+                                     'nativeName': methodNativeName(member),
+                                     'paramList': paramlistNames(member)})
         if len(iface.members) == 0:
             fd.write('\\\n  /* no methods! */')
         elif not member.kind in ('attribute', 'method'):
             fd.write('\\')
 
-    emitTemplate("\\\n  %(asNative)s { return _to %(nativeName)s(%(paramList)s); } ")
+    emitTemplate(True,
+                 "\\\n  %(asNative)s override { return _to %(nativeName)s(%(paramList)s); } ")
 
     fd.write(iface_forward_safe % names)
 
-    emitTemplate("\\\n  %(asNative)s { return !_to ? CCI_ERROR_NULL_POINTER : _to->%(nativeName)s(%(paramList)s); } ")
+    # Don't try to safely forward notxpcom functions, because we have no
+    # sensible default error return.  Instead, the caller will have to
+    # implement them.
+    emitTemplate(False,
+                 "\\\n  %(asNative)s override { return !_to ? CCI_ERROR_NULL_POINTER : _to->%(nativeName)s(%(paramList)s); } ",
+                 "\\\n  %(asNative)s override; ")
 
     fd.write(iface_template_prolog % names)
 
     for member in iface.members:
-        if isinstance(member, xpidl.ConstMember) or isinstance(member, xpidl.CDATA): continue
+        if isinstance(member, xpidl.ConstMember) or isinstance(member, xpidl.CDATA):
+            continue
         fd.write("/* %s */\n" % member.toIDL())
         if isinstance(member, xpidl.Attribute):
             fd.write(example_tmpl % {'implclass': implclass,
@@ -477,56 +548,56 @@ def write_interface(iface, fd):
 
     fd.write(iface_template_epilog)
 
-if __name__ == '__main__':
-    from optparse import OptionParser
-    o = OptionParser()
-    o.add_option('-I', action='append', dest='incdirs', default=['.'],
+
+def main(argv=None):
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input', help='idl input file') 
+    parser.add_argument('-I', action='append', dest='incdirs', default=[],
                  help="Directory to search for imported files")
-    o.add_option('--cachedir', dest='cachedir', default=None,
+    parser.add_argument('--cachedir', dest='cachedir', default='.',
                  help="Directory in which to cache lex/parse tables.")
-    o.add_option('-o', dest='outfile', default=None,
+    parser.add_argument('-o', dest='outfile', default=None,
                  help="Output file (default is stdout)")
-    o.add_option('-d', dest='depfile', default=None,
+    parser.add_argument('-d', dest='depfile', default=None,
                  help="Generate a make dependency file")
-    o.add_option('--regen', action='store_true', dest='regen', default=False,
+    parser.add_argument('--regen', action='store_true', dest='regen', default=False,
                  help="Regenerate IDL Parser cache")
-    options, args = o.parse_args()
-    file, = args
 
-    if options.cachedir is not None:
-        if not os.path.isdir(options.cachedir):
-            os.mkdir(options.cachedir)
-        sys.path.append(options.cachedir)
+    args = parser.parse_args(argv)
 
-    if options.regen:
-        if options.cachedir is None:
-            print >>sys.stderr, "--regen requires --cachedir"
-            sys.exit(1)
+    cachedir = args.cachedir
+    if not os.path.isdir(cachedir):
+        os.mkdir(cachedir)
+    sys.path.append(cachedir)
 
-        p = xpidl.IDLParser(outputdir=options.cachedir, regen=True)
-        sys.exit(0)
+    # Delete the lex/yacc files.  Ply is too stupid to regenerate them
+    # properly
+    if args.regen:
+        for fileglobs in [os.path.join(args.cachedir, f) for f in ["xpidllex.py*", "xpidlyacc.py*"]]:
+            for filename in glob.glob(fileglobs):
+                os.remove(filename)
 
-    if options.depfile is not None and options.outfile is None:
-        print >>sys.stderr, "-d requires -o"
-        sys.exit(1)
-
-    if options.outfile is not None:
-        outfd = open(options.outfile, 'w')
-        closeoutfd = True
+    if args.outfile:
+        outfd = open(args.outfile,'w')
     else:
         outfd = sys.stdout
-        closeoutfd = False
 
-    p = xpidl.IDLParser(outputdir=options.cachedir)
-    idl = p.parse(open(file).read(), filename=file)
-    idl.resolve(options.incdirs, p)
-    print_header(idl, outfd, file)
+    inputfile = args.input
 
-    if closeoutfd:
-        outfd.close()
+    p = xpidl.IDLParser(outputdir=cachedir)
+    idl = p.parse(open(inputfile).read(), filename=inputfile)
+    idl.resolve(args.incdirs, p)
+    print_header(idl, outfd, inputfile)
 
-    if options.depfile is not None:
-        depfd = open(options.depfile, 'w')
+    if args.depfile is not None:
+        depfd = open(args.depfile, 'w')
         deps = [dep.replace('\\', '/') for dep in idl.deps]
 
-        print >>depfd, "%s: %s" % (options.outfile, " ".join(deps))
+        print("%s: %s" % (args.outfile, " ".join(deps)), file=depfd)
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
+

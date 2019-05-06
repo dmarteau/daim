@@ -66,9 +66,9 @@
  * This implementation is thread-safe.
  */
 
-struct cciCategoryNode;
+class cciCategoryNode;
 
-class cciCategoryManager : public cciICategoryManager
+class cciCategoryManager final : public cciICategoryManager
 {
 public:
   CCI_DECL_ISUPPORTS

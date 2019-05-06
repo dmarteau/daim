@@ -87,10 +87,10 @@ extern const char staticComponentType[];
 ////////////////////////////////////////////////////////////////////////////////
 
 // Forward declarations
-struct cciFactoryEntry;
+class cciFactoryEntry;
 struct cciStaticModuleInfo;
 
-class cciComponentManagerImpl
+class cciComponentManagerImpl final
     : public cciIComponentManager,
       public cciIServiceManager,
       public cciIComponentRegistrar

@@ -22,7 +22,7 @@ RANLIB   = ranlib
 INCL     = $(LOCAL_INCLUDE) $(MODULE_INCL)  
 DEFS     = $(MODULE_DEFS)
 OPT      = -Wall -Wno-non-virtual-dtor 
-CCFLAGS  = $(OPT) -fno-rtti $(INCL) $(DEFS)
+CCFLAGS  = $(OPT) -std=c++11 -fno-rtti $(INCL) $(DEFS)
 CFLAGS   = $(OPT) $(INCL) $(DEFS)
 LIBS     = $(MODULE_EXTRA_LIBS) $(MODULE_LIBS) 
 LDFLAGS  = -L. $(MODULE_LIBDIR)

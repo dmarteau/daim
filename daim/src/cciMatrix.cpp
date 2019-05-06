@@ -34,7 +34,7 @@
 
 
 /* Header file */
-class cciMatrix : public cciIMatrix
+class cciMatrix final : public cciIMatrix
 {
 public:
   CCI_DECL_ISUPPORTS

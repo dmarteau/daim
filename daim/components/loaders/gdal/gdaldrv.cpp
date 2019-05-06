@@ -54,7 +54,7 @@
 
 ///////////////////////////////////////////////////
 // cciGDALDriver implementation
-class cciGDALDriver : public cciISurfaceDriver
+class cciGDALDriver final : public cciISurfaceDriver
 {
 public:
   CCI_DECL_ISUPPORTS

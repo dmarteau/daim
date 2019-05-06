@@ -61,8 +61,8 @@ typedef std::vector<dm_point> PointArray;
 
 #define MODE_ABS 1
 
-class cciProfile : public cciIProfile,
-                   public cciIIntercepts
+class cciProfile final : public cciIProfile,
+                         public cciIIntercepts
 {
 public:
   CCI_DECL_ISUPPORTS

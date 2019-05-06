@@ -39,7 +39,6 @@
 #include "cciResultColumn.h"
 #include "dmMatrixUtils.h"
 
-CCI_DEFINE_STATIC_IID_ACCESSOR(cciResultColumn, CCI_RESULTCOLUMN_PRIVATE_IID)
 
 /* Implementation file */
 CCI_IMPL_ISUPPORTS2(cciResultColumn, cciResultColumn, cciIResultColumn)

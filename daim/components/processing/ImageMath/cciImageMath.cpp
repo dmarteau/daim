@@ -42,7 +42,7 @@
 #include "operators/dmAccumulator.h"
 
 /* Header file */
-class cciImageMath : public cciIImageMath
+class cciImageMath final : public cciIImageMath
 {
 public:
   CCI_DECL_ISUPPORTS

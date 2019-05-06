@@ -48,7 +48,7 @@ typedef dmVector<dm_real> dmStoreVector;
  /* 67ac9bde-efd8-497f-ba6e-8c4e981d7b5b */
 #define CCI_RESULTCOLUMN_PRIVATE_IID \
     { 0x67ac9bde, 0xefd8, 0x497f, { 0xba, 0x6e, 0x8c, 0x4e, 0x98, 0x1d, 0x7b, 0x5b } }
-class cciResultColumn : public cciIResultColumn
+class cciResultColumn final : public cciIResultColumn
 {
 public:
   CCI_DECLARE_STATIC_IID_ACCESSOR(CCI_RESULTCOLUMN_PRIVATE_IID)
@@ -71,6 +71,6 @@ protected:
   dmStoreVector   mData;  
 };
 
-
+CCI_DEFINE_STATIC_IID_ACCESSOR(cciResultColumn, CCI_RESULTCOLUMN_PRIVATE_IID)
 
 #endif /* cciResultColumn_h */

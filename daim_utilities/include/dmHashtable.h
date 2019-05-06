@@ -189,6 +189,12 @@ private:
   std::vector<_Node*>   _M_buckets;
   size_type             _M_num_elements;
 
+  std::allocator<value_type> _M_value_type_alloc;
+
+  void _M_Construct( value_type* p, const value_type& __obj) { 
+      std::allocator_traits<std::allocator<value_type> >::construct(_M_value_type_alloc, p, __obj); }
+  void _M_Destroy  ( value_type* p) { 
+      std::allocator_traits<std::allocator<value_type> >::destroy(_M_value_type_alloc, p); }
 
 public:
   typedef _Hashtable_iterator<_Val,_Key,_HashFcn,_ExtractKey,_EqualKey,_Alloc>       iterator;
@@ -406,11 +412,7 @@ private:
     _Node* __n = _M_get_node();
     __n->_M_next = 0;
     try {
-     #if defined(USE_STLPORT) && (_STLPORT_MAJOR >= 5) 
-        std::_Copy_Construct(&__n->_M_val, __obj);
-     #else
-       std::_Construct(&__n->_M_val, __obj);
-     #endif
+      _M_Construct(&__n->_M_val,__obj);
       return __n;
     }
     catch(...)
@@ -422,7 +424,7 @@ private:
   
   void _M_delete_node(_Node* __n)
   {
-    std::_Destroy(&__n->_M_val);
+    _M_Destroy(&__n->_M_val);
     _M_put_node(__n);
   }
 

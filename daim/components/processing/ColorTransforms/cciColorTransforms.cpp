@@ -45,8 +45,8 @@
 
 
 /* Header file */
-class cciColorTransforms : public cciIColorTransforms,
-                           public cciIColorUtils
+class cciColorTransforms final : public cciIColorTransforms,
+                                 public cciIColorUtils
 {
 public:
   CCI_DECL_ISUPPORTS

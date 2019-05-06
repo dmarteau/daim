@@ -222,7 +222,7 @@ dmMatrixBase* dmMatrix_Substract( const dmMatrix& Lhs,const dmMatrix& Rhs, dmMat
        for(int i=Result->NStore();--i>=0;) *++pL -= *++pR;
    } else if(UseRhs) {
        Result = MRhs;
-       for(int i=Result->NStore();--i>=0;) *++pR = *++pL - *pR;
+       for(int i=Result->NStore();--i>=0;) { ++pR; *pR = *++pL - *pR; }
    } else {
        Result = _Type.New(nr,nc);
        Result->SetStatus(dmMatrixBase::Temporary);  // IsEval()

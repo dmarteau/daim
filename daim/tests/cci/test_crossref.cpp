@@ -78,7 +78,7 @@ class CCI_NO_VTABLE IBar : public cciISupports
 
 CCI_DEFINE_STATIC_IID_ACCESSOR(IBar, CCI_IBAR_IID)
 
-class Bar : public IBar
+class Bar final : public IBar
 {
   public:
     CCI_DECL_ISUPPORTS
@@ -87,8 +87,8 @@ class Bar : public IBar
       printf("  new Bar@%p\n", STATIC_CAST(void*, this));
     }
 
-    CCI_IMETHOD GetIFoo( IFoo **_retval );
-    CCI_IMETHOD SetIFoo( IFoo *aIFoo );
+    CCI_IMETHOD GetIFoo( IFoo **_retval ) override;
+    CCI_IMETHOD SetIFoo( IFoo *aIFoo ) override;
 
   private:
     ~Bar() {
@@ -117,7 +117,7 @@ CCI_IMETHODIMP  Bar::SetIFoo( IFoo *aIFoo )
 }
 
 
-class Foo : public IFoo
+class Foo final : public IFoo
 {
   public:
     CCI_DECL_ISUPPORTS
@@ -126,8 +126,8 @@ class Foo : public IFoo
       printf("  new Foo@%p\n", STATIC_CAST(void*, this));
     }
 
-    CCI_IMETHOD GetIBar( IBar **_retval );
-    CCI_IMETHOD SetIBar( IBar *aIBar );
+    CCI_IMETHOD GetIBar( IBar **_retval ) override;
+    CCI_IMETHOD SetIBar( IBar *aIBar ) override;
 
   private:
    ~Foo() {

@@ -44,11 +44,12 @@ AC_ARG_WITH(config,
 	      AS_HELP_STRING([--with-config=ARG],[set the build configuration (default guess)]),
 	      [], [
 			case $(uname) in
-				Darwin) with_config=darwin-gcc ;;
+				Darwin) with_config=darwin-clang ;;
 				Linux)  with_config=linux-gcc ;; 
 				mingw*) with_config=win-msvc ;; 
 				*) AC_MSG_FAILURE([Unknown build configuration]) ;;
 			esac])
+
 
 if test "x$with_config" != "xno"; then
    AC_MSG_RESULT([$with_config])
@@ -65,7 +66,7 @@ win-msvc)
   AC_SUBST(DLLSFX,[.dll])
   AC_SUBST(EXESFX,[.exe])   
 ;;
-linux-gcc)  
+linux-*)  
   AC_SUBST(OS_ARCH,[Linux])
   AC_SUBST(DLLPREFIX,[lib])
   AC_SUBST(LIBPREFIX,[lib])
@@ -84,6 +85,27 @@ darwin-*)
 *)  AC_MSG_FAILURE([Invalid build configuration])
 ;;
 esac
+
+case $with_config in 
+*-clang)
+    export CC=clang
+    export CXX=clang++
+;;
+esac
+
+dnl ---------------------------------------------------------------------------
+dnl Set build dir
+dnl ---------------------------------------------------------------------------
+
+if test "x$DAIM_OBJDIR" = "x"; then
+  if test "x$enable_debug" = "xyes" ; then
+      AC_SUBST(DAIM_OBJDIR,$(pwd)/build-debug-$with_config)
+  else
+      AC_SUBST(DAIM_OBJDIR,$(pwd)/build-release-$with_config)
+  fi 
+else
+AC_SUBST(DAIM_OBJDIR,$DAIM_OBJDIR)
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for programs.

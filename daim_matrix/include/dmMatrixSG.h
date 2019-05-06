@@ -1,5 +1,5 @@
 #ifndef dmMatrixSG_h
-#define dmMatrixSG
+#define dmMatrixSG_h
 
 /* ::: BEGIN LICENSE BLOCK:::
  *
@@ -41,4 +41,4 @@ void dmMatrix_ApplyFilter(  const dmMatrixRowCol& _Coeffs, const dmMatrixRowCol&
 
 END_MATRIX()
 //------------------------------------------------------------------------
-#endif // dmMatrixSG
+#endif // dmMatrixSG_h

@@ -18,17 +18,17 @@ MY_RULES  := $(DEPTH)/myrules.mk
 #==========================================
 # Define output object dir if not already defined
 #==========================================
-ifndef DAIM_OBJ_DIR
+#ifndef DAIM_OBJDIR
 
-ifdef DAIM_DEBUG
-BUILD_DIR=$(shell cd $(topsrcdir)/../;pwd)/bin-debug-$(BUILD_CONFIG)
-else
-BUILD_DIR=$(shell cd $(topsrcdir)/../;pwd)/bin-release-$(BUILD_CONFIG)
-endif
+#ifdef DAIM_DEBUG
+#BUILD_DIR=$(shell cd $(topsrcdir)/../;pwd)/bin-debug-$(BUILD_CONFIG)
+#else
+#BUILD_DIR=$(shell cd $(topsrcdir)/../;pwd)/bin-release-$(BUILD_CONFIG)
+#endif
 
-else
-BUILD_DIR=$(DAIM_OBJ_DIR)
-endif
+#else
+BUILD_DIR=$(DAIM_OBJDIR)
+#endif
 
 MAKE_TARGET=$(topsrcdir)/config/Makefile.$(BUILD_CONFIG).mk
 

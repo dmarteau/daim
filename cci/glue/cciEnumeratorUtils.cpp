@@ -48,9 +48,9 @@
 
 #include "cciCOMPtr.h"
 
-class EmptyEnumeratorImpl : public cciISimpleEnumerator,
-                            public cciIUTF8StringEnumerator,
-                            public cciIStringEnumerator
+class EmptyEnumeratorImpl final: public cciISimpleEnumerator,
+                                 public cciIUTF8StringEnumerator,
+                                 public cciIStringEnumerator
 {
 public:
     // cciISupports interface
@@ -61,7 +61,7 @@ public:
     CCI_DECL_IUTF8STRINGENUMERATOR
     // can't use CCI_DECL_NSISTRINGENUMERATOR because they share the
     // HasMore() signature
-    CCI_IMETHOD GetNext(dmAString& aResult);
+    CCI_IMETHOD GetNext(dmAString& aResult) override;
 
     static EmptyEnumeratorImpl* GetInstance() {
         return const_cast<EmptyEnumeratorImpl*>(&kInstance);
@@ -123,14 +123,14 @@ CCI_NewEmptyEnumerator(cciISimpleEnumerator** aResult)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class cciSingletonEnumerator : public cciISimpleEnumerator
+class cciSingletonEnumerator final: public cciISimpleEnumerator
 {
 public:
     CCI_DECL_ISUPPORTS
 
     // cciISimpleEnumerator methods
-    CCI_IMETHOD_(bool) HasMoreElements();
-    CCI_IMETHOD GetNext(cciISupports** aResult);
+    CCI_IMETHOD_(bool) HasMoreElements() override;
+    CCI_IMETHOD GetNext(cciISupports** aResult) override;
 
     cciSingletonEnumerator(cciISupports* aValue);
 
@@ -194,14 +194,14 @@ CCI_NewSingletonEnumerator(cciISimpleEnumerator* *result,
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class cciUnionEnumerator : public cciISimpleEnumerator
+class cciUnionEnumerator final: public cciISimpleEnumerator
 {
 public:
     CCI_DECL_ISUPPORTS
 
     // cciISimpleEnumerator methods
-    CCI_IMETHOD_(bool) HasMoreElements();
-    CCI_IMETHOD GetNext(cciISupports** aResult);
+    CCI_IMETHOD_(bool) HasMoreElements() override;
+    CCI_IMETHOD GetNext(cciISupports** aResult) override;
 
     cciUnionEnumerator(cciISimpleEnumerator* firstEnumerator,
                       cciISimpleEnumerator* secondEnumerator);

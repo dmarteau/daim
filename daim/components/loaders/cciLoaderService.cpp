@@ -38,7 +38,7 @@
 
 static const char* CATMNGR_CONTRACTID = "@daim.org/category-manager;1";
 
-class cciLoaderService : public cciILoaderService
+class cciLoaderService final : public cciILoaderService
 {
 public:
   CCI_DECL_ISUPPORTS

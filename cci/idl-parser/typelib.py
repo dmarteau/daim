@@ -1,45 +1,16 @@
 #!/usr/bin/env python
 # typelib.py - Generate XPCOM typelib files from IDL.
 #
-# ***** BEGIN LICENSE BLOCK *****
-# Version: MPL 1.1/GPL 2.0/LGPL 2.1
-#
-# The contents of this file are subject to the Mozilla Public License Version
-# 1.1 (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
-# http://www.mozilla.org/MPL/
-#
-# Software distributed under the License is distributed on an "AS IS" basis,
-# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
-# for the specific language governing rights and limitations under the
-# License.
-#
-# The Original Code is pyxpidl.
-#
-# The Initial Developer of the Original Code is the Mozilla Foundation.
-# Portions created by the Initial Developer are Copyright (C) 2011
-# the Initial Developer. All Rights Reserved.
-#
-# Contributor(s):
-#   Kyle Huey <khuey@kylehuey.com>
-#
-# Alternatively, the contents of this file may be used under the terms of
-# either of the GNU General Public License Version 2 or later (the "GPL"),
-# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
-# in which case the provisions of the GPL or the LGPL are applicable instead
-# of those above. If you wish to allow use of your version of this file only
-# under the terms of either the GPL or the LGPL, and not to allow others to
-# use your version of this file under the terms of the MPL, indicate your
-# decision by deleting the provisions above and replace them with the notice
-# and other provisions required by the GPL or the LGPL. If you do not delete
-# the provisions above, a recipient may use your version of this file under
-# the terms of any one of the MPL, the GPL or the LGPL.
-#
-# ***** END LICENSE BLOCK *****
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """Generate an XPIDL typelib for the IDL files specified on the command line"""
 
-import xpidl, xpt
+import os
+import sys
+import xpidl
+import xpt
 
 # A map of xpidl.py types to xpt.py types
 TypeMap = {
@@ -48,6 +19,13 @@ TypeMap = {
     # builtins
     'boolean':            xpt.Type.Tags.boolean,
     'void':               xpt.Type.Tags.void,
+    'int16_t':            xpt.Type.Tags.int16,
+    'int32_t':            xpt.Type.Tags.int32,
+    'int64_t':            xpt.Type.Tags.int64,
+    'uint8_t':            xpt.Type.Tags.uint8,
+    'uint16_t':           xpt.Type.Tags.uint16,
+    'uint32_t':           xpt.Type.Tags.uint32,
+    'uint64_t':           xpt.Type.Tags.uint64,
     'octet':              xpt.Type.Tags.uint8,
     'short':              xpt.Type.Tags.int16,
     'long':               xpt.Type.Tags.int32,
@@ -70,32 +48,35 @@ TypeMap = {
     'jsval':              xpt.Type.Tags.jsval
 }
 
+
 # XXXkhuey dipper types should go away (bug 677784)
 def isDipperType(type):
     return type == xpt.Type.Tags.DOMString or type == xpt.Type.Tags.AString or type == xpt.Type.Tags.CString or type == xpt.Type.Tags.UTF8String
+
 
 def build_interface(iface, ifaces):
     def get_type(type, calltype, iid_is=None, size_is=None):
         """ Return the appropriate xpt.Type object for this param """
 
-        if isinstance(type, xpidl.Typedef):
+        while isinstance(type, xpidl.Typedef):
             type = type.realtype
 
         if isinstance(type, xpidl.Builtin):
-            if type.name == 'string' and size_is != None:
-                  return xpt.StringWithSizeType(size_is, size_is)
-            elif type.name == 'wstring' and size_is != None:
-                  return xpt.WideStringWithSizeType(size_is, size_is)
+            if type.name == 'string' and size_is is not None:
+                return xpt.StringWithSizeType(size_is, size_is)
+            elif type.name == 'wstring' and size_is is not None:
+                return xpt.WideStringWithSizeType(size_is, size_is)
             else:
-                  tag = TypeMap[type.name]
-                  isPtr = (tag == xpt.Type.Tags.char_ptr or tag == xpt.Type.Tags.wchar_t_ptr)
-                  return xpt.SimpleType(tag,
-                                        pointer=isPtr,
-                                        #XXXkhuey unique_pointer is completely unused (bug 677787.)
-                                        reference=False)
+                tag = TypeMap[type.name]
+                isPtr = (tag == xpt.Type.Tags.char_ptr or tag == xpt.Type.Tags.wchar_t_ptr)
+                return xpt.SimpleType(tag,
+                                      pointer=isPtr,
+                                      reference=False)
 
         if isinstance(type, xpidl.Array):
-            return xpt.ArrayType(get_type(type.type, calltype), size_is,
+            # NB: For an Array<T> we pass down the iid_is to get the type of T.
+            #     This allows Arrays of InterfaceIs types to work.
+            return xpt.ArrayType(get_type(type.type, calltype, iid_is), size_is,
                                  #XXXkhuey length_is duplicates size_is (bug 677788),
                                  size_is)
 
@@ -118,15 +99,13 @@ def build_interface(iface, ifaces):
                 isRef = type.isRef(calltype) and not type.specialtype == 'jsval'
                 return xpt.SimpleType(TypeMap[type.specialtype],
                                       pointer=isPtr,
-                                      #XXXkhuey unique_pointer is completely unused
                                       reference=isRef)
-            elif iid_is != None:
+            elif iid_is is not None:
                 return xpt.InterfaceIsType(iid_is)
             else:
                 # void ptr
                 return xpt.SimpleType(TypeMap['void'],
                                       pointer=True,
-                                      #XXXkhuey unique_pointer is completely unused
                                       reference=False)
 
         raise Exception("Unknown type!")
@@ -217,7 +196,7 @@ def build_interface(iface, ifaces):
         # Write the getter
         methods.append(xpt.Method(a.name, build_nsresult_param(),
                                   [build_attr_param(a, getter=True)],
-                                  getter=True, setter=False, notxpcom=a.notxpcom,
+                                  getter=True, setter=False,
                                   constructor=False, hidden=a.noscript,
                                   optargc=False,
                                   implicit_jscontext=a.implicit_jscontext))
@@ -226,7 +205,7 @@ def build_interface(iface, ifaces):
         if not a.readonly:
             methods.append(xpt.Method(a.name, build_nsresult_param(),
                                       [build_attr_param(a, setter=True)],
-                                      getter=False, setter=True, notxpcom=a.notxpcom,
+                                      getter=False, setter=True,
                                       constructor=False, hidden=a.noscript,
                                       optargc=False,
                                       implicit_jscontext=a.implicit_jscontext))
@@ -256,15 +235,17 @@ def build_interface(iface, ifaces):
                          constants=consts, resolved=True, parent=parent,
                          scriptable=iface.attributes.scriptable,
                          function=iface.attributes.function,
-                         builtinclass=iface.attributes.builtinclass)
+                         builtinclass=iface.attributes.builtinclass,
+                         main_process_scriptable_only=iface.attributes.main_process_scriptable_only)
+
 
 def write_typelib(idl, fd, filename):
     """ Generate the typelib. """
 
-    # We only care about interfaces
+    # We only care about interfaces that are scriptable.
     ifaces = []
     for p in idl.productions:
-        if p.kind == 'interface':
+        if p.kind == 'interface' and p.attributes.scriptable:
             ifaces.append(build_interface(p, ifaces))
 
     typelib = xpt.Typelib(interfaces=ifaces)
@@ -284,7 +265,7 @@ if __name__ == '__main__':
     o.add_option('--regen', action='store_true', dest='regen', default=False,
                  help="Regenerate IDL Parser cache")
     options, args = o.parse_args()
-    file, = args
+    file = args[0] if args else None
 
     if options.cachedir is not None:
         if not os.path.isdir(options.cachedir):
@@ -322,3 +303,5 @@ if __name__ == '__main__':
         deps = [dep.replace('\\', '/') for dep in idl.deps]
 
         print >>depfd, "%s: %s" % (options.outfile, " ".join(deps))
+        for dep in deps:
+            print >>depfd, "%s:" % dep

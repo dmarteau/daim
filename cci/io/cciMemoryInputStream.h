@@ -43,8 +43,8 @@
 #define CCI_MEMORYINPUTSTREAM_CLASSNAME  "In-memory input stream"
 
 /* Header file */
-class cciMemoryInputStream : public cciIMemoryInputStream,
-                             public cciISeekableStream
+class cciMemoryInputStream final : public cciIMemoryInputStream,
+                                   public cciISeekableStream
 {
 public:
   CCI_DECL_ISUPPORTS

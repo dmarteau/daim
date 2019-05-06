@@ -38,7 +38,7 @@
 class cciISurfaceDriver;
 
 /* Header file */
-class cciImageShell : public cciIImageShell
+class cciImageShell final : public cciIImageShell
 {
 public:
   CCI_DECL_ISUPPORTS

@@ -32,7 +32,7 @@
 /* Header file */
 #define CCI_COLORTABLE_PRIVATE_IID \
     { 0x20ec68de, 0xb94f, 0x4cb4, { 0xa6, 0x3f, 0x2f, 0xa1, 0x58, 0x5c, 0x65, 0xa6 } }
-class gdalColorTable : public cciIColorTable
+class gdalColorTable final : public cciIColorTable
 {
 friend class gdalSurface;
 friend class cciGDALDriver;

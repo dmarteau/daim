@@ -60,8 +60,8 @@
 
 
 /* Header file */
-class cciScriptableImage :  public cciIImage,
-                            public cciImageWrapper
+class cciScriptableImage: public cciIImage,
+                          public cciImageWrapper
                            
 {
 public:
@@ -78,7 +78,7 @@ public:
   bool IsValid() const { return !mImage.IsNull(); }
   
 protected:
-  ~cciScriptableImage();
+  virtual ~cciScriptableImage();
   
   cci_result Initialize( dm_uint32 width, dm_uint32 height, EPixelFormat );
   cci_result Initialize( dmImageData& imData );

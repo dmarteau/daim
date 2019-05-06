@@ -99,7 +99,7 @@ static void CPL_STDCALL gdalErrorHandler(CPLErr eErrClass, int nError,
 ///////////////////////////////////////////////////
 // cciGDALProxy implementation
 
-class cciGDALProxy : public cciIDriverProxy
+class cciGDALProxy final : public cciIDriverProxy
 {
 public:
   CCI_DECL_ISUPPORTS
